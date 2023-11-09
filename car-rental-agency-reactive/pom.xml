@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.4</version>
+        <groupId>com.carrental</groupId>
+        <artifactId>car-rental-service-reactive</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
-    <groupId>com.carrental</groupId>
     <artifactId>car-rental-agency-reactive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Car Rental Agency Reactive</name>
