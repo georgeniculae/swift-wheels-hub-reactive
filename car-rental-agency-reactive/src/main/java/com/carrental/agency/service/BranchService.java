@@ -89,13 +89,14 @@ public class BranchService {
         return findEntityById(id)
                 .flatMap(exitingBranch ->
                         rentalOfficeService.findEntityById(updatedBranchDto.getRentalOfficeId())
-                                .flatMap(rentalOffice -> {
+                                .map(rentalOffice -> {
                                     exitingBranch.setName(updatedBranchDto.getName());
                                     exitingBranch.setAddress(updatedBranchDto.getAddress());
                                     exitingBranch.setRentalOffice(rentalOffice);
 
-                                    return branchRepository.save(exitingBranch);
+                                    return exitingBranch;
                                 }))
+                .flatMap(branchRepository::save)
                 .map(branchMapper::mapEntityToDto)
                 .onErrorResume(e -> {
                     log.error("Error while updating branch: {}", e.getMessage());
