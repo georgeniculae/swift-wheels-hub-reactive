@@ -21,10 +21,9 @@ public class OutboxService {
     public Flux<Void> handleOutboxes() {
         return outboxRepository.findAll()
                 .filter(outbox -> Outbox.Operation.CLOSE.equals(outbox.getOperation()))
-                .flatMap(outbox -> invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))
+                .delayUntil(outbox -> invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))
                         .filter(Boolean.TRUE::equals)
-                        .switchIfEmpty(Mono.error(new CarRentalException("Sending invoice failed")))
-                        .map(response -> outbox))
+                        .switchIfEmpty(Mono.error(new CarRentalException("Sending invoice failed"))))
                 .flatMap(outboxRepository::delete);
     }
 
