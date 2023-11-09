@@ -1,0 +1,13 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "make": "Volkswagen",
+  "model": "Arteon",
+  "bodyType": "Sedan",
+  "yearOfProduction": 2022,
+  "color": "black",
+  "mileage": 100000,
+  "carStatus": "Available",
+  "amount": 1000.0,
+  "originalBranchId": "64f361caf291ae086e179547",
+  "actualBranchId": "64f361caf291ae086e179547"
+}
