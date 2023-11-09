@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.carrental</groupId>
+    <artifactId>aggregate</artifactId>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <modules>
+		<module>car-rental-common-reactive</module>
+        <module>car-rental-api-gateway-reactive</module>
+        <module>car-rental-agency-reactive</module>
+        <module>car-rental-audit-reactive</module>
+        <module>car-rental-booking-reactive</module>
+        <module>car-rental-customer-reactive</module>
+        <module>car-rental-email-notification-reactive</module>
+        <module>car-rental-expense-reactive</module>
+    </modules>
+</project>
