@@ -4,12 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.carrental</groupId>
-    <artifactId>aggregate</artifactId>
+    <artifactId>car-rental-service-reactive</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
+    <name>Car Rental Service Reactive</name>
+
     <modules>
-		<module>car-rental-common-reactive</module>
+        <module>car-rental-common-reactive</module>
         <module>car-rental-api-gateway-reactive</module>
         <module>car-rental-agency-reactive</module>
         <module>car-rental-audit-reactive</module>
