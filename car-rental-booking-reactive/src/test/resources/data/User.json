@@ -1,0 +1,11 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "username": "user",
+  "password": "user",
+  "role": "ROLE_ADMIN",
+  "firstName": "User",
+  "lastName": "User",
+  "email": "user@email.com",
+  "dateOfBirth": "1989-01-26",
+  "address": "Ploiesti"
+}
