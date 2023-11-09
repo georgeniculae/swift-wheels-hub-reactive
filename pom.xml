@@ -27,4 +27,25 @@
         <module>car-rental-email-notification-reactive</module>
         <module>car-rental-expense-reactive</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/georgeniculae/*</url>
+        </repository>
+    </repositories>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/georgeniculae/car-rental-service-reactive</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>car-rental-service-reactive</name>
+            <url>https://maven.pkg.github.com/georgeniculae/car-rental-service-reactive</url>
+        </repository>
+    </distributionManagement>
+
 </project>
