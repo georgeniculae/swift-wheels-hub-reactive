@@ -4,6 +4,7 @@ import com.carrental.agency.mapper.CarMapper;
 import com.carrental.agency.repository.CarRepository;
 import com.carrental.document.model.Branch;
 import com.carrental.document.model.Car;
+import com.carrental.document.model.CarFields;
 import com.carrental.document.model.CarStatus;
 import com.carrental.document.model.Employee;
 import com.carrental.dto.CarDetailsForUpdateDto;
@@ -126,10 +127,8 @@ public class CarService {
 
     public Flux<CarDto> uploadCars(FilePart filePart) {
         return filePart.content()
-                .concatMap(dataBuffer -> getDataFromExcelAsPublisher(dataBuffer)
-                        .flatMapMany(Flux::fromIterable))
-                .concatMap(carDto -> branchService.findEntityById(carDto.getOriginalBranchId())
-                        .zipWith(branchService.findEntityById(carDto.getActualBranchId()))
+                .concatMap(this::getDataFromExcelAsPublisher)
+                .concatMap(carDto -> getBranches(carDto)
                         .map(originalBranchActualBranchTuple -> generateCar(carDto, originalBranchActualBranchTuple)))
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
@@ -143,13 +142,16 @@ public class CarService {
 
     public Mono<CarDto> updateCar(String id, CarDto updatedCarDto) {
         return findEntityById(id)
-                .flatMap(existingCar -> getBranches(updatedCarDto)
-                        .flatMap(originalBranchActualBranch -> {
-                            Car existingCarUpdated =
-                                    updateExistingCar(updatedCarDto, existingCar, originalBranchActualBranch);
+                .zipWith(getBranches(updatedCarDto))
+                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> {
+                    Car existingCarUpdated = updateExistingCar(
+                            updatedCarDto,
+                            existingCarAndOriginalBranchActualBranchTuple.getT1(),
+                            existingCarAndOriginalBranchActualBranchTuple.getT2()
+                    );
 
-                            return carRepository.save(existingCarUpdated);
-                        }))
+                    return carRepository.save(existingCarUpdated);
+                })
                 .map(carMapper::mapEntityToDto)
                 .onErrorResume(e -> {
                     log.error("Error while updating cars: {}", e.getMessage());
@@ -254,9 +256,10 @@ public class CarService {
         return car;
     }
 
-    private Mono<List<CarDto>> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
+    private Flux<CarDto> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
         return Mono.fromCallable(() -> extractDataFromExcel(dataBuffer.asInputStream()))
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMapMany(Flux::fromIterable);
     }
 
     private List<CarDto> extractDataFromExcel(InputStream inputStream) {

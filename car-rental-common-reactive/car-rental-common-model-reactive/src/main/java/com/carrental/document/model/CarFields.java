@@ -1,4 +1,4 @@
-package com.carrental.agency.service;
+package com.carrental.document.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
