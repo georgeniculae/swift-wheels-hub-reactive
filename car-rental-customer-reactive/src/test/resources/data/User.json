@@ -1,0 +1,11 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "username": "alexandrupopescu",
+  "password": "$2a$12$ixPC0.X/n6gko36V356aS.CR0EOrPpRHv7Ez7jEoVnT.AnP3oa7xm",
+  "role": "ROLE_USER",
+  "firstName": "Alexandru",
+  "lastName": "Popescu",
+  "email": "alexandrupopescu@email.com",
+  "dateOfBirth": "1985-01-20",
+  "address": "Ploiesti"
+}

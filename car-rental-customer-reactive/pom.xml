@@ -11,30 +11,36 @@
     </parent>
 
     <groupId>com.carrental</groupId>
-    <artifactId>car-rental-audit-reactive</artifactId>
+    <artifactId>car-rental-customer-reactive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Car Rental Audit Reactive</name>
-    <description>Car Rental Audit Reactive</description>
+    <name>Car Rental Customer Reactive</name>
+    <description>Car Rental Customer Reactive</description>
 
     <properties>
         <java.version>21</java.version>
         <spring-boot.version>3.1.4</spring-boot.version>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
-        <car-rental-common-reactive.version>0.0.1-SNAPSHOT</car-rental-common-reactive.version>
+        <mongock.version>5.3.3</mongock.version>
+        <mongock-springboot.version>5.2.3</mongock-springboot.version>
+        <mongo-java-driver.version>3.12.14</mongo-java-driver.version>
+        <car-rental-common.version>0.0.1-SNAPSHOT</car-rental-common.version>
+        <car-rental-api-gateway.version>0.0.1-SNAPSHOT</car-rental-api-gateway.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mongo.version>4.10.2</mongo.version>
+        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.carrental</groupId>
             <artifactId>car-rental-common-model-reactive</artifactId>
-            <version>${car-rental-common-reactive.version}</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.carrental</groupId>
             <artifactId>car-rental-common-lib-reactive</artifactId>
-            <version>${car-rental-common-reactive.version}</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -45,6 +51,33 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.mongock.professional</groupId>
+            <artifactId>mongock-springboot</artifactId>
+            <version>${mongock-springboot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongodb-reactive-driver</artifactId>
+            <version>${mongock.version}</version>
         </dependency>
 
         <dependency>
@@ -59,32 +92,7 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <dependency>
@@ -94,8 +102,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
 
         <dependency>
@@ -171,5 +180,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/georgeniculae/*</url>
+        </repository>
+    </repositories>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/georgeniculae/car-rental-customer-reactive</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>car-rental-customer-reactive</name>
+            <url>https://maven.pkg.github.com/georgeniculae/car-rental-customer-reactive</url>
+        </repository>
+    </distributionManagement>
 
 </project>

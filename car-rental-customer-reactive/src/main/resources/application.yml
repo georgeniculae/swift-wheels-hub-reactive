@@ -1,0 +1,98 @@
+server:
+  port: ${PORT:8181}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: car-rental-customer
+  webflux:
+    base-path: /customers
+  data:
+    mongodb:
+      database: car_rental_customer
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.2wuy2po.mongodb.net/
+  cloud:
+    discovery:
+      enabled: true
+    stream:
+      bindings:
+        savedUserProducer-out-0:
+          destination: ${SAVED_USER_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+        updatedUserProducer-out-0:
+          destination: ${UPDATED_USER_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+        deletedUserProducer-out-0:
+          destination: ${DELETED_USER_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+        auditLogInfoProducer-out-0:
+          destination: ${CUSTOMER_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+      kafka:
+        binder:
+          auto-create-topics: false
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: false
+  kafka:
+    bootstrap-servers: localhost:9092
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /definition/swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /definition/v3/api-docs
+
+ribbon:
+  eureka:
+    enabled: false
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web:
+          csrf:
+            CsrfFilter: DEBUG
+
+authentication:
+  type: apikey
+  secret: ${API_KEY_SECRET}
+
+cross-origin: '*'
+
+migration:
+  packageScan: com.carrental.customer.migration
+
+scheduled:
+  fixedDelay: 5000
+
+audit:
+  enabled: true
