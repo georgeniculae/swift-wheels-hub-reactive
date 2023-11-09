@@ -1,0 +1,671 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: 'http://172.30.80.1:8082/agency'
+    description: Generated server url
+paths:
+  '/rental-offices/{id}':
+    get:
+      tags:
+        - rental-office-controller
+      operationId: findRentalOfficeById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RentalOfficeDto'
+    put:
+      tags:
+        - rental-office-controller
+      operationId: updateRentalOffice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentalOfficeDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RentalOfficeDto'
+    delete:
+      tags:
+        - rental-office-controller
+      operationId: deleteRentalOfficeById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  '/employees/{id}':
+    get:
+      tags:
+        - employee-controller
+      operationId: findEmployeeById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeDto'
+    put:
+      tags:
+        - employee-controller
+      operationId: updateEmployee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeDto'
+    delete:
+      tags:
+        - employee-controller
+      operationId: deleteEmployeeById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  '/cars/{id}':
+    get:
+      tags:
+        - car-controller
+      operationId: findCarById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarDto'
+    put:
+      tags:
+        - car-controller
+      operationId: updateCar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarDto'
+    delete:
+      tags:
+        - car-controller
+      operationId: deleteCarById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  '/cars/{id}/update-after-closed-booking':
+    put:
+      tags:
+        - car-controller
+      operationId: updateCarWhenBookingIsClosed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarDetailsForUpdateDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarDto'
+  '/cars/{id}/change-car-status':
+    put:
+      tags:
+        - car-controller
+      operationId: updateCarStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: carStatus
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - Not available
+              - Broken
+              - In repair
+              - In service
+              - Available
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarDto'
+  /cars/update-cars-status:
+    put:
+      tags:
+        - car-controller
+      operationId: updateCarsStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CarDetailsForUpdateDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarDto'
+  '/branches/{id}':
+    get:
+      tags:
+        - branch-controller
+      operationId: findBranchById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BranchDto'
+    put:
+      tags:
+        - branch-controller
+      operationId: updateBranch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BranchDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BranchDto'
+    delete:
+      tags:
+        - branch-controller
+      operationId: deleteBranchById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /rental-offices:
+    get:
+      tags:
+        - rental-office-controller
+      operationId: findAllRentalOffices
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RentalOfficeDto'
+    post:
+      tags:
+        - rental-office-controller
+      operationId: addRentalOffice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentalOfficeDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RentalOfficeDto'
+  /employees:
+    get:
+      tags:
+        - employee-controller
+      operationId: findAllEmployees
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeDto'
+    post:
+      tags:
+        - employee-controller
+      operationId: addEmployee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EmployeeDto'
+  /cars:
+    get:
+      tags:
+        - car-controller
+      operationId: findAllCars
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarDto'
+    post:
+      tags:
+        - car-controller
+      operationId: addCar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarDto'
+  /cars/upload:
+    post:
+      tags:
+        - car-controller
+      operationId: uploadCars
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarDto'
+  /cars/add:
+    post:
+      tags:
+        - car-controller
+      operationId: addCars
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CarDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarDto'
+  /branches:
+    get:
+      tags:
+        - branch-controller
+      operationId: findAllBranches
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BranchDto'
+    post:
+      tags:
+        - branch-controller
+      operationId: addBranch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BranchDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BranchDto'
+  /rental-offices/count:
+    get:
+      tags:
+        - rental-office-controller
+      operationId: countRentalOffices
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /employees/count:
+    get:
+      tags:
+        - employee-controller
+      operationId: countEmployees
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  '/employees/branch/{id}':
+    get:
+      tags:
+        - employee-controller
+      operationId: findEmployeesByBranchId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeDto'
+  '/cars/{id}/availability':
+    get:
+      tags:
+        - car-controller
+      operationId: getAvailableCar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarDto'
+  '/cars/make/{make}':
+    get:
+      tags:
+        - car-controller
+      operationId: findCarsByMake
+      parameters:
+        - name: make
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarDto'
+  /cars/count:
+    get:
+      tags:
+        - car-controller
+      operationId: countCars
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /branches/count:
+    get:
+      tags:
+        - branch-controller
+      operationId: countBranches
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    RentalOfficeDto:
+      type: object
+      properties:
+        name:
+          type: string
+        contactAddress:
+          type: string
+        logoType:
+          type: string
+        id:
+          type: string
+    EmployeeDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        jobPosition:
+          type: string
+        workingBranchId:
+          type: string
+        id:
+          type: string
+    CarDto:
+      type: object
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        bodyType:
+          type: string
+          enum:
+            - Hatchback
+            - Sedan
+            - SUV
+            - Coupe
+            - Convertible
+            - Wagon
+            - Van
+        yearOfProduction:
+          type: integer
+          format: int32
+        color:
+          type: string
+        mileage:
+          type: integer
+          format: int32
+        carStatus:
+          type: string
+          enum:
+            - Not available
+            - Broken
+            - In repair
+            - In service
+            - Available
+        amount:
+          type: number
+        originalBranchId:
+          type: string
+        actualBranchId:
+          type: string
+        urlOfImage:
+          type: string
+        id:
+          type: string
+    CarDetailsForUpdateDto:
+      type: object
+      properties:
+        carId:
+          type: string
+        receptionistEmployeeId:
+          type: string
+        carStatus:
+          type: string
+          enum:
+            - Not available
+            - Broken
+            - In repair
+            - In service
+            - Available
+    BranchDto:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        rentalOfficeId:
+          type: string
+        id:
+          type: string

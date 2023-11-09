@@ -1,0 +1,207 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: 'http://172.17.160.1:8183/bookings'
+    description: Generated server url
+paths:
+  /amount-by-user:
+    get:
+      tags:
+        - booking-handler
+      operationId: getAmountSpentByLoggedInUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /bookings-amount-sum:
+    get:
+      tags:
+        - booking-handler
+      operationId: getSumOfAllBookingAmount
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /by-current-user:
+    get:
+      tags:
+        - booking-handler
+      operationId: findBookingsByLoggedInUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /close-booking:
+    post:
+      tags:
+        - booking-handler
+      operationId: closeBooking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /count:
+    get:
+      tags:
+        - booking-handler
+      operationId: countBookings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /count-by-logged-in-user:
+    get:
+      tags:
+        - booking-handler
+      operationId: countBookingsOfLoggedInUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /current-date:
+    get:
+      tags:
+        - booking-handler
+      operationId: getCurrentDate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  '/date/{date}':
+    get:
+      tags:
+        - booking-handler
+      operationId: findBookingsByDateOfBooking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /list:
+    get:
+      tags:
+        - booking-handler
+      operationId: findAllBookings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  /new:
+    post:
+      tags:
+        - Add new booking
+      description: Create new booking
+      operationId: saveBooking
+      requestBody:
+        description: Create new booking
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  '/{id}':
+    get:
+      tags:
+        - booking-handler
+      operationId: findBookingById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    put:
+      tags:
+        - booking-handler
+      operationId: updateBooking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+    delete:
+      tags:
+        - booking-handler
+      operationId: deleteBookingById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+components:
+  schemas:
+    ServerResponse:
+      type: object
+    BookingDto:
+      type: object
+      properties:
+        dateOfBooking:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+            - In progress
+            - Closed
+        customerUsername:
+          type: string
+        customerEmail:
+          type: string
+        carId:
+          type: string
+        dateFrom:
+          type: string
+          format: date
+        dateTo:
+          type: string
+          format: date
+        amount:
+          type: number
+        rentalCarPrice:
+          type: number
+        rentalBranchId:
+          type: string
+        returnBranchId:
+          type: string
+        id:
+          type: string

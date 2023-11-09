@@ -1,0 +1,124 @@
+server:
+  port: ${PORT:8188}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: car-rental-cloud-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: agency
+          uri: lb://car-rental-agency
+          predicates:
+            - Path=/agency/**
+          filters:
+            - name: LanguageHeaderUpdater
+              args:
+                language: "EN"
+        - id: booking
+          uri: lb://car-rental-booking
+          predicates:
+            - Path=/bookings/**
+          filters:
+            - name: LanguageHeaderUpdater
+              args:
+                language: "EN"
+        - id: customer
+          uri: lb://car-rental-customer
+          predicates:
+            - Path=/customers/**
+          filters:
+            - name: LanguageHeaderUpdater
+              args:
+                language: "EN"
+        - id: expense
+          uri: lb://car-rental-expense
+          predicates:
+            - Path=/expense/**
+          filters:
+            - name: LanguageHeaderUpdater
+              args:
+                language: "EN"
+    function:
+      definition: savedUserConsumer;updatedUserConsumer;deletedUserConsumer
+    stream:
+      bindings:
+        savedUserConsumer-in-0:
+          binder: kafka
+          destination: ${SAVED_USER_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${GATEWAY_CONSUMER_GROUP}
+        updatedUserConsumer-in-0:
+          binder: kafka
+          destination: ${UPDATED_USER_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${GATEWAY_CONSUMER_GROUP}
+        deletedUserConsumer-in-0:
+          binder: kafka
+          destination: ${DELETED_USER_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${GATEWAY_CONSUMER_GROUP}
+      kafka:
+        binder:
+          auto-create-topics: false
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: false
+  kafka:
+    bootstrap-servers: localhost:9092
+  data:
+    mongodb:
+      database: car_rental_gateway
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      authentication-database: admin
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.2wuy2po.mongodb.net/
+
+swagger:
+  location: swagger-definitions
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+ribbon:
+  eureka:
+    enabled: false
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+authentication:
+  type: jwt
+
+token:
+  signing:
+    key: ${TOKEN_SIGNING_KEY}
+
+apikey-secret: ${API_KEY_SECRET}
+
+cross-origin: '*'
+
+userConsumer:
+  enabled: true
+  isMessageAckEnabled: false
+
+migration:
+  packageScan: com.carrental.cloudgateway.migration
