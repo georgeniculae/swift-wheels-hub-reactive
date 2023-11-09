@@ -11,23 +11,17 @@
     </parent>
 
     <groupId>com.carrental</groupId>
-    <artifactId>car-rental-customer-reactive</artifactId>
+    <artifactId>car-rental-email-notification-reactive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Car Rental Customer Reactive</name>
-    <description>Car Rental Customer Reactive</description>
+    <name>Car Rental Email Notification Reactive</name>
+    <description>Car Rental Email Notification Reactive</description>
 
     <properties>
         <java.version>21</java.version>
         <spring-boot.version>3.1.4</spring-boot.version>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
-        <mongock.version>5.3.3</mongock.version>
-        <mongock-springboot.version>5.2.3</mongock-springboot.version>
-        <mongo-java-driver.version>3.12.14</mongo-java-driver.version>
         <car-rental-common.version>0.0.1-SNAPSHOT</car-rental-common.version>
         <car-rental-api-gateway.version>0.0.1-SNAPSHOT</car-rental-api-gateway.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <mongo.version>4.10.2</mongo.version>
-        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>
@@ -49,16 +43,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -69,42 +53,8 @@
         </dependency>
 
         <dependency>
-            <groupId>io.mongock.professional</groupId>
-            <artifactId>mongock-springboot</artifactId>
-            <version>${mongock-springboot.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.mongock</groupId>
-            <artifactId>mongodb-reactive-driver</artifactId>
-            <version>${mongock.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-reactivestreams</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>${springdoc-openapi.version}</version>
         </dependency>
 
         <dependency>
@@ -122,12 +72,6 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -168,12 +112,6 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
-                        </path>
-
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

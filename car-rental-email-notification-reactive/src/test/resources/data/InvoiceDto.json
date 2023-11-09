@@ -1,0 +1,13 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "customerUsername": "test",
+  "carId": "64f361caf291ae086e179547",
+  "receptionistEmployeeId": "64f361caf291ae086e179547",
+  "bookingId": "64f361caf291ae086e179547",
+  "carDateOfReturn": "2050-02-22",
+  "isVehicleDamaged": true,
+  "damageCost": 50.0,
+  "additionalPayment": 0.0,
+  "totalAmount": 550.0,
+  "comments": "comment"
+}
