@@ -1,0 +1,7 @@
+{
+  "methodName": "registerUser",
+  "username": "",
+  "parametersValues": [
+    "class RegisterRequest {\n    username: alexandrupopescu60\n    firstName: Alexandru\n    lastName: Popescu\n    email: alexandrupopescu@email.com\n    password: 12345678\n    address: Ploiesti\n    dateOfBirth: 1980-01-20\n}"
+  ]
+}

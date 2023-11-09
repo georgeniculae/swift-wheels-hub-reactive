@@ -1,0 +1,72 @@
+server:
+  port: ${PORT:8189}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: car-rental-audit
+  data:
+    mongodb:
+      database: car_rental_audit
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.2wuy2po.mongodb.net/
+  cloud:
+    discovery:
+      enabled: true
+    function:
+      definition: bookingAuditLogInfoConsumer;customerAuditLogInfoConsumer;expenseAuditLogInfoConsumer
+    stream:
+      bindings:
+        bookingAuditLogInfoConsumer-in-0:
+          binder: kafka
+          destination: ${BOOKING_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AUDIT_CONSUMER_GROUP}
+        customerAuditLogInfoConsumer-in-0:
+          binder: kafka
+          destination: ${CUSTOMER_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AUDIT_CONSUMER_GROUP}
+        expenseAuditLogInfoConsumer-in-0:
+          binder: kafka
+          destination: ${EXPENSE_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AUDIT_CONSUMER_GROUP}
+      kafka:
+        binder:
+          auto-create-topics: false
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: false
+  kafka:
+    bootstrap-servers: localhost:9092
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+ribbon:
+  eureka:
+    enabled: false
+
+auditConsumer:
+  isMessageAckEnabled: false
