@@ -1,0 +1,195 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: 'http://172.30.80.1:8083/bookings'
+    description: Generated server url
+paths:
+  '/{id}':
+    get:
+      tags:
+        - booking-controller
+      operationId: findBookingById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookingDto'
+    put:
+      tags:
+        - booking-controller
+      operationId: updateBooking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookingDto'
+    delete:
+      tags:
+        - booking-controller
+      operationId: deleteBookingById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /new:
+    post:
+      tags:
+        - booking-controller
+      operationId: addBooking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookingDto'
+  /close-booking:
+    post:
+      tags:
+        - booking-controller
+      operationId: closeBooking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingClosingDetailsDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookingDto'
+  /list:
+    get:
+      tags:
+        - booking-controller
+      operationId: findAllBookings
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingDto'
+  /current-date:
+    get:
+      tags:
+        - booking-controller
+      operationId: getCurrentDate
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: date
+  /count:
+    get:
+      tags:
+        - booking-controller
+      operationId: countBookings
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /count-by-current-user:
+    get:
+      tags:
+        - booking-controller
+      operationId: countByLoggedInUser
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    BookingDto:
+      type: object
+      properties:
+        dateOfBooking:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+            - In progress
+            - Closed
+        customerUsername:
+          type: string
+        customerEmail:
+          type: string
+        carId:
+          type: string
+        dateFrom:
+          type: string
+          format: date
+        dateTo:
+          type: string
+          format: date
+        amount:
+          type: number
+        rentalCarPrice:
+          type: number
+        rentalBranchId:
+          type: string
+        returnBranchId:
+          type: string
+        id:
+          type: string
+    BookingClosingDetailsDto:
+      type: object
+      properties:
+        bookingId:
+          type: string
+        receptionistEmployeeId:
+          type: string
+        carStatus:
+          $ref: 'CarStatusEnum.yaml'
+        id:
+          type: string

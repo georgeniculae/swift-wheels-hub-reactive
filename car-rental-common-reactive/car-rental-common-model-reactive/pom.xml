@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.carrental</groupId>
+        <artifactId>car-rental-common-parent-reactive</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>car-rental-common-model-reactive</artifactId>
+
+    <properties>
+        <java.version>21</java.version>
+        <mongo-java-driver.version>3.12.14</mongo-java-driver.version>
+        <spring-data-mongodb.version>4.1.2</spring-data-mongodb.version>
+        <jakarta.annotation-version>2.1.1</jakarta.annotation-version>
+        <openapi-version>7.0.1</openapi-version>
+        <swagger-annotations-version>1.6.11</swagger-annotations-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>openapi-generator</artifactId>
+            <version>${openapi-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-car-rental-customer</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatorName>java</generatorName>
+                            <generateApis>false</generateApis>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <library>webclient</library>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useBeanValidation>true</useBeanValidation>
+                            </configOptions>
+                            <inputSpec>${project.basedir}/src/main/resources/CarRentalCustomer.yaml</inputSpec>
+                            <modelPackage>com.carrental.dto</modelPackage>
+                            <importMappings>
+                                <importMapping>
+                                    AuthenticationRequest=com.carrental.dto.authentication.AuthenticationRequest
+                                </importMapping>
+                                <importMapping>
+                                    AuthenticationResponse=com.carrental.dto.authentication.AuthenticationResponse
+                                </importMapping>
+                                <importMapping>RegisterRequest=com.carrental.dto.authentication.RegisterRequest
+                                </importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>generate-car-rental-booking</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatorName>java</generatorName>
+                            <generateApis>false</generateApis>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <library>webclient</library>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useBeanValidation>true</useBeanValidation>
+                            </configOptions>
+                            <inputSpec>${project.basedir}/src/main/resources/CarRentalBooking.yaml</inputSpec>
+                            <modelPackage>com.carrental.dto</modelPackage>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>generate-car-rental-agency</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatorName>java</generatorName>
+                            <generateApis>false</generateApis>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <library>webclient</library>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useBeanValidation>true</useBeanValidation>
+                            </configOptions>
+                            <inputSpec>${project.basedir}/src/main/resources/CarRentalAgency.yaml</inputSpec>
+                            <modelPackage>com.carrental.dto</modelPackage>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>generate-car-rental-expense</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatorName>java</generatorName>
+                            <generateApis>false</generateApis>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <library>webclient</library>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useBeanValidation>true</useBeanValidation>
+                            </configOptions>
+                            <inputSpec>${project.basedir}/src/main/resources/CarRentalExpense.yaml</inputSpec>
+                            <modelPackage>com.carrental.dto</modelPackage>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

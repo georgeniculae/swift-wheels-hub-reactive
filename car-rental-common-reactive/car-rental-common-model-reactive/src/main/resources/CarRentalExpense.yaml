@@ -1,0 +1,222 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: 'http://172.30.80.1:8085/expense'
+    description: Generated server url
+paths:
+  '/invoices/{id}':
+    get:
+      tags:
+        - invoice-controller
+      operationId: findInvoiceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+    put:
+      tags:
+        - invoice-controller
+      operationId: closeInvoice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+    delete:
+      tags:
+        - invoice-controller
+      operationId: deleteInvoiceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /revenues:
+    get:
+      tags:
+        - revenue-controller
+      operationId: findAllRevenues
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevenueDto'
+  '/revenues/{date}':
+    get:
+      tags:
+        - revenue-controller
+      operationId: findRevenuesByDate
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevenueDto'
+  /revenues/total:
+    get:
+      tags:
+        - revenue-controller
+      operationId: getTotalAmount
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: number
+                format: double
+  /invoices:
+    get:
+      tags:
+        - invoice-controller
+      operationId: findAllInvoices
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceDto'
+  /invoices/count:
+    get:
+      tags:
+        - invoice-controller
+      operationId: countInvoices
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  '/invoices/by-customer/{customerUsername}':
+    get:
+      tags:
+        - invoice-controller
+      operationId: findAllInvoicesByCustomerId
+      parameters:
+        - name: customerUsername
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceDto'
+  /invoices/active:
+    get:
+      tags:
+        - invoice-controller
+      operationId: findAllActiveInvoices
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceDto'
+  /invoices/active-count:
+    get:
+      tags:
+        - invoice-controller
+      operationId: countActiveInvoices
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    InvoiceDto:
+      type: object
+      properties:
+        customerEmail:
+          type: string
+        customerUsername:
+          type: string
+        carId:
+          type: string
+        receptionistEmployeeId:
+          type: string
+        bookingId:
+          type: string
+        carDateOfReturn:
+          type: string
+          format: date
+        isVehicleDamaged:
+          type: boolean
+        damageCost:
+          type: number
+        additionalPayment:
+          type: number
+        totalAmount:
+          type: number
+        comments:
+          type: string
+        id:
+          type: string
+    RevenueDto:
+      type: object
+      properties:
+        dateOfRevenue:
+          type: string
+          format: date
+        amountFromBooking:
+          type: number
+        id:
+          type: string

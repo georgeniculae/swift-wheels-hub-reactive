@@ -1,0 +1,6 @@
+#
+# CarStatusEnum.yaml
+#
+description: CarStatus
+type: string
+enum: [ Not available, Broken, In repair, In service, Available ]
