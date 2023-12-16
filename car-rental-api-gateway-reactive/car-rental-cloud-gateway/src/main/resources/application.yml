@@ -50,17 +50,17 @@ spring:
       bindings:
         savedUserConsumer-in-0:
           binder: kafka
-          destination: ${SAVED_USER_PRODUCER_REACTIVE_TOPIC}
+          destination: ${SAVED_USER_REACTIVE_TOPIC}
           contentType: application/json
           group: ${GATEWAY_CONSUMER_GROUP}
         updatedUserConsumer-in-0:
           binder: kafka
-          destination: ${UPDATED_USER_PRODUCER_REACTIVE_TOPIC}
+          destination: ${UPDATED_USER_REACTIVE_TOPIC}
           contentType: application/json
           group: ${GATEWAY_CONSUMER_GROUP}
         deletedUserConsumer-in-0:
           binder: kafka
-          destination: ${DELETED_USER_PRODUCER_REACTIVE_TOPIC}
+          destination: ${DELETED_USER_REACTIVE_TOPIC}
           contentType: application/json
           group: ${GATEWAY_CONSUMER_GROUP}
       kafka:

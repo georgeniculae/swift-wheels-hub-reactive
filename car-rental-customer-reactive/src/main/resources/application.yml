@@ -23,16 +23,16 @@ spring:
     stream:
       bindings:
         savedUserProducer-out-0:
-          destination: ${SAVED_USER_PRODUCER_REACTIVE_TOPIC}
+          destination: ${SAVED_USER_REACTIVE_TOPIC}
           contentType: application/json
         updatedUserProducer-out-0:
-          destination: ${UPDATED_USER_PRODUCER_REACTIVE_TOPIC}
+          destination: ${UPDATED_USER_REACTIVE_TOPIC}
           contentType: application/json
         deletedUserProducer-out-0:
-          destination: ${DELETED_USER_PRODUCER_REACTIVE_TOPIC}
+          destination: ${DELETED_USER_REACTIVE_TOPIC}
           contentType: application/json
         auditLogInfoProducer-out-0:
-          destination: ${CUSTOMER_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          destination: ${CUSTOMER_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
       kafka:
         binder:

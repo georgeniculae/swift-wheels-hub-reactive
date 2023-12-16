@@ -24,17 +24,17 @@ spring:
       bindings:
         bookingAuditLogInfoConsumer-in-0:
           binder: kafka
-          destination: ${BOOKING_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          destination: ${BOOKING_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
           group: ${AUDIT_CONSUMER_GROUP}
         customerAuditLogInfoConsumer-in-0:
           binder: kafka
-          destination: ${CUSTOMER_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          destination: ${CUSTOMER_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
           group: ${AUDIT_CONSUMER_GROUP}
         expenseAuditLogInfoConsumer-in-0:
           binder: kafka
-          destination: ${EXPENSE_AUDIT_LOG_INFO_PRODUCER_REACTIVE_TOPIC}
+          destination: ${EXPENSE_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
           group: ${AUDIT_CONSUMER_GROUP}
       kafka:

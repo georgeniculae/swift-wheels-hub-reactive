@@ -18,7 +18,7 @@ spring:
       bindings:
         emailNotificationConsumer-in-0:
           binder: kafka
-          destination: ${EMAIL_NOTIFICATION_PRODUCER_REACTIVE_TOPIC}
+          destination: ${EMAIL_NOTIFICATION_REACTIVE_TOPIC}
           contentType: application/json
           group: ${EMAIL_NOTIFICATION_CONSUMER_GROUP}
       kafka:
