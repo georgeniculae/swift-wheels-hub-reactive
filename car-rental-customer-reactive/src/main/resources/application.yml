@@ -16,7 +16,7 @@ spring:
       database: car_rental_customer
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.2wuy2po.mongodb.net/
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@carrentalservice.soyxkll.mongodb.net/
   cloud:
     discovery:
       enabled: true
