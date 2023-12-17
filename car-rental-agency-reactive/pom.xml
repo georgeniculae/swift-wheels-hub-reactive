@@ -16,15 +16,14 @@
 
     <properties>
         <java.version>21</java.version>
-        <spring-boot.version>3.1.4</spring-boot.version>
-        <spring-cloud.version>2022.0.3</spring-cloud.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
         <car-rental-common-reactive.version>0.0.1-SNAPSHOT</car-rental-common-reactive.version>
         <car-rental-api-gateway.version>0.0.1-SNAPSHOT</car-rental-api-gateway.version>
-        <mongock.version>5.3.3</mongock.version>
-        <mongock-springboot.version>5.2.3</mongock-springboot.version>
+        <mongock.version>5.3.6</mongock.version>
+        <mongock-springboot.version>5.2.6</mongock-springboot.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <poi.version>5.2.4</poi.version>
-        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <poi.version>5.2.5</poi.version>
+        <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>
@@ -153,14 +152,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>

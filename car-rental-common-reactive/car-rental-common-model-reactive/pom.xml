@@ -14,11 +14,8 @@
 
     <properties>
         <java.version>21</java.version>
-        <mongo-java-driver.version>3.12.14</mongo-java-driver.version>
-        <spring-data-mongodb.version>4.1.2</spring-data-mongodb.version>
-        <jakarta.annotation-version>2.1.1</jakarta.annotation-version>
-        <openapi-version>7.0.1</openapi-version>
-        <swagger-annotations-version>1.6.11</swagger-annotations-version>
+        <openapi-version>7.1.0</openapi-version>
+        <swagger-annotations-version>1.6.12</swagger-annotations-version>
     </properties>
 
     <dependencies>
