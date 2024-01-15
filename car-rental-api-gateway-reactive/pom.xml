@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Car Rental Cloud Gateway Reactive</name>
+    <name>Car Rental API Gateway Reactive</name>
     <description>Car Rental API Gateway Reactive</description>
 
     <modules>
