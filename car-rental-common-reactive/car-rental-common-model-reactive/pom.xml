@@ -12,6 +12,9 @@
 
     <artifactId>car-rental-common-model-reactive</artifactId>
 
+    <name>Car Rental Common Model Reactive</name>
+    <description>Car Rental Common Model Reactive</description>
+
     <properties>
         <java.version>21</java.version>
         <openapi-version>7.1.0</openapi-version>
