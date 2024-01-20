@@ -13,7 +13,7 @@ spring:
     base-path: /bookings
   data:
     mongodb:
-      database: car_rental_booking
+      database: swift-wheels-hub_booking-reactive
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@carrentalservice.soyxkll.mongodb.net/
@@ -98,10 +98,10 @@ cross-origin: '*'
 
 webclient:
   url:
-    car-rental-agency-branches: lb://car-rental-agency/agency/branches
-    car-rental-agency-cars: lb://car-rental-agency/agency/cars
-    car-rental-agency-rental-offices: lb://car-rental-agency/agency/rental-offices
-    car-rental-agency-employees: lb://car-rental-agency/agency/employees
+    car-rental-agency-branches: lb://swift-wheels-hub-agency-reactive/agency/branches
+    car-rental-agency-cars: lb://swift-wheels-hub-agency-reactive/agency/cars
+    car-rental-agency-rental-offices: lb://swift-wheels-hub-agency-reactive/agency/rental-offices
+    car-rental-agency-employees: lb://swift-wheels-hub-agency-reactive/agency/employees
 
 scheduled:
   fixedDelay: 5000
