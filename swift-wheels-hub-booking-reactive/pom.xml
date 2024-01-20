@@ -4,39 +4,37 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.carrental</groupId>
-        <artifactId>car-rental-service-reactive</artifactId>
+        <groupId>com.swiftwheelshub</groupId>
+        <artifactId>swift-wheels-hub-reactive</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-rental-agency-reactive</artifactId>
+    <artifactId>swift-wheels-hub-booking-reactive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Car Rental Agency Reactive</name>
-    <description>Car Rental Agency Reactive</description>
+    <name>Swift Wheels Hub Booking Reactive</name>
+    <description>Swift Wheels Hub Booking Reactive</description>
 
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
-        <car-rental-common-reactive.version>0.0.1-SNAPSHOT</car-rental-common-reactive.version>
-        <car-rental-api-gateway.version>0.0.1-SNAPSHOT</car-rental-api-gateway.version>
+        <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
         <mongock.version>5.3.6</mongock.version>
         <mongock-springboot.version>5.2.6</mongock-springboot.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <poi.version>5.2.5</poi.version>
         <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.carrental</groupId>
-            <artifactId>car-rental-common-model-reactive</artifactId>
-            <version>${car-rental-common-reactive.version}</version>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-model-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.carrental</groupId>
-            <artifactId>car-rental-common-lib-reactive</artifactId>
-            <version>${car-rental-common-reactive.version}</version>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-lib-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 
         <dependency>
@@ -105,18 +103,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>${poi.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>${poi.version}</version>
         </dependency>
 
         <dependency>

@@ -4,38 +4,37 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.carrental</groupId>
-        <artifactId>car-rental-service-reactive</artifactId>
+        <groupId>com.swiftwheelshub</groupId>
+        <artifactId>swift-wheels-hub-api-gateway-reactive</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-rental-customer-reactive</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>Car Rental Customer Reactive</name>
-    <description>Car Rental Customer Reactive</description>
+    <artifactId>swift-wheels-hub-cloud-gateway-reactive</artifactId>
+
+    <name>Swift Wheels Hub Cloud Gateway</name>
+    <description>Swift Wheels Hub Cloud Gateway for Swift Wheels Hub WebFlux microservices</description>
 
     <properties>
         <java.version>21</java.version>
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud-dependencies.version>2023.0.0</spring-cloud-dependencies.version>
+        <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
         <mongock.version>5.3.6</mongock.version>
         <mongock-springboot.version>5.2.6</mongock-springboot.version>
-        <car-rental-common.version>0.0.1-SNAPSHOT</car-rental-common.version>
-        <car-rental-api-gateway.version>0.0.1-SNAPSHOT</car-rental-api-gateway.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
+        <car-rental-common-reactive.version>0.0.1-SNAPSHOT</car-rental-common-reactive.version>
+        <swagger-request-validator.version>2.39.0</swagger-request-validator.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.carrental</groupId>
-            <artifactId>car-rental-common-model-reactive</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-model-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.carrental</groupId>
-            <artifactId>car-rental-common-lib-reactive</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-lib-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 
         <dependency>
@@ -44,13 +43,43 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
         <dependency>
@@ -60,7 +89,7 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <dependency>
@@ -81,33 +110,17 @@
         </dependency>
 
         <dependency>
+            <groupId>com.atlassian.oai</groupId>
+            <artifactId>swagger-request-validator-spring-web-client</artifactId>
+            <version>${swagger-request-validator.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>${springdoc-openapi.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <!-- Test  -->
+        <!--        Test        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -132,7 +145,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
+                <version>${spring-cloud-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -156,16 +169,9 @@
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
                         </path>
-
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

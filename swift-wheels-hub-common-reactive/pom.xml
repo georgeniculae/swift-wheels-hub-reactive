@@ -4,21 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.carrental</groupId>
-        <artifactId>car-rental-service-reactive</artifactId>
+        <groupId>com.swiftwheelshub</groupId>
+        <artifactId>swift-wheels-hub-reactive</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-rental-api-gateway-reactive</artifactId>
+    <artifactId>swift-wheels-hub-common-parent-reactive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Car Rental API Gateway Reactive</name>
-    <description>Car Rental API Gateway Reactive</description>
+    <name>Swift Wheels Hub Common Parent Reactive</name>
+    <description>Swift Wheels Hub Common Parent Reactive</description>
 
     <modules>
-        <module>car-rental-cloud-gateway</module>
-        <module>car-rental-eureka-service-discovery</module>
+        <module>swift-wheels-hub-common-model-reactive</module>
+        <module>swift-wheels-hub-common-lib-reactive</module>
     </modules>
 
 </project>

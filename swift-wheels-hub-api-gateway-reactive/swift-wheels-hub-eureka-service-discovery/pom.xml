@@ -4,15 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.carrental</groupId>
-        <artifactId>car-rental-api-gateway-reactive</artifactId>
+        <groupId>com.swiftwheelshub</groupId>
+        <artifactId>swift-wheels-hub-api-gateway-reactive</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-rental-eureka-service-discovery-reactive</artifactId>
+    <artifactId>swift-wheels-hub-eureka-service-discovery-reactive</artifactId>
 
-    <name>Car Rental Eureka Service Discovery</name>
-    <description>Car Rental Eureka Service Discovery for Car Rental WebFlux microservices</description>
+    <name>Swift Wheels Hub Eureka Service Discovery</name>
+    <description>Swift Wheels Hub Eureka Service Discovery for Swift Wheels Hub WebFlux microservices</description>
 
     <properties>
         <java.version>21</java.version>

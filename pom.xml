@@ -6,26 +6,26 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.1</version>
         <relativePath/>
     </parent>
 
-    <groupId>com.carrental</groupId>
-    <artifactId>car-rental-service-reactive</artifactId>
+    <groupId>com.swiftwheelshub</groupId>
+    <artifactId>swift-wheels-hub-reactive</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Car Rental Service Reactive</name>
+    <name>Swift Wheels Hub Reactive</name>
 
     <modules>
-        <module>car-rental-common-reactive</module>
-        <module>car-rental-api-gateway-reactive</module>
-        <module>car-rental-agency-reactive</module>
-        <module>car-rental-audit-reactive</module>
-        <module>car-rental-booking-reactive</module>
-        <module>car-rental-customer-reactive</module>
-        <module>car-rental-email-notification-reactive</module>
-        <module>car-rental-expense-reactive</module>
+        <module>swift-wheels-hub-common-reactive</module>
+        <module>swift-wheels-hub-api-gateway-reactive</module>
+        <module>swift-wheels-hub-agency-reactive</module>
+        <module>swift-wheels-hub-audit-reactive</module>
+        <module>swift-wheels-hub-booking-reactive</module>
+        <module>swift-wheels-hub-customer-reactive</module>
+        <module>swift-wheels-hub-email-notification-reactive</module>
+        <module>swift-wheels-hub-expense-reactive</module>
     </modules>
 
     <repositories>
@@ -36,7 +36,7 @@
     </repositories>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/georgeniculae/car-rental-service-reactive</developerConnection>
+        <developerConnection>scm:git:https://github.com/georgeniculae/swift-wheels-hub-reactive</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -44,7 +44,7 @@
         <repository>
             <id>github</id>
             <name>car-rental-service-reactive</name>
-            <url>https://maven.pkg.github.com/georgeniculae/car-rental-service-reactive</url>
+            <url>https://maven.pkg.github.com/georgeniculae/swift-wheels-hub-reactive</url>
         </repository>
     </distributionManagement>
 

@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.carrental</groupId>
-        <artifactId>car-rental-common-parent-reactive</artifactId>
+        <groupId>com.swiftwheelshub</groupId>
+        <artifactId>swift-wheels-hub-common-parent-reactive</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-rental-common-model-reactive</artifactId>
+    <artifactId>swift-wheels-hub-common-model-reactive</artifactId>
 
-    <name>Car Rental Common Model Reactive</name>
-    <description>Car Rental Common Model Reactive</description>
+    <name>Swift Wheels Hub Common Model Reactive</name>
+    <description>Swift Wheels Hub Common Model Reactive</description>
 
     <properties>
         <java.version>21</java.version>

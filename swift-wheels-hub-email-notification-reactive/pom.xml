@@ -4,33 +4,32 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.carrental</groupId>
-        <artifactId>car-rental-service-reactive</artifactId>
+        <groupId>com.swiftwheelshub</groupId>
+        <artifactId>swift-wheels-hub-reactive</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-rental-email-notification-reactive</artifactId>
+    <artifactId>swift-wheels-hub-email-notification-reactive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Car Rental Email Notification Reactive</name>
-    <description>Car Rental Email Notification Reactive</description>
+    <name>Swift Wheels Hub Email Notification Reactive</name>
+    <description>Swift Wheels Hub Email Notification Reactive</description>
 
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
-        <car-rental-common.version>0.0.1-SNAPSHOT</car-rental-common.version>
-        <car-rental-api-gateway.version>0.0.1-SNAPSHOT</car-rental-api-gateway.version>
+        <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.carrental</groupId>
-            <artifactId>car-rental-common-model-reactive</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-model-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.carrental</groupId>
-            <artifactId>car-rental-common-lib-reactive</artifactId>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-lib-reactive</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
