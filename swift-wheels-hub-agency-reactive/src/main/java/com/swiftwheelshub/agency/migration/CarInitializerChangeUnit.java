@@ -1,6 +1,6 @@
 package com.swiftwheelshub.agency.migration;
 
-import com.carrental.document.model.Car;
+import com.swiftwheelshub.model.Car;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.reactivestreams.client.ClientSession;

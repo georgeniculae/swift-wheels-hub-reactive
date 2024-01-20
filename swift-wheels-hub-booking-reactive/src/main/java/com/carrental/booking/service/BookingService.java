@@ -3,17 +3,13 @@ package com.carrental.booking.service;
 import com.carrental.booking.mapper.BookingMapper;
 import com.carrental.booking.model.Outbox;
 import com.carrental.booking.repository.BookingRepository;
-import com.carrental.document.model.Booking;
-import com.carrental.document.model.BookingStatus;
-import com.carrental.dto.BookingClosingDetailsDto;
-import com.carrental.dto.BookingDto;
-import com.carrental.dto.CarDetailsForUpdateDto;
-import com.carrental.dto.CarDto;
-import com.carrental.dto.CarStatusEnum;
-import com.carrental.lib.aspect.LogActivity;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.util.MongoUtil;
+import com.carrental.dto.*;
+import com.swiftwheelshub.lib.aspect.LogActivity;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.Booking;
+import com.swiftwheelshub.model.BookingStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -55,7 +51,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while finding bookings: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -65,7 +61,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while finding booking by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -74,7 +70,7 @@ public class BookingService {
                 .map(bookingMapper::mapEntityToDto)
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Booking from date: " + dateOfBooking + " does not exist"
                                 )
@@ -83,7 +79,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while finding booking by date of booking: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -93,7 +89,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while finding bookings by logged in customer: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -118,7 +114,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while counting bookings: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -127,7 +123,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while counting bookings of logged in user: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -149,7 +145,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -169,7 +165,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -188,7 +184,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -204,7 +200,7 @@ public class BookingService {
                 .onErrorResume(e -> {
                     log.error("Error while deleting booking by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -220,13 +216,13 @@ public class BookingService {
                     LocalDate currentDate = LocalDate.now();
 
                     LocalDate newDateFrom = Optional.ofNullable(dateFrom)
-                            .orElseThrow(() -> new CarRentalException("Date from is null"));
+                            .orElseThrow(() -> new SwiftWheelsHubException("Date from is null"));
                     LocalDate newDateTo = Optional.ofNullable(dateTo)
-                            .orElseThrow(() -> new CarRentalException("Date to is null"));
+                            .orElseThrow(() -> new SwiftWheelsHubException("Date to is null"));
 
                     if (newDateFrom.isBefore(currentDate) || newDateTo.isBefore(currentDate)) {
                         return Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "A date of booking cannot be in the past"
                                 )
@@ -235,7 +231,7 @@ public class BookingService {
 
                     if (dateFrom.isAfter(dateTo)) {
                         return Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Date from is after date to"
                                 )
@@ -282,7 +278,7 @@ public class BookingService {
                             .plusDays(1)
                             .format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
         } catch (ParseException e) {
-            throw new CarRentalException(e.getMessage());
+            throw new SwiftWheelsHubException(e.getMessage());
         }
 
         Criteria dateOfBookingCriteria = Criteria.where(DATE_OF_BOOKING)
@@ -296,7 +292,7 @@ public class BookingService {
         return bookingRepository.findById(MongoUtil.getObjectId(id))
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Booking with id " + id + " does not exist"
                                 )

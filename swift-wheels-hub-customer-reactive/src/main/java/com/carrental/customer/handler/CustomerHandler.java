@@ -3,7 +3,7 @@ package com.carrental.customer.handler;
 import com.carrental.customer.service.CustomerService;
 import com.carrental.dto.RegisterRequest;
 import com.carrental.dto.UserDto;
-import com.carrental.lib.util.ServerRequestUtil;
+import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

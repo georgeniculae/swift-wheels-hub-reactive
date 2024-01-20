@@ -1,8 +1,8 @@
 package com.swiftwheelshub.audit.consumer;
 
 import com.swiftwheelshub.audit.service.AuditService;
-import com.carrental.document.dto.AuditLogInfoDto;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
+import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +54,7 @@ public class CustomerAuditLogInfoConsumerMessage {
     private void sendMessageAcknowledgement(MessageHeaders messageHeaders) {
         Optional.ofNullable(messageHeaders.get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class))
                 .orElseThrow(
-                        () -> new CarRentalResponseStatusException(
+                        () -> new SwiftWheelsHubResponseStatusException(
                                 HttpStatus.BAD_REQUEST,
                                 "There is no Kafka acknowledgement in message headers"
                         )

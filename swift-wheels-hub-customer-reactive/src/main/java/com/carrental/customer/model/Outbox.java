@@ -1,6 +1,6 @@
 package com.carrental.customer.model;
 
-import com.carrental.document.model.User;
+import com.swiftwheelshub.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

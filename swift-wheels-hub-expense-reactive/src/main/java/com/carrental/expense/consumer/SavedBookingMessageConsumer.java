@@ -3,7 +3,7 @@ package com.carrental.expense.consumer;
 import com.carrental.dto.BookingDto;
 import com.carrental.dto.InvoiceDto;
 import com.carrental.expense.service.InvoiceService;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +55,7 @@ public class SavedBookingMessageConsumer {
     private void sendMessageAcknowledgement(MessageHeaders messageHeaders) {
         Optional.ofNullable(messageHeaders.get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class))
                 .orElseThrow(
-                        () -> new CarRentalResponseStatusException(
+                        () -> new SwiftWheelsHubResponseStatusException(
                                 HttpStatus.BAD_REQUEST,
                                 "There is no Kafka acknowledgement in message headers"
                         )

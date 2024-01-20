@@ -1,6 +1,6 @@
 package com.swiftwheelshub.agency.repository;
 
-import com.carrental.document.model.Car;
+import com.swiftwheelshub.model.Car;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

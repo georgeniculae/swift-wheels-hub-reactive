@@ -1,7 +1,7 @@
 package com.carrental.expense.util;
 
-import com.carrental.document.model.Invoice;
-import com.carrental.document.model.Revenue;
+import com.swiftwheelshub.model.Invoice;
+import com.swiftwheelshub.model.Revenue;
 import com.carrental.dto.InvoiceDto;
 import com.carrental.dto.RevenueDto;
 

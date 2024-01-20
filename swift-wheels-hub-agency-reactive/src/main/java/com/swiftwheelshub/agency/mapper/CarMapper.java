@@ -1,8 +1,8 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.carrental.document.model.BodyType;
-import com.carrental.document.model.Car;
-import com.carrental.document.model.CarStatus;
+import com.swiftwheelshub.model.BodyType;
+import com.swiftwheelshub.model.Car;
+import com.swiftwheelshub.model.CarStatus;
 import com.carrental.dto.CarDto;
 import com.carrental.dto.CarStatusEnum;
 import org.apache.commons.lang3.ObjectUtils;

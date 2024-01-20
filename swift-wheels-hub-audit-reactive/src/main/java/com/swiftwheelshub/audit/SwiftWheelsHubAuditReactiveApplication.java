@@ -1,9 +1,9 @@
 package com.swiftwheelshub.audit;
 
-import com.carrental.lib.annotation.CarRentalReactiveMicroservice;
+import com.swiftwheelshub.lib.annotation.SwiftWheelsHubReactiveMicroservice;
 import org.springframework.boot.SpringApplication;
 
-@CarRentalReactiveMicroservice
+@SwiftWheelsHubReactiveMicroservice
 public class SwiftWheelsHubAuditReactiveApplication {
 
     public static void main(String[] args) {

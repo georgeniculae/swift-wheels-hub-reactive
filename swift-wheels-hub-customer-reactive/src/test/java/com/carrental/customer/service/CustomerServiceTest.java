@@ -5,15 +5,15 @@ import com.carrental.customer.mapper.CustomerMapperImpl;
 import com.carrental.customer.model.Outbox;
 import com.carrental.customer.util.AssertionUtils;
 import com.carrental.customer.util.TestUtils;
-import com.carrental.document.dto.CurrentUserDto;
-import com.carrental.document.model.User;
+import com.swiftwheelshub.dto.CurrentUserDto;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.mapper.UserMapper;
+import com.swiftwheelshub.lib.mapper.UserMapperImpl;
+import com.swiftwheelshub.lib.repository.UserRepository;
+import com.swiftwheelshub.lib.security.jwt.JwtService;
+import com.swiftwheelshub.model.User;
 import com.carrental.dto.RegisterRequest;
 import com.carrental.dto.UserDto;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.mapper.UserMapper;
-import com.carrental.lib.mapper.UserMapperImpl;
-import com.carrental.lib.repository.UserRepository;
-import com.carrental.lib.security.jwt.JwtService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -141,7 +141,7 @@ class CustomerServiceTest {
         when(userRepository.findByUsername(anyString())).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(userService.getCurrentUser("alexandrupopescu"))
-                .expectError(CarRentalException.class)
+                .expectError(SwiftWheelsHubException.class)
                 .verify();
     }
 
@@ -217,7 +217,7 @@ class CustomerServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(userService.updateUser(id, userDto))
-                .expectError(CarRentalException.class)
+                .expectError(SwiftWheelsHubException.class)
                 .verify();
     }
 
@@ -229,7 +229,7 @@ class CustomerServiceTest {
         when(userRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(userService.updateUser(id, userDto))
-                .expectError(CarRentalException.class)
+                .expectError(SwiftWheelsHubException.class)
                 .verify();
     }
 

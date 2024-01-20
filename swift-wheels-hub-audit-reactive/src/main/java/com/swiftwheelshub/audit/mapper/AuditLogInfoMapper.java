@@ -1,7 +1,7 @@
 package com.swiftwheelshub.audit.mapper;
 
-import com.carrental.document.dto.AuditLogInfoDto;
-import com.carrental.document.model.AuditLogInfo;
+import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.model.AuditLogInfo;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

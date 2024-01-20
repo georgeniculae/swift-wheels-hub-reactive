@@ -2,11 +2,11 @@ package com.carrental.customer.service;
 
 import com.carrental.customer.model.Outbox;
 import com.carrental.customer.repository.OutboxRepository;
-import com.carrental.document.model.User;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.mapper.UserMapper;
+import com.swiftwheelshub.lib.repository.UserRepository;
+import com.swiftwheelshub.model.User;
 import com.carrental.dto.UserDto;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.mapper.UserMapper;
-import com.carrental.lib.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class OutboxService {
                 .onErrorResume(e -> {
                     log.error("Error while processing/sending user: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -55,7 +55,7 @@ public class OutboxService {
         return Mono.just(outbox)
                 .flatMap(createdOutbox -> sendUserToCorrespondingTopic(outbox, createdOutbox))
                 .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.error(new CarRentalException("Sending user failed")))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending user failed")))
                 .map(response -> outbox);
     }
 

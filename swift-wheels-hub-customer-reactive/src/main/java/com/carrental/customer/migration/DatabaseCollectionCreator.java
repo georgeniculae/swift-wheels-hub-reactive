@@ -1,7 +1,7 @@
 package com.carrental.customer.migration;
 
-import com.carrental.document.model.Role;
-import com.carrental.document.model.User;
+import com.swiftwheelshub.model.Role;
+import com.swiftwheelshub.model.User;
 
 import java.time.LocalDate;
 import java.time.Month;

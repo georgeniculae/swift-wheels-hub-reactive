@@ -6,7 +6,7 @@ import com.carrental.booking.model.Outbox;
 import com.carrental.booking.repository.BookingRepository;
 import com.carrental.booking.repository.OutboxRepository;
 import com.carrental.booking.util.TestUtils;
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.model.Booking;
 import com.carrental.dto.BookingDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

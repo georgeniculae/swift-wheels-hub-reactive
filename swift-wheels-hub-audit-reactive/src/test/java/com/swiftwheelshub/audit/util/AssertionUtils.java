@@ -1,7 +1,7 @@
 package com.swiftwheelshub.audit.util;
 
-import com.carrental.document.dto.AuditLogInfoDto;
-import com.carrental.document.model.AuditLogInfo;
+import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.model.AuditLogInfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

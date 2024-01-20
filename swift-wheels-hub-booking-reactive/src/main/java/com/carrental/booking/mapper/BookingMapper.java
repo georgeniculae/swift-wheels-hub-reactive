@@ -1,6 +1,6 @@
 package com.carrental.booking.mapper;
 
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.model.Booking;
 import com.carrental.dto.BookingDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;

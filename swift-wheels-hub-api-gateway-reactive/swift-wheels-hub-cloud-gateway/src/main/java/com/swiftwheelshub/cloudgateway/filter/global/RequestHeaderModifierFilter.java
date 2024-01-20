@@ -1,7 +1,7 @@
 package com.swiftwheelshub.cloudgateway.filter.global;
 
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.security.jwt.JwtService;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -67,7 +67,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
     private String getAuthorizationHeader(ServerHttpRequest request) {
         return Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-                .orElseThrow(() -> new CarRentalResponseStatusException(
+                .orElseThrow(() -> new SwiftWheelsHubResponseStatusException(
                                 HttpStatus.BAD_REQUEST,
                                 "Authorization header is missing"
                         )

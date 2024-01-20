@@ -1,6 +1,6 @@
 package com.carrental.booking.repository;
 
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.model.Booking;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

@@ -2,7 +2,7 @@ package com.swiftwheelshub.audit.consumer;
 
 import com.swiftwheelshub.audit.service.AuditService;
 import com.swiftwheelshub.audit.util.TestUtils;
-import com.carrental.document.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

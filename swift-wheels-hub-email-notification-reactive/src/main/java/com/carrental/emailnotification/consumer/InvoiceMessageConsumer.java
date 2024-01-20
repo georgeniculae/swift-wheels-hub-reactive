@@ -2,9 +2,9 @@ package com.carrental.emailnotification.consumer;
 
 import com.carrental.dto.InvoiceDto;
 import com.carrental.emailnotification.service.EmailService;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
 import com.sendgrid.Response;
 import com.sendgrid.helpers.mail.Mail;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +61,7 @@ public class InvoiceMessageConsumer {
     private void sendMessageAcknowledgement(MessageHeaders messageHeaders) {
         Optional.ofNullable(messageHeaders.get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class))
                 .orElseThrow(
-                        () -> new CarRentalResponseStatusException(
+                        () -> new SwiftWheelsHubResponseStatusException(
                                 HttpStatus.BAD_REQUEST,
                                 "There is no Kafka acknowledgement in message headers"
                         )

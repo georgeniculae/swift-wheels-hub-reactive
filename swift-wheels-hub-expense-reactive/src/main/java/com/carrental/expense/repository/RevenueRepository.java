@@ -1,6 +1,6 @@
 package com.carrental.expense.repository;
 
-import com.carrental.document.model.Revenue;
+import com.swiftwheelshub.model.Revenue;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

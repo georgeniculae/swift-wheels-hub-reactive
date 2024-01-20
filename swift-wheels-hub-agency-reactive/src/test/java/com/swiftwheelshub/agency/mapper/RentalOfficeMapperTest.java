@@ -1,15 +1,14 @@
 package com.swiftwheelshub.agency.mapper;
 
+import com.carrental.dto.RentalOfficeDto;
 import com.swiftwheelshub.agency.util.AssertionUtils;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.carrental.document.model.RentalOffice;
-import com.carrental.dto.RentalOfficeDto;
+import com.swiftwheelshub.model.RentalOffice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 

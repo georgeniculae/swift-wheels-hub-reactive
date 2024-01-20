@@ -1,16 +1,16 @@
 package com.carrental.expense.service;
 
-import com.carrental.document.model.Invoice;
+import com.swiftwheelshub.lib.aspect.LogActivity;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.Invoice;
 import com.carrental.dto.BookingClosingDetailsDto;
 import com.carrental.dto.BookingDto;
 import com.carrental.dto.CarStatusEnum;
 import com.carrental.dto.InvoiceDto;
 import com.carrental.expense.mapper.InvoiceMapper;
 import com.carrental.expense.repository.InvoiceRepository;
-import com.carrental.lib.aspect.LogActivity;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.util.MongoUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -48,7 +48,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while finding all invoices: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -58,7 +58,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while finding all active invoices: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -68,7 +68,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while finding invoices by customer id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -78,7 +78,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while finding invoice by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -86,7 +86,7 @@ public class InvoiceService {
         return invoiceRepository.findByComments(comments)
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Invoice with comment: " + comments + " does not exist"
                                 )
@@ -96,7 +96,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while finding invoices by comments: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -105,7 +105,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while counting all invoices: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -114,7 +114,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while counting all active invoices: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -123,7 +123,7 @@ public class InvoiceService {
                 .filter(Boolean.FALSE::equals)
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Invoice already exists"
                                 )
@@ -158,7 +158,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -168,7 +168,7 @@ public class InvoiceService {
                 .filter(invoice -> ObjectUtils.isEmpty(invoice.getTotalAmount()))
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Invoice cannot be deleted if booking is in progress"
                                 )
@@ -192,13 +192,13 @@ public class InvoiceService {
         return Mono.just(invoiceDto)
                 .flatMap(dto -> {
                     LocalDate dateOfReturnOfTheCar = Optional.ofNullable((invoiceDto.getCarDateOfReturn()))
-                            .orElseThrow(() -> new CarRentalException("Car return date is null"));
+                            .orElseThrow(() -> new SwiftWheelsHubException("Car return date is null"));
 
                     validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
 
                     if (Boolean.TRUE.equals(invoiceDto.getIsVehicleDamaged()) &&
                             ObjectUtils.isEmpty(invoiceDto.getDamageCost())) {
-                        return Mono.error(new CarRentalResponseStatusException(
+                        return Mono.error(new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "If the vehicle is damaged, the damage cost cannot be null/empty"
                                 )
@@ -213,7 +213,7 @@ public class InvoiceService {
         return invoiceRepository.findById(MongoUtil.getObjectId(id))
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Invoice with id " + id + " does not exist"
                                 )
@@ -239,7 +239,7 @@ public class InvoiceService {
         LocalDate currentDate = LocalDate.now();
 
         if (dateOfReturnOfTheCar.isBefore(currentDate)) {
-            throw new CarRentalResponseStatusException(
+            throw new SwiftWheelsHubResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Date of return of the car cannot be in the past"
             );
@@ -282,7 +282,7 @@ public class InvoiceService {
 
     private BookingClosingDetailsDto getBookingClosingDetailsDto(Invoice invoice) {
         Boolean isVehicleDamaged = Optional.ofNullable(invoice.getIsVehicleDamaged())
-                .orElseThrow(() -> new CarRentalException("isVehicleDamaged is null"));
+                .orElseThrow(() -> new SwiftWheelsHubException("isVehicleDamaged is null"));
 
         BookingClosingDetailsDto bookingClosingDetailsDto = new BookingClosingDetailsDto();
         bookingClosingDetailsDto.bookingId(invoice.getBookingId().toString());

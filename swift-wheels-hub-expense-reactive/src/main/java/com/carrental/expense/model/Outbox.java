@@ -1,6 +1,6 @@
 package com.carrental.expense.model;
 
-import com.carrental.document.model.Invoice;
+import com.swiftwheelshub.model.Invoice;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

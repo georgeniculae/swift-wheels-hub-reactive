@@ -2,7 +2,7 @@ package com.carrental.booking.mapper;
 
 import com.carrental.booking.util.AssertionUtils;
 import com.carrental.booking.util.TestUtils;
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.model.Booking;
 import com.carrental.dto.BookingDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

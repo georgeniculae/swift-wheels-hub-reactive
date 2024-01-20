@@ -1,10 +1,10 @@
 package com.carrental.expense.service;
 
-import com.carrental.document.model.Invoice;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.model.Invoice;
 import com.carrental.expense.mapper.InvoiceMapper;
 import com.carrental.expense.model.Outbox;
 import com.carrental.expense.repository.OutboxRepository;
-import com.carrental.lib.exceptionhandling.CarRentalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -23,7 +23,7 @@ public class OutboxService {
                 .filter(outbox -> Outbox.Operation.CLOSE.equals(outbox.getOperation()))
                 .delayUntil(outbox -> invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))
                         .filter(Boolean.TRUE::equals)
-                        .switchIfEmpty(Mono.error(new CarRentalException("Sending invoice failed"))))
+                        .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending invoice failed"))))
                 .flatMap(outboxRepository::delete);
     }
 

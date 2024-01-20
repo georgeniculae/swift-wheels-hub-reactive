@@ -1,6 +1,6 @@
 package com.carrental.booking.model;
 
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.model.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

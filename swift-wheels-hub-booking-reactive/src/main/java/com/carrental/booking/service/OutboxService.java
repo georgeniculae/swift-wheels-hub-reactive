@@ -4,9 +4,9 @@ import com.carrental.booking.mapper.BookingMapper;
 import com.carrental.booking.model.Outbox;
 import com.carrental.booking.repository.BookingRepository;
 import com.carrental.booking.repository.OutboxRepository;
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.model.Booking;
 import com.carrental.dto.BookingDto;
-import com.carrental.lib.exceptionhandling.CarRentalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class OutboxService {
                 .onErrorResume(e -> {
                     log.error("Error while processing/sending booking: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -63,7 +63,7 @@ public class OutboxService {
         return Mono.just(outbox)
                 .flatMap(createdOutbox -> sendBookingToCorrespondingTopic(outbox, createdOutbox))
                 .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.error(new CarRentalException("Sending booking failed")))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending booking failed")))
                 .map(response -> outbox);
     }
 

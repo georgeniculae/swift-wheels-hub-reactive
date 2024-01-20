@@ -1,6 +1,5 @@
 package com.carrental.emailnotification.service;
 
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.sendgrid.Method;
@@ -10,6 +9,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -55,7 +55,7 @@ public class EmailService {
 
             return sendGrid.api(request);
         } catch (IOException e) {
-            throw new CarRentalResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ public class EmailService {
         try {
             mustache.execute(stringWriter, object).flush();
         } catch (IOException e) {
-            throw new CarRentalResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
         return stringWriter.toString();

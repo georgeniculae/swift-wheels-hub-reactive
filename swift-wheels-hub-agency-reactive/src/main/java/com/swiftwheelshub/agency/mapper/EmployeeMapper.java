@@ -1,6 +1,6 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.carrental.document.model.Employee;
+import com.swiftwheelshub.model.Employee;
 import com.carrental.dto.EmployeeDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;

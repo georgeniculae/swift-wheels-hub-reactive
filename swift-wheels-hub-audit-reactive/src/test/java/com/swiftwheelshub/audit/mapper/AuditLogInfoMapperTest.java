@@ -2,8 +2,8 @@ package com.swiftwheelshub.audit.mapper;
 
 import com.swiftwheelshub.audit.util.AssertionUtils;
 import com.swiftwheelshub.audit.util.TestUtils;
-import com.carrental.document.dto.AuditLogInfoDto;
-import com.carrental.document.model.AuditLogInfo;
+import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.model.AuditLogInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

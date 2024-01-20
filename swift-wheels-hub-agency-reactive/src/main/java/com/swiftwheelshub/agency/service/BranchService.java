@@ -2,11 +2,11 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.BranchMapper;
 import com.swiftwheelshub.agency.repository.BranchRepository;
-import com.carrental.document.model.Branch;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.Branch;
 import com.carrental.dto.BranchDto;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.util.MongoUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class BranchService {
                 .map(branchMapper::mapEntityToDto).onErrorResume(e -> {
                     log.error("Error while finding all branches: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -38,7 +38,7 @@ public class BranchService {
                 .onErrorResume(e -> {
                     log.error("Error while finding branch by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -48,11 +48,11 @@ public class BranchService {
                 .onErrorResume(e -> {
                     log.error("Error while finding branch by filter: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 })
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Branch with filter: " + filter + " does not exist"
                                 )
@@ -65,7 +65,7 @@ public class BranchService {
                 .onErrorResume(e -> {
                     log.error("Error while counting branches: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -81,7 +81,7 @@ public class BranchService {
                 .onErrorResume(e -> {
                     log.error("Error while saving branch: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -101,7 +101,7 @@ public class BranchService {
                 .onErrorResume(e -> {
                     log.error("Error while updating branch: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -110,14 +110,14 @@ public class BranchService {
                 .onErrorResume(e -> {
                     log.error("Error while deleting branch: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
     public Mono<Branch> findEntityById(String id) {
         return branchRepository.findById(MongoUtil.getObjectId(id))
                 .switchIfEmpty(Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Branch with id " + id + " does not exist"
                                 )

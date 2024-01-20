@@ -1,6 +1,6 @@
 package com.carrental.customer.router;
 
-import com.carrental.document.dto.CurrentUserDto;
+import com.swiftwheelshub.dto.CurrentUserDto;
 import com.carrental.customer.handler.CustomerHandler;
 import com.carrental.customer.util.TestUtils;
 import com.carrental.dto.AuthenticationResponse;

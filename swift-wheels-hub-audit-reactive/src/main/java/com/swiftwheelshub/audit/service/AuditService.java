@@ -2,8 +2,8 @@ package com.swiftwheelshub.audit.service;
 
 import com.swiftwheelshub.audit.mapper.AuditLogInfoMapper;
 import com.swiftwheelshub.audit.repository.AuditLogInfoRepository;
-import com.carrental.document.dto.AuditLogInfoDto;
-import com.carrental.lib.exceptionhandling.CarRentalException;
+import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class AuditService {
                 .onErrorResume(e -> {
                     log.error("Error while saving audit log: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e));
+                    return Mono.error(new SwiftWheelsHubException(e));
                 });
     }
 

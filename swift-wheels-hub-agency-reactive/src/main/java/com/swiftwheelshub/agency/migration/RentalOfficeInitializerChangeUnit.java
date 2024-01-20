@@ -1,6 +1,6 @@
 package com.swiftwheelshub.agency.migration;
 
-import com.carrental.document.model.RentalOffice;
+import com.swiftwheelshub.model.RentalOffice;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.reactivestreams.client.ClientSession;

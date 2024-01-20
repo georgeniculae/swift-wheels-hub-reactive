@@ -5,7 +5,7 @@ import com.carrental.booking.mapper.BookingMapperImpl;
 import com.carrental.booking.model.Outbox;
 import com.carrental.booking.repository.BookingRepository;
 import com.carrental.booking.util.TestUtils;
-import com.carrental.document.model.Booking;
+import com.swiftwheelshub.model.Booking;
 import com.carrental.dto.BookingClosingDetailsDto;
 import com.carrental.dto.BookingDto;
 import com.carrental.dto.CarDetailsForUpdateDto;

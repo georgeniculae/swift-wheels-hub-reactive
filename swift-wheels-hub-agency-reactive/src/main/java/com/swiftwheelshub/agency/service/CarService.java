@@ -1,25 +1,17 @@
 package com.swiftwheelshub.agency.service;
 
-import com.swiftwheelshub.agency.mapper.CarMapper;
-import com.swiftwheelshub.agency.repository.CarRepository;
-import com.carrental.document.model.Branch;
-import com.carrental.document.model.Car;
-import com.carrental.document.model.CarFields;
-import com.carrental.document.model.CarStatus;
-import com.carrental.document.model.Employee;
 import com.carrental.dto.CarDetailsForUpdateDto;
 import com.carrental.dto.CarDto;
 import com.carrental.dto.CarStatusEnum;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.util.MongoUtil;
+import com.swiftwheelshub.agency.mapper.CarMapper;
+import com.swiftwheelshub.agency.repository.CarRepository;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
@@ -53,7 +45,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while finding all cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -63,7 +55,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while finding car by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -73,7 +65,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while finding cars by make: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -83,7 +75,7 @@ public class CarService {
                 .map(carMapper::mapEntityToDto)
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Selected car is not available"
                                 )
@@ -92,7 +84,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while getting available car: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -102,9 +94,9 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while searching car by criteria: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 })
-                .switchIfEmpty(Mono.error(new CarRentalResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
     }
 
     public Mono<CarDto> saveCar(CarDto carDto) {
@@ -121,7 +113,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -136,7 +128,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while uploading cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -156,7 +148,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while updating cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -171,7 +163,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while updating car status cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -180,7 +172,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while deleting cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -189,7 +181,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while counting cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
 
     }
@@ -203,7 +195,7 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while counting cars: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -212,11 +204,11 @@ public class CarService {
                 .onErrorResume(e -> {
                     log.error("Error while finding by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 })
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Car with id " + id + " does not exist"
                                 )
@@ -268,7 +260,7 @@ public class CarService {
 
             return getValuesFromSheet(sheet);
         } catch (Exception e) {
-            throw new CarRentalException(e);
+            throw new SwiftWheelsHubException(e);
         }
     }
 

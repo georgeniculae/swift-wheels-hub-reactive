@@ -1,14 +1,14 @@
 package com.carrental.expense.service;
 
-import com.carrental.document.model.Invoice;
-import com.carrental.document.model.Revenue;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.model.Invoice;
+import com.swiftwheelshub.model.Revenue;
 import com.carrental.dto.RevenueDto;
 import com.carrental.expense.mapper.RevenueMapper;
 import com.carrental.expense.model.Outbox;
 import com.carrental.expense.repository.InvoiceRepository;
 import com.carrental.expense.repository.RevenueRepository;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -45,7 +45,7 @@ public class RevenueService {
                 .onErrorResume(e -> {
                     log.error("Error while finding all revenues: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -53,7 +53,7 @@ public class RevenueService {
         return findByDateOfRevenue(dateOfRevenue)
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Revenue from date: " + dateOfRevenue + " does not exist"
                                 )
@@ -63,7 +63,7 @@ public class RevenueService {
                 .onErrorResume(e -> {
                     log.error("Error while finding revenues by date: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -72,7 +72,7 @@ public class RevenueService {
                 .onErrorResume(e -> {
                     log.error("Error while getting total amount: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -85,7 +85,7 @@ public class RevenueService {
                 .onErrorResume(e -> {
                     log.error("Error during transactional saving of outbox and revenue: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -114,7 +114,7 @@ public class RevenueService {
                             .plusDays(1)
                             .format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
         } catch (ParseException e) {
-            throw new CarRentalException(e.getMessage());
+            throw new SwiftWheelsHubException(e.getMessage());
         }
 
         Criteria dateOfBookingCriteria = Criteria.where(DATE_OF_REVENUE)

@@ -1,7 +1,7 @@
 package com.swiftwheelshub.cloudgateway.handler;
 
-import com.carrental.document.dto.AuthenticationRequest;
-import com.carrental.lib.security.jwt.JwtAuthenticationService;
+import com.swiftwheelshub.dto.AuthenticationRequest;
+import com.swiftwheelshub.lib.security.jwt.JwtAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

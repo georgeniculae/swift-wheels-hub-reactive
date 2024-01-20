@@ -1,9 +1,9 @@
 package com.swiftwheelshub.handler;
 
 import com.swiftwheelshub.cloudgateway.handler.AuthenticationHandler;
-import com.carrental.document.dto.AuthenticationRequest;
+import com.swiftwheelshub.dto.AuthenticationRequest;
 import com.carrental.dto.AuthenticationResponse;
-import com.carrental.lib.security.jwt.JwtAuthenticationService;
+import com.swiftwheelshub.lib.security.jwt.JwtAuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

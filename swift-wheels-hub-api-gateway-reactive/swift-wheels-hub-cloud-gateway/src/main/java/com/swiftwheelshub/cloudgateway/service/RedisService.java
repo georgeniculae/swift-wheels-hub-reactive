@@ -1,7 +1,7 @@
 package com.swiftwheelshub.cloudgateway.service;
 
 import com.swiftwheelshub.cloudgateway.model.SwaggerFolder;
-import com.carrental.lib.exceptionhandling.CarRentalException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
@@ -31,7 +31,7 @@ public class RedisService {
                 .onErrorResume(e -> {
                     log.error("Error while setting swagger folder in Redis: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e));
+                    return Mono.error(new SwiftWheelsHubException(e));
                 });
     }
 
@@ -41,7 +41,7 @@ public class RedisService {
                 .onErrorResume(e -> {
                     log.error("Error while repopulating swagger folder in Redis: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e));
+                    return Mono.error(new SwiftWheelsHubException(e));
                 });
     }
 

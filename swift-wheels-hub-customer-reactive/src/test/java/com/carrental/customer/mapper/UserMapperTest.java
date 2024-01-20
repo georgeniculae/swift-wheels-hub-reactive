@@ -1,9 +1,9 @@
 package com.carrental.customer.mapper;
 
-import com.carrental.document.dto.CurrentUserDto;
+import com.swiftwheelshub.dto.CurrentUserDto;
 import com.carrental.customer.util.AssertionUtils;
 import com.carrental.customer.util.TestUtils;
-import com.carrental.document.model.User;
+import com.swiftwheelshub.model.User;
 import com.carrental.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

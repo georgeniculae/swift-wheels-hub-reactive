@@ -1,6 +1,6 @@
 package com.swiftwheelshub.cloudgateway.service;
 
-import com.carrental.lib.exceptionhandling.CarRentalException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class SwaggerExtractorService {
 
     private String validateSwaggerLocation() {
         return Optional.ofNullable(swaggerLocation)
-                .orElseThrow(() -> new CarRentalException("Swagger location is empty"));
+                .orElseThrow(() -> new SwiftWheelsHubException("Swagger location is empty"));
     }
 
     private Map<String, OpenAPI> getSwaggerIdentifierAndContent(Resource resource) {
@@ -56,7 +56,7 @@ public class SwaggerExtractorService {
                 return lines.toList();
             }
         } catch (Exception e) {
-            throw new CarRentalException(e);
+            throw new SwiftWheelsHubException(e);
         }
     }
 

@@ -1,8 +1,8 @@
 package com.carrental.customer.util;
 
-import com.carrental.document.dto.CurrentUserDto;
-import com.carrental.document.model.Role;
-import com.carrental.document.model.User;
+import com.swiftwheelshub.dto.CurrentUserDto;
+import com.swiftwheelshub.model.Role;
+import com.swiftwheelshub.model.User;
 import com.carrental.dto.UserDto;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.carrental.expense.mapper;
 
-import com.carrental.document.model.Revenue;
+import com.swiftwheelshub.model.Revenue;
 import com.carrental.dto.RevenueDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;

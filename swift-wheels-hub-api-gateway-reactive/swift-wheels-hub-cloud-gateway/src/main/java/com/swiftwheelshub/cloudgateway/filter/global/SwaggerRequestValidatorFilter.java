@@ -6,8 +6,8 @@ import com.atlassian.oai.validator.report.ValidationReport;
 import com.atlassian.oai.validator.whitelist.ValidationErrorsWhitelist;
 import com.atlassian.oai.validator.whitelist.rule.WhitelistRules;
 import com.swiftwheelshub.cloudgateway.model.SwaggerFolder;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class SwaggerRequestValidatorFilter implements GlobalFilter, Ordered {
                 .onErrorResume(e -> {
                     log.error("Error while processing request: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e));
+                    return Mono.error(new SwiftWheelsHubException(e));
                 });
     }
 
@@ -91,7 +91,7 @@ public class SwaggerRequestValidatorFilter implements GlobalFilter, Ordered {
                 .filter(entry -> path.contains(entry.getKey()))
                 .findFirst()
                 .map(Map.Entry::getValue)
-                .orElseThrow(() -> new CarRentalException("There is no swagger file that contains path: " + path));
+                .orElseThrow(() -> new SwiftWheelsHubException("There is no swagger file that contains path: " + path));
     }
 
     private Mono<ValidationReport> getValidationReport(ServerWebExchange exchange, SimpleRequest simpleRequest) {
@@ -127,7 +127,7 @@ public class SwaggerRequestValidatorFilter implements GlobalFilter, Ordered {
                                       ValidationReport validationReport) {
         if (validationReport.hasErrors()) {
             return Mono.error(
-                    new CarRentalResponseStatusException(
+                    new SwiftWheelsHubResponseStatusException(
                             HttpStatus.BAD_REQUEST,
                             getValidationErrorMessage(validationReport)
                     )

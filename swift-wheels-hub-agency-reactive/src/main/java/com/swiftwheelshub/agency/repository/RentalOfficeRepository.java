@@ -1,6 +1,6 @@
 package com.swiftwheelshub.agency.repository;
 
-import com.carrental.document.model.RentalOffice;
+import com.swiftwheelshub.model.RentalOffice;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

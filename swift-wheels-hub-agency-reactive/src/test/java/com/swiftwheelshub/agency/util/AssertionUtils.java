@@ -1,11 +1,11 @@
 package com.swiftwheelshub.agency.util;
 
-import com.carrental.document.model.BodyType;
-import com.carrental.document.model.Branch;
-import com.carrental.document.model.Car;
-import com.carrental.document.model.CarStatus;
-import com.carrental.document.model.Employee;
-import com.carrental.document.model.RentalOffice;
+import com.swiftwheelshub.model.BodyType;
+import com.swiftwheelshub.model.Branch;
+import com.swiftwheelshub.model.Car;
+import com.swiftwheelshub.model.CarStatus;
+import com.swiftwheelshub.model.Employee;
+import com.swiftwheelshub.model.RentalOffice;
 import com.carrental.dto.BranchDto;
 import com.carrental.dto.CarDto;
 import com.carrental.dto.CarStatusEnum;

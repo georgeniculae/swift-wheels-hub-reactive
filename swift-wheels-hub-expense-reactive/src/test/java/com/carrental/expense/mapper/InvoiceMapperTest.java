@@ -1,6 +1,6 @@
 package com.carrental.expense.mapper;
 
-import com.carrental.document.model.Invoice;
+import com.swiftwheelshub.model.Invoice;
 import com.carrental.expense.util.AssertionUtils;
 import com.carrental.expense.util.TestUtils;
 import com.carrental.dto.InvoiceDto;

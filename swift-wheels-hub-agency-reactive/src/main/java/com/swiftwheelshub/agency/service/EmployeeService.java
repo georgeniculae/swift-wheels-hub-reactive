@@ -1,12 +1,12 @@
 package com.swiftwheelshub.agency.service;
 
+import com.carrental.dto.EmployeeDto;
 import com.swiftwheelshub.agency.mapper.EmployeeMapper;
 import com.swiftwheelshub.agency.repository.EmployeeRepository;
-import com.carrental.document.model.Employee;
-import com.carrental.dto.EmployeeDto;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.util.MongoUtil;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class EmployeeService {
                 .onErrorResume(e -> {
                     log.error("Error while finding all employees: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -38,7 +38,7 @@ public class EmployeeService {
                 .map(employeeMapper::mapEntityToDto).onErrorResume(e -> {
                     log.error("Error while finding employee by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
 
     }
@@ -55,7 +55,7 @@ public class EmployeeService {
                 .onErrorResume(e -> {
                     log.error("Error while saving employee: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -78,7 +78,7 @@ public class EmployeeService {
                 .onErrorResume(e -> {
                     log.error("Error while updating employee: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -88,7 +88,7 @@ public class EmployeeService {
                 .onErrorResume(e -> {
                     log.error("Error while finding all employees ny branch id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -98,11 +98,11 @@ public class EmployeeService {
                 .onErrorResume(e -> {
                     log.error("Error while finding employee by filter: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 })
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Employee with filter: " + searchString + " does not exist"
                                 )
@@ -115,7 +115,7 @@ public class EmployeeService {
                 .onErrorResume(e -> {
                     log.error("Error while counting employees: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -123,7 +123,7 @@ public class EmployeeService {
         return employeeRepository.deleteById(MongoUtil.getObjectId(id)).onErrorResume(e -> {
             log.error("Error while deleting employee: {}", e.getMessage());
 
-            return Mono.error(new CarRentalException(e.getMessage()));
+            return Mono.error(new SwiftWheelsHubException(e.getMessage()));
         });
     }
 
@@ -131,7 +131,7 @@ public class EmployeeService {
         return employeeRepository.findById(MongoUtil.getObjectId(id))
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "Employee with id " + id + " does not exist"
                                 )

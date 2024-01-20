@@ -1,6 +1,6 @@
 package com.carrental.expense.repository;
 
-import com.carrental.document.model.Invoice;
+import com.swiftwheelshub.model.Invoice;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;

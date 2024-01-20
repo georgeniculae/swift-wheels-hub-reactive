@@ -1,6 +1,6 @@
 package com.carrental.expense.service;
 
-import com.carrental.document.model.Invoice;
+import com.swiftwheelshub.model.Invoice;
 import com.carrental.dto.BookingClosingDetailsDto;
 import com.carrental.dto.BookingDto;
 import com.carrental.dto.InvoiceDto;

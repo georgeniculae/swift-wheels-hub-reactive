@@ -2,19 +2,19 @@ package com.carrental.customer.service;
 
 import com.carrental.customer.mapper.CustomerMapper;
 import com.carrental.customer.model.Outbox;
-import com.carrental.document.dto.CurrentUserDto;
-import com.carrental.document.model.Role;
-import com.carrental.document.model.User;
 import com.carrental.dto.AuthenticationResponse;
 import com.carrental.dto.RegisterRequest;
 import com.carrental.dto.UserDto;
-import com.carrental.lib.aspect.LogActivity;
-import com.carrental.lib.exceptionhandling.CarRentalException;
-import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
-import com.carrental.lib.mapper.UserMapper;
-import com.carrental.lib.repository.UserRepository;
-import com.carrental.lib.security.jwt.JwtService;
-import com.carrental.lib.util.MongoUtil;
+import com.swiftwheelshub.dto.CurrentUserDto;
+import com.swiftwheelshub.lib.aspect.LogActivity;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshub.lib.mapper.UserMapper;
+import com.swiftwheelshub.lib.repository.UserRepository;
+import com.swiftwheelshub.lib.security.jwt.JwtService;
+import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.Role;
+import com.swiftwheelshub.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -54,7 +54,7 @@ public class CustomerService {
                 .onErrorResume(e -> {
                     log.error("Error while registering user: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -64,7 +64,7 @@ public class CustomerService {
                 .onErrorResume(e -> {
                     log.error("Error while getting current user: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -74,7 +74,7 @@ public class CustomerService {
                 .onErrorResume(e -> {
                     log.error("Error while finding by username: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -83,7 +83,7 @@ public class CustomerService {
                 .onErrorResume(e -> {
                     log.error("Error while counting users: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -109,7 +109,7 @@ public class CustomerService {
                 .onErrorResume(e -> {
                     log.error("Error while finding by id: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e.getMessage()));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -122,7 +122,7 @@ public class CustomerService {
                 .onErrorResume(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 
-                    return Mono.error(new CarRentalException(e));
+                    return Mono.error(new SwiftWheelsHubException(e));
                 });
     }
 
@@ -141,7 +141,7 @@ public class CustomerService {
         return userRepository.findById(MongoUtil.getObjectId(id))
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "User with id " + id + " doesn't exist"
                                 )
@@ -153,7 +153,7 @@ public class CustomerService {
         return userRepository.findByUsername(username)
                 .switchIfEmpty(
                         Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
                                         "User with username " + username + " doesn't exist"
                                 )
@@ -166,7 +166,7 @@ public class CustomerService {
                 .flatMap(present -> {
                     if (present) {
                         return Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "User already exists"
                                 )
@@ -176,7 +176,7 @@ public class CustomerService {
                     String password = Optional.ofNullable(request.getPassword()).orElseThrow();
                     if (password.length() < 8) {
                         return Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Password too short"
                                 )
@@ -186,7 +186,7 @@ public class CustomerService {
                     LocalDate dateOfBirth = Optional.ofNullable(request.getDateOfBirth()).orElseThrow();
                     if (Period.between(dateOfBirth, LocalDate.now()).getYears() < 18) {
                         return Mono.error(
-                                new CarRentalResponseStatusException(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Customer is under 18 years old"
                                 )

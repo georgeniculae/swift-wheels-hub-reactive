@@ -4,7 +4,7 @@ import com.swiftwheelshub.agency.mapper.RentalOfficeMapper;
 import com.swiftwheelshub.agency.mapper.RentalOfficeMapperImpl;
 import com.swiftwheelshub.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.carrental.document.model.RentalOffice;
+import com.swiftwheelshub.model.RentalOffice;
 import com.carrental.dto.RentalOfficeDto;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;

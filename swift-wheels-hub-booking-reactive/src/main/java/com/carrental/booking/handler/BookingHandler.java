@@ -3,7 +3,7 @@ package com.carrental.booking.handler;
 import com.carrental.booking.service.BookingService;
 import com.carrental.dto.BookingClosingDetailsDto;
 import com.carrental.dto.BookingDto;
-import com.carrental.lib.util.ServerRequestUtil;
+import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;

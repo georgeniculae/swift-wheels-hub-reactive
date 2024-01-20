@@ -1,9 +1,9 @@
 package com.carrental.expense.util;
 
-import com.carrental.lib.exceptionhandling.CarRentalException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,7 +27,7 @@ public class TestUtils {
         try {
             return OBJECT_MAPPER.readValue(getRespurceAsString(resourceName), valueType);
         } catch (JsonProcessingException e) {
-            throw new CarRentalException("Failed getting resource: " + resourceName + ", cause: " + e.getMessage());
+            throw new SwiftWheelsHubException("Failed getting resource: " + resourceName + ", cause: " + e.getMessage());
         }
     }
 
@@ -35,13 +35,13 @@ public class TestUtils {
         URL resource = TestUtils.class.getResource(resourceName);
 
         if (resource == null) {
-            throw new CarRentalException("Failed getting resource: " + resourceName);
+            throw new SwiftWheelsHubException("Failed getting resource: " + resourceName);
         }
 
         try {
             return new String(Files.readAllBytes(Paths.get(resource.toURI())));
         } catch (IOException | URISyntaxException e) {
-            throw new CarRentalException("Failed getting resource: " + resourceName);
+            throw new SwiftWheelsHubException("Failed getting resource: " + resourceName);
         }
     }
 

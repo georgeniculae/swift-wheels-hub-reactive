@@ -1,10 +1,9 @@
 package com.carrental.expense;
 
-import com.carrental.lib.annotation.CarRentalReactiveMicroservice;
+import com.swiftwheelshub.lib.annotation.SwiftWheelsHubReactiveMicroservice;
 import org.springframework.boot.SpringApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
-@CarRentalReactiveMicroservice
+@SwiftWheelsHubReactiveMicroservice
 public class CarRentalExpenseReactiveApplication {
 
     public static void main(String[] args) {
