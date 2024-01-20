@@ -33,10 +33,10 @@ class SwaggerExtractorServiceTest {
         ReflectionTestUtils.setField(swaggerExtractorService, "swaggerLocation", "src/main/resources/swagger-definitions");
 
         Map<String, OpenAPI> expectedResult = new HashMap<>();
-        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-agency.yaml"));
-        expectedResult.put("bookings", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-bookings.yaml"));
-        expectedResult.put("customers", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-customers.yaml"));
-        expectedResult.put("expense", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-expense.yaml"));
+        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-agency.yaml"));
+        expectedResult.put("bookings", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-bookings.yaml"));
+        expectedResult.put("customers", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-customers.yaml"));
+        expectedResult.put("expense", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-expense.yaml"));
 
         when(resourceLoader.getResource(anyString())).thenReturn(new ClassPathResource("swagger-definitions"));
 

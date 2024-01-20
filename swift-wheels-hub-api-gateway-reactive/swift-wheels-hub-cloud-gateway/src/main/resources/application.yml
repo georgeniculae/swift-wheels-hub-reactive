@@ -8,12 +8,12 @@ server:
 
 spring:
   application:
-    name: car-rental-cloud-gateway
+    name: swift-wheels-hub-cloud-gateway
   cloud:
     gateway:
       routes:
         - id: agency
-          uri: lb://car-rental-agency
+          uri: lb://swift-wheels-hub-agency-reactive
           predicates:
             - Path=/agency/**
           filters:
@@ -21,7 +21,7 @@ spring:
               args:
                 language: "EN"
         - id: booking
-          uri: lb://car-rental-booking
+          uri: lb://swift-wheels-hub-booking-reactive
           predicates:
             - Path=/bookings/**
           filters:
@@ -29,7 +29,7 @@ spring:
               args:
                 language: "EN"
         - id: customer
-          uri: lb://car-rental-customer
+          uri: lb://swift-wheels-hub-customer-reactive
           predicates:
             - Path=/customers/**
           filters:
@@ -37,7 +37,7 @@ spring:
               args:
                 language: "EN"
         - id: expense
-          uri: lb://car-rental-expense
+          uri: lb://swift-wheels-hub-expense-reactive
           predicates:
             - Path=/expense/**
           filters:
@@ -75,7 +75,7 @@ spring:
     bootstrap-servers: localhost:9092
   data:
     mongodb:
-      database: car_rental_gateway
+      database: swift_wheels_hub_gateway
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
       authentication-database: admin
@@ -121,4 +121,4 @@ userConsumer:
   isMessageAckEnabled: false
 
 migration:
-  packageScan: com.carrental.cloudgateway.migration
+  packageScan: com.swiftwheelshub.cloudgateway.migration

@@ -40,7 +40,7 @@ class RedisServiceTest {
     @Test
     void addSwaggerFolderToRedisTest_success() {
         Map<String, OpenAPI> expectedResult = new HashMap<>();
-        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-agency.yaml"));
+        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-agency.yaml"));
 
         when(swaggerExtractorService.getSwaggerIdentifierAndContent()).thenReturn(Mono.just(expectedResult));
         when(redisSwagger.opsForValue()).thenReturn(reactiveValueOperations);
@@ -63,7 +63,7 @@ class RedisServiceTest {
     @Test
     void repopulateRedisWithSwaggerFolderTest_success() {
         Map<String, OpenAPI> expectedResult = new HashMap<>();
-        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-agency.yaml"));
+        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-agency.yaml"));
 
         when(redisSwagger.delete(anyString())).thenReturn(Mono.just(1L));
         when(swaggerExtractorService.getSwaggerIdentifierAndContent()).thenReturn(Mono.just(expectedResult));

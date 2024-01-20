@@ -45,7 +45,7 @@ class SwaggerRequestValidatorFilterTest {
     @Test
     void filterTest_getRequest_success() {
         Map<String, OpenAPI> expectedResult = new HashMap<>();
-        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-agency.yaml"));
+        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-agency.yaml"));
 
         SwaggerFolder swaggerFolder = SwaggerFolder.builder()
                 .id("1")
@@ -69,7 +69,7 @@ class SwaggerRequestValidatorFilterTest {
     @Test
     void filterTest_postRequest_success() {
         Map<String, OpenAPI> expectedResult = new HashMap<>();
-        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-agency.yaml"));
+        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-agency.yaml"));
 
         RentalOfficeDto rentalOfficeDto = TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
         String valueAsString = TestUtils.writeValueAsString(rentalOfficeDto);
@@ -96,7 +96,7 @@ class SwaggerRequestValidatorFilterTest {
     @Test
     void filterTest_postRequest_error_emptyBody() {
         Map<String, OpenAPI> expectedResult = new HashMap<>();
-        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/car-rental-agency.yaml"));
+        expectedResult.put("agency", new OpenAPIV3Parser().read("src/main/resources/swagger-definitions/swift-wheels-hub-agency.yaml"));
 
         SwaggerFolder swaggerFolder = SwaggerFolder.builder()
                 .id("1")
