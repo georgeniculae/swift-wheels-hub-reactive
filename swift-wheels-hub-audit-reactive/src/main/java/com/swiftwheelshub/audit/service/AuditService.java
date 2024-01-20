@@ -1,7 +1,7 @@
-package com.carrental.audit.service;
+package com.swiftwheelshub.audit.service;
 
-import com.carrental.audit.mapper.AuditLogInfoMapper;
-import com.carrental.audit.repository.AuditLogInfoRepository;
+import com.swiftwheelshub.audit.mapper.AuditLogInfoMapper;
+import com.swiftwheelshub.audit.repository.AuditLogInfoRepository;
 import com.carrental.document.dto.AuditLogInfoDto;
 import com.carrental.lib.exceptionhandling.CarRentalException;
 import lombok.RequiredArgsConstructor;

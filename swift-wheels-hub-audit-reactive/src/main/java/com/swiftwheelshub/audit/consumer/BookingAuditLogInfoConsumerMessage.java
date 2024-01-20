@@ -1,6 +1,6 @@
-package com.carrental.audit.consumer;
+package com.swiftwheelshub.audit.consumer;
 
-import com.carrental.audit.service.AuditService;
+import com.swiftwheelshub.audit.service.AuditService;
 import com.carrental.document.dto.AuditLogInfoDto;
 import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
 import lombok.RequiredArgsConstructor;

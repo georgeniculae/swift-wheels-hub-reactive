@@ -1,9 +1,9 @@
-package com.carrental.audit.service;
+package com.swiftwheelshub.audit.service;
 
-import com.carrental.audit.mapper.AuditLogInfoMapper;
-import com.carrental.audit.mapper.AuditLogInfoMapperImpl;
-import com.carrental.audit.repository.AuditLogInfoRepository;
-import com.carrental.audit.util.TestUtils;
+import com.swiftwheelshub.audit.mapper.AuditLogInfoMapper;
+import com.swiftwheelshub.audit.mapper.AuditLogInfoMapperImpl;
+import com.swiftwheelshub.audit.repository.AuditLogInfoRepository;
+import com.swiftwheelshub.audit.util.TestUtils;
 import com.carrental.document.dto.AuditLogInfoDto;
 import com.carrental.document.model.AuditLogInfo;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
-package com.carrental.audit.consumer;
+package com.swiftwheelshub.audit.consumer;
 
-import com.carrental.audit.service.AuditService;
-import com.carrental.audit.util.TestUtils;
+import com.swiftwheelshub.audit.service.AuditService;
+import com.swiftwheelshub.audit.util.TestUtils;
 import com.carrental.document.dto.AuditLogInfoDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

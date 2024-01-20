@@ -1,4 +1,4 @@
-package com.carrental.audit.util;
+package com.swiftwheelshub.audit.util;
 
 import com.carrental.document.dto.AuditLogInfoDto;
 import com.carrental.document.model.AuditLogInfo;

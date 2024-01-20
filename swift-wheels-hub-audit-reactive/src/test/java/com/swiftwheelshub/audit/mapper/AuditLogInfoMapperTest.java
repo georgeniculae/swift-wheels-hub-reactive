@@ -1,7 +1,7 @@
-package com.carrental.audit.mapper;
+package com.swiftwheelshub.audit.mapper;
 
-import com.carrental.audit.util.AssertionUtils;
-import com.carrental.audit.util.TestUtils;
+import com.swiftwheelshub.audit.util.AssertionUtils;
+import com.swiftwheelshub.audit.util.TestUtils;
 import com.carrental.document.dto.AuditLogInfoDto;
 import com.carrental.document.model.AuditLogInfo;
 import org.junit.jupiter.api.Test;

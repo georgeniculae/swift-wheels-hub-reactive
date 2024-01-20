@@ -1,6 +1,6 @@
-package com.carrental.audit.consumer;
+package com.swiftwheelshub.audit.consumer;
 
-import com.carrental.audit.service.AuditService;
+import com.swiftwheelshub.audit.service.AuditService;
 import com.carrental.document.dto.AuditLogInfoDto;
 import com.carrental.lib.exceptionhandling.CarRentalResponseStatusException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.function.Function;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class ExpenseAuditLogInfoConsumerMessage {
+public class CustomerAuditLogInfoConsumerMessage {
 
     @Value("${auditConsumer.isMessageAckEnabled:false}")
     private boolean isMessageAckEnabled;
@@ -30,7 +30,7 @@ public class ExpenseAuditLogInfoConsumerMessage {
     private final AuditService auditService;
 
     @Bean
-    public Function<Flux<Message<AuditLogInfoDto>>, Mono<Void>> expenseAuditLogInfoConsumer() {
+    public Function<Flux<Message<AuditLogInfoDto>>, Mono<Void>> customerAuditLogInfoConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processMessage)
                 .then();
     }

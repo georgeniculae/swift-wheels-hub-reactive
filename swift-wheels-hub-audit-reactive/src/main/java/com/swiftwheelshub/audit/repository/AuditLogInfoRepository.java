@@ -1,4 +1,4 @@
-package com.carrental.audit.repository;
+package com.swiftwheelshub.audit.repository;
 
 import com.carrental.document.model.AuditLogInfo;
 import org.bson.types.ObjectId;

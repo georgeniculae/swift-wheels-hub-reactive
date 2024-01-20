@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: car-rental-audit
+    name: swift-wheels-hub-audit-reactive
   data:
     mongodb:
       database: car_rental_audit
