@@ -94,8 +94,6 @@ authentication:
   type: apikey
   secret: ${API_KEY_SECRET}
 
-cross-origin: '*'
-
 webclient:
   url:
     car-rental-agency-branches: lb://swift-wheels-hub-agency-reactive/agency/branches
