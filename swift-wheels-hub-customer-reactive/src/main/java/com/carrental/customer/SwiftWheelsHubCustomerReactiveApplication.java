@@ -1,13 +1,13 @@
-package com.carrental.emailnotification;
+package com.carrental.customer;
 
 import com.swiftwheelshub.lib.annotation.SwiftWheelsHubReactiveMicroservice;
 import org.springframework.boot.SpringApplication;
 
 @SwiftWheelsHubReactiveMicroservice
-public class CarRentalEmailNotificationApplication {
+public class SwiftWheelsHubCustomerReactiveApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CarRentalEmailNotificationApplication.class);
+        SpringApplication.run(SwiftWheelsHubCustomerReactiveApplication.class, args);
     }
 
 }
