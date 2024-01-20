@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class EmployeeService {
 
-    @Value("${webclient.url.car-rental-agency-employees}")
+    @Value("${webclient.url.swift-wheels-hub-agency-employees}")
     private String url;
 
     private static final String SEPARATOR = "/";

@@ -96,10 +96,7 @@ authentication:
 
 webclient:
   url:
-    car-rental-agency-branches: lb://swift-wheels-hub-agency-reactive/agency/branches
-    car-rental-agency-cars: lb://swift-wheels-hub-agency-reactive/agency/cars
-    car-rental-agency-rental-offices: lb://swift-wheels-hub-agency-reactive/agency/rental-offices
-    car-rental-agency-employees: lb://swift-wheels-hub-agency-reactive/agency/employees
+    swift-wheels-hub-agency-employees: lb://swift-wheels-hub-agency-reactive/agency/employees
 
 scheduled:
   fixedDelay: 5000

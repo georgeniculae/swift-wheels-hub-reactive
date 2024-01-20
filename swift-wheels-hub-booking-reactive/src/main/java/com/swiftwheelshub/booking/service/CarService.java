@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class CarService {
 
-    @Value("${webclient.url.car-rental-agency-cars}")
+    @Value("${webclient.url.swift-wheels-hub-agency-cars}")
     private String url;
 
     private static final String SEPARATOR = "/";

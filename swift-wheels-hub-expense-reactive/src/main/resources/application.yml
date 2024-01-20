@@ -103,11 +103,8 @@ cross-origin: '*'
 
 webClient:
   url:
-    car-rental-customer-customers: lb://car-rental-customer/customers
-    car-rental-booking-bookings: lb://car-rental-booking/bookings
-    car-rental-agency-branches: lb://car-rental-agency/agency/branches
-    car-rental-agency-cars: lb://car-rental-agency/agency/cars
-    car-rental-agency-employees: lb://car-rental-agency/agency/employees
+    swift-wheels-hub-bookings: lb://swift-wheels-hub-booking-reactive/bookings
+    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-agency-reactive/agency/cars
 
 bookingConsumer:
   isMessageAckEnabled: false
