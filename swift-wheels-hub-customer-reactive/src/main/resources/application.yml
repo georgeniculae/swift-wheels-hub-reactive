@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: car-rental-customer
+    name: swift-wheels-hub-customer-reactive
   webflux:
     base-path: /customers
   data:
@@ -86,10 +86,8 @@ authentication:
   type: apikey
   secret: ${API_KEY_SECRET}
 
-cross-origin: '*'
-
 migration:
-  packageScan: com.carrental.customer.migration
+  packageScan: com.swiftwheelshub.customer.migration
 
 scheduled:
   fixedDelay: 5000

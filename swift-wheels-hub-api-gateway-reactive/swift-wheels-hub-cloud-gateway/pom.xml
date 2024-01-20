@@ -20,7 +20,6 @@
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
         <mongock.version>5.3.6</mongock.version>
         <mongock-springboot.version>5.2.6</mongock-springboot.version>
-        <car-rental-common-reactive.version>0.0.1-SNAPSHOT</car-rental-common-reactive.version>
         <swagger-request-validator.version>2.39.0</swagger-request-validator.version>
     </properties>
 

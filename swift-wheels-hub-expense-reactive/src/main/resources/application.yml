@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: car-rental-expense
+    name: swift-wheels-hub-expense-reactive
   webflux:
     base-path: /expense
   data:
@@ -98,8 +98,6 @@ logging:
 authentication:
   type: apikey
   secret: ${API_KEY_SECRET}
-
-cross-origin: '*'
 
 webClient:
   url:

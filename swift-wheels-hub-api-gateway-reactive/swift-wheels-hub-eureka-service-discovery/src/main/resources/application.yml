@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: car-rental-eureka-service-discovery
+    name: swift-wheels-hub-eureka-service-discovery
   security:
     basic:
       enabled: true

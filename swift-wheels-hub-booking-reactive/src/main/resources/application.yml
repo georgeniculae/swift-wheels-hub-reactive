@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: car-rental-booking
+    name: swift-wheels-hub-booking-reactive
   webflux:
     base-path: /bookings
   data:

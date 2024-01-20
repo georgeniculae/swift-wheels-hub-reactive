@@ -93,15 +93,15 @@
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
                             <inputSpec>${project.basedir}/src/main/resources/CarRentalCustomer.yaml</inputSpec>
-                            <modelPackage>com.carrental.dto</modelPackage>
+                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
                             <importMappings>
                                 <importMapping>
-                                    AuthenticationRequest=com.carrental.dto.authentication.AuthenticationRequest
+                                    AuthenticationRequest=com.swiftwheelshub.dto.authentication.AuthenticationRequest
                                 </importMapping>
                                 <importMapping>
-                                    AuthenticationResponse=com.carrental.dto.authentication.AuthenticationResponse
+                                    AuthenticationResponse=com.swiftwheelshub.dto.authentication.AuthenticationResponse
                                 </importMapping>
-                                <importMapping>RegisterRequest=com.carrental.dto.authentication.RegisterRequest
+                                <importMapping>RegisterRequest=com.swiftwheelshub.dto.authentication.RegisterRequest
                                 </importMapping>
                             </importMappings>
                         </configuration>
@@ -123,7 +123,7 @@
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
                             <inputSpec>${project.basedir}/src/main/resources/CarRentalBooking.yaml</inputSpec>
-                            <modelPackage>com.carrental.dto</modelPackage>
+                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
                         </configuration>
                     </execution>
 
@@ -143,7 +143,7 @@
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
                             <inputSpec>${project.basedir}/src/main/resources/CarRentalAgency.yaml</inputSpec>
-                            <modelPackage>com.carrental.dto</modelPackage>
+                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
                         </configuration>
                     </execution>
 
@@ -163,7 +163,7 @@
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
                             <inputSpec>${project.basedir}/src/main/resources/CarRentalExpense.yaml</inputSpec>
-                            <modelPackage>com.carrental.dto</modelPackage>
+                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
                         </configuration>
                     </execution>
                 </executions>

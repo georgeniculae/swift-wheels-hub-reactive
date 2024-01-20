@@ -114,8 +114,6 @@ token:
 
 apikey-secret: ${API_KEY_SECRET}
 
-cross-origin: '*'
-
 userConsumer:
   enabled: true
   isMessageAckEnabled: false

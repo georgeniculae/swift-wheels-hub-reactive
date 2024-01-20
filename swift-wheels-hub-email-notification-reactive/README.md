@@ -1,1 +1,1 @@
-# car-rental-email-notification-reactive
+# swift-wheels-hub-email-notification-reactive

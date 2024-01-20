@@ -20,9 +20,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootApplication
-@ComponentScan(basePackages = "com.carrental")
-@EntityScan("com.carrental")
-@EnableReactiveMongoRepositories(basePackages = "com.carrental")
+@ComponentScan(basePackages = "com.swiftwheelshub")
+@EntityScan("com.swiftwheelshub")
+@EnableReactiveMongoRepositories(basePackages = "com.swiftwheelshub")
 @EnableTransactionManagement
 @EnableDiscoveryClient
 @EnableScheduling

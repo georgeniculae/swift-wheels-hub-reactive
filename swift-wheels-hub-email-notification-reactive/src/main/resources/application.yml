@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: car-rental-email-notification
+    name: swift-wheels-hub-email-notification-reactive
   cloud:
     discovery:
       enabled: true
@@ -48,13 +48,11 @@ eureka:
     preferIpAddress: true
     leaseRenewalIntervalInSeconds: 10
 
-cross-origin: '*'
-
 sendgrid:
   enabled: true
   mail:
     mailFrom: ${SENDGRID_MAIL_FROM}
-    name: Car Rental
+    name: Swift Wheels Hub
 
 mustache-template:
   enabled: true

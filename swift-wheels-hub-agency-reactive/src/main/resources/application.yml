@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-agency
+    name: swift-wheels-hub-agency-reactive
   webflux:
     base-path: /agency
   data:
@@ -85,8 +85,6 @@ logging:
 authentication:
   type: apikey
   secret: ${API_KEY_SECRET}
-
-cross-origin: '*'
 
 migration:
   packageScan: com.swiftwheelshub.agency.migration
