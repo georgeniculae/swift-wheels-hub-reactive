@@ -3,8 +3,6 @@ package com.swiftwheelshub.agency.mapper;
 import com.swiftwheelshub.model.BodyType;
 import com.swiftwheelshub.model.Car;
 import com.swiftwheelshub.model.CarStatus;
-import com.carrental.dto.CarDto;
-import com.carrental.dto.CarStatusEnum;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

@@ -1,10 +1,9 @@
 package com.swiftwheelshub.agency.service;
 
-import com.carrental.dto.CarDetailsForUpdateDto;
-import com.carrental.dto.CarDto;
-import com.carrental.dto.CarStatusEnum;
 import com.swiftwheelshub.agency.mapper.CarMapper;
 import com.swiftwheelshub.agency.repository.CarRepository;
+import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarStatusEnum;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;

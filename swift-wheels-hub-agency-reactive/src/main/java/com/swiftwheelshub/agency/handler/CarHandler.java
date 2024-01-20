@@ -1,9 +1,6 @@
 package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.CarService;
-import com.carrental.dto.CarDetailsForUpdateDto;
-import com.carrental.dto.CarDto;
-import com.carrental.dto.CarStatusEnum;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;

@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.EmployeeService;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.carrental.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

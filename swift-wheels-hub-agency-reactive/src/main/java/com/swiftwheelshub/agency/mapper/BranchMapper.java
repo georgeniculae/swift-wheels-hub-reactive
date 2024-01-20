@@ -1,7 +1,7 @@
 package com.swiftwheelshub.agency.mapper;
 
+import com.swiftwheelshub.dto.BranchDto;
 import com.swiftwheelshub.model.Branch;
-import com.carrental.dto.BranchDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
