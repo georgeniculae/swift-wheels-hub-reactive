@@ -13,7 +13,7 @@ spring:
     base-path: /agency
   data:
     mongodb:
-      database: car_rental_agency
+      database: swift_wheels_hub_agency
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@carrentalservice.soyxkll.mongodb.net/

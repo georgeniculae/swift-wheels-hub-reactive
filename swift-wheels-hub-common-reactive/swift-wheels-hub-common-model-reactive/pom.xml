@@ -78,7 +78,7 @@
                 <version>${openapi-version}</version>
                 <executions>
                     <execution>
-                        <id>generate-car-rental-customer</id>
+                        <id>generate-swift-wheels-hub-customer</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -92,7 +92,7 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/CarRentalCustomer.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubCustomer.yaml</inputSpec>
                             <modelPackage>com.swiftwheelshub.dto</modelPackage>
                             <importMappings>
                                 <importMapping>
@@ -108,7 +108,7 @@
                     </execution>
 
                     <execution>
-                        <id>generate-car-rental-booking</id>
+                        <id>generate-swift-wheels-hub-booking</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -122,13 +122,13 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/CarRentalBooking.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubBooking.yaml</inputSpec>
                             <modelPackage>com.swiftwheelshub.dto</modelPackage>
                         </configuration>
                     </execution>
 
                     <execution>
-                        <id>generate-car-rental-agency</id>
+                        <id>generate-swift-wheels-hub-agency</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -142,13 +142,13 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/CarRentalAgency.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubAgency.yaml</inputSpec>
                             <modelPackage>com.swiftwheelshub.dto</modelPackage>
                         </configuration>
                     </execution>
 
                     <execution>
-                        <id>generate-car-rental-expense</id>
+                        <id>generate-swift-wheels-hub-expense</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -162,7 +162,7 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useBeanValidation>true</useBeanValidation>
                             </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/CarRentalExpense.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubExpense.yaml</inputSpec>
                             <modelPackage>com.swiftwheelshub.dto</modelPackage>
                         </configuration>
                     </execution>
