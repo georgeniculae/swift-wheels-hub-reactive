@@ -1,5 +1,7 @@
 package com.swiftwheelshub.agency.mapper;
 
+import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarStatusEnum;
 import com.swiftwheelshub.model.BodyType;
 import com.swiftwheelshub.model.Car;
 import com.swiftwheelshub.model.CarStatus;

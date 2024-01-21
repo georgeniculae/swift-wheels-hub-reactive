@@ -1,9 +1,9 @@
 package com.swiftwheelshub.customer.util;
 
 import com.swiftwheelshub.dto.CurrentUserDto;
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.model.Role;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.UserDto;
 
 import java.util.Optional;
 

@@ -2,11 +2,11 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.RentalOfficeMapper;
 import com.swiftwheelshub.agency.repository.RentalOfficeRepository;
+import com.swiftwheelshub.dto.RentalOfficeDto;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
 import com.swiftwheelshub.model.RentalOffice;
-import com.carrental.dto.RentalOfficeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

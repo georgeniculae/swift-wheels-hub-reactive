@@ -1,8 +1,8 @@
 package com.swiftwheelshub.booking.service;
 
-import com.carrental.dto.CarDetailsForUpdateDto;
-import com.carrental.dto.CarDto;
-import com.carrental.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
+import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarStatusEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

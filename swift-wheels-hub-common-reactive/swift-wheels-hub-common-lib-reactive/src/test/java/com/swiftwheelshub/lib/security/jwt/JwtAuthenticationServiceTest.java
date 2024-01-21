@@ -1,9 +1,9 @@
 package com.swiftwheelshub.lib.security.jwt;
 
 import com.swiftwheelshub.dto.AuthenticationRequest;
+import com.swiftwheelshub.dto.AuthenticationResponse;
 import com.swiftwheelshub.lib.util.TestUtils;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.AuthenticationResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

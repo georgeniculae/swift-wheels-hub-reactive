@@ -2,8 +2,8 @@ package com.swiftwheelshub.booking.mapper;
 
 import com.swiftwheelshub.booking.util.AssertionUtils;
 import com.swiftwheelshub.booking.util.TestUtils;
+import com.swiftwheelshub.dto.BookingDto;
 import com.swiftwheelshub.model.Booking;
-import com.carrental.dto.BookingDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

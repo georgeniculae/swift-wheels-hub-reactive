@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.router;
 
 import com.swiftwheelshub.agency.handler.BranchHandler;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.carrental.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

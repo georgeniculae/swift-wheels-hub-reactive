@@ -1,8 +1,8 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.carrental.dto.CarDto;
 import com.swiftwheelshub.agency.util.AssertionUtils;
 import com.swiftwheelshub.agency.util.TestUtils;
+import com.swiftwheelshub.dto.CarDto;
 import com.swiftwheelshub.model.Car;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

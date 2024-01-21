@@ -80,18 +80,6 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/UserDto'
-  /current:
-    get:
-      tags:
-        - user-controller
-      operationId: getCurrentUser
-      responses:
-        '200':
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/CurrentUserDto'
   /count:
     get:
       tags:
@@ -156,40 +144,4 @@ components:
       type: object
       properties:
         token:
-          type: string
-    CurrentUserDto:
-      type: object
-      properties:
-        id:
-          type: string
-        username:
-          type: string
-        password:
-          type: string
-        role:
-          type: string
-          enum:
-            - ROLE_ADMIN
-            - ROLE_USER
-            - ROLE_SUPPORT
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        credentialsNonExpired:
-          type: boolean
-        accountNonExpired:
-          type: boolean
-        accountNonLocked:
-          type: boolean
-        authorities:
-          type: array
-          items:
-            $ref: '#/components/schemas/GrantedAuthority'
-    GrantedAuthority:
-      type: object
-      properties:
-        authority:
           type: string

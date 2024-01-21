@@ -1,7 +1,7 @@
 package com.swiftwheelshub.booking.mapper;
 
+import com.swiftwheelshub.dto.BookingDto;
 import com.swiftwheelshub.model.Booking;
-import com.carrental.dto.BookingDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

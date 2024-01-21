@@ -2,8 +2,8 @@ package com.swiftwheelshub.booking.handler;
 
 import com.swiftwheelshub.booking.service.BookingService;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.carrental.dto.BookingClosingDetailsDto;
-import com.carrental.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingClosingDetailsDto;
+import com.swiftwheelshub.dto.BookingDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

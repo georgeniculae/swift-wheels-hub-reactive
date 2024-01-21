@@ -2,7 +2,7 @@ package com.swiftwheelshub.booking.router;
 
 import com.swiftwheelshub.booking.handler.BookingHandler;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.carrental.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

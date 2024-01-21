@@ -1,9 +1,9 @@
 package com.swiftwheelshub.expense.mapper;
 
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.model.Invoice;
 import com.swiftwheelshub.expense.util.AssertionUtils;
 import com.swiftwheelshub.expense.util.TestUtils;
-import com.carrental.dto.InvoiceDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

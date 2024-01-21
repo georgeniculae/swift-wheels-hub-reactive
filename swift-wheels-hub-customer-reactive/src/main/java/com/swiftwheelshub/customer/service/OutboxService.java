@@ -2,11 +2,11 @@ package com.swiftwheelshub.customer.service;
 
 import com.swiftwheelshub.customer.model.Outbox;
 import com.swiftwheelshub.customer.repository.OutboxRepository;
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.mapper.UserMapper;
 import com.swiftwheelshub.lib.repository.UserRepository;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.RentalOfficeService;
-import com.carrental.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeDto;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;

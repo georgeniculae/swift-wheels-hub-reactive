@@ -1,8 +1,8 @@
 package com.swiftwheelshub.lib.service;
 
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.mapper.UserMapperImpl;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.UserDto;
 import com.swiftwheelshub.lib.mapper.UserMapper;
 import com.swiftwheelshub.lib.repository.UserRepository;
 import com.swiftwheelshub.lib.util.TestUtils;

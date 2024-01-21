@@ -1,8 +1,8 @@
 package com.swiftwheelshub.lib.util;
 
+import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.RegisterRequest;
-import com.carrental.dto.UserDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

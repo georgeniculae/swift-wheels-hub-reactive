@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.service;
 
-import com.carrental.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

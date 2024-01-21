@@ -3,7 +3,7 @@ package com.swiftwheelshub.booking.service;
 import com.swiftwheelshub.booking.mapper.BookingMapper;
 import com.swiftwheelshub.booking.model.Outbox;
 import com.swiftwheelshub.booking.repository.BookingRepository;
-import com.carrental.dto.*;
+import com.swiftwheelshub.dto.*;
 import com.swiftwheelshub.lib.aspect.LogActivity;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;

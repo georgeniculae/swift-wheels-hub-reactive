@@ -80,18 +80,6 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/UserDto'
-  /current:
-    get:
-      tags:
-        - user-controller
-      operationId: getCurrentUser
-      responses:
-        '200':
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/CurrentUserDto'
   /count:
     get:
       tags:

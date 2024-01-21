@@ -2,10 +2,10 @@ package com.swiftwheelshub.customer.service;
 
 import com.swiftwheelshub.customer.mapper.CustomerMapper;
 import com.swiftwheelshub.customer.model.Outbox;
-import com.carrental.dto.AuthenticationResponse;
-import com.carrental.dto.RegisterRequest;
-import com.carrental.dto.UserDto;
+import com.swiftwheelshub.dto.AuthenticationResponse;
 import com.swiftwheelshub.dto.CurrentUserDto;
+import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.aspect.LogActivity;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;

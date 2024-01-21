@@ -1,8 +1,8 @@
 package com.swiftwheelshub.booking.handler;
 
 import com.swiftwheelshub.booking.service.BookingService;
-import com.carrental.dto.BookingClosingDetailsDto;
-import com.carrental.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingClosingDetailsDto;
+import com.swiftwheelshub.dto.BookingDto;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;

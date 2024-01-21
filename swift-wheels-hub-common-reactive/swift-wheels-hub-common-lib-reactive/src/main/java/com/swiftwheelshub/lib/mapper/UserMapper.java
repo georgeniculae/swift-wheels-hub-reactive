@@ -1,9 +1,9 @@
 package com.swiftwheelshub.lib.mapper;
 
+import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.model.Role;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.RegisterRequest;
-import com.carrental.dto.UserDto;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

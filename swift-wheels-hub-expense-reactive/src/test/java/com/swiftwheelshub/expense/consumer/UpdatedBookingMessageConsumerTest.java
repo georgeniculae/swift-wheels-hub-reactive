@@ -1,7 +1,7 @@
 package com.swiftwheelshub.expense.consumer;
 
-import com.carrental.dto.BookingDto;
-import com.carrental.dto.InvoiceDto;
+import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.expense.service.InvoiceService;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;

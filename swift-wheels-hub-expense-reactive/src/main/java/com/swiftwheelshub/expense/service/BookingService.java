@@ -1,7 +1,7 @@
 package com.swiftwheelshub.expense.service;
 
-import com.carrental.dto.BookingClosingDetailsDto;
-import com.carrental.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingClosingDetailsDto;
+import com.swiftwheelshub.dto.BookingDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

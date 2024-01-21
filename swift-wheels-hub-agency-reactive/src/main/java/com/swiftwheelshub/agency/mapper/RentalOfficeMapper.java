@@ -1,7 +1,7 @@
 package com.swiftwheelshub.agency.mapper;
 
+import com.swiftwheelshub.dto.RentalOfficeDto;
 import com.swiftwheelshub.model.RentalOffice;
-import com.carrental.dto.RentalOfficeDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

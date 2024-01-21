@@ -1,7 +1,7 @@
 package com.swiftwheelshub.lib.security.jwt;
 
 import com.swiftwheelshub.dto.AuthenticationRequest;
-import com.carrental.dto.AuthenticationResponse;
+import com.swiftwheelshub.dto.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

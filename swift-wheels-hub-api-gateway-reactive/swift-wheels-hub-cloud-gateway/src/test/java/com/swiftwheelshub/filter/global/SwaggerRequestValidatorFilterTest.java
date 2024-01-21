@@ -2,7 +2,7 @@ package com.swiftwheelshub.filter.global;
 
 import com.swiftwheelshub.cloudgateway.filter.global.SwaggerRequestValidatorFilter;
 import com.swiftwheelshub.cloudgateway.model.SwaggerFolder;
-import com.carrental.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeDto;
 import com.swiftwheelshub.util.TestUtils;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.parser.OpenAPIV3Parser;

@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.router;
 
 import com.swiftwheelshub.agency.handler.RentalOfficeHandler;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.carrental.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

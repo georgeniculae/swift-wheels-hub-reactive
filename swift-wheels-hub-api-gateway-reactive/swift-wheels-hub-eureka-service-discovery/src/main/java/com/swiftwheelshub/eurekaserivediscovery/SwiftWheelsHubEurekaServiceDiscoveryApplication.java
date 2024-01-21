@@ -1,4 +1,4 @@
-package com.carrental.eurekaserivediscovery;
+package com.swiftwheelshub.eurekaserivediscovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

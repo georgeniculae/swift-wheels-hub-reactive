@@ -2,6 +2,7 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.CarMapper;
 import com.swiftwheelshub.agency.repository.CarRepository;
+import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
 import com.swiftwheelshub.dto.CarDto;
 import com.swiftwheelshub.dto.CarStatusEnum;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;

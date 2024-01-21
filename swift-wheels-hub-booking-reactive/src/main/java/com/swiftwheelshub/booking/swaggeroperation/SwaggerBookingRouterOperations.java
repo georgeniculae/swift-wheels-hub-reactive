@@ -1,7 +1,7 @@
 package com.swiftwheelshub.booking.swaggeroperation;
 
 import com.swiftwheelshub.booking.handler.BookingHandler;
-import com.carrental.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

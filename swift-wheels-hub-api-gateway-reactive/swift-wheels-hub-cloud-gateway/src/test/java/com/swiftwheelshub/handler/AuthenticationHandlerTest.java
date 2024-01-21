@@ -2,7 +2,7 @@ package com.swiftwheelshub.handler;
 
 import com.swiftwheelshub.cloudgateway.handler.AuthenticationHandler;
 import com.swiftwheelshub.dto.AuthenticationRequest;
-import com.carrental.dto.AuthenticationResponse;
+import com.swiftwheelshub.dto.AuthenticationResponse;
 import com.swiftwheelshub.lib.security.jwt.JwtAuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

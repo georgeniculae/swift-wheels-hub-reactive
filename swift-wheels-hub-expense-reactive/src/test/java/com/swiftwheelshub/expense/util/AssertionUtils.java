@@ -1,9 +1,9 @@
 package com.swiftwheelshub.expense.util;
 
+import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.RevenueDto;
 import com.swiftwheelshub.model.Invoice;
 import com.swiftwheelshub.model.Revenue;
-import com.carrental.dto.InvoiceDto;
-import com.carrental.dto.RevenueDto;
 
 import java.util.Optional;
 

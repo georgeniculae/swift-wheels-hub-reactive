@@ -1,7 +1,7 @@
 package com.swiftwheelshub.expense.mapper;
 
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.model.Invoice;
-import com.carrental.dto.InvoiceDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

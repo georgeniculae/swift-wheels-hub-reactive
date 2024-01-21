@@ -1,12 +1,12 @@
 package com.swiftwheelshub.expense.service;
 
+import com.swiftwheelshub.dto.BookingClosingDetailsDto;
+import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.expense.mapper.InvoiceMapper;
 import com.swiftwheelshub.expense.repository.InvoiceRepository;
 import com.swiftwheelshub.expense.util.TestUtils;
 import com.swiftwheelshub.model.Invoice;
-import com.carrental.dto.BookingClosingDetailsDto;
-import com.carrental.dto.BookingDto;
-import com.carrental.dto.InvoiceDto;
 import com.swiftwheelshub.expense.mapper.InvoiceMapperImpl;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;

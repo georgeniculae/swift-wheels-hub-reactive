@@ -1,11 +1,11 @@
 package com.swiftwheelshub.customer.handler;
 
+import com.swiftwheelshub.dto.AuthenticationResponse;
 import com.swiftwheelshub.dto.CurrentUserDto;
 import com.swiftwheelshub.customer.service.CustomerService;
 import com.swiftwheelshub.customer.util.TestUtils;
-import com.carrental.dto.AuthenticationResponse;
-import com.carrental.dto.RegisterRequest;
-import com.carrental.dto.UserDto;
+import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

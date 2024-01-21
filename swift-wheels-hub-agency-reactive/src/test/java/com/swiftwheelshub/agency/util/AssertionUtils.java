@@ -1,16 +1,12 @@
 package com.swiftwheelshub.agency.util;
 
+import com.swiftwheelshub.dto.*;
 import com.swiftwheelshub.model.BodyType;
 import com.swiftwheelshub.model.Branch;
 import com.swiftwheelshub.model.Car;
 import com.swiftwheelshub.model.CarStatus;
 import com.swiftwheelshub.model.Employee;
 import com.swiftwheelshub.model.RentalOffice;
-import com.carrental.dto.BranchDto;
-import com.carrental.dto.CarDto;
-import com.carrental.dto.CarStatusEnum;
-import com.carrental.dto.EmployeeDto;
-import com.carrental.dto.RentalOfficeDto;
 
 import java.util.Optional;
 

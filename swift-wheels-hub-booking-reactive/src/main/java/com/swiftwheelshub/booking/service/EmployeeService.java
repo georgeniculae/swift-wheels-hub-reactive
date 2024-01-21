@@ -1,6 +1,6 @@
 package com.swiftwheelshub.booking.service;
 
-import com.carrental.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,7 +1,7 @@
 package com.swiftwheelshub.customer.service;
 
 import com.swiftwheelshub.customer.util.TestUtils;
-import com.carrental.dto.UserDto;
+import com.swiftwheelshub.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

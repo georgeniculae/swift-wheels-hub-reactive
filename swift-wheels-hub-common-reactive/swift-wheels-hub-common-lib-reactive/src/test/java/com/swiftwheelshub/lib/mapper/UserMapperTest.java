@@ -1,9 +1,9 @@
 package com.swiftwheelshub.lib.mapper;
 
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.util.AssertionUtils;
 import com.swiftwheelshub.lib.util.TestUtils;
 import com.swiftwheelshub.model.User;
-import com.carrental.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

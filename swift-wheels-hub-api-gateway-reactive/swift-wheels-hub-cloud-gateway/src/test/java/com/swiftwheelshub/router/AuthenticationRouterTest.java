@@ -2,7 +2,7 @@ package com.swiftwheelshub.router;
 
 import com.swiftwheelshub.cloudgateway.handler.AuthenticationHandler;
 import com.swiftwheelshub.cloudgateway.router.AuthenticationRouter;
-import com.carrental.dto.AuthenticationResponse;
+import com.swiftwheelshub.dto.AuthenticationResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

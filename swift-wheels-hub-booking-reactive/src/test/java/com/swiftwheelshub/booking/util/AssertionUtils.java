@@ -1,7 +1,7 @@
 package com.swiftwheelshub.booking.util;
 
+import com.swiftwheelshub.dto.BookingDto;
 import com.swiftwheelshub.model.Booking;
-import com.carrental.dto.BookingDto;
 
 import java.util.Optional;
 

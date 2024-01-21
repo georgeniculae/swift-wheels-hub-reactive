@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.router;
 
-import com.carrental.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.expense.handler.InvoiceHandler;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.handler;
 
-import com.carrental.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.expense.service.InvoiceService;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;

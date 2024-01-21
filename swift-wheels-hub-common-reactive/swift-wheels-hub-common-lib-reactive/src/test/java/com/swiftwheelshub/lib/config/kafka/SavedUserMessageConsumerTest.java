@@ -1,6 +1,6 @@
 package com.swiftwheelshub.lib.config.kafka;
 
-import com.carrental.dto.UserDto;
+import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.service.UserService;
 import com.swiftwheelshub.lib.util.TestUtils;
 import org.junit.jupiter.api.Test;

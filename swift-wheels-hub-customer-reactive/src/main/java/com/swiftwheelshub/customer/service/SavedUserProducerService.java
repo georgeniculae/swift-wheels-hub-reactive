@@ -1,6 +1,6 @@
 package com.swiftwheelshub.customer.service;
 
-import com.carrental.dto.UserDto;
+import com.swiftwheelshub.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

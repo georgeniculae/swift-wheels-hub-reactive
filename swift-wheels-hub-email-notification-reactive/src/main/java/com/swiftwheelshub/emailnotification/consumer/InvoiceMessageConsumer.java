@@ -1,6 +1,6 @@
 package com.swiftwheelshub.emailnotification.consumer;
 
-import com.carrental.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceDto;
 import com.swiftwheelshub.emailnotification.service.EmailService;
 import com.sendgrid.Response;
 import com.sendgrid.helpers.mail.Mail;

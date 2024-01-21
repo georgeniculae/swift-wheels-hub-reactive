@@ -1,12 +1,12 @@
 package com.swiftwheelshub.expense.service;
 
+import com.swiftwheelshub.dto.RevenueDto;
 import com.swiftwheelshub.expense.mapper.RevenueMapper;
 import com.swiftwheelshub.expense.repository.InvoiceRepository;
 import com.swiftwheelshub.expense.repository.RevenueRepository;
 import com.swiftwheelshub.expense.util.TestUtils;
 import com.swiftwheelshub.model.Invoice;
 import com.swiftwheelshub.model.Revenue;
-import com.carrental.dto.RevenueDto;
 import com.swiftwheelshub.expense.mapper.RevenueMapperImpl;
 import com.swiftwheelshub.expense.model.Outbox;
 import org.junit.jupiter.api.Test;
