@@ -168,7 +168,7 @@ paths:
       responses:
         '200':
           description: OK
-  '/cars/{id}/update-after-closed-booking':
+  '/cars/{id}/update-after-return':
     put:
       tags:
         - car-controller
@@ -192,7 +192,7 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/CarDto'
-  '/cars/{id}/change-car-status':
+  '/cars/{id}/change-status':
     put:
       tags:
         - car-controller
@@ -221,7 +221,7 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/CarDto'
-  /cars/update-cars-status:
+  /cars/update-statuses:
     put:
       tags:
         - car-controller

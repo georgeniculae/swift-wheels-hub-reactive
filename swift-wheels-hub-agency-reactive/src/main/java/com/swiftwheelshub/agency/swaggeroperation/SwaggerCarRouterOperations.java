@@ -20,9 +20,9 @@ import java.lang.annotation.Target;
                 @RouterOperation(path = "/{id}/availability", beanClass = CarService.class, beanMethod = "getAvailableCar"),
                 @RouterOperation(path = "/{id}", beanClass = CarService.class, beanMethod = "findCarById"),
                 @RouterOperation(beanClass = CarService.class, beanMethod = "saveCar"),
-                @RouterOperation(path = "/update-cars-status", beanClass = CarService.class, beanMethod = "updateCarsStatus"),
+                @RouterOperation(path = "/update-statuses", beanClass = CarService.class, beanMethod = "updateCarsStatus"),
                 @RouterOperation(path = "/{id}/set-car-not-available", beanClass = CarService.class, beanMethod = "updateCarStatus"),
-                @RouterOperation(path = "/{id}/update-after-closed-booking", beanClass = CarService.class, beanMethod = "updateCarWhenBookingIsClosed"),
+                @RouterOperation(path = "/{id}/update-after-return", beanClass = CarService.class, beanMethod = "updateCarWhenBookingIsClosed"),
                 @RouterOperation(path = "/{id}", beanClass = CarService.class, beanMethod = "updateCar"),
                 @RouterOperation(path = "/{id}", beanClass = CarService.class, beanMethod = "deleteCarById"),
         }

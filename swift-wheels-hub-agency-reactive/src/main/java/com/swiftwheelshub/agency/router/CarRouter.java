@@ -27,9 +27,9 @@ public class CarRouter {
                         .andRoute(RequestPredicates.GET("/{id}"), carHandler::findCarById)
                         .andRoute(RequestPredicates.POST(""), carHandler::saveCar)
                         .andRoute(RequestPredicates.POST("/upload"), carHandler::uploadCars)
-                        .andRoute(RequestPredicates.PUT("/update-cars-status"), carHandler::updateCarsStatus)
-                        .andRoute(RequestPredicates.PUT("/{id}/change-car-status"), carHandler::updateCarStatus)
-                        .andRoute(RequestPredicates.PUT("/{id}/update-after-closed-booking"), carHandler::updateCarWhenBookingIsClosed)
+                        .andRoute(RequestPredicates.PUT("/update-statuses"), carHandler::updateCarsStatus)
+                        .andRoute(RequestPredicates.PUT("/{id}/change-status"), carHandler::updateCarStatus)
+                        .andRoute(RequestPredicates.PUT("/{id}/update-after-return"), carHandler::updateCarWhenBookingIsClosed)
                         .andRoute(RequestPredicates.PUT("/{id}"), carHandler::updateCar)
                         .andRoute(RequestPredicates.DELETE("/{id}"), carHandler::deleteCarById));
     }

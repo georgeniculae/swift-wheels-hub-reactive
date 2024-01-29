@@ -44,7 +44,7 @@ public class CarService {
 
     public Mono<CarDto> changeCarStatus(String apiKeyToken, String carId, CarStatusEnum carStatus) {
         return webClient.put()
-                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-car-status", carId)
+                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -60,7 +60,7 @@ public class CarService {
 
     public Mono<CarDto> updateCarWhenBookingIsFinished(String apiKeyToken, CarDetailsForUpdateDto carDetailsForUpdateDto) {
         return webClient.put()
-                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-closed-booking", carDetailsForUpdateDto.getCarId())
+                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carDetailsForUpdateDto.getCarId())
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class CarService {
     public Flux<CarDto> updateCarsStatus(String apiKeyToken,
                                          List<CarDetailsForUpdateDto> carDetailsForUpdateDtoList) {
         return webClient.put()
-                .uri(url + SEPARATOR + SEPARATOR + "update-cars-status")
+                .uri(url + SEPARATOR + SEPARATOR + "update-statuses")
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)

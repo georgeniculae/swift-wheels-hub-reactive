@@ -408,7 +408,7 @@ class CarRouterTest {
 
         Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
-                .uri(PATH + "/{id}/change-car-status", "64f361caf291ae086e179547")
+                .uri(PATH + "/{id}/change-status", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -467,7 +467,7 @@ class CarRouterTest {
 
         Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
-                .uri(PATH + "/update-cars-status")
+                .uri(PATH + "/update-statuses")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -491,7 +491,7 @@ class CarRouterTest {
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
-                .uri(PATH + "/update-cars-status")
+                .uri(PATH + "/update-statuses")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -508,7 +508,7 @@ class CarRouterTest {
         when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.put()
-                .uri(PATH + "/update-cars-status")
+                .uri(PATH + "/update-statuses")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -526,7 +526,7 @@ class CarRouterTest {
 
         Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
-                .uri(PATH + "/{id}/change-car-status", "64f361caf291ae086e179547")
+                .uri(PATH + "/{id}/change-status", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -585,7 +585,7 @@ class CarRouterTest {
 
         Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
-                .uri(PATH + "/{id}/update-after-closed-booking", "64f361caf291ae086e179547")
+                .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -609,7 +609,7 @@ class CarRouterTest {
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
-                .uri(PATH + "/{id}/update-after-closed-booking", "64f361caf291ae086e179547")
+                .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -626,7 +626,7 @@ class CarRouterTest {
         when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.put()
-                .uri(PATH + "/{id}/update-after-closed-booking", "64f361caf291ae086e179547")
+                .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
