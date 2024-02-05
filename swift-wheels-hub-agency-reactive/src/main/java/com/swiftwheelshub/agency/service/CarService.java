@@ -8,10 +8,18 @@ import com.swiftwheelshub.dto.CarStatusEnum;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
-import com.swiftwheelshub.model.*;
+import com.swiftwheelshub.model.Branch;
+import com.swiftwheelshub.model.Car;
+import com.swiftwheelshub.model.CarFields;
+import com.swiftwheelshub.model.CarStatus;
+import com.swiftwheelshub.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
@@ -120,8 +128,7 @@ public class CarService {
     public Flux<CarDto> uploadCars(FilePart filePart) {
         return filePart.content()
                 .concatMap(this::getDataFromExcelAsPublisher)
-                .concatMap(carDto -> getBranches(carDto)
-                        .map(originalBranchActualBranchTuple -> generateCar(carDto, originalBranchActualBranchTuple)))
+                .concatMap(this::createNewCar)
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
                 .map(carMapper::mapEntityToDto)
@@ -252,6 +259,11 @@ public class CarService {
         return Mono.fromCallable(() -> extractDataFromExcel(dataBuffer.asInputStream()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);
+    }
+
+    private Mono<Car> createNewCar(CarDto carDto) {
+        return getBranches(carDto)
+                .map(originalBranchActualBranchTuple -> generateCar(carDto, originalBranchActualBranchTuple));
     }
 
     private List<CarDto> extractDataFromExcel(InputStream inputStream) {
