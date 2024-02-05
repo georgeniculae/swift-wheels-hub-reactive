@@ -21,6 +21,7 @@
         <mongock.version>5.3.6</mongock.version>
         <mongock-springboot.version>5.2.6</mongock-springboot.version>
         <swagger-request-validator.version>2.39.0</swagger-request-validator.version>
+        <blockhound.version>1.0.8.RELEASE</blockhound.version>
     </properties>
 
     <dependencies>
@@ -117,6 +118,12 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor.tools</groupId>
+            <artifactId>blockhound</artifactId>
+            <version>${blockhound.version}</version>
         </dependency>
 
         <!--        Test        -->

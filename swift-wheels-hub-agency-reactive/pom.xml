@@ -23,6 +23,7 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <poi.version>5.2.5</poi.version>
         <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
+        <blockhound.version>1.0.8.RELEASE</blockhound.version>
     </properties>
 
     <dependencies>
@@ -93,6 +94,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor.tools</groupId>
+            <artifactId>blockhound</artifactId>
+            <version>${blockhound.version}</version>
         </dependency>
 
         <dependency>
