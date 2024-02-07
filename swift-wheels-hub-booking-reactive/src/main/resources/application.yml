@@ -16,7 +16,7 @@ spring:
       database: swift-wheels-hub_booking
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@carrentalservice.soyxkll.mongodb.net/
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubbooking.vegjl42.mongodb.net/
   cloud:
     discovery:
       enabled: true
