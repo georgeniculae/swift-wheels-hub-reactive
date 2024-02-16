@@ -1,6 +1,5 @@
 package com.swiftwheelshub.customer.model;
 
-import com.swiftwheelshub.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

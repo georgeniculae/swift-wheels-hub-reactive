@@ -1,6 +1,7 @@
 package com.swiftwheelshub.booking.mapper;
 
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingRequest;
+import com.swiftwheelshub.dto.BookingResponse;
 import com.swiftwheelshub.model.Booking;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -13,9 +14,9 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapper {
 
-    BookingDto mapEntityToDto(Booking booking);
+    BookingResponse mapEntityToDto(Booking booking);
 
-    Booking mapDtoToEntity(BookingDto bookingDto);
+    Booking mapDtoToEntity(BookingRequest bookingRequest);
 
     Booking getNewBooking(Booking booking);
 

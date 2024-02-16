@@ -1,8 +1,5 @@
 package com.swiftwheelshub.customer.migration;
 
-import com.swiftwheelshub.model.Role;
-import com.swiftwheelshub.model.User;
-
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;

@@ -10,6 +10,8 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+
 @Document(collection = "car")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +30,7 @@ public class Car {
     private String color;
     private int mileage;
     private CarStatus carStatus;
-    private Double amount;
+    private BigDecimal amount;
     private Branch originalBranch;
     private Branch actualBranch;
     private String urlOfImage;

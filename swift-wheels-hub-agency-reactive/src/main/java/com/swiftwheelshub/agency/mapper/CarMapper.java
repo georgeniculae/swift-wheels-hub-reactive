@@ -1,7 +1,9 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.swiftwheelshub.dto.CarDto;
-import com.swiftwheelshub.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.BodyCategory;
+import com.swiftwheelshub.dto.CarRequest;
+import com.swiftwheelshub.dto.CarResponse;
+import com.swiftwheelshub.dto.CarState;
 import com.swiftwheelshub.model.BodyType;
 import com.swiftwheelshub.model.Car;
 import com.swiftwheelshub.model.CarStatus;
@@ -21,9 +23,9 @@ public interface CarMapper {
 
     @Mapping(target = "originalBranchId", expression = "java(mapObjectIdToString(car.getOriginalBranch().getId()))")
     @Mapping(target = "actualBranchId", expression = "java(mapObjectIdToString(car.getActualBranch().getId()))")
-    CarDto mapEntityToDto(Car car);
+    CarResponse mapEntityToDto(Car car);
 
-    Car mapDtoToEntity(CarDto carDto);
+    Car mapDtoToEntity(CarRequest carRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
@@ -33,20 +35,20 @@ public interface CarMapper {
         return ObjectUtils.isEmpty(id) ? null : new ObjectId(id);
     }
 
-    default CarDto.BodyTypeEnum mapToBodyTypeEnum(BodyType bodyType) {
+    default BodyCategory mapToBodyCategory(BodyType bodyType) {
         return switch (bodyType) {
-            case HATCHBACK -> CarDto.BodyTypeEnum.HATCHBACK;
-            case SEDAN -> CarDto.BodyTypeEnum.SEDAN;
-            case SUV -> CarDto.BodyTypeEnum.SUV;
-            case COUPE -> CarDto.BodyTypeEnum.COUPE;
-            case CONVERTIBLE -> CarDto.BodyTypeEnum.CONVERTIBLE;
-            case WAGON -> CarDto.BodyTypeEnum.WAGON;
-            case VAN -> CarDto.BodyTypeEnum.VAN;
+            case HATCHBACK -> BodyCategory.HATCHBACK;
+            case SEDAN -> BodyCategory.SEDAN;
+            case SUV -> BodyCategory.SUV;
+            case COUPE -> BodyCategory.COUPE;
+            case CONVERTIBLE -> BodyCategory.CONVERTIBLE;
+            case WAGON -> BodyCategory.WAGON;
+            case VAN -> BodyCategory.VAN;
         };
     }
 
-    default BodyType mapToBodyType(CarDto.BodyTypeEnum bodyTypeEnum) {
-        return switch (bodyTypeEnum) {
+    default BodyType mapToBodyType(BodyCategory bodyCategory) {
+        return switch (bodyCategory) {
             case HATCHBACK -> BodyType.HATCHBACK;
             case SEDAN -> BodyType.SEDAN;
             case SUV -> BodyType.SUV;
@@ -57,17 +59,17 @@ public interface CarMapper {
         };
     }
 
-    default CarStatusEnum mapToCarStatusEnum(CarStatus carStatus) {
+    default CarState mapToCarState(CarStatus carStatus) {
         return switch (carStatus) {
-            case NOT_AVAILABLE -> CarStatusEnum.NOT_AVAILABLE;
-            case BROKEN -> CarStatusEnum.BROKEN;
-            case IN_REPAIR -> CarStatusEnum.IN_REPAIR;
-            case IN_SERVICE -> CarStatusEnum.IN_SERVICE;
-            case AVAILABLE -> CarStatusEnum.AVAILABLE;
+            case NOT_AVAILABLE -> CarState.NOT_AVAILABLE;
+            case BROKEN -> CarState.BROKEN;
+            case IN_REPAIR -> CarState.IN_REPAIR;
+            case IN_SERVICE -> CarState.IN_SERVICE;
+            case AVAILABLE -> CarState.AVAILABLE;
         };
     }
 
-    default CarStatus mapToCarStatus(CarStatusEnum carStatusEnum) {
+    default CarStatus mapToCarStatus(CarState carStatusEnum) {
         return switch (carStatusEnum) {
             case NOT_AVAILABLE -> CarStatus.NOT_AVAILABLE;
             case BROKEN -> CarStatus.BROKEN;

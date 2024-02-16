@@ -2,9 +2,11 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.CarMapper;
 import com.swiftwheelshub.agency.repository.CarRepository;
-import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
-import com.swiftwheelshub.dto.CarDto;
-import com.swiftwheelshub.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.BodyCategory;
+import com.swiftwheelshub.dto.CarRequest;
+import com.swiftwheelshub.dto.CarResponse;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.CarUpdateDetails;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
@@ -33,6 +35,7 @@ import reactor.util.function.Tuple2;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +50,7 @@ public class CarService {
     private final EmployeeService employeeService;
     private final CarMapper carMapper;
 
-    public Flux<CarDto> findAllCars() {
+    public Flux<CarResponse> findAllCars() {
         return carRepository.findAll()
                 .map(carMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -57,7 +60,7 @@ public class CarService {
                 });
     }
 
-    public Mono<CarDto> findCarById(String id) {
+    public Mono<CarResponse> findCarById(String id) {
         return findEntityById(id)
                 .map(carMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -67,7 +70,7 @@ public class CarService {
                 });
     }
 
-    public Flux<CarDto> findCarsByMake(String make) {
+    public Flux<CarResponse> findCarsByMake(String make) {
         return carRepository.findCarsByMake(make)
                 .map(carMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -77,7 +80,7 @@ public class CarService {
                 });
     }
 
-    public Mono<CarDto> getAvailableCar(String id) {
+    public Mono<CarResponse> getAvailableCar(String id) {
         return findEntityById(id)
                 .filter(car -> CarStatus.AVAILABLE.equals(car.getCarStatus()))
                 .map(carMapper::mapEntityToDto)
@@ -96,7 +99,7 @@ public class CarService {
                 });
     }
 
-    public Flux<CarDto> findCarsByFilterInsensitiveCase(String filter) {
+    public Flux<CarResponse> findCarsByFilterInsensitiveCase(String filter) {
         return carRepository.findAllByFilterInsensitiveCase(filter)
                 .map(carMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -107,11 +110,11 @@ public class CarService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
     }
 
-    public Mono<CarDto> saveCar(CarDto carDto) {
-        return Mono.just(carDto)
+    public Mono<CarResponse> saveCar(CarRequest carRequest) {
+        return Mono.just(carRequest)
                 .flatMap(this::getBranches)
                 .flatMap(originalBranchAndActualBranch -> {
-                    Car newCar = carMapper.mapDtoToEntity(carDto);
+                    Car newCar = carMapper.mapDtoToEntity(carRequest);
                     newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
                     newCar.setActualBranch(originalBranchAndActualBranch.getT2());
 
@@ -125,7 +128,7 @@ public class CarService {
                 });
     }
 
-    public Flux<CarDto> uploadCars(FilePart filePart) {
+    public Flux<CarResponse> uploadCars(FilePart filePart) {
         return filePart.content()
                 .concatMap(this::getDataFromExcelAsPublisher)
                 .concatMap(this::createNewCar)
@@ -139,7 +142,7 @@ public class CarService {
                 });
     }
 
-    public Mono<CarDto> updateCar(String id, CarDto updatedCarDto) {
+    public Mono<CarResponse> updateCar(String id, CarRequest updatedCarDto) {
         return findEntityById(id)
                 .zipWith(getBranches(updatedCarDto))
                 .flatMap(existingCarAndOriginalBranchActualBranchTuple -> {
@@ -159,10 +162,10 @@ public class CarService {
                 });
     }
 
-    public Mono<CarDto> updateCarStatus(String id, CarStatusEnum carStatusEnum) {
+    public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
                 .flatMap(car -> {
-                    car.setCarStatus(carMapper.mapToCarStatus(carStatusEnum));
+                    car.setCarStatus(carMapper.mapToCarStatus(carState));
 
                     return carRepository.save(car);
                 })
@@ -193,10 +196,10 @@ public class CarService {
 
     }
 
-    public Mono<CarDto> updateCarWhenBookingIsClosed(String id, CarDetailsForUpdateDto carDetailsForUpdateDto) {
+    public Mono<CarResponse> updateCarWhenBookingIsClosed(String id, CarUpdateDetails carUpdateDetails) {
         return findEntityById(id)
-                .zipWith(employeeService.findEntityById(carDetailsForUpdateDto.getReceptionistEmployeeId()))
-                .map(carEmployee -> updateCarDetails(carDetailsForUpdateDto, carEmployee))
+                .zipWith(employeeService.findEntityById(carUpdateDetails.receptionistEmployeeId()))
+                .map(carEmployee -> updateCarDetails(carUpdateDetails, carEmployee))
                 .flatMap(carRepository::save)
                 .map(carMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -223,50 +226,49 @@ public class CarService {
                 );
     }
 
-    private Mono<Tuple2<Branch, Branch>> getBranches(CarDto carDto) {
-        return branchService.findEntityById(carDto.getOriginalBranchId())
-                .zipWith(branchService.findEntityById(carDto.getActualBranchId()));
+    private Mono<Tuple2<Branch, Branch>> getBranches(CarRequest carRequest) {
+        return branchService.findEntityById(carRequest.originalBranchId())
+                .zipWith(branchService.findEntityById(carRequest.actualBranchId()));
     }
 
-    private Car updateExistingCar(CarDto updatedCarDto, Car existingCar, Tuple2<Branch, Branch> originalBranchAndActualBranch) {
-        existingCar.setMake(updatedCarDto.getMake());
-        existingCar.setModel(updatedCarDto.getModel());
-        existingCar.setBodyType(carMapper.mapToBodyType(Optional.ofNullable(updatedCarDto.getBodyType()).orElseThrow()));
-        existingCar.setYearOfProduction(Optional.ofNullable(updatedCarDto.getYearOfProduction()).orElseThrow());
-        existingCar.setColor(updatedCarDto.getColor());
-        existingCar.setMileage(Optional.ofNullable(updatedCarDto.getMileage()).orElseThrow());
-        existingCar.setAmount(carMapper.mapBigDecimalToDouble(Optional.ofNullable(updatedCarDto.getAmount()).orElseThrow()));
-        existingCar.setCarStatus(carMapper.mapToCarStatus(Optional.ofNullable(updatedCarDto.getCarStatus()).orElseThrow()));
+    private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar, Tuple2<Branch, Branch> originalBranchAndActualBranch) {
+        existingCar.setMake(updatedCarRequest.make());
+        existingCar.setModel(updatedCarRequest.model());
+        existingCar.setBodyType(carMapper.mapToBodyType(updatedCarRequest.bodyCategory()));
+        existingCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
+        existingCar.setColor(updatedCarRequest.color());
+        existingCar.setMileage(updatedCarRequest.mileage());
+        existingCar.setAmount(updatedCarRequest.amount());
+        existingCar.setCarStatus(carMapper.mapToCarStatus(updatedCarRequest.carState()));
         existingCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
         existingCar.setActualBranch(originalBranchAndActualBranch.getT2());
-        existingCar.setUrlOfImage(updatedCarDto.getUrlOfImage());
+        existingCar.setUrlOfImage(updatedCarRequest.urlOfImage());
 
         return existingCar;
     }
 
-    private Car updateCarDetails(CarDetailsForUpdateDto carDetailsForUpdateDto, Tuple2<Car, Employee> carEmployee) {
-        Car car = carEmployee.getT1();
-        CarStatusEnum carStatus = Optional.ofNullable(carDetailsForUpdateDto.getCarStatus())
-                .orElseThrow();
+    private Car updateCarDetails(CarUpdateDetails carUpdateDetails, Tuple2<Car, Employee> carAndEmployee) {
+        Car car = carAndEmployee.getT1();
+        CarState carState = carUpdateDetails.carState();
 
-        car.setActualBranch(carEmployee.getT2().getWorkingBranch());
-        car.setCarStatus(carMapper.mapToCarStatus(carStatus));
+        car.setActualBranch(carAndEmployee.getT2().getWorkingBranch());
+        car.setCarStatus(carMapper.mapToCarStatus(carState));
 
         return car;
     }
 
-    private Flux<CarDto> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
+    private Flux<CarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
         return Mono.fromCallable(() -> extractDataFromExcel(dataBuffer.asInputStream()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);
     }
 
-    private Mono<Car> createNewCar(CarDto carDto) {
-        return getBranches(carDto)
-                .map(originalBranchActualBranchTuple -> generateCar(carDto, originalBranchActualBranchTuple));
+    private Mono<Car> createNewCar(CarRequest carRequest) {
+        return getBranches(carRequest)
+                .map(originalBranchActualBranchTuple -> generateCar(carRequest, originalBranchActualBranchTuple));
     }
 
-    private List<CarDto> extractDataFromExcel(InputStream inputStream) {
+    private List<CarRequest> extractDataFromExcel(InputStream inputStream) {
         try (Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -276,9 +278,9 @@ public class CarService {
         }
     }
 
-    private List<CarDto> getValuesFromSheet(Sheet sheet) {
+    private List<CarRequest> getValuesFromSheet(Sheet sheet) {
         DataFormatter dataFormatter = new DataFormatter();
-        List<CarDto> carDtoList = new ArrayList<>();
+        List<CarRequest> carRequests = new ArrayList<>();
 
         for (int index = 1; index <= sheet.getLastRowNum(); index++) {
             List<Object> values = new ArrayList<>();
@@ -295,33 +297,34 @@ public class CarService {
                 }
             }
 
-            carDtoList.add(generateCarDto(values));
+            carRequests.add(generateCarRequest(values));
         }
 
-        return carDtoList;
+        return Collections.unmodifiableList(carRequests);
     }
 
-    private Car generateCar(CarDto carDto, Tuple2<Branch, Branch> originalBranchActualBranchTuple) {
-        Car car = carMapper.mapDtoToEntity(carDto);
-        car.setOriginalBranch(originalBranchActualBranchTuple.getT1());
-        car.setActualBranch(originalBranchActualBranchTuple.getT2());
+    private Car generateCar(CarRequest carRequest, Tuple2<Branch, Branch> originalBranchAndActualBranchTuple) {
+        Car car = carMapper.mapDtoToEntity(carRequest);
+        car.setOriginalBranch(originalBranchAndActualBranchTuple.getT1());
+        car.setActualBranch(originalBranchAndActualBranchTuple.getT2());
 
         return car;
     }
 
-    private CarDto generateCarDto(List<Object> values) {
-        return new CarDto()
+    private CarRequest generateCarRequest(List<Object> values) {
+        return CarRequest.builder()
                 .make((String) values.get(CarFields.MAKE.ordinal()))
                 .model((String) values.get(CarFields.MODEL.ordinal()))
-                .bodyType(CarDto.BodyTypeEnum.valueOf(((String) values.get(CarFields.BODY_TYPE.ordinal())).toUpperCase()))
+                .bodyCategory(BodyCategory.valueOf(((String) values.get(CarFields.BODY_TYPE.ordinal())).toUpperCase()))
                 .yearOfProduction(Integer.parseInt((String) values.get(CarFields.YEAR_OF_PRODUCTION.ordinal())))
                 .color((String) values.get(CarFields.COLOR.ordinal()))
                 .mileage(Integer.parseInt((String) values.get(CarFields.MILEAGE.ordinal())))
-                .carStatus(CarStatusEnum.valueOf(((String) values.get(CarFields.CAR_STATUS.ordinal())).toUpperCase()))
-                .amount(BigDecimal.valueOf(Double.parseDouble((String) values.get(CarFields.AMOUNT.ordinal()))))
+                .carState(CarState.valueOf(((String) values.get(CarFields.CAR_STATUS.ordinal())).toUpperCase()))
+                .amount(BigDecimal.valueOf(((Long) values.get(CarFields.AMOUNT.ordinal()))))
                 .originalBranchId((String) values.get(CarFields.ORIGINAL_BRANCH.ordinal()))
                 .actualBranchId((String) values.get(CarFields.ACTUAL_BRANCH.ordinal()))
-                .urlOfImage((String) values.get(CarFields.URL_OF_IMAGE.ordinal()));
+                .urlOfImage((String) values.get(CarFields.URL_OF_IMAGE.ordinal()))
+                .build();
     }
 
 }

@@ -1,7 +1,7 @@
 package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.BranchService;
-import com.swiftwheelshub.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchRequest;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -41,7 +41,7 @@ public class BranchHandler {
     }
 
     public Mono<ServerResponse> updateBranch(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(BranchDto.class)
+        return serverRequest.bodyToMono(BranchRequest.class)
                 .flatMap(branchDto -> branchService.updateBranch(ServerRequestUtil.getPathVariable(serverRequest, ID), branchDto))
                 .flatMap(branchDto -> ServerResponse.ok().bodyValue(branchDto));
     }
@@ -52,7 +52,7 @@ public class BranchHandler {
     }
 
     public Mono<ServerResponse> saveBranch(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(BranchDto.class)
+        return serverRequest.bodyToMono(BranchRequest.class)
                 .flatMap(branchService::saveBranch)
                 .flatMap(branchDto -> ServerResponse.ok().bodyValue(branchDto));
     }

@@ -1,6 +1,7 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeRequest;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import com.swiftwheelshub.model.Employee;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -9,15 +10,17 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring",
+@Mapper(
+        componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 public interface EmployeeMapper {
 
     @Mapping(target = "workingBranchId", expression = "java(mapObjectIdToString(employee.getWorkingBranch().getId()))")
-    EmployeeDto mapEntityToDto(Employee employee);
+    EmployeeResponse mapEntityToDto(Employee employee);
 
-    Employee mapDtoToEntity(EmployeeDto employeeDto);
+    Employee mapDtoToEntity(EmployeeRequest employeeRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

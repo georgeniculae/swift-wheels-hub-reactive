@@ -2,7 +2,8 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.RentalOfficeMapper;
 import com.swiftwheelshub.agency.repository.RentalOfficeRepository;
-import com.swiftwheelshub.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeRequest;
+import com.swiftwheelshub.dto.RentalOfficeResponse;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
@@ -22,7 +23,7 @@ public class RentalOfficeService {
     private final RentalOfficeRepository rentalOfficeRepository;
     private final RentalOfficeMapper rentalOfficeMapper;
 
-    public Flux<RentalOfficeDto> findAllRentalOffices() {
+    public Flux<RentalOfficeResponse> findAllRentalOffices() {
         return rentalOfficeRepository.findAll()
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -32,7 +33,7 @@ public class RentalOfficeService {
                 });
     }
 
-    public Mono<RentalOfficeDto> findRentalOfficeById(String id) {
+    public Mono<RentalOfficeResponse> findRentalOfficeById(String id) {
         return findEntityById(id)
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -42,7 +43,7 @@ public class RentalOfficeService {
                 });
     }
 
-    public Flux<RentalOfficeDto> findRentalOfficesByNameInsensitiveCase(String name) {
+    public Flux<RentalOfficeResponse> findRentalOfficesByNameInsensitiveCase(String name) {
         return rentalOfficeRepository.findAllByNameInsensitiveCase(name)
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -60,8 +61,8 @@ public class RentalOfficeService {
                 );
     }
 
-    public Mono<RentalOfficeDto> saveRentalOffice(RentalOfficeDto rentalOfficeDto) {
-        return rentalOfficeRepository.save(rentalOfficeMapper.mapDtoToEntity(rentalOfficeDto))
+    public Mono<RentalOfficeResponse> saveRentalOffice(RentalOfficeRequest rentalOfficeRequest) {
+        return rentalOfficeRepository.save(rentalOfficeMapper.mapDtoToEntity(rentalOfficeRequest))
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorResume(e -> {
                     log.error("Error while saving rental office: {}", e.getMessage());
@@ -70,12 +71,12 @@ public class RentalOfficeService {
                 });
     }
 
-    public Mono<RentalOfficeDto> updateRentalOffice(String id, RentalOfficeDto updatedRentalOfficeDto) {
+    public Mono<RentalOfficeResponse> updateRentalOffice(String id, RentalOfficeRequest updatedRentalOfficeRequest) {
         return findEntityById(id)
                 .flatMap(existingRentalOffice -> {
-                    existingRentalOffice.setName(updatedRentalOfficeDto.getName());
-                    existingRentalOffice.setContactAddress(updatedRentalOfficeDto.getContactAddress());
-                    existingRentalOffice.setLogoType(updatedRentalOfficeDto.getLogoType());
+                    existingRentalOffice.setName(updatedRentalOfficeRequest.name());
+                    existingRentalOffice.setContactAddress(updatedRentalOfficeRequest.contactAddress());
+                    existingRentalOffice.setLogoType(updatedRentalOfficeRequest.logoType());
 
                     return rentalOfficeRepository.save(existingRentalOffice);
                 })

@@ -1,9 +1,9 @@
 package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.CarService;
-import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
-import com.swiftwheelshub.dto.CarDto;
-import com.swiftwheelshub.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.CarRequest;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.CarUpdateDetails;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -65,7 +65,7 @@ public class CarHandler {
     }
 
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(CarDto.class)
+        return serverRequest.bodyToMono(CarRequest.class)
                 .flatMap(carService::saveCar)
                 .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto))
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -82,26 +82,26 @@ public class CarHandler {
     }
 
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(CarDto.class)
+        return serverRequest.bodyToMono(CarRequest.class)
                 .flatMap(carDto -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), carDto))
                 .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto));
     }
 
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(CarStatusEnum.class)
+        return serverRequest.bodyToMono(CarState.class)
                 .flatMap(carStatus -> carService.updateCarStatus(ServerRequestUtil.getPathVariable(serverRequest, ID), carStatus))
                 .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto));
     }
 
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(CarDetailsForUpdateDto.class)
+        return serverRequest.bodyToMono(CarUpdateDetails.class)
                 .flatMap(carDetailsForUpdateDto -> carService.updateCarWhenBookingIsClosed(ServerRequestUtil.getPathVariable(serverRequest, ID), carDetailsForUpdateDto))
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto));
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
     public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
-        return serverRequest.bodyToFlux(CarDetailsForUpdateDto.class)
-                .flatMap(details -> carService.updateCarStatus(details.getCarId(), details.getCarStatus()))
+        return serverRequest.bodyToFlux(CarUpdateDetails.class)
+                .flatMap(carUpdateDetails -> carService.updateCarStatus(carUpdateDetails.carId(), carUpdateDetails.carState()))
                 .collectList()
                 .flatMap(carDtoList -> ServerResponse.ok().bodyValue(carDtoList));
     }

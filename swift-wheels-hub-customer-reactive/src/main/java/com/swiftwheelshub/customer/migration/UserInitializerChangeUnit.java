@@ -1,6 +1,5 @@
 package com.swiftwheelshub.customer.migration;
 
-import com.swiftwheelshub.model.User;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.reactivestreams.client.ClientSession;

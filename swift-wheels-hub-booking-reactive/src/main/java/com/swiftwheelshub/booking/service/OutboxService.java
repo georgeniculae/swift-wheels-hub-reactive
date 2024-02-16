@@ -4,7 +4,7 @@ import com.swiftwheelshub.booking.mapper.BookingMapper;
 import com.swiftwheelshub.booking.model.Outbox;
 import com.swiftwheelshub.booking.repository.BookingRepository;
 import com.swiftwheelshub.booking.repository.OutboxRepository;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingResponse;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.model.Booking;
 import lombok.RequiredArgsConstructor;
@@ -69,17 +69,17 @@ public class OutboxService {
 
     private Mono<Boolean> sendBookingToCorrespondingTopic(Outbox outbox, Outbox createdOutbox) {
         if (Outbox.Operation.CREATE.equals(createdOutbox.getOperation())) {
-            return savedBookingProducerService.sendMessage(getBookingDto(outbox.getContent()));
+            return savedBookingProducerService.sendMessage(getBookingResponse(outbox.getContent()));
         }
 
         if (Outbox.Operation.UPDATE.equals(createdOutbox.getOperation())) {
-            return updatedBookingProducerService.sendMessage(getBookingDto(outbox.getContent()));
+            return updatedBookingProducerService.sendMessage(getBookingResponse(outbox.getContent()));
         }
 
         return deletedBookingProducerService.sendMessage(outbox.getContent().getId().toString());
     }
 
-    private BookingDto getBookingDto(Booking booking) {
+    private BookingResponse getBookingResponse(Booking booking) {
         return bookingMapper.mapEntityToDto(booking);
     }
 

@@ -1,7 +1,7 @@
 package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.RentalOfficeService;
-import com.swiftwheelshub.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeRequest;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -46,13 +46,13 @@ public class RentalOfficeHandler {
     }
 
     public Mono<ServerResponse> saveRentalOffice(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(RentalOfficeDto.class)
+        return serverRequest.bodyToMono(RentalOfficeRequest.class)
                 .flatMap(rentalOfficeService::saveRentalOffice)
                 .flatMap(rentalOfficeDto -> ServerResponse.ok().bodyValue(rentalOfficeDto));
     }
 
     public Mono<ServerResponse> updateRentalOffice(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(RentalOfficeDto.class)
+        return serverRequest.bodyToMono(RentalOfficeRequest.class)
                 .flatMap(rentalOfficeDto ->
                         rentalOfficeService.updateRentalOffice(ServerRequestUtil.getPathVariable(serverRequest, ID), rentalOfficeDto))
                 .flatMap(rentalOfficeDto -> ServerResponse.ok().bodyValue(rentalOfficeDto));

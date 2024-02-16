@@ -1,7 +1,7 @@
 package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.EmployeeService;
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeRequest;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -54,13 +54,13 @@ public class EmployeeHandler {
     }
 
     public Mono<ServerResponse> saveEmployee(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(EmployeeDto.class)
+        return serverRequest.bodyToMono(EmployeeRequest.class)
                 .flatMap(employeeService::saveEmployee)
                 .flatMap(employeeDto -> ServerResponse.ok().bodyValue(employeeDto));
     }
 
     public Mono<ServerResponse> updateEmployee(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(EmployeeDto.class)
+        return serverRequest.bodyToMono(EmployeeRequest.class)
                 .flatMap(employeeDto ->
                         employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeDto))
                 .flatMap(employeeDto -> ServerResponse.ok().bodyValue(employeeDto));

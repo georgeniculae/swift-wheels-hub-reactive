@@ -1,6 +1,7 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.swiftwheelshub.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchRequest;
+import com.swiftwheelshub.dto.BranchResponse;
 import com.swiftwheelshub.model.Branch;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -15,9 +16,9 @@ import org.mapstruct.ReportingPolicy;
 public interface BranchMapper {
 
     @Mapping(target = "rentalOfficeId", expression = "java(mapObjectIdToString(branch.getRentalOffice().getId()))")
-    BranchDto mapEntityToDto(Branch branch);
+    BranchResponse mapEntityToDto(Branch branch);
 
-    Branch mapDtoToEntity(BranchDto branchDto);
+    Branch mapDtoToEntity(BranchRequest branchRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

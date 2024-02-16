@@ -4,7 +4,6 @@ import com.swiftwheelshub.customer.util.AssertionUtils;
 import com.swiftwheelshub.customer.util.TestUtils;
 import com.swiftwheelshub.dto.CurrentUserDto;
 import com.swiftwheelshub.dto.UserDto;
-import com.swiftwheelshub.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

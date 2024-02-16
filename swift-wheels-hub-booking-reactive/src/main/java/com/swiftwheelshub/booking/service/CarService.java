@@ -1,8 +1,8 @@
 package com.swiftwheelshub.booking.service;
 
-import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
-import com.swiftwheelshub.dto.CarDto;
-import com.swiftwheelshub.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.CarResponse;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.CarUpdateDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,13 +28,13 @@ public class CarService {
 
     private final WebClient webClient;
 
-    public Mono<CarDto> findAvailableCarById(String apiKeyToken, String carId) {
+    public Mono<CarResponse> findAvailableCarById(String apiKeyToken, String carId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "availability", carId)
                 .header(X_API_KEY, apiKeyToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(CarDto.class)
+                .bodyToMono(CarResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
@@ -42,15 +42,15 @@ public class CarService {
                 });
     }
 
-    public Mono<CarDto> changeCarStatus(String apiKeyToken, String carId, CarStatusEnum carStatus) {
+    public Mono<CarResponse> changeCarStatus(String apiKeyToken, String carId, CarState carState) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carStatus)
+                .bodyValue(carState)
                 .retrieve()
-                .bodyToMono(CarDto.class)
+                .bodyToMono(CarResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
@@ -58,15 +58,15 @@ public class CarService {
                 });
     }
 
-    public Mono<CarDto> updateCarWhenBookingIsFinished(String apiKeyToken, CarDetailsForUpdateDto carDetailsForUpdateDto) {
+    public Mono<CarResponse> updateCarWhenBookingIsFinished(String apiKeyToken, CarUpdateDetails carUpdateDetails) {
         return webClient.put()
-                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carDetailsForUpdateDto.getCarId())
+                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carDetailsForUpdateDto)
+                .bodyValue(carUpdateDetails)
                 .retrieve()
-                .bodyToMono(CarDto.class)
+                .bodyToMono(CarResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
@@ -74,16 +74,16 @@ public class CarService {
                 });
     }
 
-    public Flux<CarDto> updateCarsStatus(String apiKeyToken,
-                                         List<CarDetailsForUpdateDto> carDetailsForUpdateDtoList) {
+    public Flux<CarResponse> updateCarsStatus(String apiKeyToken,
+                                         List<CarUpdateDetails> carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + SEPARATOR + "update-statuses")
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carDetailsForUpdateDtoList)
+                .bodyValue(carUpdateDetails)
                 .retrieve()
-                .bodyToFlux(CarDto.class)
+                .bodyToFlux(CarResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

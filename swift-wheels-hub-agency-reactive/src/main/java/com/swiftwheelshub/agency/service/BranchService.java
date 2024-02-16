@@ -2,7 +2,8 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.BranchMapper;
 import com.swiftwheelshub.agency.repository.BranchRepository;
-import com.swiftwheelshub.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchRequest;
+import com.swiftwheelshub.dto.BranchResponse;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
@@ -23,7 +24,7 @@ public class BranchService {
     private final RentalOfficeService rentalOfficeService;
     private final BranchMapper branchMapper;
 
-    public Flux<BranchDto> findAllBranches() {
+    public Flux<BranchResponse> findAllBranches() {
         return branchRepository.findAll()
                 .map(branchMapper::mapEntityToDto).onErrorResume(e -> {
                     log.error("Error while finding all branches: {}", e.getMessage());
@@ -32,7 +33,7 @@ public class BranchService {
                 });
     }
 
-    public Mono<BranchDto> findBranchById(String id) {
+    public Mono<BranchResponse> findBranchById(String id) {
         return findEntityById(id)
                 .map(branchMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -42,7 +43,7 @@ public class BranchService {
                 });
     }
 
-    public Flux<BranchDto> findBranchesByFilterInsensitiveCase(String filter) {
+    public Flux<BranchResponse> findBranchesByFilterInsensitiveCase(String filter) {
         return branchRepository.findAllByFilterInsensitiveCase(filter)
                 .map(branchMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -69,10 +70,10 @@ public class BranchService {
                 });
     }
 
-    public Mono<BranchDto> saveBranch(BranchDto branchDto) {
-        return rentalOfficeService.findEntityById(branchDto.getRentalOfficeId())
+    public Mono<BranchResponse> saveBranch(BranchRequest branchRequest) {
+        return rentalOfficeService.findEntityById(branchRequest.rentalOfficeId())
                 .flatMap(rentalOffice -> {
-                    Branch newBranch = branchMapper.mapDtoToEntity(branchDto);
+                    Branch newBranch = branchMapper.mapDtoToEntity(branchRequest);
                     newBranch.setRentalOffice(rentalOffice);
 
                     return branchRepository.save(newBranch);
@@ -85,13 +86,13 @@ public class BranchService {
                 });
     }
 
-    public Mono<BranchDto> updateBranch(String id, BranchDto updatedBranchDto) {
+    public Mono<BranchResponse> updateBranch(String id, BranchRequest updatedBranchDto) {
         return findEntityById(id)
                 .flatMap(exitingBranch ->
-                        rentalOfficeService.findEntityById(updatedBranchDto.getRentalOfficeId())
+                        rentalOfficeService.findEntityById(updatedBranchDto.rentalOfficeId())
                                 .map(rentalOffice -> {
-                                    exitingBranch.setName(updatedBranchDto.getName());
-                                    exitingBranch.setAddress(updatedBranchDto.getAddress());
+                                    exitingBranch.setName(updatedBranchDto.name());
+                                    exitingBranch.setAddress(updatedBranchDto.address());
                                     exitingBranch.setRentalOffice(rentalOffice);
 
                                     return exitingBranch;

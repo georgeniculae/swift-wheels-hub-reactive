@@ -6,7 +6,6 @@ import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.mapper.UserMapper;
 import com.swiftwheelshub.lib.repository.UserRepository;
-import com.swiftwheelshub.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

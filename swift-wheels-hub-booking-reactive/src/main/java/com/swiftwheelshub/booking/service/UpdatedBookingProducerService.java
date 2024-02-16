@@ -1,6 +1,6 @@
 package com.swiftwheelshub.booking.service;
 
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +25,13 @@ public class UpdatedBookingProducerService {
 
     private final StreamBridge streamBridge;
 
-    public Mono<Boolean> sendMessage(BookingDto bookingDto) {
-        return Mono.fromCallable(() -> streamBridge.send(binderName, buildMessage(bookingDto), MimeType.valueOf(mimeType)))
+    public Mono<Boolean> sendMessage(BookingResponse bookingResponse) {
+        return Mono.fromCallable(() -> streamBridge.send(binderName, buildMessage(bookingResponse), MimeType.valueOf(mimeType)))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Message<BookingDto> buildMessage(BookingDto carDto) {
-        return MessageBuilder.withPayload(carDto)
+    private Message<BookingResponse> buildMessage(BookingResponse bookingResponse) {
+        return MessageBuilder.withPayload(bookingResponse)
                 .build();
     }
 

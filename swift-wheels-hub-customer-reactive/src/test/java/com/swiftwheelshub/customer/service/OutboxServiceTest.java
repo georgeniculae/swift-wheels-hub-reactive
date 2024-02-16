@@ -7,7 +7,6 @@ import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.mapper.UserMapper;
 import com.swiftwheelshub.lib.mapper.UserMapperImpl;
 import com.swiftwheelshub.lib.repository.UserRepository;
-import com.swiftwheelshub.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

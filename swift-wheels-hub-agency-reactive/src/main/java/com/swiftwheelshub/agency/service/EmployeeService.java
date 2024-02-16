@@ -2,7 +2,8 @@ package com.swiftwheelshub.agency.service;
 
 import com.swiftwheelshub.agency.mapper.EmployeeMapper;
 import com.swiftwheelshub.agency.repository.EmployeeRepository;
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeRequest;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
@@ -23,7 +24,7 @@ public class EmployeeService {
     private final BranchService branchService;
     private final EmployeeMapper employeeMapper;
 
-    public Flux<EmployeeDto> findAllEmployees() {
+    public Flux<EmployeeResponse> findAllEmployees() {
         return employeeRepository.findAll()
                 .map(employeeMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -33,7 +34,7 @@ public class EmployeeService {
                 });
     }
 
-    public Mono<EmployeeDto> findEmployeeById(String id) {
+    public Mono<EmployeeResponse> findEmployeeById(String id) {
         return findEntityById(id)
                 .map(employeeMapper::mapEntityToDto).onErrorResume(e -> {
                     log.error("Error while finding employee by id: {}", e.getMessage());
@@ -43,10 +44,10 @@ public class EmployeeService {
 
     }
 
-    public Mono<EmployeeDto> saveEmployee(EmployeeDto employeeDto) {
-        return branchService.findEntityById(employeeDto.getWorkingBranchId())
+    public Mono<EmployeeResponse> saveEmployee(EmployeeRequest employeeRequest) {
+        return branchService.findEntityById(employeeRequest.workingBranchId())
                 .flatMap(workingBranch -> {
-                    Employee newEmployee = employeeMapper.mapDtoToEntity(employeeDto);
+                    Employee newEmployee = employeeMapper.mapDtoToEntity(employeeRequest);
                     newEmployee.setWorkingBranch(workingBranch);
 
                     return employeeRepository.save(newEmployee);
@@ -59,16 +60,16 @@ public class EmployeeService {
                 });
     }
 
-    public Mono<EmployeeDto> updateEmployee(String id, EmployeeDto updatedEmployeeDto) {
+    public Mono<EmployeeResponse> updateEmployee(String id, EmployeeRequest updatedEmployeeRequest) {
         return findEntityById(id)
                 .flatMap(existingEmployee -> {
-                    String workingBranchId = updatedEmployeeDto.getWorkingBranchId();
+                    String workingBranchId = updatedEmployeeRequest.workingBranchId();
 
                     return branchService.findEntityById(workingBranchId)
                             .flatMap(workingBranch -> {
-                                existingEmployee.setFirstName(updatedEmployeeDto.getFirstName());
-                                existingEmployee.setLastName(updatedEmployeeDto.getLastName());
-                                existingEmployee.setJobPosition(updatedEmployeeDto.getJobPosition());
+                                existingEmployee.setFirstName(updatedEmployeeRequest.firstName());
+                                existingEmployee.setLastName(updatedEmployeeRequest.lastName());
+                                existingEmployee.setJobPosition(updatedEmployeeRequest.jobPosition());
                                 existingEmployee.setWorkingBranch(workingBranch);
 
                                 return employeeRepository.save(existingEmployee);
@@ -82,7 +83,7 @@ public class EmployeeService {
                 });
     }
 
-    public Flux<EmployeeDto> findEmployeesByBranchId(String id) {
+    public Flux<EmployeeResponse> findEmployeesByBranchId(String id) {
         return employeeRepository.findAllEmployeesByBranchId(MongoUtil.getObjectId(id))
                 .map(employeeMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -92,7 +93,7 @@ public class EmployeeService {
                 });
     }
 
-    public Flux<EmployeeDto> findEmployeeByFilterInsensitiveCase(String searchString) {
+    public Flux<EmployeeResponse> findEmployeeByFilterInsensitiveCase(String searchString) {
         return employeeRepository.findAllByFilterInsensitiveCase(searchString)
                 .map(employeeMapper::mapEntityToDto)
                 .onErrorResume(e -> {

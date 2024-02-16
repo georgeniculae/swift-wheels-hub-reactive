@@ -6,6 +6,7 @@ import com.swiftwheelshub.agency.repository.CarRepository;
 import com.swiftwheelshub.agency.util.TestUtils;
 import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
 import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarResponse;
 import com.swiftwheelshub.dto.CarStatusEnum;
 import com.swiftwheelshub.model.Branch;
 import com.swiftwheelshub.model.Car;
@@ -226,8 +227,11 @@ class CarServiceTest {
     @Test
     void uploadCarsTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+
         Car car = TestUtils.getResourceAsJson("/data/UploadedCar.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/UploadedCarDto.json", CarDto.class);
+
+        CarResponse carResponse =
+                TestUtils.getResourceAsJson("/data/UploadedCarResponse.json", CarResponse.class);
 
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
         Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 16384);
@@ -237,7 +241,7 @@ class CarServiceTest {
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
 
         StepVerifier.create(carService.uploadCars(filePart))
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -245,14 +249,14 @@ class CarServiceTest {
     void updateCarTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carDto))
-                .expectNext(carDto)
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carResponse))
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 

@@ -13,8 +13,6 @@ import com.swiftwheelshub.lib.mapper.UserMapper;
 import com.swiftwheelshub.lib.repository.UserRepository;
 import com.swiftwheelshub.lib.security.jwt.JwtService;
 import com.swiftwheelshub.lib.util.MongoUtil;
-import com.swiftwheelshub.model.Role;
-import com.swiftwheelshub.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

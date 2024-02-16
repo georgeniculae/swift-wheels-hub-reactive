@@ -2,8 +2,6 @@ package com.swiftwheelshub.customer.mapper;
 
 import com.swiftwheelshub.dto.CurrentUserDto;
 import com.swiftwheelshub.dto.UserDto;
-import com.swiftwheelshub.model.Role;
-import com.swiftwheelshub.model.User;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

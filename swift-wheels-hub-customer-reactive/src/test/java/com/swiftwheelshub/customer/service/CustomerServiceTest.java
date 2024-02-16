@@ -13,7 +13,6 @@ import com.swiftwheelshub.lib.mapper.UserMapper;
 import com.swiftwheelshub.lib.mapper.UserMapperImpl;
 import com.swiftwheelshub.lib.repository.UserRepository;
 import com.swiftwheelshub.lib.security.jwt.JwtService;
-import com.swiftwheelshub.model.User;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

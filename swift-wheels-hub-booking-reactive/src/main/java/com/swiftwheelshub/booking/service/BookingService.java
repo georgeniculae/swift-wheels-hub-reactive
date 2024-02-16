@@ -45,7 +45,7 @@ public class BookingService {
     private final OutboxService outboxService;
     private final BookingMapper bookingMapper;
 
-    public Flux<BookingDto> findAllBookings() {
+    public Flux<BookingResponse> findAllBookings() {
         return bookingRepository.findAll()
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -55,7 +55,7 @@ public class BookingService {
                 });
     }
 
-    public Mono<BookingDto> findBookingById(String id) {
+    public Mono<BookingResponse> findBookingById(String id) {
         return findEntityById(id)
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -65,7 +65,7 @@ public class BookingService {
                 });
     }
 
-    public Flux<BookingDto> findBookingsByDateOfBooking(String dateOfBooking) {
+    public Flux<BookingResponse> findBookingsByDateOfBooking(String dateOfBooking) {
         return reactiveMongoTemplate.find(getQuery(dateOfBooking), Booking.class)
                 .map(bookingMapper::mapEntityToDto)
                 .switchIfEmpty(
@@ -83,7 +83,7 @@ public class BookingService {
                 });
     }
 
-    public Flux<BookingDto> findBookingsByLoggedInUser(String username) {
+    public Flux<BookingResponse> findBookingsByLoggedInUser(String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -95,7 +95,7 @@ public class BookingService {
 
     public Mono<Double> getAmountSpentByLoggedInUser(String username) {
         return findBookingsByLoggedInUser(username)
-                .map(BookingDto::getAmount)
+                .map(BookingRequest::amount)
                 .filter(Objects::nonNull)
                 .map(BigDecimal::doubleValue)
                 .reduce(0D, Double::sum);
@@ -103,7 +103,7 @@ public class BookingService {
 
     public Mono<Double> getSumOfAllBookingAmount() {
         return findAllBookings()
-                .map(BookingDto::getAmount)
+                .map(BookingRequest::amount)
                 .filter(Objects::nonNull)
                 .map(BigDecimal::doubleValue)
                 .reduce(0D, Double::sum);
@@ -133,12 +133,12 @@ public class BookingService {
 
     @LogActivity(
             activityDescription = "Booking creation",
-            sentParameters = "newBookingDto"
+            sentParameters = "newBookingRequest"
     )
-    public Mono<BookingDto> saveBooking(String apiKeyToken, BookingDto newBookingDto) {
-        return validateBookingDates(newBookingDto)
-                .flatMap(bookingDto -> carService.findAvailableCarById(apiKeyToken, bookingDto.getCarId()))
-                .map(carDto -> setupNewBooking(newBookingDto, carDto))
+    public Mono<BookingResponse> saveBooking(String apiKeyToken, BookingRequest newBookingRequest) {
+        return validateBookingDates(newBookingRequest)
+                .flatMap(bookingRequest -> carService.findAvailableCarById(apiKeyToken, bookingRequest.carId()))
+                .map(carDto -> setupNewBooking(newBookingRequest, carDto))
                 .flatMap(booking -> outboxService.saveBookingAndOutboxTransactional(booking, Outbox.Operation.CREATE))
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
                 .flatMap(bookingDto -> setCarForNewBooking(apiKeyToken, bookingDto))
@@ -157,7 +157,7 @@ public class BookingService {
         return validateBookingDates(updatedBookingDto)
                 .flatMap(bookingDto -> findEntityById(id))
                 .flatMap(existingBooking -> getCarIfIsChanged(apiKeyToken, updatedBookingDto, existingBooking)
-                        .map(carDto -> updateExistingBookingWithNewCarDetails(updatedBookingDto, existingBooking, carDto))
+                        .map(carResponse -> updateExistingBookingWithNewCarDetails(updatedBookingDto, existingBooking, carResponse))
                         .switchIfEmpty(Mono.defer(() -> Mono.just(updateExistingBooking(updatedBookingDto, existingBooking))))
                         .flatMap(updatedExistingBooking -> outboxService.saveBookingAndOutboxTransactional(updatedExistingBooking, Outbox.Operation.UPDATE)
                                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
@@ -208,11 +208,11 @@ public class BookingService {
         return bookingRepository.deleteByCustomerUsername(username);
     }
 
-    private Mono<BookingDto> validateBookingDates(BookingDto newBookingDto) {
-        return Mono.just(newBookingDto)
+    private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
+        return Mono.just(newBookingRequest)
                 .flatMap(bookingDto -> {
-                    LocalDate dateFrom = newBookingDto.getDateFrom();
-                    LocalDate dateTo = newBookingDto.getDateTo();
+                    LocalDate dateFrom = newBookingRequest.dateFrom();
+                    LocalDate dateTo = newBookingRequest.dateTo();
                     LocalDate currentDate = LocalDate.now();
 
                     LocalDate newDateFrom = Optional.ofNullable(dateFrom)
@@ -238,29 +238,30 @@ public class BookingService {
                         );
                     }
 
-                    return Mono.just(newBookingDto);
+                    return Mono.just(newBookingRequest);
                 });
     }
 
-    private Mono<BookingDto> updateCarWhenBookingIsClosed(String apiKeyToken, BookingDto bookingDto,
-                                                          BookingClosingDetailsDto bookingClosingDetailsDto) {
-        CarDetailsForUpdateDto carDetailsForUpdateDto = new CarDetailsForUpdateDto()
-                .carId(bookingDto.getCarId())
-                .receptionistEmployeeId(bookingClosingDetailsDto.getReceptionistEmployeeId())
-                .carStatus(bookingClosingDetailsDto.getCarStatus());
+    private Mono<BookingResponse> updateCarWhenBookingIsClosed(String apiKeyToken, BookingResponse bookingResponse,
+                                                          BookingClosingDetails bookingClosingDetails) {
+        CarUpdateDetails carDetailsForUpdateDto = CarUpdateDetails.builder()
+                .carId(bookingResponse.carId())
+                .receptionistEmployeeId(bookingClosingDetails.receptionistEmployeeId())
+                .carStatus(bookingClosingDetails.carStatus())
+                .build();
 
         return carService.updateCarWhenBookingIsFinished(apiKeyToken, carDetailsForUpdateDto)
-                .map(carDto -> bookingDto);
+                .map(carDto -> bookingResponse);
     }
 
-    private Mono<BookingDto> setCarForNewBooking(String apiKeyToken, BookingDto bookingDto) {
-        return carService.changeCarStatus(apiKeyToken, bookingDto.getCarId(), CarStatusEnum.NOT_AVAILABLE)
-                .map(carDto -> bookingDto);
+    private Mono<BookingResponse> setCarForNewBooking(String apiKeyToken, BookingRequest bookingRequest) {
+        return carService.changeCarStatus(apiKeyToken, bookingRequest.carId(), CarState.NOT_AVAILABLE)
+                .map(carDto -> bookingRequest);
     }
 
-    private Mono<CarDto> getCarIfIsChanged(String apiKeyToken, BookingDto updatedBookingDto,
+    private Mono<CarResponse> getCarIfIsChanged(String apiKeyToken, BookingRequest updatedBookingRequest,
                                            Booking existingBooking) {
-        return Mono.just(Optional.ofNullable(updatedBookingDto.getCarId()).orElseThrow())
+        return Mono.just(updatedBookingRequest.carId())
                 .filter(id -> !existingBooking.getCarId().toString().equals(id))
                 .flatMap(newCarId -> carService.findAvailableCarById(apiKeyToken, newCarId))
                 .switchIfEmpty(Mono.empty());
@@ -327,43 +328,43 @@ public class BookingService {
         return existingBooking;
     }
 
-    private Booking updateExistingBookingWithNewCarDetails(BookingDto updatedBookingDto, Booking existingBooking,
-                                                           CarDto carDto) {
-        LocalDate dateFrom = updatedBookingDto.getDateFrom();
-        LocalDate dateTo = updatedBookingDto.getDateTo();
+    private Booking updateExistingBookingWithNewCarDetails(BookingRequest updatedBookingRequest, Booking existingBooking,
+                                                           CarResponse carResponse) {
+        LocalDate dateFrom = updatedBookingRequest.dateFrom();
+        LocalDate dateTo = updatedBookingRequest.dateTo();
 
         Booking updatedExistingBooking = bookingMapper.getNewBooking(existingBooking);
-        double amount = Optional.ofNullable(carDto.getAmount()).orElseThrow().doubleValue();
+        double amount = carResponse.amount();
 
         updatedExistingBooking.setDateFrom(dateFrom);
         updatedExistingBooking.setDateTo(dateTo);
-        updatedExistingBooking.setCarId(MongoUtil.getObjectId(carDto.getId()));
-        updatedExistingBooking.setRentalBranchId(MongoUtil.getObjectId(carDto.getActualBranchId()));
+        updatedExistingBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
+        updatedExistingBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         updatedExistingBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedExistingBooking.setRentalCarPrice(amount);
 
         return updatedExistingBooking;
     }
 
-    private Mono<BookingDto> changeCarsStatus(String apiKeyToken, BookingDto updatedBookingDto,
+    private Mono<BookingResponse> changeCarsStatus(String apiKeyToken, BookingResponse updatedBookingResponse,
                                               Booking existingBooking) {
         return Mono.just(existingBooking.getCarId().toString())
-                .filter(existingBookingCarId -> !existingBookingCarId.equals(updatedBookingDto.getCarId()))
+                .filter(existingBookingCarId -> !existingBookingCarId.equals(updatedBookingResponse.carId()))
                 .flatMap(existingBookingCarId -> {
-                    List<CarDetailsForUpdateDto> carsForStatusUpdate =
-                            getCarsForStatusUpdate(existingBookingCarId, updatedBookingDto.getCarId());
+                    List<UpdateCarRequest> updateCarRequests =
+                            getCarsForStatusUpdate(existingBookingCarId, updatedBookingResponse.carId());
 
-                    return carService.updateCarsStatus(apiKeyToken, carsForStatusUpdate)
+                    return carService.updateCarsStatus(apiKeyToken, updateCarRequests)
                             .collectList()
-                            .map(carDtoList -> updatedBookingDto);
+                            .map(carDtoList -> updatedBookingResponse);
                 })
-                .switchIfEmpty(Mono.defer(() -> Mono.just(updatedBookingDto)));
+                .switchIfEmpty(Mono.defer(() -> Mono.just(updatedBookingResponse)));
     }
 
-    private List<CarDetailsForUpdateDto> getCarsForStatusUpdate(String existingCarId, String newCarId) {
+    private List<UpdateCarRequest> getCarsForStatusUpdate(String existingCarId, String newCarId) {
         return List.of(
-                new CarDetailsForUpdateDto().carId(existingCarId).carStatus(CarStatusEnum.AVAILABLE),
-                new CarDetailsForUpdateDto().carId(newCarId).carStatus(CarStatusEnum.NOT_AVAILABLE)
+                new UpdateCarRequest(existingCarId, CarState.AVAILABLE),
+                new UpdateCarRequest(newCarId, CarState.NOT_AVAILABLE)
         );
     }
 

@@ -1,6 +1,6 @@
 package com.swiftwheelshub.booking.service;
 
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +23,13 @@ public class EmployeeService {
 
     private final WebClient webClient;
 
-    public Mono<EmployeeDto> findEmployeeById(String apiKeyToken, String employeeId) {
+    public Mono<EmployeeResponse> findEmployeeById(String apiKeyToken, String employeeId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", employeeId)
                 .header(X_API_KEY, apiKeyToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(EmployeeDto.class)
+                .bodyToMono(EmployeeResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

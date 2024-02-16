@@ -1,6 +1,7 @@
 package com.swiftwheelshub.agency.mapper;
 
-import com.swiftwheelshub.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeRequest;
+import com.swiftwheelshub.dto.RentalOfficeResponse;
 import com.swiftwheelshub.model.RentalOffice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -13,9 +14,9 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface RentalOfficeMapper {
 
-    RentalOfficeDto mapEntityToDto(RentalOffice rentalOffice);
+    RentalOfficeResponse mapEntityToDto(RentalOffice rentalOffice);
 
-    RentalOffice mapDtoToEntity(RentalOfficeDto rentalOfficeDto);
+    RentalOffice mapDtoToEntity(RentalOfficeRequest rentalOfficeRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
