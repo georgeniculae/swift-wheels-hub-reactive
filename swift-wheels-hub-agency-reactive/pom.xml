@@ -35,6 +35,12 @@
 
         <dependency>
             <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-dto-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-common-lib-reactive</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
