@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.NonNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Document(collection = "booking")
@@ -42,9 +43,9 @@ public class Booking {
     @NonNull
     private LocalDate dateTo;
 
-    private Double amount;
+    private BigDecimal amount;
 
-    private Double rentalCarPrice;
+    private BigDecimal rentalCarPrice;
 
     private ObjectId rentalBranchId;
 

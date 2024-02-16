@@ -101,7 +101,7 @@ public class BookingService {
 
     public Mono<Double> getAmountSpentByLoggedInUser(String username) {
         return findBookingsByLoggedInUser(username)
-                .map(BookingRequest::amount)
+                .map(BookingResponse::amount)
                 .filter(Objects::nonNull)
                 .map(BigDecimal::doubleValue)
                 .reduce(0D, Double::sum);
@@ -109,7 +109,7 @@ public class BookingService {
 
     public Mono<Double> getSumOfAllBookingAmount() {
         return findAllBookings()
-                .map(BookingRequest::amount)
+                .map(BookingResponse::amount)
                 .filter(Objects::nonNull)
                 .map(BigDecimal::doubleValue)
                 .reduce(0D, Double::sum);
@@ -260,9 +260,9 @@ public class BookingService {
                 .map(carResponse -> bookingResponse);
     }
 
-    private Mono<BookingResponse> setCarForNewBooking(String apiKeyToken, BookingRequest bookingRequest) {
-        return carService.changeCarStatus(apiKeyToken, bookingRequest.carId(), CarState.NOT_AVAILABLE)
-                .map(carResponse -> bookingRequest);
+    private Mono<BookingResponse> setCarForNewBooking(String apiKeyToken, BookingResponse bookingResponse) {
+        return carService.changeCarStatus(apiKeyToken, bookingResponse.carId(), CarState.NOT_AVAILABLE)
+                .map(carResponse -> bookingResponse);
     }
 
     private Mono<CarResponse> getCarIfIsChanged(String apiKeyToken, BookingRequest updatedBookingRequest,
@@ -309,7 +309,7 @@ public class BookingService {
 
     private Booking setupNewBooking(BookingRequest newBookingDto, CarResponse carResponse) {
         Booking newBooking = bookingMapper.mapDtoToEntity(newBookingDto);
-        double amount = carResponse.amount();
+        BigDecimal amount = carResponse.amount();
 
         newBooking.setCustomerUsername(newBooking.getCustomerUsername());
         newBooking.setCustomerEmail(newBookingDto.customerEmail());
@@ -318,7 +318,7 @@ public class BookingService {
         newBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
         newBooking.setAmount(getAmount(newBooking.getDateFrom(), newBooking.getDateTo(), amount));
-        newBooking.setRentalCarPrice(carResponse.amount());
+        newBooking.setRentalCarPrice(amount);
 
         return newBooking;
     }
@@ -340,7 +340,7 @@ public class BookingService {
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
         Booking updatedExistingBooking = bookingMapper.getNewBooking(existingBooking);
-        double amount = carResponse.amount();
+        BigDecimal amount = carResponse.amount();
 
         updatedExistingBooking.setDateFrom(dateFrom);
         updatedExistingBooking.setDateTo(dateTo);
@@ -374,14 +374,14 @@ public class BookingService {
         );
     }
 
-    private Double getAmount(LocalDate dateFrom, LocalDate dateTo, Double amount) {
+    private BigDecimal getAmount(LocalDate dateFrom, LocalDate dateTo, BigDecimal amount) {
         int bookingDays = Period.between(dateFrom, dateTo).getDays();
 
         if (bookingDays == 0) {
             return amount;
         }
 
-        return bookingDays * amount;
+        return amount.multiply(BigDecimal.valueOf(bookingDays));
     }
 
 }

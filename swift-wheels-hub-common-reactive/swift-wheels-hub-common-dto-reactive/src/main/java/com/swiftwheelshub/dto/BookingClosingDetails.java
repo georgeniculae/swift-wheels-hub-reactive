@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record BookingClosingDetails(
         String bookingId,
-        Long receptionistEmployeeId,
+        String receptionistEmployeeId,
         CarState carState
 ) {
 

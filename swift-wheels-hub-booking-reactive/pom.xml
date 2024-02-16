@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>com.swiftwheelshub</groupId>
-            <artifactId>swift-wheels-hub-common-dto</artifactId>
+            <artifactId>swift-wheels-hub-common-dto-reactive</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 

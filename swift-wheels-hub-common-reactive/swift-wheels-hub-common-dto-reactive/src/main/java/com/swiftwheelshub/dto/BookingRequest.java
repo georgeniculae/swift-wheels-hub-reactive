@@ -1,13 +1,6 @@
 package com.swiftwheelshub.dto;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
@@ -17,18 +10,15 @@ import java.time.LocalDate;
 public record BookingRequest(
         String id,
 
-        @NotNull(message = "Date of booking cannot be null")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        @Temporal(TemporalType.DATE)
+        @NonNull
         LocalDate dateOfBooking,
 
-        @Enumerated(EnumType.STRING)
         BookingState status,
 
-        @NotEmpty(message = "Username cannot be empty")
+        @NonNull
         String customerUsername,
 
-        @NotEmpty(message = "Customer email cannot be empty")
+        @NonNull
         String customerEmail,
 
         @NonNull

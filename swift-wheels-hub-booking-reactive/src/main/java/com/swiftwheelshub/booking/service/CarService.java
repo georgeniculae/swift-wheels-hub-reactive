@@ -3,6 +3,7 @@ package com.swiftwheelshub.booking.service;
 import com.swiftwheelshub.dto.CarResponse;
 import com.swiftwheelshub.dto.CarState;
 import com.swiftwheelshub.dto.CarUpdateDetails;
+import com.swiftwheelshub.dto.UpdateCarRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,13 +76,13 @@ public class CarService {
     }
 
     public Flux<CarResponse> updateCarsStatus(String apiKeyToken,
-                                         List<CarUpdateDetails> carUpdateDetails) {
+                                         List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + SEPARATOR + "update-statuses")
                 .header(X_API_KEY, apiKeyToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carUpdateDetails)
+                .bodyValue(updateCarRequests)
                 .retrieve()
                 .bodyToFlux(CarResponse.class)
                 .onErrorMap(e -> {

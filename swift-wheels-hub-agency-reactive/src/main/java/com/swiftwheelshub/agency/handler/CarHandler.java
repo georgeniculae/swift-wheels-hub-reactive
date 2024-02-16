@@ -4,6 +4,7 @@ import com.swiftwheelshub.agency.service.CarService;
 import com.swiftwheelshub.dto.CarRequest;
 import com.swiftwheelshub.dto.CarState;
 import com.swiftwheelshub.dto.CarUpdateDetails;
+import com.swiftwheelshub.dto.UpdateCarRequest;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -100,8 +101,8 @@ public class CarHandler {
     }
 
     public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
-        return serverRequest.bodyToFlux(CarUpdateDetails.class)
-                .flatMap(carUpdateDetails -> carService.updateCarStatus(carUpdateDetails.carId(), carUpdateDetails.carState()))
+        return serverRequest.bodyToFlux(UpdateCarRequest.class)
+                .flatMap(updateCarRequest -> carService.updateCarStatus(updateCarRequest.carId(), updateCarRequest.carState()))
                 .collectList()
                 .flatMap(carDtoList -> ServerResponse.ok().bodyValue(carDtoList));
     }
