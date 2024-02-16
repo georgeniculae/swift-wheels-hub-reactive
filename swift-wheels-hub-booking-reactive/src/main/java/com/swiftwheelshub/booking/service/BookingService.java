@@ -35,7 +35,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -221,12 +220,7 @@ public class BookingService {
                     LocalDate dateTo = newBookingRequest.dateTo();
                     LocalDate currentDate = LocalDate.now();
 
-                    LocalDate newDateFrom = Optional.ofNullable(dateFrom)
-                            .orElseThrow(() -> new SwiftWheelsHubException("Date from is null"));
-                    LocalDate newDateTo = Optional.ofNullable(dateTo)
-                            .orElseThrow(() -> new SwiftWheelsHubException("Date to is null"));
-
-                    if (newDateFrom.isBefore(currentDate) || newDateTo.isBefore(currentDate)) {
+                    if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
                         return Mono.error(
                                 new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,

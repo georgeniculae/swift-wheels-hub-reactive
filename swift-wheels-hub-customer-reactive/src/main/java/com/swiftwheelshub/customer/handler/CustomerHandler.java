@@ -2,7 +2,6 @@ package com.swiftwheelshub.customer.handler;
 
 import com.swiftwheelshub.customer.service.CustomerService;
 import com.swiftwheelshub.dto.RegisterRequest;
-import com.swiftwheelshub.dto.UserDto;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
