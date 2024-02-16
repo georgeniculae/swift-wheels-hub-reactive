@@ -1,7 +1,7 @@
 package com.swiftwheelshub.booking.service;
 
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,11 +31,12 @@ class SavedBookingProducerServiceTest {
         ReflectionTestUtils.setField(savedBookingProducerService, "binderName", "booking-producer-out-0");
         ReflectionTestUtils.setField(savedBookingProducerService, "mimeType", "application/json");
 
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
 
-        StepVerifier.create(savedBookingProducerService.sendMessage(bookingDto))
+        StepVerifier.create(savedBookingProducerService.sendMessage(bookingResponse))
                 .expectNext(true)
                 .verifyComplete();
     }

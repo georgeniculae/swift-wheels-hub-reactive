@@ -2,11 +2,14 @@ package com.swiftwheelshub.booking.mapper;
 
 import com.swiftwheelshub.booking.util.AssertionUtils;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingRequest;
+import com.swiftwheelshub.dto.BookingResponse;
 import com.swiftwheelshub.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static com.mongodb.assertions.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 class BookingMapperTest {
@@ -17,18 +20,29 @@ class BookingMapperTest {
     void mapEntityToDtoTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
 
-        BookingDto bookingDto = bookingMapper.mapEntityToDto(booking);
+        BookingResponse bookingResponse = bookingMapper.mapEntityToDto(booking);
 
-        AssertionUtils.assertBooking(booking, bookingDto);
+        AssertionUtils.assertBookingResponse(booking, bookingResponse);
+    }
+
+    @Test
+    void mapEntityToDtoTest_null() {
+        assertNull(bookingMapper.mapEntityToDto(null));
     }
 
     @Test
     void mapDtoToEntityTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
-        Booking actualBooking = bookingMapper.mapDtoToEntity(bookingDto);
+        Booking actualBooking = bookingMapper.mapDtoToEntity(bookingRequest);
 
-        AssertionUtils.assertBooking(actualBooking, bookingDto);
+        AssertionUtils.assertBookingRequest(actualBooking, bookingRequest);
+    }
+
+    @Test
+    void mapDtoToEntityTest_null() {
+        assertNull(bookingMapper.mapDtoToEntity(null));
     }
 
 }

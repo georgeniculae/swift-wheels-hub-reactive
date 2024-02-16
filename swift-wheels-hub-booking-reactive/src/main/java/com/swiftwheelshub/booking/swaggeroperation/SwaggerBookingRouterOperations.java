@@ -1,7 +1,7 @@
 package com.swiftwheelshub.booking.swaggeroperation;
 
 import com.swiftwheelshub.booking.handler.BookingHandler;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
                         operationId = "saveBooking", tags = "Add new booking",
                         requestBody = @RequestBody(description = "Create new booking",
                                 required = true,
-                                content = @Content(schema = @Schema(implementation = BookingDto.class))))),
+                                content = @Content(schema = @Schema(implementation = BookingResponse.class))))),
                 @RouterOperation(method = RequestMethod.POST, path = "/close-booking", beanClass = BookingHandler.class, beanMethod = "closeBooking"),
                 @RouterOperation(method = RequestMethod.PUT, path = "/{id}", beanClass = BookingHandler.class, beanMethod = "updateBooking"),
                 @RouterOperation(method = RequestMethod.DELETE, path = "/{id}", beanClass = BookingHandler.class, beanMethod = "deleteBookingById")

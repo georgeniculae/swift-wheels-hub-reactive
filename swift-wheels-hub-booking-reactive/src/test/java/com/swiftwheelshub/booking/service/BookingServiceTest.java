@@ -5,7 +5,13 @@ import com.swiftwheelshub.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshub.booking.model.Outbox;
 import com.swiftwheelshub.booking.repository.BookingRepository;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.swiftwheelshub.dto.*;
+import com.swiftwheelshub.dto.BookingClosingDetails;
+import com.swiftwheelshub.dto.BookingRequest;
+import com.swiftwheelshub.dto.BookingResponse;
+import com.swiftwheelshub.dto.CarResponse;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.CarUpdateDetails;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import com.swiftwheelshub.model.Booking;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -57,12 +63,13 @@ class BookingServiceTest {
     @Test
     void findAllBookingTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(bookingRepository.findAll()).thenReturn(Flux.just(booking));
 
         StepVerifier.create(bookingService.findAllBookings())
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
@@ -78,24 +85,25 @@ class BookingServiceTest {
     @Test
     void findBookingByIdTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
 
         StepVerifier.create(bookingService.findBookingById("64f361caf291ae086e179547"))
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     void findBookingsByLoggedInUserTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
 
         StepVerifier.create(bookingService.findBookingsByLoggedInUser("admin"))
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
@@ -162,18 +170,21 @@ class BookingServiceTest {
 
     @Test
     void saveBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        String token = "token";
+        String apikeySecret = "token";
 
-        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.just(carDto));
+        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.just(carResponse));
         when(outboxService.saveBookingAndOutboxTransactional(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
-        when(carService.changeCarStatus(anyString(), anyString(), any(CarStatusEnum.class))).thenReturn(Mono.just(carDto));
+        when(carService.changeCarStatus(anyString(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(bookingService.saveBooking(token, bookingDto))
-                .expectNext(bookingDto)
+        StepVerifier.create(bookingService.saveBooking(apikeySecret, bookingRequest))
+                .expectNext(bookingResponse)
                 .verifyComplete();
 
         verify(bookingMapper, times(1)).mapEntityToDto(any(Booking.class));
@@ -181,12 +192,13 @@ class BookingServiceTest {
 
     @Test
     void saveBookingTest_errorOnFindingAvailableCarById() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        String token = "token";
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+        String apikeySecret = "token";
 
         when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.saveBooking(token, bookingDto))
+        StepVerifier.create(bookingService.saveBooking(apikeySecret, bookingRequest))
                 .expectError()
                 .verify();
     }
@@ -194,40 +206,42 @@ class BookingServiceTest {
     @Test
     void closeBookingTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto closedBookingDto =
-                TestUtils.getResourceAsJson("/data/ClosedBookingDto.json", BookingDto.class);
-        BookingClosingDetailsDto bookingClosingDetailsDto =
-                TestUtils.getResourceAsJson("/data/BookingClosingDetailsDto.json", BookingClosingDetailsDto.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
-        String token = "token";
+        BookingResponse closedBookingResponse =
+                TestUtils.getResourceAsJson("/data/ClosedBookingResponse.json", BookingResponse.class);
+        BookingClosingDetails bookingClosingDetails =
+                TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+        String apikeySecret = "apikey";
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(anyString(), anyString())).thenReturn(Mono.just(employeeDto));
-        when(carService.updateCarWhenBookingIsFinished(anyString(), any(CarDetailsForUpdateDto.class)))
-                .thenReturn(Mono.just(carDto));
+        when(employeeService.findEmployeeById(anyString(), anyString())).thenReturn(Mono.just(employeeResponse));
+        when(carService.updateCarWhenBookingIsFinished(anyString(), any(CarUpdateDetails.class)))
+                .thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(bookingService.closeBooking(token, bookingClosingDetailsDto))
-                .expectNext(closedBookingDto)
+        StepVerifier.create(bookingService.closeBooking(apikeySecret, bookingClosingDetails))
+                .expectNext(closedBookingResponse)
                 .verifyComplete();
     }
 
     @Test
     void closeBookingTest_errorOnUpdatingCarWhenBookingIsFinished() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingClosingDetailsDto bookingClosingDetailsDto =
-                TestUtils.getResourceAsJson("/data/BookingClosingDetailsDto.json", BookingClosingDetailsDto.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
-        String token = "token";
+        BookingClosingDetails bookingClosingDetails =
+                TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+        String apikeySecret = "token";
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(anyString(), anyString())).thenReturn(Mono.just(employeeDto));
-        when(carService.updateCarWhenBookingIsFinished(anyString(), any(CarDetailsForUpdateDto.class)))
+        when(employeeService.findEmployeeById(anyString(), anyString())).thenReturn(Mono.just(employeeResponse));
+        when(carService.updateCarWhenBookingIsFinished(anyString(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.closeBooking(token, bookingClosingDetailsDto))
+        StepVerifier.create(bookingService.closeBooking(apikeySecret, bookingClosingDetails))
                 .expectError()
                 .verify();
     }
@@ -235,27 +249,31 @@ class BookingServiceTest {
     @Test
     void updateBookingTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
         Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        String token = "token";
+        String apikeySecret = "token";
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(outboxService.saveBookingAndOutboxTransactional(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
 
-        StepVerifier.create(bookingService.updateBooking(token, "64f361caf291ae086e179547", bookingDto))
-                .expectNext(bookingDto)
+        StepVerifier.create(bookingService.updateBooking(apikeySecret, "64f361caf291ae086e179547", bookingRequest))
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     void updateBookingTest_errorOnFindingBookingById() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        String token = "token";
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+        String apikeySecret = "token";
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.updateBooking(token, "64f361caf291ae086e179547", bookingDto))
+        StepVerifier.create(bookingService.updateBooking(apikeySecret, "64f361caf291ae086e179547", bookingRequest))
                 .expectError()
                 .verify();
     }
@@ -263,20 +281,24 @@ class BookingServiceTest {
     @Test
     void updateBookingTest_updatedCar_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto updatedBookingDto = TestUtils.getResourceAsJson("/data/UpdatedBookingDto.json", BookingDto.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/UpdatedNewCarDto.json", CarDto.class);
+        BookingRequest updatedBookingRequest =
+                TestUtils.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
+        BookingResponse updatedBookingResponse =
+                TestUtils.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
+        CarResponse carResponse =
+                TestUtils.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
         Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.getContent().setCarId(new ObjectId("64f361caf291ae086e179222"));
-        String token = "token";
+        String apikeySecret = "token";
 
-        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.just(carDto));
+        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(outboxService.saveBookingAndOutboxTransactional(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
-        when(carService.updateCarsStatus(anyString(), anyList())).thenReturn(Flux.just(carDto));
+        when(carService.updateCarsStatus(anyString(), anyList())).thenReturn(Flux.just(carResponse));
 
-        StepVerifier.create(bookingService.updateBooking(token, "64f361caf291ae086e179547", updatedBookingDto))
-                .expectNext(updatedBookingDto)
+        StepVerifier.create(bookingService.updateBooking(apikeySecret, "64f361caf291ae086e179547", updatedBookingRequest))
+                .expectNext(updatedBookingResponse)
                 .verifyComplete();
     }
 
@@ -305,12 +327,13 @@ class BookingServiceTest {
     @Test
     void findBookingByDateOfBookingTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.just(booking));
 
         StepVerifier.create(bookingService.findBookingsByDateOfBooking("2050-02-20"))
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
@@ -326,11 +349,11 @@ class BookingServiceTest {
     @Test
     void deleteBookingByIdTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingDeletion(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
-        when(carService.changeCarStatus(anyString(), anyString(), any(CarStatusEnum.class))).thenReturn(Mono.just(carDto));
+        when(carService.changeCarStatus(anyString(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(bookingService.deleteBookingById("apiKey", "64f361caf291ae086e179547"))
                 .expectComplete()

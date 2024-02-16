@@ -2,7 +2,7 @@ package com.swiftwheelshub.booking.router;
 
 import com.swiftwheelshub.booking.handler.BookingHandler;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,33 +41,35 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(bookingDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(bookingResponse));
 
         when(bookingHandler.findAllBookings(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri("/list")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllBookingTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(bookingDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(bookingResponse));
 
         when(bookingHandler.findAllBookings(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -83,33 +85,35 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findBookingByIdTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.findBookingById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri("/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findBookingByIdTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.findBookingById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -125,33 +129,32 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void countBookingsTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.countBookings(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri("/count")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void countBookingsTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(1L);
 
         when(bookingHandler.countBookings(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -167,33 +170,35 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void countByLoggedInUserTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.countBookingsOfLoggedInUser(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri("/count-by-logged-in-user")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void countByLoggedInUserTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.findBookingsByDateOfBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -209,9 +214,10 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void getCurrentDateTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.getCurrentDate(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -228,9 +234,10 @@ class BookingRouterTest {
     @Test
     @WithAnonymousUser
     void getCurrentDateTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.getCurrentDate(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -246,33 +253,35 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void saveBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.saveBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri("/new")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void saveBookingTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.saveBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -288,9 +297,10 @@ class BookingRouterTest {
     @Test
     @WithAnonymousUser
     void saveBookingTest_forbidden() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.saveBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -305,33 +315,35 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void closeBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.closeBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri("/close-booking")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void closeBookingTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.closeBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -347,9 +359,10 @@ class BookingRouterTest {
     @Test
     @WithAnonymousUser
     void closeBookingTest_forbidden() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.closeBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -364,33 +377,35 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.updateBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BookingDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BookingResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri("/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BookingDto.class)
+                .returnResult(BookingResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(bookingDto)
+                .expectNext(bookingResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateBookingTest_unauthorized() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.updateBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -406,9 +421,10 @@ class BookingRouterTest {
     @Test
     @WithAnonymousUser
     void updateBookingTest_forbidden() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.updateBooking(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -423,9 +439,10 @@ class BookingRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void deleteBookingByIdTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.deleteBookingById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -447,9 +464,10 @@ class BookingRouterTest {
     @Test
     @WithAnonymousUser
     void deleteBookingByIdTest_forbidden() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
         when(bookingHandler.deleteBookingById(any(ServerRequest.class))).thenReturn(serverResponse);
 

@@ -2,8 +2,9 @@ package com.swiftwheelshub.booking.handler;
 
 import com.swiftwheelshub.booking.service.BookingService;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.swiftwheelshub.dto.BookingClosingDetailsDto;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingClosingDetails;
+import com.swiftwheelshub.dto.BookingRequest;
+import com.swiftwheelshub.dto.BookingResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,13 +33,14 @@ class BookingHandlerTest {
 
     @Test
     void findAllBookingsTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(bookingService.findAllBookings()).thenReturn(Flux.just(bookingDto));
+        when(bookingService.findAllBookings()).thenReturn(Flux.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.findAllBookings(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -60,14 +62,15 @@ class BookingHandlerTest {
 
     @Test
     void findBookingByIdTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(bookingService.findBookingById(anyString())).thenReturn(Mono.just(bookingDto));
+        when(bookingService.findBookingById(anyString())).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.findBookingById(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -90,14 +93,15 @@ class BookingHandlerTest {
 
     @Test
     void findBookingsByDateOfBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("date", "2023-09-28")
                 .build();
 
-        when(bookingService.findBookingsByDateOfBooking(anyString())).thenReturn(Flux.just(bookingDto));
+        when(bookingService.findBookingsByDateOfBooking(anyString())).thenReturn(Flux.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.findBookingsByDateOfBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -120,14 +124,15 @@ class BookingHandlerTest {
 
     @Test
     void findBookingsByLoggedInUserTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .header("X-USERNAME", "user")
                 .build();
 
-        when(bookingService.findBookingsByLoggedInUser(anyString())).thenReturn(Flux.just(bookingDto));
+        when(bookingService.findBookingsByLoggedInUser(anyString())).thenReturn(Flux.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.findBookingsByLoggedInUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -217,15 +222,19 @@ class BookingHandlerTest {
 
     @Test
     void saveBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
                 .header("X-API-KEY", "apikey")
                 .header("X-USERNAME", "user")
-                .body(Mono.just(bookingDto));
+                .body(Mono.just(bookingRequest));
 
-        when(bookingService.saveBooking(anyString(), any(BookingDto.class))).thenReturn(Mono.just(bookingDto));
+        when(bookingService.saveBooking(anyString(), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -234,19 +243,19 @@ class BookingHandlerTest {
 
     @Test
     void closeBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        BookingClosingDetailsDto bookingClosingDetailsDto =
-                TestUtils.getResourceAsJson("/data/BookingClosingDetailsDto.json", BookingClosingDetailsDto.class);
+        BookingClosingDetails bookingClosingDetails =
+                TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
                 .header("X-API-KEY", "apikey")
                 .header("X-USERNAME", "user")
-                .body(Mono.just(bookingClosingDetailsDto));
+                .body(Mono.just(bookingClosingDetails));
 
-        when(bookingService.closeBooking(anyString(), any(BookingClosingDetailsDto.class)))
-                .thenReturn(Mono.just(bookingDto));
+        when(bookingService.closeBooking(anyString(), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.closeBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -255,17 +264,21 @@ class BookingHandlerTest {
 
     @Test
     void updateBookingTest_success() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingRequest bookingRequest =
+                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .header("X-API-KEY", "apikey")
                 .header("X-USERNAME", "user")
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(bookingDto));
+                .body(Mono.just(bookingRequest));
 
-        when(bookingService.updateBooking(anyString(), anyString(), any(BookingDto.class)))
-                .thenReturn(Mono.just(bookingDto));
+        when(bookingService.updateBooking(anyString(), anyString(), any(BookingRequest.class)))
+                .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

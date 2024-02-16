@@ -1,8 +1,8 @@
 package com.swiftwheelshub.booking.handler;
 
 import com.swiftwheelshub.booking.service.BookingService;
-import com.swiftwheelshub.dto.BookingClosingDetailsDto;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingClosingDetails;
+import com.swiftwheelshub.dto.BookingRequest;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -23,13 +23,13 @@ public class BookingHandler {
         return bookingService.findAllBookings()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(bookingDtoList -> ServerResponse.ok().bodyValue(bookingDtoList))
+                .flatMap(bookingResponses -> ServerResponse.ok().bodyValue(bookingResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findBookingById(ServerRequest serverRequest) {
         return bookingService.findBookingById(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(bookingDto -> ServerResponse.ok().bodyValue(bookingDto))
+                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -37,7 +37,7 @@ public class BookingHandler {
         return bookingService.findBookingsByDateOfBooking(ServerRequestUtil.getPathVariable(serverRequest, DATE))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(bookingDtoList -> ServerResponse.ok().bodyValue(bookingDtoList))
+                .flatMap(bookingResponses -> ServerResponse.ok().bodyValue(bookingResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -45,7 +45,7 @@ public class BookingHandler {
         return bookingService.findBookingsByLoggedInUser(ServerRequestUtil.getUsername(serverRequest))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(bookingDtoList -> ServerResponse.ok().bodyValue(bookingDtoList))
+                .flatMap(bookingResponses -> ServerResponse.ok().bodyValue(bookingResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -75,29 +75,29 @@ public class BookingHandler {
     }
 
     public Mono<ServerResponse> saveBooking(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(BookingDto.class)
-                .flatMap(bookingDto ->
-                        bookingService.saveBooking(ServerRequestUtil.getApiKeyHeader(serverRequest), bookingDto))
-                .flatMap(bookingDto -> ServerResponse.ok().bodyValue(bookingDto));
+        return serverRequest.bodyToMono(BookingRequest.class)
+                .flatMap(bookingRequest ->
+                        bookingService.saveBooking(ServerRequestUtil.getApiKeyHeader(serverRequest), bookingRequest))
+                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
     }
 
     public Mono<ServerResponse> closeBooking(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(BookingClosingDetailsDto.class)
-                .flatMap(bookingClosingDetailsDto ->
-                        bookingService.closeBooking(ServerRequestUtil.getApiKeyHeader(serverRequest), bookingClosingDetailsDto))
-                .flatMap(bookingDto -> ServerResponse.ok().bodyValue(bookingDto));
+        return serverRequest.bodyToMono(BookingClosingDetails.class)
+                .flatMap(bookingClosingDetails ->
+                        bookingService.closeBooking(ServerRequestUtil.getApiKeyHeader(serverRequest), bookingClosingDetails))
+                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
     }
 
     public Mono<ServerResponse> updateBooking(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(BookingDto.class)
-                .flatMap(bookingDto ->
+        return serverRequest.bodyToMono(BookingRequest.class)
+                .flatMap(bookingRequest ->
                         bookingService.updateBooking(
                                 ServerRequestUtil.getApiKeyHeader(serverRequest),
                                 ServerRequestUtil.getPathVariable(serverRequest, ID),
-                                bookingDto
+                                bookingRequest
                         )
                 )
-                .flatMap(bookingDto -> ServerResponse.ok().bodyValue(bookingDto));
+                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
     }
 
     public Mono<ServerResponse> deleteBookingById(ServerRequest serverRequest) {
@@ -105,7 +105,7 @@ public class BookingHandler {
                         ServerRequestUtil.getApiKeyHeader(serverRequest),
                         ServerRequestUtil.getPathVariable(serverRequest, ID)
                 )
-                .flatMap(bookingDto -> ServerResponse.noContent().build());
+                .flatMap(bookingResponse -> ServerResponse.noContent().build());
     }
 
 }

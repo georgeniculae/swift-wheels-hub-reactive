@@ -6,7 +6,7 @@ import com.swiftwheelshub.booking.model.Outbox;
 import com.swiftwheelshub.booking.repository.BookingRepository;
 import com.swiftwheelshub.booking.repository.OutboxRepository;
 import com.swiftwheelshub.booking.util.TestUtils;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingResponse;
 import com.swiftwheelshub.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +49,7 @@ class OutboxServiceTest {
         Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(savedBookingProducerService.sendMessage(any(BookingDto.class))).thenReturn(Mono.just(true));
+        when(savedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(outboxService.handleOutboxes())
@@ -74,7 +74,7 @@ class OutboxServiceTest {
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(updatedBookingProducerService.sendMessage(any(BookingDto.class))).thenReturn(Mono.just(true));
+        when(updatedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(outboxService.handleOutboxes())
@@ -101,7 +101,7 @@ class OutboxServiceTest {
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(updatedBookingProducerService.sendMessage(any(BookingDto.class))).thenReturn(Mono.just(false));
+        when(updatedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(false));
 
         StepVerifier.create(outboxService.handleOutboxes())
                 .expectError()
@@ -114,7 +114,7 @@ class OutboxServiceTest {
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(updatedBookingProducerService.sendMessage(any(BookingDto.class))).thenReturn(Mono.just(true));
+        when(updatedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(outboxService.handleOutboxes())
