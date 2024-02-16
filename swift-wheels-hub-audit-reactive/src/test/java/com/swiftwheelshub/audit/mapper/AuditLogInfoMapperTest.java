@@ -2,7 +2,7 @@ package com.swiftwheelshub.audit.mapper;
 
 import com.swiftwheelshub.audit.util.AssertionUtils;
 import com.swiftwheelshub.audit.util.TestUtils;
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import com.swiftwheelshub.model.AuditLogInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,19 +18,19 @@ class AuditLogInfoMapperTest {
         AuditLogInfo auditLogInfo =
                 TestUtils.getResourceAsJson("/data/CustomerAuditLogInfo.json", AuditLogInfo.class);
 
-        AuditLogInfoDto auditLogInfoDto = auditLogInfoMapper.mapEntityToDto(auditLogInfo);
+        AuditLogInfoRequest auditLogInfoDto = auditLogInfoMapper.mapEntityToDto(auditLogInfo);
 
         AssertionUtils.assertAuditLogInfo(auditLogInfo, auditLogInfoDto);
     }
 
     @Test
     void mapDtoToEntityTest_success() {
-        AuditLogInfoDto auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoDto.json", AuditLogInfoDto.class);
+        AuditLogInfoRequest auditLogInfoRequest =
+                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
-        AuditLogInfo auditLogInfo = auditLogInfoMapper.mapDtoToEntity(auditLogInfoDto);
+        AuditLogInfo auditLogInfo = auditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest);
 
-        AssertionUtils.assertAuditLogInfo(auditLogInfo, auditLogInfoDto);
+        AssertionUtils.assertAuditLogInfo(auditLogInfo, auditLogInfoRequest);
     }
 
 }

@@ -2,7 +2,7 @@ package com.swiftwheelshub.audit.service;
 
 import com.swiftwheelshub.audit.mapper.AuditLogInfoMapper;
 import com.swiftwheelshub.audit.repository.AuditLogInfoRepository;
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class AuditService {
     private final AuditLogInfoMapper auditLogInfoMapper;
 
     @Transactional
-    public Mono<AuditLogInfoDto> saveAuditLogInfo(AuditLogInfoDto auditLogInfoDto) {
+    public Mono<AuditLogInfoRequest> saveAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
         return auditLogInfoRepository.save(auditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
                 .map(auditLogInfoMapper::mapEntityToDto)
                 .onErrorResume(e -> {

@@ -2,7 +2,7 @@ package com.swiftwheelshub.audit.consumer;
 
 import com.swiftwheelshub.audit.service.AuditService;
 import com.swiftwheelshub.audit.util.TestUtils;
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,14 +40,14 @@ class ExpenseAuditLogInfoConsumerMessageTest {
     void expenseAuditLogInfoConsumerTest_success_acknowledgementTrue() {
         ReflectionTestUtils.setField(expenseAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
 
-        AuditLogInfoDto auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfoDto.json", AuditLogInfoDto.class);
+        AuditLogInfoRequest auditLogInfoRequest =
+                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
-        Message<AuditLogInfoDto> message = MessageBuilder.createMessage(auditLogInfoDto, messageHeaders);
-        Flux<Message<AuditLogInfoDto>> messageFlux = Flux.just(message);
+        Message<AuditLogInfoRequest> message = MessageBuilder.createMessage(auditLogInfoRequest, messageHeaders);
+        Flux<Message<AuditLogInfoRequest>> messageFlux = Flux.just(message);
 
-        when(auditService.saveAuditLogInfo(any(AuditLogInfoDto.class))).thenReturn(Mono.just(auditLogInfoDto));
+        when(auditService.saveAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoRequest));
 
         StepVerifier.create(expenseAuditLogInfoConsumerMessage.expenseAuditLogInfoConsumer().apply(messageFlux))
                 .expectComplete()
@@ -58,13 +58,13 @@ class ExpenseAuditLogInfoConsumerMessageTest {
     void expenseAuditLogInfoConsumerTest_success_acknowledgementTrue_noHeaders() {
         ReflectionTestUtils.setField(expenseAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
 
-        AuditLogInfoDto auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfoDto.json", AuditLogInfoDto.class);
+        AuditLogInfoRequest auditLogInfoDto =
+                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
-        Message<AuditLogInfoDto> message = new GenericMessage<>(auditLogInfoDto);
-        Flux<Message<AuditLogInfoDto>> messageFlux = Flux.just(message);
+        Message<AuditLogInfoRequest> message = new GenericMessage<>(auditLogInfoDto);
+        Flux<Message<AuditLogInfoRequest>> messageFlux = Flux.just(message);
 
-        when(auditService.saveAuditLogInfo(any(AuditLogInfoDto.class))).thenReturn(Mono.just(auditLogInfoDto));
+        when(auditService.saveAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoDto));
 
         StepVerifier.create(expenseAuditLogInfoConsumerMessage.expenseAuditLogInfoConsumer().apply(messageFlux))
                 .expectComplete()

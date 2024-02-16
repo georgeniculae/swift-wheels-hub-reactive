@@ -4,7 +4,7 @@ import com.swiftwheelshub.audit.mapper.AuditLogInfoMapper;
 import com.swiftwheelshub.audit.mapper.AuditLogInfoMapperImpl;
 import com.swiftwheelshub.audit.repository.AuditLogInfoRepository;
 import com.swiftwheelshub.audit.util.TestUtils;
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import com.swiftwheelshub.model.AuditLogInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,13 +36,13 @@ class AuditServiceTest {
     void saveAuditLogInfoTest_success() {
         AuditLogInfo auditLogInfo =
                 TestUtils.getResourceAsJson("/data/CustomerAuditLogInfo.json", AuditLogInfo.class);
-        AuditLogInfoDto auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoDto.json", AuditLogInfoDto.class);
+        AuditLogInfoRequest auditLogInfoRequest =
+                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(auditLogInfoRepository.save(any(AuditLogInfo.class))).thenReturn(Mono.just(auditLogInfo));
 
-        StepVerifier.create(auditService.saveAuditLogInfo(auditLogInfoDto))
-                .expectNext(auditLogInfoDto)
+        StepVerifier.create(auditService.saveAuditLogInfo(auditLogInfoRequest))
+                .expectNext(auditLogInfoRequest)
                 .verifyComplete();
 
         verify(auditLogInfoMapper, times(1)).mapEntityToDto(any(AuditLogInfo.class));
@@ -50,12 +50,12 @@ class AuditServiceTest {
 
     @Test
     void saveAuditLogInfoTest_errorOnSave() {
-        AuditLogInfoDto auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoDto.json", AuditLogInfoDto.class);
+        AuditLogInfoRequest auditLogInfoRequest =
+                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(auditLogInfoRepository.save(any(AuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(auditService.saveAuditLogInfo(auditLogInfoDto))
+        StepVerifier.create(auditService.saveAuditLogInfo(auditLogInfoRequest))
                 .expectError()
                 .verify();
     }

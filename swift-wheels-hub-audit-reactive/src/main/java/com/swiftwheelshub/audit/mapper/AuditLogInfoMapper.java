@@ -1,18 +1,20 @@
 package com.swiftwheelshub.audit.mapper;
 
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import com.swiftwheelshub.model.AuditLogInfo;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring",
+@Mapper(
+        componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 public interface AuditLogInfoMapper {
 
-    AuditLogInfoDto mapEntityToDto(AuditLogInfo auditLogInfo);
+    AuditLogInfoRequest mapEntityToDto(AuditLogInfo auditLogInfo);
 
-    AuditLogInfo mapDtoToEntity(AuditLogInfoDto auditLogInfoDto);
+    AuditLogInfo mapDtoToEntity(AuditLogInfoRequest auditLogInfoRequest);
 
 }

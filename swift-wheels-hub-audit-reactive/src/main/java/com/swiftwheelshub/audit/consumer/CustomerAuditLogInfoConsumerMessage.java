@@ -1,7 +1,7 @@
 package com.swiftwheelshub.audit.consumer;
 
 import com.swiftwheelshub.audit.service.AuditService;
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +30,12 @@ public class CustomerAuditLogInfoConsumerMessage {
     private final AuditService auditService;
 
     @Bean
-    public Function<Flux<Message<AuditLogInfoDto>>, Mono<Void>> customerAuditLogInfoConsumer() {
+    public Function<Flux<Message<AuditLogInfoRequest>>, Mono<Void>> customerAuditLogInfoConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processMessage)
                 .then();
     }
 
-    private Mono<AuditLogInfoDto> processMessage(Message<AuditLogInfoDto> message) {
+    private Mono<AuditLogInfoRequest> processMessage(Message<AuditLogInfoRequest> message) {
         return auditService.saveAuditLogInfo(message.getPayload())
                 .doOnNext(auditLogInfoDto -> {
                     log.info("Audit log saved: {}", auditLogInfoDto);
