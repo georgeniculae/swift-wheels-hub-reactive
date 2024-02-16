@@ -1,6 +1,5 @@
 package com.swiftwheelshub.model;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class AuditLogInfo {
     @BsonId
     private ObjectId id;
 
-    @NotEmpty(message = "Method name cannot be empty")
+    @NonNull
     private String methodName;
 
     private String username;

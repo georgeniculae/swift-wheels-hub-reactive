@@ -1,7 +1,5 @@
 package com.swiftwheelshub.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +9,7 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 
@@ -27,9 +25,7 @@ public class Booking {
     @BsonId
     private ObjectId id;
 
-    @NotNull(message = "Date of booking cannot be null")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NonNull
     private LocalDate dateOfBooking;
 
     private BookingStatus status;
@@ -40,14 +36,10 @@ public class Booking {
 
     private ObjectId carId;
 
-    @NotNull(message = "Date from cannot be null")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NonNull
     private LocalDate dateFrom;
 
-    @NotNull(message = "Date to cannot be blank")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NonNull
     private LocalDate dateTo;
 
     private Double amount;

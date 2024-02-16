@@ -1,6 +1,5 @@
 package com.swiftwheelshub.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,6 @@ public class Invoice {
 
     private ObjectId bookingId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate carDateOfReturn;
 
     private Boolean isVehicleDamaged;

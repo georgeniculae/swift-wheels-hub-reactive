@@ -18,6 +18,8 @@
 
     <modules>
         <module>swift-wheels-hub-common-model-reactive</module>
+        <module>swift-wheels-hub-common-dto-reactive</module>
+        <module>swift-wheels-hub-common-exception-reactive</module>
         <module>swift-wheels-hub-common-lib-reactive</module>
     </modules>
 

@@ -1,6 +1,5 @@
 package com.swiftwheelshub.model;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.NonNull;
 
 @Document(collection = "employee")
 @NoArgsConstructor
@@ -23,13 +23,13 @@ public class Employee {
     @BsonId
     private ObjectId id;
 
-    @NotEmpty(message = "First name cannot be empty")
+    @NonNull
     private String firstName;
 
-    @NotEmpty(message = "Last name cannot be empty")
+    @NonNull
     private String lastName;
 
-    @NotEmpty(message = "Job position cannot be empty")
+    @NonNull
     private String jobPosition;
 
     private Branch workingBranch;

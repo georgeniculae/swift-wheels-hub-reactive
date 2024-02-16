@@ -1,6 +1,6 @@
 package com.swiftwheelshub.lib.service;
 
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,13 +27,13 @@ public class AuditLogProducerService {
 
     private final StreamBridge streamBridge;
 
-    public Mono<Void> sendAuditLog(AuditLogInfoDto auditLogInfoDto) {
-        return Mono.fromRunnable(() -> streamBridge.send(auditLogBinderName, buildMessage(auditLogInfoDto), MimeType.valueOf(auditLogMimeType)))
+    public Mono<Void> sendAuditLog(AuditLogInfoRequest auditLogInfoRequest) {
+        return Mono.fromRunnable(() -> streamBridge.send(auditLogBinderName, buildMessage(auditLogInfoRequest), MimeType.valueOf(auditLogMimeType)))
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
 
-    private Message<AuditLogInfoDto> buildMessage(AuditLogInfoDto auditLogInfoDto) {
+    private Message<AuditLogInfoRequest> buildMessage(AuditLogInfoRequest auditLogInfoDto) {
         return MessageBuilder.withPayload(auditLogInfoDto)
                 .build();
     }

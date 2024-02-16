@@ -38,19 +38,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>openapi-generator</artifactId>
-            <version>${openapi-version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>${swagger-annotations-version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -70,103 +57,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>${openapi-version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-swift-wheels-hub-customer</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <generatorName>java</generatorName>
-                            <generateApis>false</generateApis>
-                            <generateModelTests>false</generateModelTests>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <library>webclient</library>
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <useBeanValidation>true</useBeanValidation>
-                            </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubCustomer.yaml</inputSpec>
-                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
-                            <importMappings>
-                                <importMapping>
-                                    AuthenticationRequest=com.swiftwheelshub.dto.authentication.AuthenticationRequest
-                                </importMapping>
-                                <importMapping>
-                                    AuthenticationResponse=com.swiftwheelshub.dto.authentication.AuthenticationResponse
-                                </importMapping>
-                                <importMapping>RegisterRequest=com.swiftwheelshub.dto.authentication.RegisterRequest
-                                </importMapping>
-                            </importMappings>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>generate-swift-wheels-hub-booking</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <generatorName>java</generatorName>
-                            <generateApis>false</generateApis>
-                            <generateModelTests>false</generateModelTests>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <library>webclient</library>
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <useBeanValidation>true</useBeanValidation>
-                            </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubBooking.yaml</inputSpec>
-                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>generate-swift-wheels-hub-agency</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <generatorName>java</generatorName>
-                            <generateApis>false</generateApis>
-                            <generateModelTests>false</generateModelTests>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <library>webclient</library>
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <useBeanValidation>true</useBeanValidation>
-                            </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubAgency.yaml</inputSpec>
-                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>generate-swift-wheels-hub-expense</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <generatorName>java</generatorName>
-                            <generateApis>false</generateApis>
-                            <generateModelTests>false</generateModelTests>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <library>webclient</library>
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <useBeanValidation>true</useBeanValidation>
-                            </configOptions>
-                            <inputSpec>${project.basedir}/src/main/resources/SwiftWheelsHubExpense.yaml</inputSpec>
-                            <modelPackage>com.swiftwheelshub.dto</modelPackage>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

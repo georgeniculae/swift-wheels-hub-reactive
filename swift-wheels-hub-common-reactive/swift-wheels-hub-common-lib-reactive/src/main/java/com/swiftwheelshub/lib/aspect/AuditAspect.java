@@ -1,6 +1,6 @@
 package com.swiftwheelshub.lib.aspect;
 
-import com.swiftwheelshub.dto.AuditLogInfoDto;
+import com.swiftwheelshub.dto.AuditLogInfoRequest;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.service.AuditLogProducerService;
 import lombok.RequiredArgsConstructor;
@@ -68,14 +68,14 @@ public class AuditAspect {
                 .orElse(StringUtils.EMPTY);
     }
 
-    private Mono<AuditLogInfoDto> sendAuditLogInfoDto(ProceedingJoinPoint joinPoint, String username) {
-        AuditLogInfoDto auditLogInfoDto = getAuditLogInfoDto(joinPoint, username);
+    private Mono<AuditLogInfoRequest> sendAuditLogInfoDto(ProceedingJoinPoint joinPoint, String username) {
+        AuditLogInfoRequest auditLogInfoRequest = getAuditLogInfoDto(joinPoint, username);
 
-        return auditLogProducerService.sendAuditLog(auditLogInfoDto)
-                .thenReturn(auditLogInfoDto);
+        return auditLogProducerService.sendAuditLog(auditLogInfoRequest)
+                .thenReturn(auditLogInfoRequest);
     }
 
-    private AuditLogInfoDto getAuditLogInfoDto(ProceedingJoinPoint joinPoint, String username) {
+    private AuditLogInfoRequest getAuditLogInfoDto(ProceedingJoinPoint joinPoint, String username) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         LogActivity logActivity = method.getAnnotation(LogActivity.class);
@@ -84,7 +84,7 @@ public class AuditAspect {
 
         List<String> parametersValues = getParametersValues(joinPoint, logActivity, signature);
 
-        return new AuditLogInfoDto(method.getName(), username, parametersValues);
+        return new AuditLogInfoRequest(method.getName(), username, parametersValues);
     }
 
     private List<String> getParametersValues(ProceedingJoinPoint joinPoint, LogActivity logActivity,

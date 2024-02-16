@@ -71,18 +71,6 @@ spring:
             key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             allow.auto.create.topics: false
-  kafka:
-    bootstrap-servers: localhost:9092
-  data:
-    mongodb:
-      database: swift_wheels_hub_gateway
-      username: ${MONGODB_USERNAME}
-      password: ${MONGODB_PASSWORD}
-      authentication-database: admin
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@carrentalservice.soyxkll.mongodb.net/
-
-swagger:
-  location: swagger-definitions
 
 eureka:
   client:
@@ -105,18 +93,4 @@ logging:
       springframework:
         security: DEBUG
 
-authentication:
-  type: jwt
-
-token:
-  signing:
-    key: ${TOKEN_SIGNING_KEY}
-
 apikey-secret: ${API_KEY_SECRET}
-
-userConsumer:
-  enabled: true
-  isMessageAckEnabled: false
-
-migration:
-  packageScan: com.swiftwheelshub.cloudgateway.migration
