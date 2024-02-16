@@ -8,7 +8,7 @@ import reactor.blockhound.BlockHound;
 public class SwiftWheelsHubRequestValidatorReactiveApplication {
 
     public static void main(String[] args) {
-        BlockHound.install(builder -> builder.allowBlockingCallsInside("io.netty.util.concurrent.FastThreadLocalRunnable", "run"));
+        BlockHound.install();
         SpringApplication.run(SwiftWheelsHubRequestValidatorReactiveApplication.class, args);
     }
 
