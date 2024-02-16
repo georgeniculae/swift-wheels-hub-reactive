@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.2</version>
         <relativePath/>
     </parent>
 
@@ -26,6 +26,7 @@
         <module>swift-wheels-hub-customer-reactive</module>
         <module>swift-wheels-hub-email-notification-reactive</module>
         <module>swift-wheels-hub-expense-reactive</module>
+        <module>swift-wheels-hub-request-validator-reactive</module>
     </modules>
 
     <repositories>

@@ -1,0 +1,44 @@
+server:
+  port: ${PORT:8191}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: swift-wheels-hub-request-validator-reactive
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+ribbon:
+  eureka:
+    enabled: false
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web:
+          csrf:
+            CsrfFilter: DEBUG
+
+authentication:
+  type: apikey
+  secret: ${API_KEY_SECRET}
