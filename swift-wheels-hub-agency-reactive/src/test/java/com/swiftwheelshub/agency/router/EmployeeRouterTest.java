@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.router;
 
 import com.swiftwheelshub.agency.handler.EmployeeHandler;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,33 +42,37 @@ class EmployeeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllEmployeesTest_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
-        List<EmployeeDto> employeeDtoList = List.of(employeeDto);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
+
+        List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDtoList);
 
         when(employeeHandler.findAllEmployees(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<EmployeeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<EmployeeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(EmployeeDto.class)
+                .returnResult(EmployeeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllEmployeesTest_forbidden() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
-        List<EmployeeDto> employeeDtoList = List.of(employeeDto);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+
+        List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDtoList);
 
@@ -86,33 +90,35 @@ class EmployeeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findEmployeeByIdTest_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.findEmployeeById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<EmployeeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<EmployeeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(EmployeeDto.class)
+                .returnResult(EmployeeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findEmployeeByIdTest_unauthorized() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.findEmployeeById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -128,33 +134,35 @@ class EmployeeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findEmployeesByBranchIdTest_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.findEmployeesByBranchId(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<EmployeeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<EmployeeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/branch/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(EmployeeDto.class)
+                .returnResult(EmployeeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findEmployeesByBranchIdTest_unauthorized() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.findEmployeesByBranchId(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -208,33 +216,35 @@ class EmployeeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void saveEmployeeTest_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.saveEmployee(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<EmployeeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<EmployeeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(EmployeeDto.class)
+                .returnResult(EmployeeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void saveEmployeeTest_unauthorized() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.saveEmployee(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -250,9 +260,10 @@ class EmployeeRouterTest {
     @Test
     @WithAnonymousUser
     void saveEmployeeTest_forbidden() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.saveEmployee(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -267,33 +278,35 @@ class EmployeeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateEmployeeTest_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.updateEmployee(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<EmployeeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<EmployeeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(EmployeeDto.class)
+                .returnResult(EmployeeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateEmployeeTest_unauthorized() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.updateEmployee(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -309,9 +322,10 @@ class EmployeeRouterTest {
     @Test
     @WithAnonymousUser
     void updateEmployeeTest_forbidden() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
         when(employeeHandler.updateEmployee(any(ServerRequest.class))).thenReturn(serverResponse);
 

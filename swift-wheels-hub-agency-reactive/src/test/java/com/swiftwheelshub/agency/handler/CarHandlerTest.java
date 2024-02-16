@@ -2,9 +2,10 @@ package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.CarService;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
-import com.swiftwheelshub.dto.CarDto;
-import com.swiftwheelshub.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.CarRequest;
+import com.swiftwheelshub.dto.CarResponse;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.CarUpdateDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,8 +43,10 @@ class CarHandlerTest {
 
     @Test
     void findAllCarsTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        List<CarDto> carDtoList = List.of(carDto);
+        CarResponse carResponse =
+                TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        List<CarResponse> carDtoList = List.of(carResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -71,14 +74,14 @@ class CarHandlerTest {
 
     @Test
     void findCarByIdTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(carService.findCarById(anyString())).thenReturn(Mono.just(carDto));
+        when(carService.findCarById(anyString())).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.findCarById(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -101,8 +104,8 @@ class CarHandlerTest {
 
     @Test
     void findCarByMakeTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        List<CarDto> carDtoList = List.of(carDto);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        List<CarResponse> carDtoList = List.of(carResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -132,8 +135,8 @@ class CarHandlerTest {
 
     @Test
     void findCarsByFilterTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        List<CarDto> carDtoList = List.of(carDto);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        List<CarResponse> carDtoList = List.of(carResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -163,14 +166,14 @@ class CarHandlerTest {
 
     @Test
     void getAvailableCarTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(carService.getAvailableCar(anyString())).thenReturn(Mono.just(carDto));
+        when(carService.getAvailableCar(anyString())).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.getAvailableCar(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -192,13 +195,13 @@ class CarHandlerTest {
 
     @Test
     void saveCarTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(carDto));
+                .body(Mono.just(carResponse));
 
-        when(carService.saveCar(any(CarDto.class))).thenReturn(Mono.just(carDto));
+        when(carService.saveCar(any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.saveCar(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -207,7 +210,7 @@ class CarHandlerTest {
 
     @Test
     void uploadCarsTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.put("file", List.of(filePart));
@@ -217,7 +220,7 @@ class CarHandlerTest {
                 .header("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE)
                 .body(Mono.just(multiValueMap));
 
-        when(carService.uploadCars(any(FilePart.class))).thenReturn(Flux.just(carDto));
+        when(carService.uploadCars(any(FilePart.class))).thenReturn(Flux.just(carResponse));
 
         StepVerifier.create(carHandler.uploadCars(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -226,14 +229,14 @@ class CarHandlerTest {
 
     @Test
     void updateCarTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(carDto));
+                .body(Mono.just(carResponse));
 
-        when(carService.updateCar(anyString(), any(CarDto.class))).thenReturn(Mono.just(carDto));
+        when(carService.updateCar(anyString(), any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCar(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -242,16 +245,17 @@ class CarHandlerTest {
 
     @Test
     void updateCarWhenBookingIsClosedTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        CarDetailsForUpdateDto carDetailsForUpdateDto =
-                TestUtils.getResourceAsJson("/data/CarDetailsForUpdateDto.json", CarDetailsForUpdateDto.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
+
+        CarUpdateDetails carUpdateDetails =
+                TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(carDetailsForUpdateDto));
+                .body(Mono.just(carUpdateDetails));
 
-        when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarDetailsForUpdateDto.class)))
+        when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(carDto));
 
         StepVerifier.create(carHandler.updateCarWhenBookingIsClosed(serverRequest))
@@ -261,14 +265,14 @@ class CarHandlerTest {
 
     @Test
     void updateCarStatusTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(CarStatusEnum.AVAILABLE));
+                .body(Mono.just(CarState.AVAILABLE));
 
-        when(carService.updateCarStatus(anyString(), any(CarStatusEnum.class))).thenReturn(Mono.just(carDto));
+        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarStatus(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -277,15 +281,16 @@ class CarHandlerTest {
 
     @Test
     void updateCarsStatusTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        CarDetailsForUpdateDto carDetailsForUpdateDto =
-                TestUtils.getResourceAsJson("/data/CarDetailsForUpdateDto.json", CarDetailsForUpdateDto.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
+
+        CarUpdateDetails carUpdateDetails =
+                TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
-                .body(Flux.just(carDetailsForUpdateDto));
+                .body(Flux.just(carUpdateDetails));
 
-        when(carService.updateCarStatus(anyString(), any(CarStatusEnum.class))).thenReturn(Mono.just(carDto));
+        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carDto));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

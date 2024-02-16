@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.router;
 
 import com.swiftwheelshub.agency.handler.BranchHandler;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,35 +42,39 @@ class BranchRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllBranchesTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
-        List<BranchDto> branchDtoList = List.of(branchDto);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDtoList);
+        List<BranchResponse> branchResponses = List.of(branchResponse);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponses);
 
         when(branchHandler.findAllBranches(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BranchDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .returnResult(BranchDto.class)
+                .returnResult(BranchResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(branchDto)
+                .expectNext(branchResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllBranchesTest_unauthorized() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
-        List<BranchDto> branchDtoList = List.of(branchDto);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDtoList);
+        List<BranchResponse> branchResponses = List.of(branchResponse);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponses);
 
         when(branchHandler.findAllBranches(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -86,9 +90,10 @@ class BranchRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findBranchByIdTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.findBranchById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -105,9 +110,10 @@ class BranchRouterTest {
     @Test
     @WithAnonymousUser()
     void findBranchByIdTest_unauthorized() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.findBranchById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -123,9 +129,9 @@ class BranchRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findBranchByFilterTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse = TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.findBranchByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -142,9 +148,10 @@ class BranchRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findBranchByFilterTest_unauthorized() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.findBranchByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -193,34 +200,36 @@ class BranchRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void saveBranchTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.saveBranch(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<BranchDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(branchDto)
+                .bodyValue(branchResponse)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(BranchDto.class)
+                .returnResult(BranchResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(branchDto)
+                .expectNext(branchResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void saveBranchTest_unauthorized() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.saveBranch(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -236,9 +245,10 @@ class BranchRouterTest {
     @Test
     @WithAnonymousUser
     void saveBranchTest_forbidden() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.saveBranch(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -253,9 +263,10 @@ class BranchRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateBranchTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.updateBranch(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -266,15 +277,16 @@ class BranchRouterTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(BranchDto.class);
+                .expectBody(BranchResponse.class);
     }
 
     @Test
     @WithAnonymousUser
     void updateBranchTest_forbidden() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
         when(branchHandler.updateBranch(any(ServerRequest.class))).thenReturn(serverResponse);
 

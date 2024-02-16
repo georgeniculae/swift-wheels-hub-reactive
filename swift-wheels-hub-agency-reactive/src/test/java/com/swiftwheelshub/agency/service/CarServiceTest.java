@@ -4,10 +4,10 @@ import com.swiftwheelshub.agency.mapper.CarMapper;
 import com.swiftwheelshub.agency.mapper.CarMapperImpl;
 import com.swiftwheelshub.agency.repository.CarRepository;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.CarDetailsForUpdateDto;
-import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarRequest;
 import com.swiftwheelshub.dto.CarResponse;
-import com.swiftwheelshub.dto.CarStatusEnum;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.CarUpdateDetails;
 import com.swiftwheelshub.model.Branch;
 import com.swiftwheelshub.model.Car;
 import com.swiftwheelshub.model.CarStatus;
@@ -62,12 +62,12 @@ class CarServiceTest {
     void findAllCarsTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         List<Car> cars = List.of(car);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(carRepository.findAll()).thenReturn(Flux.fromIterable(cars));
 
         StepVerifier.create(carService.findAllCars())
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
 
         verify(carMapper).mapEntityToDto(any(Car.class));
@@ -85,12 +85,12 @@ class CarServiceTest {
     @Test
     void findCarByIdTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
         StepVerifier.create(carService.findCarById("64f361caf291ae086e179547"))
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -107,12 +107,12 @@ class CarServiceTest {
     void findCarsByMakeTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         List<Car> cars = List.of(car);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(carRepository.findCarsByMake(anyString())).thenReturn(Flux.fromIterable(cars));
 
         StepVerifier.create(carService.findCarsByMake("Volkswagen"))
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -128,12 +128,12 @@ class CarServiceTest {
     @Test
     void getAvailableCarTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
         StepVerifier.create(carService.getAvailableCar("64f361caf291ae086e179547"))
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -161,12 +161,12 @@ class CarServiceTest {
     @Test
     void findCarByFilterTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(carRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(car));
 
         StepVerifier.create(carService.findCarsByFilterInsensitiveCase("search"))
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -201,25 +201,26 @@ class CarServiceTest {
     void saveCarTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.saveCar(carDto))
-                .expectNext(carDto)
+        StepVerifier.create(carService.saveCar(carRequest))
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     void saveCarTest_errorOnSaving() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.saveCar(carDto))
+        StepVerifier.create(carService.saveCar(carRequest))
                 .expectError()
                 .verify();
     }
@@ -227,11 +228,8 @@ class CarServiceTest {
     @Test
     void uploadCarsTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-
         Car car = TestUtils.getResourceAsJson("/data/UploadedCar.json", Car.class);
-
-        CarResponse carResponse =
-                TestUtils.getResourceAsJson("/data/UploadedCarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
         Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 16384);
@@ -249,13 +247,14 @@ class CarServiceTest {
     void updateCarTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carResponse))
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carRequest))
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -263,13 +262,13 @@ class CarServiceTest {
     @Test
     void updateCarStatusTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarStatusEnum.AVAILABLE))
-                .expectNext(carDto)
+        StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarState.AVAILABLE))
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -280,7 +279,7 @@ class CarServiceTest {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarStatusEnum.AVAILABLE))
+        StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarState.AVAILABLE))
                 .expectError()
                 .verify();
     }
@@ -289,13 +288,13 @@ class CarServiceTest {
     void updateCarTest_errorOnSaving() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carDto))
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carRequest))
                 .expectError()
                 .verify();
     }
@@ -304,16 +303,16 @@ class CarServiceTest {
     void updateCarWhenBookingIsClosedTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        CarDetailsForUpdateDto carDetailsForUpdateDto =
-                TestUtils.getResourceAsJson("/data/CarDetailsForUpdateDto.json", CarDetailsForUpdateDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarUpdateDetails carUpdateDetails =
+                TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carDetailsForUpdateDto))
-                .expectNext(carDto)
+        StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carUpdateDetails))
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
@@ -321,14 +320,14 @@ class CarServiceTest {
     void updateCarWhenBookingIsClosedTest_errorOnSave() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarDetailsForUpdateDto carDetailsForUpdateDto =
-                TestUtils.getResourceAsJson("/data/CarDetailsForUpdateDto.json", CarDetailsForUpdateDto.class);
+        CarUpdateDetails carUpdateDetails =
+                TestUtils.getResourceAsJson("/data/CarDetailsForUpdateDto.json", CarUpdateDetails.class);
 
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carDetailsForUpdateDto))
+        StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carUpdateDetails))
                 .expectError()
                 .verify();
     }

@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.router;
 
 import com.swiftwheelshub.agency.handler.CarHandler;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,33 +45,33 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllCarsTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        List<CarDto> carDtoList = List.of(carDto);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        List<CarResponse> carResponses = List.of(carResponse);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDtoList);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
 
         when(carHandler.findAllCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllCarsTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
-        List<CarDto> carDtoList = List.of(carDto);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
+        List<CarResponse> carDtoList = List.of(carResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDtoList);
 
@@ -89,20 +89,20 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findCarByIdTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
 
         when(carHandler.findCarById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
@@ -113,9 +113,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void findCarByIdTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.findCarById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -131,33 +131,33 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findCarsByMakeTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.findCarsByMake(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/make/{make}", "Volkswagen")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findCarsByMakeTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.findCarsByMake(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -211,33 +211,33 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void saveCarTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.saveCar(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void saveCarTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.saveCar(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -253,9 +253,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void saveCarTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.saveCar(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -270,16 +270,16 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void uploadCarsTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carResponse));
 
         when(carHandler.uploadCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri(PATH + "/upload")
                 .accept(MediaType.APPLICATION_JSON)
@@ -287,23 +287,23 @@ class CarRouterTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void uploadCarsTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carResponse));
 
         when(carHandler.uploadCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -320,12 +320,12 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void uploadCarsTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carResponse));
 
         when(carHandler.uploadCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -341,20 +341,20 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateCarTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
 
         when(carHandler.updateCar(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
@@ -365,7 +365,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
 
@@ -383,9 +383,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCar(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -400,33 +400,33 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateCarStatusTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}/change-status", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateCarStatusTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -442,9 +442,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarStatusTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -459,33 +459,33 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateCarsStatusTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/update-statuses")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateCarsStatusTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -501,9 +501,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarsStatusTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -518,31 +518,31 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void setCarStatusNotAvailableTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}/change-status", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void setCarStatusNotAvailableTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
 
@@ -560,9 +560,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void setCarStatusNotAvailableTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -577,33 +577,33 @@ class CarRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateCarStatusAfterClosedBookingTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CarDto.class)
+                .returnResult(CarResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(carDto)
+                .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateCarStatusAfterClosedBookingTest_unauthorized() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -619,9 +619,9 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarStatusAfterClosedBookingTest_forbidden() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
         when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
 

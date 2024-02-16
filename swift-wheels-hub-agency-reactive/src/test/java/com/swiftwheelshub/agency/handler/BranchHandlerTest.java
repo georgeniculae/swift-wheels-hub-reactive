@@ -2,7 +2,8 @@ package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.BranchService;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchRequest;
+import com.swiftwheelshub.dto.BranchResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,14 +33,16 @@ class BranchHandlerTest {
 
     @Test
     void findAllBranchesTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
-        List<BranchDto> branchDtoList = List.of(branchDto);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+
+        List<BranchResponse> branchResponses = List.of(branchResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(branchService.findAllBranches()).thenReturn(Flux.fromIterable(branchDtoList));
+        when(branchService.findAllBranches()).thenReturn(Flux.fromIterable(branchResponses));
 
         StepVerifier.create(branchHandler.findAllBranches(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -61,14 +64,15 @@ class BranchHandlerTest {
 
     @Test
     void findBranchByIdTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(branchService.findBranchById(anyString())).thenReturn(Mono.just(branchDto));
+        when(branchService.findBranchById(anyString())).thenReturn(Mono.just(branchResponse));
 
         StepVerifier.create(branchHandler.findBranchById(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -91,14 +95,15 @@ class BranchHandlerTest {
 
     @Test
     void findBranchByFilterTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("filter", "filter")
                 .build();
 
-        when(branchService.findBranchesByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branchDto));
+        when(branchService.findBranchesByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branchResponse));
 
         StepVerifier.create(branchHandler.findBranchByFilterInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -120,13 +125,14 @@ class BranchHandlerTest {
 
     @Test
     void saveBranchTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(branchDto));
+                .body(Mono.just(branchResponse));
 
-        when(branchService.saveBranch(any(BranchDto.class))).thenReturn(Mono.just(branchDto));
+        when(branchService.saveBranch(any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
         StepVerifier.create(branchHandler.saveBranch(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -135,14 +141,15 @@ class BranchHandlerTest {
 
     @Test
     void updateBranchTest_success() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(branchDto));
+                .body(Mono.just(branchResponse));
 
-        when(branchService.updateBranch(anyString(), any(BranchDto.class))).thenReturn(Mono.just(branchDto));
+        when(branchService.updateBranch(anyString(), any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
         StepVerifier.create(branchHandler.updateBranch(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

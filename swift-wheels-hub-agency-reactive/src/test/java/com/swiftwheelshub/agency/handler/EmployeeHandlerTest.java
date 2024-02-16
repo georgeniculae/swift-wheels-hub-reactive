@@ -2,7 +2,8 @@ package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.EmployeeService;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeRequest;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,8 +33,10 @@ class EmployeeHandlerTest {
 
     @Test
     void findAllEmployees_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
-        List<EmployeeDto> employeeDtoList = List.of(employeeDto);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+
+        List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -61,7 +64,8 @@ class EmployeeHandlerTest {
 
     @Test
     void findEmployeeById_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeDto =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -77,7 +81,8 @@ class EmployeeHandlerTest {
 
     @Test
     void findEmployeeByFilter_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeDto =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -107,8 +112,10 @@ class EmployeeHandlerTest {
 
     @Test
     void findEmployeesByBranchId_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
-        List<EmployeeDto> employeeDtoList = List.of(employeeDto);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+
+        List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -151,13 +158,14 @@ class EmployeeHandlerTest {
 
     @Test
     void saveEmployee_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeDto =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
                 .body(Mono.just(employeeDto));
 
-        when(employeeService.saveEmployee(any(EmployeeDto.class))).thenReturn(Mono.just(employeeDto));
+        when(employeeService.saveEmployee(any(EmployeeRequest.class))).thenReturn(Mono.just(employeeDto));
 
         StepVerifier.create(employeeHandler.saveEmployee(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -166,14 +174,15 @@ class EmployeeHandlerTest {
 
     @Test
     void updateEmployee_success() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(employeeDto));
+                .body(Mono.just(employeeResponse));
 
-        when(employeeService.updateEmployee(anyString(), any(EmployeeDto.class))).thenReturn(Mono.just(employeeDto));
+        when(employeeService.updateEmployee(anyString(), any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
         StepVerifier.create(employeeHandler.updateEmployee(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

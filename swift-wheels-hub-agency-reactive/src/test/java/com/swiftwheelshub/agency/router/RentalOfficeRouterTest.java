@@ -2,7 +2,7 @@ package com.swiftwheelshub.agency.router;
 
 import com.swiftwheelshub.agency.handler.RentalOfficeHandler;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,39 +42,39 @@ class RentalOfficeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllRentalOfficesTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        List<RentalOfficeDto> rentalOfficeDtoList = List.of(rentalOfficeDto);
+        List<RentalOfficeResponse> rentalOfficeResponses = List.of(rentalOfficeResponse);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDtoList);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponses);
 
         when(rentalOfficeHandler.findAllRentalOffices(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RentalOfficeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RentalOfficeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RentalOfficeDto.class)
+                .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllRentalOfficesTest_unauthorized() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        List<RentalOfficeDto> rentalOfficeDtoList = List.of(rentalOfficeDto);
+        List<RentalOfficeResponse> rentalOfficeResponses = List.of(rentalOfficeResponse);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDtoList);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponses);
 
         when(rentalOfficeHandler.findAllRentalOffices(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -90,35 +90,35 @@ class RentalOfficeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findRentalOfficeByIdTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.findRentalOfficeById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RentalOfficeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RentalOfficeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RentalOfficeDto.class)
+                .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findRentalOfficeByIdTest_unauthorized() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.findAllRentalOffices(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -134,35 +134,35 @@ class RentalOfficeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findRentalOfficeByNameTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RentalOfficeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RentalOfficeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/office/{name}", "Test")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RentalOfficeDto.class)
+                .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findRentalOfficeByNameTest_unauthorized() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -216,35 +216,35 @@ class RentalOfficeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void saveRentalOfficeTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.saveRentalOffice(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RentalOfficeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RentalOfficeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RentalOfficeDto.class)
+                .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void saveRentalOfficeTest_unauthorized() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.saveRentalOffice(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -260,10 +260,10 @@ class RentalOfficeRouterTest {
     @Test
     @WithAnonymousUser
     void saveRentalOfficeTest_forbidden() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.saveRentalOffice(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -278,35 +278,35 @@ class RentalOfficeRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateRentalOfficeTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.updateRentalOffice(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RentalOfficeDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RentalOfficeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RentalOfficeDto.class)
+                .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateRentalOfficeTest_unauthorized() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.updateRentalOffice(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -322,10 +322,10 @@ class RentalOfficeRouterTest {
     @Test
     @WithAnonymousUser
     void updateRentalOfficeTest_forbidden() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
         when(rentalOfficeHandler.updateRentalOffice(any(ServerRequest.class))).thenReturn(serverResponse);
 

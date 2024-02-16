@@ -2,9 +2,9 @@ package com.swiftwheelshub.agency.mapper;
 
 import com.swiftwheelshub.agency.util.AssertionUtils;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.CarDto;
+import com.swiftwheelshub.dto.CarRequest;
+import com.swiftwheelshub.dto.CarResponse;
 import com.swiftwheelshub.model.Car;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,34 +21,30 @@ class CarMapperTest {
     void mapEntityToDtoTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
 
-        CarDto carDto = Assertions.assertDoesNotThrow(() -> carMapper.mapEntityToDto(car));
+        CarResponse carResponse = carMapper.mapEntityToDto(car);
 
-        assertNotNull(carDto);
-        AssertionUtils.assertCar(car, carDto);
+        assertNotNull(carResponse);
+        AssertionUtils.assertCarResponse(car, carResponse);
     }
 
     @Test
     void mapEntityToDtoTest_null() {
-        CarDto carDto = Assertions.assertDoesNotThrow(() -> carMapper.mapEntityToDto(null));
-
-        assertNull(carDto);
+        assertNull(carMapper.mapEntityToDto(null));
     }
 
     @Test
     void mapDtoToEntityTest_success() {
-        CarDto carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarDto.class);
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
 
-        Car car = Assertions.assertDoesNotThrow(() -> carMapper.mapDtoToEntity(carDto));
+        Car car = carMapper.mapDtoToEntity(carRequest);
 
         assertNotNull(car);
-        AssertionUtils.assertCar(car, carDto);
+        AssertionUtils.assertCarRequest(car, carRequest);
     }
 
     @Test
     void mapDtoToEntityTest_null() {
-        Car car = Assertions.assertDoesNotThrow(() -> carMapper.mapDtoToEntity(null));
-
-        assertNull(car);
+        assertNull(carMapper.mapDtoToEntity(null));
     }
 
 }

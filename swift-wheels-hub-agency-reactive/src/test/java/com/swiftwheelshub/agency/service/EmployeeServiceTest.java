@@ -4,7 +4,8 @@ import com.swiftwheelshub.agency.mapper.EmployeeMapper;
 import com.swiftwheelshub.agency.mapper.EmployeeMapperImpl;
 import com.swiftwheelshub.agency.repository.EmployeeRepository;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.EmployeeDto;
+import com.swiftwheelshub.dto.EmployeeRequest;
+import com.swiftwheelshub.dto.EmployeeResponse;
 import com.swiftwheelshub.model.Branch;
 import com.swiftwheelshub.model.Employee;
 import org.bson.types.ObjectId;
@@ -45,13 +46,16 @@ class EmployeeServiceTest {
     @Test
     void findAllEmployeesTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
+
         List<Employee> employees = List.of(employee);
 
         when(employeeRepository.findAll()).thenReturn(Flux.fromIterable(employees));
 
         StepVerifier.create(employeeService.findAllEmployees())
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
@@ -67,12 +71,14 @@ class EmployeeServiceTest {
     @Test
     void findEmployeeByIdTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
 
         StepVerifier.create(employeeService.findEmployeeById("64f361caf291ae086e179547"))
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
@@ -106,14 +112,20 @@ class EmployeeServiceTest {
     @Test
     void saveEmployeeTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeRequest employeeRequest =
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.just(employee));
 
-        StepVerifier.create(employeeService.saveEmployee(employeeDto))
-                .expectNext(employeeDto)
+        StepVerifier.create(employeeService.saveEmployee(employeeRequest))
+                .expectNext(employeeResponse)
                 .verifyComplete();
 
         verify(employeeMapper, times(1)).mapEntityToDto(any(Employee.class));
@@ -121,13 +133,15 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployeeTest_errorOnSave() {
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+        EmployeeRequest employeeRequest =
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.saveEmployee(employeeDto))
+        StepVerifier.create(employeeService.saveEmployee(employeeRequest))
                 .expectError()
                 .verify();
 
@@ -137,29 +151,38 @@ class EmployeeServiceTest {
     @Test
     void updateEmployeeTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeRequest employeeRequest =
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.just(employee));
 
-        StepVerifier.create(employeeService.updateEmployee("64f361caf291ae086e179547", employeeDto))
-                .expectNext(employeeDto)
+        StepVerifier.create(employeeService.updateEmployee("64f361caf291ae086e179547", employeeRequest))
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
     @Test
     void updateEmployeeTest_errorOnSave() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeRequest employeeRequest =
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.updateEmployee("64f361caf291ae086e179547", employeeDto))
+        StepVerifier.create(employeeService.updateEmployee("64f361caf291ae086e179547", employeeRequest))
                 .expectError()
                 .verify();
     }
@@ -167,13 +190,16 @@ class EmployeeServiceTest {
     @Test
     void findEmployeesByBranchIdTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+
         List<Employee> employees = List.of(employee);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         when(employeeRepository.findAllEmployeesByBranchId(any(ObjectId.class))).thenReturn(Flux.fromIterable(employees));
 
         StepVerifier.create(employeeService.findEmployeesByBranchId("64f361caf291ae086e179547"))
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 
@@ -189,12 +215,14 @@ class EmployeeServiceTest {
     @Test
     void findEmployeeByFilterTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
-        EmployeeDto employeeDto = TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeDto.class);
+
+        EmployeeResponse employeeResponse =
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         when(employeeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(employee));
 
         StepVerifier.create(employeeService.findEmployeeByFilterInsensitiveCase("search"))
-                .expectNext(employeeDto)
+                .expectNext(employeeResponse)
                 .verifyComplete();
     }
 

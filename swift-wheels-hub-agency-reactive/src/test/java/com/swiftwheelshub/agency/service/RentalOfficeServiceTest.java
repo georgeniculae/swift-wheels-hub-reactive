@@ -4,7 +4,8 @@ import com.swiftwheelshub.agency.mapper.RentalOfficeMapper;
 import com.swiftwheelshub.agency.mapper.RentalOfficeMapperImpl;
 import com.swiftwheelshub.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeRequest;
+import com.swiftwheelshub.dto.RentalOfficeResponse;
 import com.swiftwheelshub.model.RentalOffice;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -46,14 +47,16 @@ class RentalOfficeServiceTest {
     void findAllRentalOfficesTest_success() {
         RentalOffice rentalOffice =
                 TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+
         List<RentalOffice> rentalOffices = List.of(rentalOffice);
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findAll()).thenReturn(Flux.fromIterable(rentalOffices));
 
         StepVerifier.create(rentalOfficeService.findAllRentalOffices())
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
@@ -70,13 +73,14 @@ class RentalOfficeServiceTest {
     void findRentalOfficeByIdTest_success() {
         RentalOffice rentalOffice =
                 TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
 
         StepVerifier.create(rentalOfficeService.findRentalOfficeById("64f361caf291ae086e179547"))
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
@@ -111,13 +115,17 @@ class RentalOfficeServiceTest {
     void saveRentalOfficeTest_success() {
         RentalOffice rentalOffice =
                 TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+
+        RentalOfficeRequest rentalOfficeRequest =
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.just(rentalOffice));
 
-        StepVerifier.create(rentalOfficeService.saveRentalOffice(rentalOfficeDto))
-                .expectNext(rentalOfficeDto)
+        StepVerifier.create(rentalOfficeService.saveRentalOffice(rentalOfficeRequest))
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
 
         verify(rentalOfficeRepository, times(1)).save(argumentCaptor.capture());
@@ -126,38 +134,47 @@ class RentalOfficeServiceTest {
 
     @Test
     void saveRentalOfficeTest_errorOnSaving() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeRequest rentalOfficeRequest =
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(rentalOfficeService.saveRentalOffice(rentalOfficeDto))
+        StepVerifier.create(rentalOfficeService.saveRentalOffice(rentalOfficeRequest))
                 .expectError()
                 .verify();
     }
 
     @Test
     void updateRentalOfficeTest_success() {
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
-        RentalOfficeDto rentalOfficeDto = TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOffice rentalOffice =
+                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+
+        RentalOfficeRequest rentalOfficeRequest =
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.just(rentalOffice));
 
-        StepVerifier.create(rentalOfficeService.updateRentalOffice("64f361caf291ae086e179547", rentalOfficeDto))
-                .expectNext(rentalOfficeDto)
+        StepVerifier.create(rentalOfficeService.updateRentalOffice("64f361caf291ae086e179547", rentalOfficeRequest))
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     void updateRentalOfficeTest_errorOnSaving() {
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
-        RentalOfficeDto rentalOfficeDto = TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOffice rentalOffice =
+                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+
+        RentalOfficeRequest rentalOfficeRequest =
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(rentalOfficeService.updateRentalOffice("64f361caf291ae086e179547", rentalOfficeDto))
+        StepVerifier.create(rentalOfficeService.updateRentalOffice("64f361caf291ae086e179547", rentalOfficeRequest))
                 .expectError()
                 .verify();
     }
@@ -166,13 +183,14 @@ class RentalOfficeServiceTest {
     void findRentalOfficeByNameTest_success() {
         RentalOffice rentalOffice =
                 TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findAllByNameInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOffice));
 
         StepVerifier.create(rentalOfficeService.findRentalOfficesByNameInsensitiveCase("name"))
-                .expectNext(rentalOfficeDto)
+                .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 

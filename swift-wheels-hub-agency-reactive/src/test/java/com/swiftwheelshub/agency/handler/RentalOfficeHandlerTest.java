@@ -2,7 +2,8 @@ package com.swiftwheelshub.agency.handler;
 
 import com.swiftwheelshub.agency.service.RentalOfficeService;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.RentalOfficeDto;
+import com.swiftwheelshub.dto.RentalOfficeRequest;
+import com.swiftwheelshub.dto.RentalOfficeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,15 +33,16 @@ class RentalOfficeHandlerTest {
 
     @Test
     void findAllRentalOfficesTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
-        List<RentalOfficeDto> rentalOfficeDtoList = List.of(rentalOfficeDto);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
+
+        List<RentalOfficeResponse> rentalOfficeResponses = List.of(rentalOfficeResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(rentalOfficeService.findAllRentalOffices()).thenReturn(Flux.fromIterable(rentalOfficeDtoList));
+        when(rentalOfficeService.findAllRentalOffices()).thenReturn(Flux.fromIterable(rentalOfficeResponses));
 
         StepVerifier.create(rentalOfficeHandler.findAllRentalOffices(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -62,15 +64,15 @@ class RentalOfficeHandlerTest {
 
     @Test
     void findRentalOfficeByIdTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(rentalOfficeService.findRentalOfficeById(anyString())).thenReturn(Mono.just(rentalOfficeDto));
+        when(rentalOfficeService.findRentalOfficeById(anyString())).thenReturn(Mono.just(rentalOfficeResponse));
 
         StepVerifier.create(rentalOfficeHandler.findRentalOfficeById(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -93,15 +95,15 @@ class RentalOfficeHandlerTest {
 
     @Test
     void findRentalOfficeByNameTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("name", "Test")
                 .build();
 
-        when(rentalOfficeService.findRentalOfficesByNameInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOfficeDto));
+        when(rentalOfficeService.findRentalOfficesByNameInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOfficeResponse));
 
         StepVerifier.create(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -137,14 +139,14 @@ class RentalOfficeHandlerTest {
 
     @Test
     void saveRentalOfficeTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(rentalOfficeDto));
+                .body(Mono.just(rentalOfficeResponse));
 
-        when(rentalOfficeService.saveRentalOffice(any(RentalOfficeDto.class))).thenReturn(Mono.just(rentalOfficeDto));
+        when(rentalOfficeService.saveRentalOffice(any(RentalOfficeRequest.class))).thenReturn(Mono.just(rentalOfficeResponse));
 
         StepVerifier.create(rentalOfficeHandler.saveRentalOffice(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -153,16 +155,16 @@ class RentalOfficeHandlerTest {
 
     @Test
     void updateRentalOfficeTest_success() {
-        RentalOfficeDto rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeDto.class);
+        RentalOfficeResponse rentalOfficeResponse =
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(rentalOfficeDto));
+                .body(Mono.just(rentalOfficeResponse));
 
-        when(rentalOfficeService.updateRentalOffice(anyString(), any(RentalOfficeDto.class)))
-                .thenReturn(Mono.just(rentalOfficeDto));
+        when(rentalOfficeService.updateRentalOffice(anyString(), any(RentalOfficeRequest.class)))
+                .thenReturn(Mono.just(rentalOfficeResponse));
 
         StepVerifier.create(rentalOfficeHandler.updateRentalOffice(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

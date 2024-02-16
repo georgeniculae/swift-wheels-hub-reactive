@@ -4,7 +4,8 @@ import com.swiftwheelshub.agency.mapper.BranchMapper;
 import com.swiftwheelshub.agency.mapper.BranchMapperImpl;
 import com.swiftwheelshub.agency.repository.BranchRepository;
 import com.swiftwheelshub.agency.util.TestUtils;
-import com.swiftwheelshub.dto.BranchDto;
+import com.swiftwheelshub.dto.BranchRequest;
+import com.swiftwheelshub.dto.BranchResponse;
 import com.swiftwheelshub.model.Branch;
 import com.swiftwheelshub.model.RentalOffice;
 import org.bson.types.ObjectId;
@@ -45,7 +46,9 @@ class BranchServiceTest {
     @Test
     void findAllBranchesTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         List<Branch> branches = List.of(branch);
 
@@ -53,7 +56,7 @@ class BranchServiceTest {
 
         branchService.findAllBranches()
                 .as(StepVerifier::create)
-                .expectNext(branchDto)
+                .expectNext(branchResponse)
                 .verifyComplete();
     }
 
@@ -69,12 +72,14 @@ class BranchServiceTest {
     @Test
     void findBranchByIdTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
 
         StepVerifier.create(branchService.findBranchById("64f361caf291ae086e179547"))
-                .expectNext(branchDto)
+                .expectNext(branchResponse)
                 .verifyComplete();
 
         verify(branchMapper, times(1)).mapEntityToDto(any(Branch.class));
@@ -94,12 +99,14 @@ class BranchServiceTest {
     @Test
     void findBranchByFilterTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         when(branchRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branch));
 
         StepVerifier.create(branchService.findBranchesByFilterInsensitiveCase("search"))
-                .expectNext(branchDto)
+                .expectNext(branchResponse)
                 .verifyComplete();
     }
 
@@ -133,26 +140,35 @@ class BranchServiceTest {
     @Test
     void saveBranchTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+
+        BranchRequest branchRequest =
+                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+
         RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.just(branch));
 
-        StepVerifier.create(branchService.saveBranch(branchDto))
-                .expectNext(branchDto)
+        StepVerifier.create(branchService.saveBranch(branchRequest))
+                .expectNext(branchResponse)
                 .verifyComplete();
     }
 
     @Test
     void saveBranchTest_errorOnSave() {
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+        BranchRequest branchRequest =
+                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+
+        RentalOffice rentalOffice =
+                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.saveBranch(branchDto))
+        StepVerifier.create(branchService.saveBranch(branchRequest))
                 .expectError()
                 .verify();
     }
@@ -160,29 +176,38 @@ class BranchServiceTest {
     @Test
     void updateBranchTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+
+        BranchRequest branchRequest =
+                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+
+        BranchResponse branchResponse =
+                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+
         RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
         when(branchRepository.save(branch)).thenReturn(Mono.just(branch));
 
-        StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchDto))
-                .expectNext(branchDto)
+        StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchRequest))
+                .expectNext(branchResponse)
                 .verifyComplete();
     }
 
     @Test
     void updateBranchTest_errorOnSaving() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
-        BranchDto branchDto = TestUtils.getResourceAsJson("/data/BranchDto.json", BranchDto.class);
+
+        BranchRequest branchRequest =
+                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+
         RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
         when(branchRepository.save(branch)).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchDto))
+        StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchRequest))
                 .expectError()
                 .verify();
     }
