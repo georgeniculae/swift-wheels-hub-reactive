@@ -96,6 +96,7 @@ authentication:
 
 webclient:
   url:
+    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-agency-reactive/agency/employees/cars
     swift-wheels-hub-agency-employees: lb://swift-wheels-hub-agency-reactive/agency/employees
 
 scheduled:
