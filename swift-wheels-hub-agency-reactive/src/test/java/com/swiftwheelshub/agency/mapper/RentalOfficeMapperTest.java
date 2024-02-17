@@ -35,7 +35,7 @@ class RentalOfficeMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         RentalOfficeRequest rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeRequest.class);
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         RentalOffice rentalOffice = rentalOfficeMapper.mapDtoToEntity(rentalOfficeDto);
 

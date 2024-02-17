@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 
 @Builder
 public record BranchResponse(
-        Long id,
+        String id,
 
         @NonNull
         String name,

@@ -319,9 +319,11 @@ class CarServiceTest {
     @Test
     void updateCarWhenBookingIsClosedTest_errorOnSave() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
+
         CarUpdateDetails carUpdateDetails =
-                TestUtils.getResourceAsJson("/data/CarDetailsForUpdateDto.json", CarUpdateDetails.class);
+                TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));

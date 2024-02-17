@@ -65,7 +65,7 @@ class RentalOfficeHandlerTest {
     @Test
     void findRentalOfficeByIdTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeDto.json", RentalOfficeResponse.class);
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)

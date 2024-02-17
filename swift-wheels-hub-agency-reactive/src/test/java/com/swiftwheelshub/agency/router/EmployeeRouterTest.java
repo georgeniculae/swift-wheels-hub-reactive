@@ -43,7 +43,7 @@ class EmployeeRouterTest {
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllEmployeesTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
@@ -116,7 +116,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void findEmployeeByIdTest_unauthorized() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -261,7 +261,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void saveEmployeeTest_forbidden() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -279,7 +279,7 @@ class EmployeeRouterTest {
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateEmployeeTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeDto.json", EmployeeResponse.class);
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 

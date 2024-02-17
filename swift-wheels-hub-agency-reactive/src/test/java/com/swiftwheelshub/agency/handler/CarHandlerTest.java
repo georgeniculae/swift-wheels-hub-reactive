@@ -229,7 +229,7 @@ class CarHandlerTest {
 
     @Test
     void updateCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
@@ -245,7 +245,7 @@ class CarHandlerTest {
 
     @Test
     void updateCarWhenBookingIsClosedTest_success() {
-        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         CarUpdateDetails carUpdateDetails =
                 TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
@@ -281,7 +281,7 @@ class CarHandlerTest {
 
     @Test
     void updateCarsStatusTest_success() {
-        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarDto.json", CarResponse.class);
+        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         CarUpdateDetails carUpdateDetails =
                 TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
