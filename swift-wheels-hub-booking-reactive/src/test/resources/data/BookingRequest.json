@@ -1,12 +1,12 @@
 {
   "id": "64f361caf291ae086e179547",
   "dateOfBooking": "2050-02-20",
-  "status": "In progress",
+  "status": "IN_PROGRESS",
   "customerUsername": "admin",
-  "carId": "64f361caf291ae086e179222",
+  "carId": "64f361caf291ae086e179547",
   "dateFrom": "2050-02-21",
   "dateTo": "2050-02-22",
-  "amount": 500.0,
-  "rentalCarPrice": 500.0,
+  "amount": 500,
+  "rentalCarPrice": 500,
   "rentalBranchId": "64f361caf291ae086e179547"
 }

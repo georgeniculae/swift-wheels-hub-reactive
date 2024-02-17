@@ -328,7 +328,7 @@ class BookingServiceTest {
     void findBookingByDateOfBookingTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.just(booking));
 
