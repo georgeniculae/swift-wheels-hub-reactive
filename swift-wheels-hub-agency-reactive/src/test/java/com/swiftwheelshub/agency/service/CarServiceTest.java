@@ -228,8 +228,11 @@ class CarServiceTest {
     @Test
     void uploadCarsTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+
         Car car = TestUtils.getResourceAsJson("/data/UploadedCar.json", Car.class);
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        CarResponse carResponse =
+                TestUtils.getResourceAsJson("/data/UploadedCarResponse.json", CarResponse.class);
 
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
         Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 16384);
