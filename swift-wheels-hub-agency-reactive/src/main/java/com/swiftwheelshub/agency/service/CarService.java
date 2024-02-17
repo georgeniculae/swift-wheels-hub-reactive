@@ -320,7 +320,7 @@ public class CarService {
                 .color((String) values.get(CarFields.COLOR.ordinal()))
                 .mileage(Integer.parseInt((String) values.get(CarFields.MILEAGE.ordinal())))
                 .carState(CarState.valueOf(((String) values.get(CarFields.CAR_STATUS.ordinal())).toUpperCase()))
-                .amount(BigDecimal.valueOf(((Long) values.get(CarFields.AMOUNT.ordinal()))))
+                .amount(new BigDecimal((String) values.get(CarFields.AMOUNT.ordinal())))
                 .originalBranchId((String) values.get(CarFields.ORIGINAL_BRANCH.ordinal()))
                 .actualBranchId((String) values.get(CarFields.ACTUAL_BRANCH.ordinal()))
                 .urlOfImage((String) values.get(CarFields.URL_OF_IMAGE.ordinal()))

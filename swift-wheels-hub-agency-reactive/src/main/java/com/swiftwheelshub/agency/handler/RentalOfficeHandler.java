@@ -48,7 +48,7 @@ public class RentalOfficeHandler {
     public Mono<ServerResponse> saveRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
                 .flatMap(rentalOfficeService::saveRentalOffice)
-                .flatMap(rentalOfficeDto -> ServerResponse.ok().bodyValue(rentalOfficeDto));
+                .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
 
     public Mono<ServerResponse> updateRentalOffice(ServerRequest serverRequest) {

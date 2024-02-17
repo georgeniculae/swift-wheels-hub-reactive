@@ -6,6 +6,7 @@ import com.swiftwheelshub.dto.CarRequest;
 import com.swiftwheelshub.dto.CarResponse;
 import com.swiftwheelshub.dto.CarState;
 import com.swiftwheelshub.dto.CarUpdateDetails;
+import com.swiftwheelshub.dto.UpdateCarRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -195,11 +196,12 @@ class CarHandlerTest {
 
     @Test
     void saveCarTest_success() {
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(carResponse));
+                .body(Mono.just(carRequest));
 
         when(carService.saveCar(any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
@@ -229,12 +231,13 @@ class CarHandlerTest {
 
     @Test
     void updateCarTest_success() {
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(carResponse));
+                .body(Mono.just(carRequest));
 
         when(carService.updateCar(anyString(), any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
@@ -281,16 +284,16 @@ class CarHandlerTest {
 
     @Test
     void updateCarsStatusTest_success() {
-        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        CarUpdateDetails carUpdateDetails =
-                TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
+        UpdateCarRequest updateCarRequest =
+                TestUtils.getResourceAsJson("/data/UpdateCarRequest.json", UpdateCarRequest.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
-                .body(Flux.just(carUpdateDetails));
+                .body(Flux.just(updateCarRequest));
 
-        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carDto));
+        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

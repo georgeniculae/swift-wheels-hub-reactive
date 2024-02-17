@@ -158,14 +158,17 @@ class EmployeeHandlerTest {
 
     @Test
     void saveEmployee_success() {
-        EmployeeResponse employeeDto =
+        EmployeeRequest employeeRequest =
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+
+        EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(employeeDto));
+                .body(Mono.just(employeeRequest));
 
-        when(employeeService.saveEmployee(any(EmployeeRequest.class))).thenReturn(Mono.just(employeeDto));
+        when(employeeService.saveEmployee(any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
         StepVerifier.create(employeeHandler.saveEmployee(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -174,13 +177,16 @@ class EmployeeHandlerTest {
 
     @Test
     void updateEmployee_success() {
+        EmployeeRequest employeeRequest =
+                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(employeeResponse));
+                .body(Mono.just(employeeRequest));
 
         when(employeeService.updateEmployee(anyString(), any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 

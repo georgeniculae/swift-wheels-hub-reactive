@@ -139,12 +139,15 @@ class RentalOfficeHandlerTest {
 
     @Test
     void saveRentalOfficeTest_success() {
+        RentalOfficeRequest rentalOfficeRequest =
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(rentalOfficeResponse));
+                .body(Mono.just(rentalOfficeRequest));
 
         when(rentalOfficeService.saveRentalOffice(any(RentalOfficeRequest.class))).thenReturn(Mono.just(rentalOfficeResponse));
 
@@ -155,13 +158,16 @@ class RentalOfficeHandlerTest {
 
     @Test
     void updateRentalOfficeTest_success() {
+        RentalOfficeRequest rentalOfficeRequest =
+                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(rentalOfficeResponse));
+                .body(Mono.just(rentalOfficeRequest));
 
         when(rentalOfficeService.updateRentalOffice(anyString(), any(RentalOfficeRequest.class)))
                 .thenReturn(Mono.just(rentalOfficeResponse));

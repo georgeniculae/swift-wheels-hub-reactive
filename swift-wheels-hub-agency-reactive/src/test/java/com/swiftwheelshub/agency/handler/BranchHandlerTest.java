@@ -125,12 +125,15 @@ class BranchHandlerTest {
 
     @Test
     void saveBranchTest_success() {
+        BranchRequest branchRequest =
+                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(branchResponse));
+                .body(Mono.just(branchRequest));
 
         when(branchService.saveBranch(any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
@@ -141,13 +144,16 @@ class BranchHandlerTest {
 
     @Test
     void updateBranchTest_success() {
+        BranchRequest branchRequest =
+                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(branchResponse));
+                .body(Mono.just(branchRequest));
 
         when(branchService.updateBranch(anyString(), any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
