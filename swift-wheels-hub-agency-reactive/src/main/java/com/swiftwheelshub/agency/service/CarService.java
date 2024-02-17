@@ -10,6 +10,7 @@ import com.swiftwheelshub.dto.CarUpdateDetails;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.model.BodyType;
 import com.swiftwheelshub.model.Branch;
 import com.swiftwheelshub.model.Car;
 import com.swiftwheelshub.model.CarFields;
@@ -164,7 +165,7 @@ public class CarService {
     public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
                 .flatMap(car -> {
-                    car.setCarStatus(carMapper.mapToCarStatus(carState));
+                    car.setCarStatus(CarStatus.valueOf(carState.name()));
 
                     return carRepository.save(car);
                 })
@@ -233,12 +234,12 @@ public class CarService {
     private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar, Tuple2<Branch, Branch> originalBranchAndActualBranch) {
         existingCar.setMake(updatedCarRequest.make());
         existingCar.setModel(updatedCarRequest.model());
-        existingCar.setBodyType(carMapper.mapToBodyType(updatedCarRequest.bodyCategory()));
+        existingCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
         existingCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
         existingCar.setColor(updatedCarRequest.color());
         existingCar.setMileage(updatedCarRequest.mileage());
         existingCar.setAmount(updatedCarRequest.amount());
-        existingCar.setCarStatus(carMapper.mapToCarStatus(updatedCarRequest.carState()));
+        existingCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
         existingCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
         existingCar.setActualBranch(originalBranchAndActualBranch.getT2());
         existingCar.setUrlOfImage(updatedCarRequest.urlOfImage());
@@ -251,7 +252,7 @@ public class CarService {
         CarState carState = carUpdateDetails.carState();
 
         car.setActualBranch(carAndEmployee.getT2().getWorkingBranch());
-        car.setCarStatus(carMapper.mapToCarStatus(carState));
+        car.setCarStatus(CarStatus.valueOf(carState.name()));
 
         return car;
     }
