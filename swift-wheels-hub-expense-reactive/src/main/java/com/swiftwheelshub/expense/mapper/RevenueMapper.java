@@ -1,6 +1,7 @@
 package com.swiftwheelshub.expense.mapper;
 
-import com.swiftwheelshub.dto.RevenueDto;
+import com.swiftwheelshub.dto.RevenueRequest;
+import com.swiftwheelshub.dto.RevenueResponse;
 import com.swiftwheelshub.model.Revenue;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -13,9 +14,9 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface RevenueMapper {
 
-    RevenueDto mapEntityToDto(Revenue revenue);
+    RevenueResponse mapEntityToDto(Revenue revenue);
 
-    Revenue mapDtoToEntity(RevenueDto revenueDto);
+    Revenue mapDtoToEntity(RevenueRequest revenueRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

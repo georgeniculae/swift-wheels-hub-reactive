@@ -1,6 +1,7 @@
 package com.swiftwheelshub.expense.mapper;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceRequest;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.model.Invoice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -8,14 +9,16 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring",
+@Mapper(
+        componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 public interface InvoiceMapper {
 
-    InvoiceDto mapEntityToDto(Invoice invoice);
+    InvoiceResponse mapEntityToDto(Invoice invoice);
 
-    Invoice mapDtoToEntity(InvoiceDto invoiceDto);
+    Invoice mapDtoToEntity(InvoiceRequest invoiceRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

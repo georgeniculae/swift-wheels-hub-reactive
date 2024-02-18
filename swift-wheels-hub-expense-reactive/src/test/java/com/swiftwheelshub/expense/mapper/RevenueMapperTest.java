@@ -1,6 +1,7 @@
 package com.swiftwheelshub.expense.mapper;
 
-import com.swiftwheelshub.dto.RevenueDto;
+import com.swiftwheelshub.dto.RevenueRequest;
+import com.swiftwheelshub.dto.RevenueResponse;
 import com.swiftwheelshub.model.Revenue;
 import com.swiftwheelshub.expense.util.AssertionUtils;
 import com.swiftwheelshub.expense.util.TestUtils;
@@ -19,20 +20,21 @@ class RevenueMapperTest {
     void mapEntityToDtoTest_success() {
         Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
-        RevenueDto revenueDto = rentalOfficeMapper.mapEntityToDto(revenue);
+        RevenueResponse revenueResponse = rentalOfficeMapper.mapEntityToDto(revenue);
 
-        assertNotNull(revenueDto);
-        AssertionUtils.assertRevenue(revenue, revenueDto);
+        assertNotNull(revenueResponse);
+        AssertionUtils.assertRevenueResponse(revenue, revenueResponse);
     }
 
     @Test
     void mapDtoToEntityTest_success() {
-        RevenueDto revenueDto = TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueRequest revenueRequest =
+                TestUtils.getResourceAsJson("/data/RevenueRequest.json", RevenueRequest.class);
 
-        Revenue revenue = rentalOfficeMapper.mapDtoToEntity(revenueDto);
+        Revenue revenue = rentalOfficeMapper.mapDtoToEntity(revenueRequest);
 
         assertNotNull(revenue);
-        AssertionUtils.assertRevenue(revenue, revenueDto);
+        AssertionUtils.assertRevenueRequest(revenue, revenueRequest);
     }
 
 }

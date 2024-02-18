@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.service;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,12 +25,12 @@ public class InvoiceProducerService {
 
     private final StreamBridge streamBridge;
 
-    public Mono<Boolean> sendInvoice(InvoiceDto invoiceDto) {
+    public Mono<Boolean> sendInvoice(InvoiceResponse invoiceDto) {
         return Mono.fromCallable(() -> streamBridge.send(emailNotificationBinderName, buildMessage(invoiceDto), MimeType.valueOf(emailNotificationMimeType)))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Message<InvoiceDto> buildMessage(InvoiceDto invoiceDto) {
+    private Message<InvoiceResponse> buildMessage(InvoiceResponse invoiceDto) {
         return MessageBuilder.withPayload(invoiceDto)
                 .build();
     }

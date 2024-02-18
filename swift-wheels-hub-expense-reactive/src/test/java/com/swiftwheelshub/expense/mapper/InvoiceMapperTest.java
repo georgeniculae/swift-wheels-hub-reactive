@@ -1,6 +1,7 @@
 package com.swiftwheelshub.expense.mapper;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceRequest;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.model.Invoice;
 import com.swiftwheelshub.expense.util.AssertionUtils;
 import com.swiftwheelshub.expense.util.TestUtils;
@@ -19,20 +20,21 @@ class InvoiceMapperTest {
     void mapEntityToDtoTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
-        InvoiceDto invoiceDto = invoiceMapper.mapEntityToDto(invoice);
+        InvoiceResponse invoiceResponse = invoiceMapper.mapEntityToDto(invoice);
 
-        assertNotNull(invoiceDto);
-        AssertionUtils.assertInvoice(invoice, invoiceDto);
+        assertNotNull(invoiceResponse);
+        AssertionUtils.assertInvoiceResponse(invoice, invoiceResponse);
     }
 
     @Test
     void mapDtoToEntityTest_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceRequest invoiceRequest =
+                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceRequest.class);
 
-        Invoice invoice = invoiceMapper.mapDtoToEntity(invoiceDto);
+        Invoice invoice = invoiceMapper.mapDtoToEntity(invoiceRequest);
 
         assertNotNull(invoice);
-        AssertionUtils.assertInvoice(invoice, invoiceDto);
+        AssertionUtils.assertInvoiceRequest(invoice, invoiceRequest);
     }
 
 }

@@ -1,14 +1,14 @@
 package com.swiftwheelshub.expense.service;
 
-import com.swiftwheelshub.dto.RevenueDto;
+import com.swiftwheelshub.dto.RevenueResponse;
+import com.swiftwheelshub.expense.mapper.RevenueMapper;
+import com.swiftwheelshub.expense.model.Outbox;
 import com.swiftwheelshub.expense.repository.InvoiceRepository;
 import com.swiftwheelshub.expense.repository.RevenueRepository;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.model.Invoice;
 import com.swiftwheelshub.model.Revenue;
-import com.swiftwheelshub.expense.mapper.RevenueMapper;
-import com.swiftwheelshub.expense.model.Outbox;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -39,7 +39,7 @@ public class RevenueService {
     private final OutboxService outboxService;
     private final RevenueMapper revenueMapper;
 
-    public Flux<RevenueDto> findAllRevenues() {
+    public Flux<RevenueResponse> findAllRevenues() {
         return revenueRepository.findAll()
                 .map(revenueMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -49,7 +49,7 @@ public class RevenueService {
                 });
     }
 
-    public Flux<RevenueDto> findRevenuesByDate(String dateOfRevenue) {
+    public Flux<RevenueResponse> findRevenuesByDate(String dateOfRevenue) {
         return findByDateOfRevenue(dateOfRevenue)
                 .switchIfEmpty(
                         Mono.error(

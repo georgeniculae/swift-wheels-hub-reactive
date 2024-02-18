@@ -1,11 +1,6 @@
 package com.swiftwheelshub.dto;
 
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
@@ -18,7 +13,7 @@ public record InvoiceRequest(
         @NonNull
         String customerUsername,
 
-        @NotEmpty(message = "Customer email cannot be empty")
+        @NonNull
         String customerEmail,
 
         @NonNull
@@ -27,7 +22,7 @@ public record InvoiceRequest(
         String receptionistEmployeeId,
 
         @NonNull
-        Long bookingId,
+        String bookingId,
 
         LocalDate carDateOfReturn,
 

@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.handler;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceRequest;
 import com.swiftwheelshub.expense.service.InvoiceService;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -70,9 +70,9 @@ public class InvoiceHandler {
     }
 
     public Mono<ServerResponse> closeInvoice(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(InvoiceDto.class)
-                .flatMap(invoiceDto -> invoiceService.closeInvoice(ServerRequestUtil.getApiKeyHeader(serverRequest), ServerRequestUtil.getPathVariable(serverRequest, ID), invoiceDto))
-                .flatMap(invoiceDto -> ServerResponse.ok().bodyValue(invoiceDto));
+        return serverRequest.bodyToMono(InvoiceRequest.class)
+                .flatMap(invoiceRequest -> invoiceService.closeInvoice(ServerRequestUtil.getApiKeyHeader(serverRequest), ServerRequestUtil.getPathVariable(serverRequest, ID), invoiceRequest))
+                .flatMap(invoiceResponse -> ServerResponse.ok().bodyValue(invoiceResponse));
     }
 
 }

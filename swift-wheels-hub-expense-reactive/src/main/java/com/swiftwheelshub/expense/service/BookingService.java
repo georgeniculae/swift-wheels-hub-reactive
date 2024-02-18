@@ -1,7 +1,7 @@
 package com.swiftwheelshub.expense.service;
 
-import com.swiftwheelshub.dto.BookingClosingDetailsDto;
-import com.swiftwheelshub.dto.BookingDto;
+import com.swiftwheelshub.dto.BookingClosingDetails;
+import com.swiftwheelshub.dto.BookingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +23,13 @@ public class BookingService {
 
     private final WebClient webClient;
 
-    public Mono<BookingDto> closeBooking(String apiKeyToken, BookingClosingDetailsDto bookingClosingDetailsDto) {
+    public Mono<BookingResponse> closeBooking(String apiKeyToken, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
                 .header(X_API_KEY, apiKeyToken)
-                .bodyValue(bookingClosingDetailsDto)
+                .bodyValue(bookingClosingDetails)
                 .retrieve()
-                .bodyToMono(BookingDto.class)
+                .bodyToMono(BookingResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
@@ -37,12 +37,12 @@ public class BookingService {
                 });
     }
 
-    public Mono<BookingDto> findBookingById(String apiKeyToken, String bookingId) {
+    public Mono<BookingResponse> findBookingById(String apiKeyToken, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "/{id}", bookingId)
                 .header(X_API_KEY, apiKeyToken)
                 .retrieve()
-                .bodyToMono(BookingDto.class)
+                .bodyToMono(BookingResponse.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

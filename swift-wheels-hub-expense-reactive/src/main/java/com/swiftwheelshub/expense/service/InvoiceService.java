@@ -1,16 +1,17 @@
 package com.swiftwheelshub.expense.service;
 
-import com.swiftwheelshub.dto.BookingClosingDetailsDto;
-import com.swiftwheelshub.dto.BookingDto;
-import com.swiftwheelshub.dto.CarStatusEnum;
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.BookingClosingDetails;
+import com.swiftwheelshub.dto.BookingResponse;
+import com.swiftwheelshub.dto.CarState;
+import com.swiftwheelshub.dto.InvoiceRequest;
+import com.swiftwheelshub.dto.InvoiceResponse;
+import com.swiftwheelshub.expense.mapper.InvoiceMapper;
 import com.swiftwheelshub.expense.repository.InvoiceRepository;
 import com.swiftwheelshub.lib.aspect.LogActivity;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshub.lib.util.MongoUtil;
 import com.swiftwheelshub.model.Invoice;
-import com.swiftwheelshub.expense.mapper.InvoiceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -42,7 +43,7 @@ public class InvoiceService {
     private final BookingService bookingService;
     private final InvoiceMapper invoiceMapper;
 
-    public Flux<InvoiceDto> findAllInvoices() {
+    public Flux<InvoiceResponse> findAllInvoices() {
         return invoiceRepository.findAll()
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -52,7 +53,7 @@ public class InvoiceService {
                 });
     }
 
-    public Flux<InvoiceDto> findAllActiveInvoices() {
+    public Flux<InvoiceResponse> findAllActiveInvoices() {
         return findActiveInvoices()
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -62,7 +63,7 @@ public class InvoiceService {
                 });
     }
 
-    public Flux<InvoiceDto> findAllInvoicesByCustomerUsername(String customerUsername) {
+    public Flux<InvoiceResponse> findAllInvoicesByCustomerUsername(String customerUsername) {
         return invoiceRepository.findByCustomerUsername(customerUsername)
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -72,7 +73,7 @@ public class InvoiceService {
                 });
     }
 
-    public Mono<InvoiceDto> findInvoiceById(String id) {
+    public Mono<InvoiceResponse> findInvoiceById(String id) {
         return findEntityById(id)
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
@@ -82,7 +83,7 @@ public class InvoiceService {
                 });
     }
 
-    public Flux<InvoiceDto> findInvoicesByComments(String comments) {
+    public Flux<InvoiceResponse> findInvoicesByComments(String comments) {
         return invoiceRepository.findByComments(comments)
                 .switchIfEmpty(
                         Mono.error(
@@ -118,8 +119,8 @@ public class InvoiceService {
                 });
     }
 
-    public Mono<InvoiceDto> saveInvoice(BookingDto newBookingDto) {
-        return invoiceRepository.existsByBookingId(MongoUtil.getObjectId(newBookingDto.getId()))
+    public Mono<InvoiceResponse> saveInvoice(BookingResponse newBookingResponse) {
+        return invoiceRepository.existsByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .filter(Boolean.FALSE::equals)
                 .switchIfEmpty(
                         Mono.error(
@@ -129,14 +130,14 @@ public class InvoiceService {
                                 )
                         )
                 )
-                .flatMap(existsByBookingId -> invoiceRepository.save(getInvoice(newBookingDto)))
+                .flatMap(existsByBookingId -> invoiceRepository.save(getInvoice(newBookingResponse)))
                 .map(invoiceMapper::mapEntityToDto);
     }
 
-    public Mono<InvoiceDto> updateInvoiceAfterBookingUpdate(BookingDto newBookingDto) {
-        return invoiceRepository.findByBookingId(MongoUtil.getObjectId(newBookingDto.getId()))
+    public Mono<InvoiceResponse> updateInvoiceAfterBookingUpdate(BookingResponse newBookingResponse) {
+        return invoiceRepository.findByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .flatMap(invoice -> {
-                    invoice.setCarId(MongoUtil.getObjectId(newBookingDto.getCarId()));
+                    invoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
 
                     return invoiceRepository.save(invoice);
                 })
@@ -144,16 +145,16 @@ public class InvoiceService {
     }
 
     @LogActivity(
-            sentParameters = {"id", "invoiceDto"},
+            sentParameters = {"id", "invoiceRequest"},
             activityDescription = "Invoice closing"
     )
-    public Mono<InvoiceDto> closeInvoice(String apiKeyToken, String id, InvoiceDto invoiceDto) {
-        return validateInvoice(invoiceDto)
-                .flatMap(dto -> findEntityById(id))
-                .zipWith(bookingService.findBookingById(apiKeyToken, invoiceDto.getBookingId()))
-                .map(existingInvoiceBookingDto -> updateInvoiceWithBookingDetails(invoiceDto, existingInvoiceBookingDto))
+    public Mono<InvoiceResponse> closeInvoice(String apiKeyToken, String id, InvoiceRequest invoiceRequest) {
+        return validateInvoice(invoiceRequest)
+                .flatMap(request -> findEntityById(id))
+                .zipWith(bookingService.findBookingById(apiKeyToken, invoiceRequest.bookingId()))
+                .map(existingInvoiceAndBookingRequest -> updateInvoiceWithBookingDetails(invoiceRequest, existingInvoiceAndBookingRequest))
                 .flatMap(revenueService::saveInvoiceRevenueAndOutboxTransactional)
-                .delayUntil(invoice -> bookingService.closeBooking(apiKeyToken, getBookingClosingDetailsDto(invoice)))
+                .delayUntil(invoice -> bookingService.closeBooking(apiKeyToken, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
@@ -177,27 +178,27 @@ public class InvoiceService {
                 .flatMap(invoice -> invoiceRepository.deleteById(invoice.getId()));
     }
 
-    private Invoice getInvoice(BookingDto newBookingDto) {
+    private Invoice getInvoice(BookingResponse newBookingResponse) {
         Invoice invoice = new Invoice();
 
-        invoice.setCustomerUsername(newBookingDto.getCustomerUsername());
-        invoice.setCustomerEmail(newBookingDto.getCustomerEmail());
-        invoice.setCarId(MongoUtil.getObjectId(newBookingDto.getCarId()));
-        invoice.setBookingId(MongoUtil.getObjectId(newBookingDto.getId()));
+        invoice.setCustomerUsername(newBookingResponse.customerUsername());
+        invoice.setCustomerEmail(newBookingResponse.customerEmail());
+        invoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
+        invoice.setBookingId(MongoUtil.getObjectId(newBookingResponse.id()));
 
         return invoice;
     }
 
-    private Mono<InvoiceDto> validateInvoice(InvoiceDto invoiceDto) {
-        return Mono.just(invoiceDto)
-                .flatMap(dto -> {
-                    LocalDate dateOfReturnOfTheCar = Optional.ofNullable((invoiceDto.getCarDateOfReturn()))
+    private Mono<InvoiceRequest> validateInvoice(InvoiceRequest invoiceRequest) {
+        return Mono.just(invoiceRequest)
+                .flatMap(request -> {
+                    LocalDate dateOfReturnOfTheCar = Optional.ofNullable((invoiceRequest.carDateOfReturn()))
                             .orElseThrow(() -> new SwiftWheelsHubException("Car return date is null"));
 
                     validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
 
-                    if (Boolean.TRUE.equals(invoiceDto.getIsVehicleDamaged()) &&
-                            ObjectUtils.isEmpty(invoiceDto.getDamageCost())) {
+                    if (Boolean.TRUE.equals(invoiceRequest.isVehicleDamaged()) &&
+                            ObjectUtils.isEmpty(invoiceRequest.damageCost())) {
                         return Mono.error(new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "If the vehicle is damaged, the damage cost cannot be null/empty"
@@ -205,7 +206,7 @@ public class InvoiceService {
                         );
                     }
 
-                    return Mono.just(dto);
+                    return Mono.just(request);
                 });
     }
 
@@ -246,56 +247,55 @@ public class InvoiceService {
         }
     }
 
-    private Invoice updateInvoiceWithBookingDetails(InvoiceDto invoiceDto, Tuple2<Invoice, BookingDto> existingInvoiceBookingDto) {
-        Invoice existingInvoice = existingInvoiceBookingDto.getT1();
-        BookingDto bookingDto = existingInvoiceBookingDto.getT2();
-        String receptionistEmployeeIdAsString = invoiceDto.getReceptionistEmployeeId();
-        String carId = invoiceDto.getCarId();
+    private Invoice updateInvoiceWithBookingDetails(InvoiceRequest invoiceRequest,
+                                                    Tuple2<Invoice, BookingResponse> existingInvoiceBookingResponse) {
+        Invoice existingInvoice = existingInvoiceBookingResponse.getT1();
+        BookingResponse bookingResponse = existingInvoiceBookingResponse.getT2();
+        String receptionistEmployeeIdAsString = invoiceRequest.receptionistEmployeeId();
+        String carId = invoiceRequest.carId();
         ObjectId receptionistEmployeeId = MongoUtil.getObjectId(receptionistEmployeeIdAsString);
-        Invoice existingInvoiceUpdated = updateExistingInvoice(existingInvoice, invoiceDto, carId, receptionistEmployeeId);
+        Invoice existingInvoiceUpdated = updateExistingInvoice(existingInvoice, invoiceRequest, carId, receptionistEmployeeId);
 
-        return updateInvoiceAmount(bookingDto, existingInvoiceUpdated, bookingDto.getRentalCarPrice());
+        return updateInvoiceAmount(bookingResponse, existingInvoiceUpdated, bookingResponse.rentalCarPrice());
     }
 
-    private Invoice updateExistingInvoice(Invoice existingInvoice, InvoiceDto invoiceDto, String carId,
+    private Invoice updateExistingInvoice(Invoice existingInvoice, InvoiceRequest invoiceRequest, String carId,
                                           ObjectId receptionistEmployeeId) {
-        existingInvoice.setCarDateOfReturn(invoiceDto.getCarDateOfReturn());
+        existingInvoice.setCarDateOfReturn(invoiceRequest.carDateOfReturn());
         existingInvoice.setReceptionistEmployeeId(receptionistEmployeeId);
         existingInvoice.setCarId(MongoUtil.getObjectId(carId));
-        existingInvoice.setIsVehicleDamaged(invoiceDto.getIsVehicleDamaged());
-        existingInvoice.setDamageCost(getDamageCost(invoiceDto));
-        existingInvoice.setAdditionalPayment(getAdditionalPayment(invoiceDto));
-        existingInvoice.setComments(invoiceDto.getComments());
+        existingInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
+        existingInvoice.setDamageCost(getDamageCost(invoiceRequest));
+        existingInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
+        existingInvoice.setComments(invoiceRequest.comments());
 
         return existingInvoice;
     }
 
-    private double getDamageCost(InvoiceDto invoiceDto) {
-        return ObjectUtils.isEmpty(invoiceDto.getDamageCost()) ?
-                0D : invoiceDto.getDamageCost().doubleValue();
+    private double getDamageCost(InvoiceRequest invoiceRequest) {
+        return ObjectUtils.isEmpty(invoiceRequest.damageCost()) ? 0D : invoiceRequest.damageCost().doubleValue();
     }
 
-    private double getAdditionalPayment(InvoiceDto invoiceDto) {
-        return ObjectUtils.isEmpty(invoiceDto.getAdditionalPayment()) ?
-                0D : invoiceDto.getAdditionalPayment().doubleValue();
+    private double getAdditionalPayment(InvoiceRequest invoiceRequest) {
+        return ObjectUtils.isEmpty(invoiceRequest.additionalPayment()) ?
+                0D : invoiceRequest.additionalPayment().doubleValue();
     }
 
-    private BookingClosingDetailsDto getBookingClosingDetailsDto(Invoice invoice) {
+    private BookingClosingDetails getBookingClosingDetails(Invoice invoice) {
         Boolean isVehicleDamaged = Optional.ofNullable(invoice.getIsVehicleDamaged())
                 .orElseThrow(() -> new SwiftWheelsHubException("isVehicleDamaged is null"));
 
-        BookingClosingDetailsDto bookingClosingDetailsDto = new BookingClosingDetailsDto();
-        bookingClosingDetailsDto.bookingId(invoice.getBookingId().toString());
-        bookingClosingDetailsDto.receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString());
-        bookingClosingDetailsDto.setCarStatus(getCarStatus(isVehicleDamaged));
-
-        return bookingClosingDetailsDto;
+        return BookingClosingDetails.builder()
+                .bookingId(invoice.getBookingId().toString())
+                .receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString())
+                .carState(getCarStatus(isVehicleDamaged))
+                .build();
     }
 
-    private Double getTotalAmount(Invoice existingInvoice, BookingDto bookingDto, BigDecimal rentalCarPrice) {
+    private Double getTotalAmount(Invoice existingInvoice, BookingResponse bookingResponse, BigDecimal rentalCarPrice) {
         LocalDate carReturnDate = existingInvoice.getCarDateOfReturn();
-        LocalDate bookingDateTo = bookingDto.getDateTo();
-        LocalDate bookingDateFrom = bookingDto.getDateFrom();
+        LocalDate bookingDateTo = bookingResponse.dateTo();
+        LocalDate bookingDateFrom = bookingResponse.dateFrom();
         double carAmount = rentalCarPrice.doubleValue();
 
         boolean isReturnDatePassed = carReturnDate.isAfter(bookingDateTo);
@@ -318,12 +318,12 @@ public class InvoiceService {
                 getDaysPeriod(bookingDateTo, carReturnDate) * 2 * carAmount;
     }
 
-    private CarStatusEnum getCarStatus(boolean isVehicleDamaged) {
-        return Boolean.TRUE.equals(isVehicleDamaged) ? CarStatusEnum.BROKEN : CarStatusEnum.AVAILABLE;
+    private CarState getCarStatus(boolean isVehicleDamaged) {
+        return Boolean.TRUE.equals(isVehicleDamaged) ? CarState.BROKEN : CarState.AVAILABLE;
     }
 
-    private Invoice updateInvoiceAmount(BookingDto bookingDto, Invoice existingInvoice, BigDecimal rentalCarPrice) {
-        existingInvoice.setTotalAmount(getTotalAmount(existingInvoice, bookingDto, rentalCarPrice));
+    private Invoice updateInvoiceAmount(BookingResponse bookingResponse, Invoice existingInvoice, BigDecimal rentalCarPrice) {
+        existingInvoice.setTotalAmount(getTotalAmount(existingInvoice, bookingResponse, rentalCarPrice));
 
         return existingInvoice;
     }
