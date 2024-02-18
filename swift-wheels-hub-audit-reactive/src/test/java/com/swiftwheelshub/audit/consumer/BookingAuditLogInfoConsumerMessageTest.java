@@ -41,7 +41,7 @@ class BookingAuditLogInfoConsumerMessageTest {
         ReflectionTestUtils.setField(bookingAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
 
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/AuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtils.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
         Message<AuditLogInfoRequest> message = MessageBuilder.createMessage(auditLogInfoRequest, messageHeaders);
@@ -59,7 +59,7 @@ class BookingAuditLogInfoConsumerMessageTest {
         ReflectionTestUtils.setField(bookingAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
 
         AuditLogInfoRequest auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/BookingAuditLogInfoDto.json", AuditLogInfoRequest.class);
+                TestUtils.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         Message<AuditLogInfoRequest> message = new GenericMessage<>(auditLogInfoDto);
         Flux<Message<AuditLogInfoRequest>> messageFlux = Flux.just(message);
