@@ -1,6 +1,6 @@
 package com.swiftwheelshub.emailnotification.consumer;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.emailnotification.service.EmailService;
 import com.sendgrid.Response;
 import com.sendgrid.helpers.mail.Mail;
@@ -32,15 +32,15 @@ public class InvoiceMessageConsumer {
     private final EmailService emailService;
 
     @Bean
-    public Function<Flux<Message<InvoiceDto>>, Mono<Void>> emailNotificationConsumer() {
+    public Function<Flux<Message<InvoiceResponse>>, Mono<Void>> emailNotificationConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processMessage)
                 .then();
     }
 
-    private Mono<Response> processMessage(Message<InvoiceDto> message) {
+    private Mono<Response> processMessage(Message<InvoiceResponse> message) {
         return Mono.just(message.getPayload())
-                .map(invoiceDto -> {
-                    Mail mail = emailService.createMail(invoiceDto.getCustomerEmail(), invoiceDto);
+                .map(invoiceResponse -> {
+                    Mail mail = emailService.createMail(invoiceResponse.customerEmail(), invoiceResponse);
 
                     return emailService.sendEmail(mail);
                 })

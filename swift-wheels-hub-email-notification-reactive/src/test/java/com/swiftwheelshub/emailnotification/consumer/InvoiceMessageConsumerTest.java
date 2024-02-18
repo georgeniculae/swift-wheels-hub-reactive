@@ -1,6 +1,6 @@
 package com.swiftwheelshub.emailnotification.consumer;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.emailnotification.service.EmailService;
 import com.swiftwheelshub.emailnotification.util.TestUtils;
 import com.sendgrid.Response;
@@ -41,15 +41,16 @@ class InvoiceMessageConsumerTest {
     void emailNotificationConsumerTest_success_acknowledgementTrue() {
         ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
 
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
 
         Response response = new Response();
         response.setStatusCode(200);
         response.setBody("body");
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
-        Message<InvoiceDto> message = MessageBuilder.createMessage(invoiceDto, messageHeaders);
-        Flux<Message<InvoiceDto>> messageFlux = Flux.just(message);
+        Message<InvoiceResponse> message = MessageBuilder.createMessage(invoiceResponse, messageHeaders);
+        Flux<Message<InvoiceResponse>> messageFlux = Flux.just(message);
 
         when(emailService.sendEmail(any(Mail.class))).thenReturn(response);
 
@@ -62,13 +63,14 @@ class InvoiceMessageConsumerTest {
     void emailNotificationConsumerTest_acknowledgementTrue_noHeaders() {
         ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
 
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
 
         Response response = new Response();
         response.setStatusCode(200);
         response.setBody("body");
 
-        Flux<Message<InvoiceDto>> messageFlux = Flux.just(new GenericMessage<>(invoiceDto));
+        Flux<Message<InvoiceResponse>> messageFlux = Flux.just(new GenericMessage<>(invoiceResponse));
 
         when(emailService.sendEmail(any(Mail.class))).thenReturn(response);
 
