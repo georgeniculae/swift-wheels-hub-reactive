@@ -11,7 +11,7 @@
     "dateFrom": "2050-02-21",
     "dateTo": "2050-02-22",
     "amount": 500,
-    "rentalCarPrice": 500.0,
+    "rentalCarPrice": 500,
     "rentalBranchId": "64f361caf291ae086e179547"
   }
 }

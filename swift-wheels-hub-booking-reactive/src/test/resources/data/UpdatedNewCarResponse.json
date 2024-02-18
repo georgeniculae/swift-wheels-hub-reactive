@@ -7,7 +7,7 @@
   "color": "black",
   "mileage": 270000,
   "carState": "NOT_AVAILABLE",
-  "amount": 500.0,
+  "amount": 500,
   "originalBranchId": "64f361caf291ae086e179547",
   "actualBranchId": "64f361caf291ae086e179547"
 }
