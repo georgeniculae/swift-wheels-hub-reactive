@@ -2,7 +2,7 @@ package com.swiftwheelshub.customer.handler;
 
 import com.swiftwheelshub.dto.AuthenticationResponse;
 import com.swiftwheelshub.dto.CurrentUserDto;
-import com.swiftwheelshub.customer.service.CustomerService;
+import com.swiftwheelshub.customer.service.KeycloakUserService;
 import com.swiftwheelshub.customer.util.TestUtils;
 import com.swiftwheelshub.dto.RegisterRequest;
 import com.swiftwheelshub.dto.UserDto;
@@ -28,7 +28,7 @@ class CustomerHandlerTest {
     private CustomerHandler customerHandler;
 
     @Mock
-    private CustomerService customerService;
+    private KeycloakUserService keycloakUserService;
 
     @Test
     void getCurrentUserTest_success() {
@@ -40,7 +40,7 @@ class CustomerHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(currentUserDto));
 
-        when(customerService.getCurrentUser(anyString())).thenReturn(Mono.just(currentUserDto));
+        when(keycloakUserService.getCurrentUser(anyString())).thenReturn(Mono.just(currentUserDto));
 
         StepVerifier.create(customerHandler.getCurrentUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -57,7 +57,7 @@ class CustomerHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(currentUserDto));
 
-        when(customerService.getCurrentUser(anyString())).thenReturn(Mono.empty());
+        when(keycloakUserService.getCurrentUser(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.getCurrentUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
@@ -73,7 +73,7 @@ class CustomerHandlerTest {
                 .pathVariable("username", "alexandrupopescu")
                 .body(Mono.just(userDto));
 
-        when(customerService.findUserByUsername(anyString())).thenReturn(Mono.just(userDto));
+        when(keycloakUserService.findUserByUsername(anyString())).thenReturn(Mono.just(userDto));
 
         StepVerifier.create(customerHandler.findUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -89,7 +89,7 @@ class CustomerHandlerTest {
                 .pathVariable("username", "alexandrupopescu")
                 .body(Mono.just(userDto));
 
-        when(customerService.findUserByUsername(anyString())).thenReturn(Mono.empty());
+        when(keycloakUserService.findUserByUsername(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.findUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
@@ -103,7 +103,7 @@ class CustomerHandlerTest {
                 .pathVariable("username", "alexandrupopescu")
                 .body(Mono.just(5));
 
-        when(customerService.countUsers()).thenReturn(Mono.just(5L));
+        when(keycloakUserService.countUsers()).thenReturn(Mono.just(5L));
 
         StepVerifier.create(customerHandler.countUsers(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -122,7 +122,7 @@ class CustomerHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(registerRequest));
 
-        when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.just(authenticationResponse));
+        when(keycloakUserService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.just(authenticationResponse));
 
         StepVerifier.create(customerHandler.registerUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -138,7 +138,7 @@ class CustomerHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(registerRequest));
 
-        when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.empty());
+        when(keycloakUserService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.registerUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
@@ -154,7 +154,7 @@ class CustomerHandlerTest {
                 .pathVariable("id", "64f48612b92a3b7dfcebae07")
                 .body(Mono.just(userDto));
 
-        when(customerService.updateUser(anyString(), any(UserDto.class))).thenReturn(Mono.just(userDto));
+        when(keycloakUserService.updateUser(anyString(), any(UserDto.class))).thenReturn(Mono.just(userDto));
 
         StepVerifier.create(customerHandler.updateUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

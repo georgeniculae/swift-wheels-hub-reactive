@@ -1,203 +1,58 @@
 package com.swiftwheelshub.customer.service;
 
-import com.swiftwheelshub.customer.mapper.CustomerMapper;
-import com.swiftwheelshub.customer.model.Outbox;
-import com.swiftwheelshub.dto.AuthenticationResponse;
-import com.swiftwheelshub.dto.CurrentUserDto;
 import com.swiftwheelshub.dto.RegisterRequest;
-import com.swiftwheelshub.dto.UserDto;
-import com.swiftwheelshub.lib.aspect.LogActivity;
-import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
-import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
-import com.swiftwheelshub.lib.mapper.UserMapper;
-import com.swiftwheelshub.lib.repository.UserRepository;
-import com.swiftwheelshub.lib.security.jwt.JwtService;
-import com.swiftwheelshub.lib.util.MongoUtil;
+import com.swiftwheelshub.dto.RegistrationResponse;
+import com.swiftwheelshub.dto.UserInfo;
+import com.swiftwheelshub.dto.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Optional;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CustomerService {
 
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final CustomerMapper customerMapper;
-    private final OutboxService outboxService;
+    private final KeycloakUserService keycloakUserService;
 
-    @Transactional
-    @LogActivity(
-            activityDescription = "User registration",
-            sentParameters = "registerRequest"
-    )
-    public Mono<AuthenticationResponse> registerUser(RegisterRequest registerRequest) {
-        return validateRegisterRequest(registerRequest)
-                .map(userMapper::mapRegisterRequestToUser)
-                .flatMap(this::saveNewUser)
-                .flatMap(savedUser -> outboxService.saveOutbox(savedUser, Outbox.Operation.CREATE))
-                .map(outbox -> jwtService.generateToken(outbox.getContent()))
-                .map(token -> new AuthenticationResponse().token(token))
-                .onErrorResume(e -> {
-                    log.error("Error while registering user: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
+    public Mono<UserInfo> findUserByUsername(String username) {
+        return Mono.fromCallable(() -> keycloakUserService.getCurrentUser(username))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<CurrentUserDto> getCurrentUser(String username) {
-        return userRepository.findByUsername(username)
-                .map(customerMapper::mapUserToCurrentUserDto)
-                .onErrorResume(e -> {
-                    log.error("Error while getting current user: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
-    }
-
-    public Mono<UserDto> findUserByUsername(String username) {
-        return findByUsername(username)
-                .map(customerMapper::mapEntityToDto)
-                .onErrorResume(e -> {
-                    log.error("Error while finding by username: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
+    public Mono<UserInfo> getCurrentUser(String username) {
+        return Mono.fromCallable(() -> keycloakUserService.getCurrentUser(username))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     public Mono<Long> countUsers() {
-        return userRepository.count()
-                .onErrorResume(e -> {
-                    log.error("Error while counting users: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
+        return Mono.fromCallable(keycloakUserService::countUsers)
+                .subscribeOn(Schedulers.boundedElastic())
+                .cast(Long.class);
     }
 
-    @Transactional
-    @LogActivity(
-            sentParameters = {"id", "userDto"},
-            activityDescription = "User update"
-    )
-    public Mono<UserDto> updateUser(String id, UserDto userDto) {
-        return findEntityById(id)
-                .flatMap(user -> {
-                    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-                    user.setFirstName(userDto.getFirstName());
-                    user.setLastName(userDto.getLastName());
-                    user.setEmail(userDto.getEmail());
-                    user.setDateOfBirth(userDto.getDateOfBirth());
-                    user.setAddress(userDto.getAddress());
-
-                    return saveEntity(user);
-                })
-                .flatMap(this::processOutboxForUpdate)
-                .map(userMapper::mapEntityToDto)
-                .onErrorResume(e -> {
-                    log.error("Error while finding by id: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
+    public Mono<RegistrationResponse> registerUser(RegisterRequest request) {
+        return Mono.fromCallable(() -> keycloakUserService.registerCustomer(request))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
-    @LogActivity(
-            activityDescription = "User deletion",
-            sentParameters = "username"
-    )
-    public Mono<Void> deleteUserById(String username) {
-        return outboxService.processUserDeletion(username, Outbox.Operation.DELETE)
-                .onErrorResume(e -> {
-                    log.error("Error while deleting user: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e));
-                });
+    public Mono<UserInfo> updateUser(String id, UserUpdateRequest userUpdateRequest) {
+        return Mono.fromCallable(() -> keycloakUserService.updateUser(id, userUpdateRequest))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Mono<User> saveNewUser(User user) {
-        user.setRole(Role.ROLE_USER);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        return saveEntity(user);
+    public Mono<Void> deleteUserByUsername(String username) {
+        return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 
-    private Mono<User> saveEntity(User user) {
-        return userRepository.save(user);
-    }
-
-    private Mono<User> findEntityById(String id) {
-        return userRepository.findById(MongoUtil.getObjectId(id))
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "User with id " + id + " doesn't exist"
-                                )
-                        )
-                );
-    }
-
-    private Mono<User> findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "User with username " + username + " doesn't exist"
-                                )
-                        )
-                );
-    }
-
-    private Mono<RegisterRequest> validateRegisterRequest(RegisterRequest request) {
-        return userRepository.existsByUsername(request.getUsername())
-                .flatMap(present -> {
-                    if (present) {
-                        return Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "User already exists"
-                                )
-                        );
-                    }
-
-                    String password = Optional.ofNullable(request.getPassword()).orElseThrow();
-                    if (password.length() < 8) {
-                        return Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Password too short"
-                                )
-                        );
-                    }
-
-                    LocalDate dateOfBirth = Optional.ofNullable(request.getDateOfBirth()).orElseThrow();
-                    if (Period.between(dateOfBirth, LocalDate.now()).getYears() < 18) {
-                        return Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Customer is under 18 years old"
-                                )
-                        );
-                    }
-
-                    return Mono.just(request);
-                });
-    }
-
-    private Mono<User> processOutboxForUpdate(User user) {
-        return outboxService.saveOutbox(user, Outbox.Operation.UPDATE)
-                .map(Outbox::getContent);
+    public Mono<Void> signOut(String username) {
+        return Mono.fromRunnable(() -> keycloakUserService.signOut(username))
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 
 }

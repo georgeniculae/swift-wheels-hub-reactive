@@ -83,11 +83,7 @@ logging:
             CsrfFilter: DEBUG
 
 authentication:
-  type: apikey
   secret: ${API_KEY_SECRET}
-
-migration:
-  packageScan: com.swiftwheelshub.customer.migration
 
 scheduled:
   fixedDelay: 5000

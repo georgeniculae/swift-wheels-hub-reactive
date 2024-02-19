@@ -1,6 +1,5 @@
 package com.swiftwheelshub.customer.service;
 
-import com.swiftwheelshub.customer.mapper.CustomerMapper;
 import com.swiftwheelshub.customer.mapper.CustomerMapperImpl;
 import com.swiftwheelshub.customer.model.Outbox;
 import com.swiftwheelshub.customer.util.AssertionUtils;
@@ -35,10 +34,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CustomerServiceTest {
+class KeycloakUserServiceTest {
 
     @InjectMocks
-    private CustomerService userService;
+    private KeycloakUserService userService;
 
     @Mock
     private UserRepository userRepository;

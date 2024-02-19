@@ -2,6 +2,7 @@ package com.swiftwheelshub.customer.handler;
 
 import com.swiftwheelshub.customer.service.CustomerService;
 import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.UserUpdateRequest;
 import com.swiftwheelshub.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -42,14 +43,19 @@ public class CustomerHandler {
     }
 
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(UserDto.class)
+        return serverRequest.bodyToMono(UserUpdateRequest.class)
                 .flatMap(userDto -> customerService.updateUser(ServerRequestUtil.getPathVariable(serverRequest, ID), userDto))
                 .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
 
-    public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
-        return customerService.deleteUserById(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
+    public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
+        return customerService.deleteUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
                 .then(ServerResponse.noContent().build());
+    }
+
+    public Mono<ServerResponse> signOut(ServerRequest serverRequest) {
+        return customerService.signOut(ServerRequestUtil.getUsername(serverRequest))
+                .then(ServerResponse.ok().build());
     }
 
 }

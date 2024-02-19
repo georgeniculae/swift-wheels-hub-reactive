@@ -1,6 +1,5 @@
 package com.swiftwheelshub.customer.scheduler;
 
-import com.swiftwheelshub.customer.service.OutboxService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

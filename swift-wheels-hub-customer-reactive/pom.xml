@@ -18,6 +18,7 @@
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
+        <keycloak-client.version>23.0.4</keycloak-client.version>
         <mongock.version>5.3.6</mongock.version>
         <mongock-springboot.version>5.2.6</mongock-springboot.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -61,6 +62,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak-client.version}</version>
         </dependency>
 
         <dependency>
