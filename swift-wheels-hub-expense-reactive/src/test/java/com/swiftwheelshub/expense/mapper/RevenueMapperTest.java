@@ -1,10 +1,9 @@
 package com.swiftwheelshub.expense.mapper;
 
-import com.swiftwheelshub.dto.RevenueRequest;
 import com.swiftwheelshub.dto.RevenueResponse;
-import com.swiftwheelshub.model.Revenue;
 import com.swiftwheelshub.expense.util.AssertionUtils;
 import com.swiftwheelshub.expense.util.TestUtils;
+import com.swiftwheelshub.model.Revenue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
