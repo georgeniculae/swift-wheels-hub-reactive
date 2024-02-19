@@ -1,6 +1,5 @@
 package com.swiftwheelshub.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 
@@ -14,7 +13,7 @@ public record InvoiceResponse(
         @NonNull
         String customerUsername,
 
-        @NotEmpty(message = "Customer email cannot be empty")
+        @NonNull
         String customerEmail,
 
         @NonNull

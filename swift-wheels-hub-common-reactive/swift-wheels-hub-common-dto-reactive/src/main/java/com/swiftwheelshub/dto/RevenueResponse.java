@@ -1,6 +1,5 @@
 package com.swiftwheelshub.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 

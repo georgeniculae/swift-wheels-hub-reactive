@@ -1,16 +1,16 @@
 package com.swiftwheelshub.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
+import org.springframework.lang.NonNull;
 
 import java.util.Map;
 
 @Builder
 public record IncomingRequestDetails(
-        @NotBlank(message = "Path cannot be blank")
+        @NonNull
         String path,
 
-        @NotBlank(message = "Method cannot be blank")
+        @NonNull
         String method,
 
         Map<String, String> headers,
