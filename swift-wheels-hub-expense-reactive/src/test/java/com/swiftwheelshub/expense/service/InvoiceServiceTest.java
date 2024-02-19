@@ -243,7 +243,7 @@ class InvoiceServiceTest {
                 TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         InvoiceResponse invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);

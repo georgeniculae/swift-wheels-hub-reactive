@@ -126,7 +126,7 @@ class RevenueServiceTest {
         Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueResponse.class);
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Revenue.class))).thenReturn(Flux.just(revenue));
 

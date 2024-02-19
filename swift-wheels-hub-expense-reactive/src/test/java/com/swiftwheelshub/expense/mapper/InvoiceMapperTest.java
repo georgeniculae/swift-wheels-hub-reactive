@@ -29,7 +29,7 @@ class InvoiceMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         InvoiceRequest invoiceRequest =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceRequest.class);
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceRequest.class);
 
         Invoice invoice = invoiceMapper.mapDtoToEntity(invoiceRequest);
 

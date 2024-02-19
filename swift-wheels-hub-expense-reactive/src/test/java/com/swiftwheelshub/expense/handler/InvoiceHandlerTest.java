@@ -90,7 +90,7 @@ class InvoiceHandlerTest {
     @Test
     void findAllInvoicesByCustomerUsername_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
