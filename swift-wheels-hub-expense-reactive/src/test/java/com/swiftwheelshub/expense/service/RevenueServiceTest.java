@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.service;
 
-import com.swiftwheelshub.dto.RevenueDto;
+import com.swiftwheelshub.dto.RevenueResponse;
 import com.swiftwheelshub.expense.mapper.RevenueMapper;
 import com.swiftwheelshub.expense.repository.InvoiceRepository;
 import com.swiftwheelshub.expense.repository.RevenueRepository;
@@ -52,12 +52,14 @@ class RevenueServiceTest {
     @Test
     void findAllRevenuesTest_success() {
         Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
-        RevenueDto revenueDto = TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         when(revenueRepository.findAll()).thenReturn(Flux.just(revenue));
 
         StepVerifier.create(revenueService.findAllRevenues())
-                .expectNext(revenueDto)
+                .expectNext(revenueResponse)
                 .verifyComplete();
 
         verify(revenueMapper, times(1)).mapEntityToDto(any(Revenue.class));
@@ -122,12 +124,14 @@ class RevenueServiceTest {
     @Test
     void findRevenueByDateTest_success() {
         Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
-        RevenueDto revenueDto = TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Revenue.class))).thenReturn(Flux.just(revenue));
 
         StepVerifier.create(revenueService.findRevenuesByDate("2023-09-25"))
-                .expectNext(revenueDto)
+                .expectNext(revenueResponse)
                 .verifyComplete();
 
         verify(revenueMapper, times(1)).mapEntityToDto(any(Revenue.class));

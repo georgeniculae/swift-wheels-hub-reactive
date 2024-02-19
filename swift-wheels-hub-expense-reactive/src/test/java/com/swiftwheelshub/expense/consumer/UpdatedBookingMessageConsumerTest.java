@@ -1,7 +1,7 @@
 package com.swiftwheelshub.expense.consumer;
 
-import com.swiftwheelshub.dto.BookingDto;
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.BookingResponse;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.expense.service.InvoiceService;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -41,13 +41,16 @@ class UpdatedBookingMessageConsumerTest {
     void savedBookingConsumerTest_success_acknowledgedMessage() {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
 
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
-        Message<BookingDto> message = MessageBuilder.createMessage(bookingDto, messageHeaders);
+        Message<BookingResponse> message = MessageBuilder.createMessage(bookingResponse, messageHeaders);
 
-        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingDto.class))).thenReturn(Mono.just(invoiceDto));
+        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -58,12 +61,15 @@ class UpdatedBookingMessageConsumerTest {
     void savedBookingConsumerTest_success_notAcknowledgedMessage() {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", false);
 
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Message<BookingDto> message = new GenericMessage<>(bookingDto);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingDto.class))).thenReturn(Mono.just(invoiceDto));
+        Message<BookingResponse> message = new GenericMessage<>(bookingResponse);
+
+        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -74,12 +80,15 @@ class UpdatedBookingMessageConsumerTest {
     void savedBookingConsumerTest_success_emptyHeaders() {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
 
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Message<BookingDto> message = new GenericMessage<>(bookingDto);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingDto.class))).thenReturn(Mono.just(invoiceDto));
+        Message<BookingResponse> message = new GenericMessage<>(bookingResponse);
+
+        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -90,12 +99,13 @@ class UpdatedBookingMessageConsumerTest {
     void savedBookingConsumerTest_errorSavingInvoice() {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
 
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
-        Message<BookingDto> message = MessageBuilder.createMessage(bookingDto, messageHeaders);
+        Message<BookingResponse> message = MessageBuilder.createMessage(bookingResponse, messageHeaders);
 
-        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingDto.class))).thenReturn(Mono.error(new Throwable()));
+        when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()

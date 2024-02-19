@@ -1,6 +1,7 @@
 package com.swiftwheelshub.expense.handler;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceRequest;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.expense.service.InvoiceService;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -30,13 +31,14 @@ class InvoiceHandlerTest {
 
     @Test
     void findAllInvoicesTest_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(invoiceService.findAllInvoices()).thenReturn(Flux.just(invoiceDto));
+        when(invoiceService.findAllInvoices()).thenReturn(Flux.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.findAllInvoices(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -58,13 +60,14 @@ class InvoiceHandlerTest {
 
     @Test
     void findAllActiveInvoices_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(invoiceService.findAllActiveInvoices()).thenReturn(Flux.just(invoiceDto));
+        when(invoiceService.findAllActiveInvoices()).thenReturn(Flux.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.findAllActiveInvoices(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -86,14 +89,15 @@ class InvoiceHandlerTest {
 
     @Test
     void findAllInvoicesByCustomerUsername_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("customerId", "64f361caf291ae086e179547")
                 .build();
 
-        when(invoiceService.findAllInvoicesByCustomerUsername(anyString())).thenReturn(Flux.just(invoiceDto));
+        when(invoiceService.findAllInvoicesByCustomerUsername(anyString())).thenReturn(Flux.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.findAllInvoicesByCustomerUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -116,14 +120,15 @@ class InvoiceHandlerTest {
 
     @Test
     void findInvoiceById_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(invoiceService.findInvoiceById(anyString())).thenReturn(Mono.just(invoiceDto));
+        when(invoiceService.findInvoiceById(anyString())).thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.findInvoiceById(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -146,14 +151,15 @@ class InvoiceHandlerTest {
 
     @Test
     void findInvoiceByComments_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("comments", "comment")
                 .build();
 
-        when(invoiceService.findInvoicesByComments(anyString())).thenReturn(Flux.just(invoiceDto));
+        when(invoiceService.findInvoicesByComments(anyString())).thenReturn(Flux.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.findInvoiceByComments(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -202,16 +208,17 @@ class InvoiceHandlerTest {
 
     @Test
     void updateInvoiceTest_success() {
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .header("X-API-KEY", "apikey")
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(invoiceDto));
+                .body(Mono.just(invoiceResponse));
 
-        when(invoiceService.closeInvoice(anyString(), anyString(), any(InvoiceDto.class)))
-                .thenReturn(Mono.just(invoiceDto));
+        when(invoiceService.closeInvoice(anyString(), anyString(), any(InvoiceRequest.class)))
+                .thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.closeInvoice(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

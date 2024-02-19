@@ -1,13 +1,14 @@
 package com.swiftwheelshub.expense.service;
 
-import com.swiftwheelshub.dto.BookingClosingDetailsDto;
-import com.swiftwheelshub.dto.BookingDto;
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.BookingClosingDetails;
+import com.swiftwheelshub.dto.BookingResponse;
+import com.swiftwheelshub.dto.InvoiceRequest;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.expense.mapper.InvoiceMapper;
+import com.swiftwheelshub.expense.mapper.InvoiceMapperImpl;
 import com.swiftwheelshub.expense.repository.InvoiceRepository;
 import com.swiftwheelshub.expense.util.TestUtils;
 import com.swiftwheelshub.model.Invoice;
-import com.swiftwheelshub.expense.mapper.InvoiceMapperImpl;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,12 +54,14 @@ class InvoiceServiceTest {
     @Test
     void findAllInvoicesTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findAll()).thenReturn(Flux.just(invoice));
 
         StepVerifier.create(invoiceService.findAllInvoices())
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
 
         verify(invoiceMapper, times(1)).mapEntityToDto(any(Invoice.class));
@@ -76,12 +79,14 @@ class InvoiceServiceTest {
     @Test
     void findAllActiveInvoicesTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Invoice.class))).thenReturn(Flux.just(invoice));
 
         StepVerifier.create(invoiceService.findAllActiveInvoices())
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
@@ -97,12 +102,14 @@ class InvoiceServiceTest {
     @Test
     void findAllInvoicesByCustomerIdTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(invoice));
 
         StepVerifier.create(invoiceService.findAllInvoicesByCustomerUsername("64f361caf291ae086e179547"))
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
@@ -118,12 +125,14 @@ class InvoiceServiceTest {
     @Test
     void findInvoiceByIdTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
 
         StepVerifier.create(invoiceService.findInvoiceById("64f361caf291ae086e179547"))
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
@@ -139,12 +148,14 @@ class InvoiceServiceTest {
     @Test
     void findInvoiceByFilterTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findByComments(anyString())).thenReturn(Flux.just(invoice));
 
         StepVerifier.create(invoiceService.findInvoicesByComments("comment"))
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
@@ -196,25 +207,30 @@ class InvoiceServiceTest {
     @Test
     void saveInvoiceTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
+        InvoiceResponse invoiceDto =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
-        StepVerifier.create(invoiceService.saveInvoice(bookingDto))
+        StepVerifier.create(invoiceService.saveInvoice(bookingResponse))
                 .expectNext(invoiceDto)
                 .verifyComplete();
     }
 
     @Test
     void saveInvoiceTest_error_existingInvoice() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.saveInvoice(bookingDto))
+        StepVerifier.create(invoiceService.saveInvoice(bookingResponse))
                 .expectError()
                 .verify();
     }
@@ -222,20 +238,27 @@ class InvoiceServiceTest {
     @Test
     void closeInvoiceTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+
+        InvoiceRequest invoiceRequest =
+                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+
+        InvoiceResponse invoiceDto =
+                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
+
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(anyString(), anyString())).thenReturn(Mono.just(bookingDto));
+        when(bookingService.findBookingById(anyString(), anyString())).thenReturn(Mono.just(bookingResponse));
         when(revenueService.saveInvoiceRevenueAndOutboxTransactional(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.closeBooking(anyString(), any(BookingClosingDetailsDto.class)))
-                .thenReturn(Mono.just(bookingDto));
+        when(bookingService.closeBooking(anyString(), any(BookingClosingDetails.class)))
+                .thenReturn(Mono.just(bookingResponse));
 
-        StepVerifier.create(invoiceService.closeInvoice("token", "64f361caf291ae086e179547", invoiceDto))
+        StepVerifier.create(invoiceService.closeInvoice("token", "64f361caf291ae086e179547", invoiceRequest))
                 .expectNext(invoiceDto)
                 .verifyComplete();
 
@@ -245,7 +268,9 @@ class InvoiceServiceTest {
     @Test
     void closeInvoiceTest_errorOnFindInvoiceById() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        InvoiceRequest invoiceRequest =
+                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
@@ -254,7 +279,7 @@ class InvoiceServiceTest {
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(bookingService.findBookingById(anyString(), anyString())).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.closeInvoice("token", "64f361caf291ae086e179547", invoiceDto))
+        StepVerifier.create(invoiceService.closeInvoice("token", "64f361caf291ae086e179547", invoiceRequest))
                 .expectError()
                 .verify();
     }
@@ -262,24 +287,29 @@ class InvoiceServiceTest {
     @Test
     void updateInvoiceAfterBookingUpdateTest_success() {
         Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
-        InvoiceDto invoiceDto = TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
-        StepVerifier.create(invoiceService.updateInvoiceAfterBookingUpdate(bookingDto))
-                .expectNext(invoiceDto)
+        StepVerifier.create(invoiceService.updateInvoiceAfterBookingUpdate(bookingResponse))
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     void updateInvoiceAfterBookingUpdateTest_errorOnFindingByBookingId() {
-        BookingDto bookingDto = TestUtils.getResourceAsJson("/data/BookingDto.json", BookingDto.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.updateInvoiceAfterBookingUpdate(bookingDto))
+        StepVerifier.create(invoiceService.updateInvoiceAfterBookingUpdate(bookingResponse))
                 .expectError()
                 .verify();
     }

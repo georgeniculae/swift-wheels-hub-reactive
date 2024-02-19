@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.router;
 
-import com.swiftwheelshub.dto.RevenueDto;
+import com.swiftwheelshub.dto.RevenueResponse;
 import com.swiftwheelshub.expense.handler.RevenueHandler;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -42,35 +42,35 @@ public class RevenueRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllRevenuesTest_success() {
-        RevenueDto revenueDto =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
         when(revenueHandler.findAllRevenues(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RevenueDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RevenueResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RevenueDto.class)
+                .returnResult(RevenueResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(revenueDto)
+                .expectNext(revenueResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllRevenuesTest_unauthorized() {
-        RevenueDto revenueDto =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
         when(revenueHandler.findAllRevenues(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -86,35 +86,35 @@ public class RevenueRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void getTotalAmountTest_success() {
-        RevenueDto revenueDto =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
         when(revenueHandler.getTotalAmount(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RevenueDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RevenueResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/total")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RevenueDto.class)
+                .returnResult(RevenueResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(revenueDto)
+                .expectNext(revenueResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void getTotalAmountTest_unauthorized() {
-        RevenueDto revenueDto =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
         when(revenueHandler.getTotalAmount(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -130,35 +130,35 @@ public class RevenueRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findRevenuesByDateTest_success() {
-        RevenueDto revenueDto =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
         when(revenueHandler.findRevenuesByDate(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RevenueDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RevenueResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/{date}", "2023-09-25")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(RevenueDto.class)
+                .returnResult(RevenueResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(revenueDto)
+                .expectNext(revenueResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findRevenuesByDateTest_unauthorized() {
-        RevenueDto revenueDto =
-                TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
         when(revenueHandler.findRevenuesByDate(any(ServerRequest.class))).thenReturn(serverResponse);
 

@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.router;
 
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.expense.handler.InvoiceHandler;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -42,35 +42,35 @@ public class InvoiceRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllInvoicesTest_success() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findAllInvoices(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<InvoiceDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(InvoiceDto.class)
+                .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllInvoicesTest_unauthorized() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findAllInvoices(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -86,35 +86,35 @@ public class InvoiceRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllActiveInvoicesTest_success() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findAllActiveInvoices(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<InvoiceDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/active")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(InvoiceDto.class)
+                .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllActiveInvoicesTest_unauthorized() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findAllActiveInvoices(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -130,35 +130,35 @@ public class InvoiceRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findAllInvoicesByCustomerIdTest_success() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findAllInvoicesByCustomerUsername(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<InvoiceDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/by-customer/{customerUsername}", "username")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(InvoiceDto.class)
+                .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findAllInvoicesByCustomerIdTest_unauthorized() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findAllInvoicesByCustomerUsername(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -250,35 +250,35 @@ public class InvoiceRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findInvoiceByIdTest_success() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findInvoiceById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<InvoiceDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(InvoiceDto.class)
+                .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findInvoiceByIdTest_unauthorized() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findInvoiceById(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -294,35 +294,35 @@ public class InvoiceRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findInvoiceByCommentsTest_success() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findInvoiceByComments(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<InvoiceDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/by-comments", "comment")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(InvoiceDto.class)
+                .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findInvoiceByCommentsTest_unauthorized() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.findInvoiceByComments(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -338,35 +338,35 @@ public class InvoiceRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void closeInvoiceTest_success() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.closeInvoice(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<InvoiceDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(InvoiceDto.class)
+                .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void closeInvoiceTest_unauthorized() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.closeInvoice(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -382,10 +382,10 @@ public class InvoiceRouterTest {
     @Test
     @WithAnonymousUser
     void closeInvoiceTest_forbidden() {
-        InvoiceDto invoiceDto =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceDto.class);
+        InvoiceResponse invoiceResponse =
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceDto));
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
         when(invoiceHandler.closeInvoice(any(ServerRequest.class))).thenReturn(serverResponse);
 

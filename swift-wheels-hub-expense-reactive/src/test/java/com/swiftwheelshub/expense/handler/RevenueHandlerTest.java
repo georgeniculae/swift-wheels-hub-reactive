@@ -1,6 +1,6 @@
 package com.swiftwheelshub.expense.handler;
 
-import com.swiftwheelshub.dto.RevenueDto;
+import com.swiftwheelshub.dto.RevenueResponse;
 import com.swiftwheelshub.expense.service.RevenueService;
 import com.swiftwheelshub.expense.util.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -29,13 +29,14 @@ class RevenueHandlerTest {
 
     @Test
     void findAllRevenuesTest_success() {
-        RevenueDto revenueDto = TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(revenueService.findAllRevenues()).thenReturn(Flux.just(revenueDto));
+        when(revenueService.findAllRevenues()).thenReturn(Flux.just(revenueResponse));
 
         StepVerifier.create(revenueHandler.findAllRevenues(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -57,14 +58,15 @@ class RevenueHandlerTest {
 
     @Test
     void findRevenuesByDateTest_success() {
-        RevenueDto revenueDto = TestUtils.getResourceAsJson("/data/RevenueDto.json", RevenueDto.class);
+        RevenueResponse revenueResponse =
+                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("dateOfRevenue", "2023-09-27")
                 .build();
 
-        when(revenueService.findRevenuesByDate(anyString())).thenReturn(Flux.just(revenueDto));
+        when(revenueService.findRevenuesByDate(anyString())).thenReturn(Flux.just(revenueResponse));
 
         StepVerifier.create(revenueHandler.findRevenuesByDate(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
