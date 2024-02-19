@@ -1,8 +1,5 @@
 package com.swiftwheelshub.dto;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 
