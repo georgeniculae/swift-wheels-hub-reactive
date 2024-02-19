@@ -1,10 +1,10 @@
 package com.swiftwheelshub.emailnotification.consumer;
 
+import com.sendgrid.Response;
+import com.sendgrid.helpers.mail.Mail;
 import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.emailnotification.service.EmailService;
 import com.swiftwheelshub.emailnotification.util.TestUtils;
-import com.sendgrid.Response;
-import com.sendgrid.helpers.mail.Mail;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,7 +42,7 @@ class InvoiceMessageConsumerTest {
         ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Response response = new Response();
         response.setStatusCode(200);
@@ -64,7 +64,7 @@ class InvoiceMessageConsumerTest {
         ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceDto.json", InvoiceResponse.class);
+                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Response response = new Response();
         response.setStatusCode(200);
