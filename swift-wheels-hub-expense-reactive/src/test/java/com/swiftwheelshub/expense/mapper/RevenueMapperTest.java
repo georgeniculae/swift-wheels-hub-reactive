@@ -26,15 +26,4 @@ class RevenueMapperTest {
         AssertionUtils.assertRevenueResponse(revenue, revenueResponse);
     }
 
-    @Test
-    void mapDtoToEntityTest_success() {
-        RevenueRequest revenueRequest =
-                TestUtils.getResourceAsJson("/data/RevenueRequest.json", RevenueRequest.class);
-
-        Revenue revenue = rentalOfficeMapper.mapDtoToEntity(revenueRequest);
-
-        assertNotNull(revenue);
-        AssertionUtils.assertRevenueRequest(revenue, revenueRequest);
-    }
-
 }

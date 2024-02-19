@@ -9,21 +9,17 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring",
+@Mapper(
+        componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 public interface RevenueMapper {
 
     RevenueResponse mapEntityToDto(Revenue revenue);
 
-    Revenue mapDtoToEntity(RevenueRequest revenueRequest);
-
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
-    }
-
-    default ObjectId mapStringToObjectId(String id) {
-        return ObjectUtils.isEmpty(id) ? null : new ObjectId(id);
     }
 
 }

@@ -22,7 +22,7 @@ public record InvoiceResponse(
         String receptionistEmployeeId,
 
         @NonNull
-        Long bookingId,
+        String bookingId,
 
         LocalDate carDateOfReturn,
 

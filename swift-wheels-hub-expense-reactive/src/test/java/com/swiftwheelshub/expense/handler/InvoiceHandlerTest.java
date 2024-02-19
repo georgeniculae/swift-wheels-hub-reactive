@@ -208,6 +208,9 @@ class InvoiceHandlerTest {
 
     @Test
     void updateInvoiceTest_success() {
+        InvoiceRequest invoiceRequest =
+                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
