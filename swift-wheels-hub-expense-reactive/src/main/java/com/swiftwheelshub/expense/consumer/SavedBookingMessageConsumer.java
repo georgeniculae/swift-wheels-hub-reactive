@@ -1,7 +1,7 @@
 package com.swiftwheelshub.expense.consumer;
 
-import com.swiftwheelshub.dto.BookingDto;
-import com.swiftwheelshub.dto.InvoiceDto;
+import com.swiftwheelshub.dto.BookingResponse;
+import com.swiftwheelshub.dto.InvoiceResponse;
 import com.swiftwheelshub.expense.service.InvoiceService;
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +31,12 @@ public class SavedBookingMessageConsumer {
     private final InvoiceService invoiceService;
 
     @Bean
-    public Function<Flux<Message<BookingDto>>, Mono<Void>> savedBookingConsumer() {
+    public Function<Flux<Message<BookingResponse>>, Mono<Void>> savedBookingConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processMessage)
                 .then();
     }
 
-    private Mono<InvoiceDto> processMessage(Message<BookingDto> message) {
+    private Mono<InvoiceResponse> processMessage(Message<BookingResponse> message) {
         return invoiceService.saveInvoice(message.getPayload())
                 .doOnNext(userDto -> {
                     log.info("Invoice saved: {}", userDto);
