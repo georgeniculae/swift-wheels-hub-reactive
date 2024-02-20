@@ -28,6 +28,7 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -177,14 +178,14 @@ class BookingServiceTest {
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        String apikeySecret = "token";
+        String apikey = "token";
 
-        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.just(carResponse));
+        when(carService.findAvailableCarById(anyString(), anyList(), anyString())).thenReturn(Mono.just(carResponse));
         when(outboxService.saveBookingAndOutboxTransactional(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
-        when(carService.changeCarStatus(anyString(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
+        when(carService.changeCarStatus(anyString(), anyList(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(bookingService.saveBooking(apikeySecret, bookingRequest))
+        StepVerifier.create(bookingService.saveBooking(apikey, List.of("admin"), bookingRequest))
                 .expectNext(bookingResponse)
                 .verifyComplete();
 
@@ -195,11 +196,11 @@ class BookingServiceTest {
     void saveBookingTest_errorOnFindingAvailableCarById() {
         BookingRequest bookingRequest =
                 TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
-        String apikeySecret = "token";
+        String apikey = "token";
 
-        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.error(new Throwable()));
+        when(carService.findAvailableCarById(anyString(), anyList(), anyString())).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.saveBooking(apikeySecret, bookingRequest))
+        StepVerifier.create(bookingService.saveBooking(apikey, List.of("admin"), bookingRequest))
                 .expectError()
                 .verify();
     }
@@ -214,15 +215,15 @@ class BookingServiceTest {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
-        String apikeySecret = "apikey";
+        String apikey = "apikey";
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(anyString(), anyString())).thenReturn(Mono.just(employeeResponse));
-        when(carService.updateCarWhenBookingIsFinished(anyString(), any(CarUpdateDetails.class)))
+        when(employeeService.findEmployeeById(anyString(), anyList(), anyString())).thenReturn(Mono.just(employeeResponse));
+        when(carService.updateCarWhenBookingIsFinished(anyString(), anyList(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(bookingService.closeBooking(apikeySecret, bookingClosingDetails))
+        StepVerifier.create(bookingService.closeBooking(apikey, List.of("admin"), bookingClosingDetails))
                 .expectNext(closedBookingResponse)
                 .verifyComplete();
     }
@@ -238,11 +239,11 @@ class BookingServiceTest {
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(anyString(), anyString())).thenReturn(Mono.just(employeeResponse));
-        when(carService.updateCarWhenBookingIsFinished(anyString(), any(CarUpdateDetails.class)))
+        when(employeeService.findEmployeeById(anyString(), anyList(), anyString())).thenReturn(Mono.just(employeeResponse));
+        when(carService.updateCarWhenBookingIsFinished(anyString(), anyList(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.closeBooking(apikeySecret, bookingClosingDetails))
+        StepVerifier.create(bookingService.closeBooking(apikeySecret, List.of("admin"), bookingClosingDetails))
                 .expectError()
                 .verify();
     }
@@ -261,7 +262,7 @@ class BookingServiceTest {
         when(outboxService.saveBookingAndOutboxTransactional(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
 
-        StepVerifier.create(bookingService.updateBooking(apikeySecret, "64f361caf291ae086e179547", bookingRequest))
+        StepVerifier.create(bookingService.updateBooking(apikeySecret, List.of("admin"), "64f361caf291ae086e179547", bookingRequest))
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -274,7 +275,7 @@ class BookingServiceTest {
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.updateBooking(apikeySecret, "64f361caf291ae086e179547", bookingRequest))
+        StepVerifier.create(bookingService.updateBooking(apikeySecret, List.of("admin"), "64f361caf291ae086e179547", bookingRequest))
                 .expectError()
                 .verify();
     }
@@ -292,13 +293,13 @@ class BookingServiceTest {
         outbox.getContent().setCarId(new ObjectId("64f361caf291ae086e179222"));
         String apikeySecret = "token";
 
-        when(carService.findAvailableCarById(anyString(), anyString())).thenReturn(Mono.just(carResponse));
+        when(carService.findAvailableCarById(anyString(), anyList(), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(outboxService.saveBookingAndOutboxTransactional(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
-        when(carService.updateCarsStatus(anyString(), anyList())).thenReturn(Flux.just(carResponse));
+        when(carService.updateCarsStatus(anyString(), anyList(), anyList())).thenReturn(Flux.just(carResponse));
 
-        StepVerifier.create(bookingService.updateBooking(apikeySecret, "64f361caf291ae086e179547", updatedBookingRequest))
+        StepVerifier.create(bookingService.updateBooking(apikeySecret, List.of("admin"), "64f361caf291ae086e179547", updatedBookingRequest))
                 .expectNext(updatedBookingResponse)
                 .verifyComplete();
     }
@@ -354,9 +355,9 @@ class BookingServiceTest {
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingDeletion(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
-        when(carService.changeCarStatus(anyString(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
+        when(carService.changeCarStatus(anyString(), anyList(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(bookingService.deleteBookingById("apiKey", "64f361caf291ae086e179547"))
+        StepVerifier.create(bookingService.deleteBookingById("apiKey", List.of("admin"), "64f361caf291ae086e179547"))
                 .expectComplete()
                 .verify();
     }
@@ -365,7 +366,7 @@ class BookingServiceTest {
     void deleteBookingByIdTest_errorOnFindingById() {
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.deleteBookingById("apiKey", "64f361caf291ae086e179547"))
+        StepVerifier.create(bookingService.deleteBookingById("apiKey", List.of("admin"), "64f361caf291ae086e179547"))
                 .expectError()
                 .verify();
     }

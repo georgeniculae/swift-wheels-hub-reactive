@@ -27,12 +27,15 @@ public class CarService {
 
     private static final String X_API_KEY = "X-API-KEY";
 
+    private static final String X_ROLES = "X-ROLES";
+
     private final WebClient webClient;
 
-    public Mono<CarResponse> findAvailableCarById(String apiKeyToken, String carId) {
+    public Mono<CarResponse> findAvailableCarById(String apiKey, List<String> roles, String carId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "availability", carId)
-                .header(X_API_KEY, apiKeyToken)
+                .header(X_API_KEY, apiKey)
+                .header(X_ROLES, roles.toArray(String[]::new))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CarResponse.class)
@@ -43,10 +46,11 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> changeCarStatus(String apiKeyToken, String carId, CarState carState) {
+    public Mono<CarResponse> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
-                .header(X_API_KEY, apiKeyToken)
+                .header(X_API_KEY, apiKey)
+                .header(X_ROLES, roles.toArray(String[]::new))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carState)
@@ -59,10 +63,12 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> updateCarWhenBookingIsFinished(String apiKeyToken, CarUpdateDetails carUpdateDetails) {
+    public Mono<CarResponse> updateCarWhenBookingIsFinished(String apiKey, List<String> roles,
+                                                            CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
-                .header(X_API_KEY, apiKeyToken)
+                .header(X_API_KEY, apiKey)
+                .header(X_ROLES, roles.toArray(String[]::new))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
@@ -75,11 +81,12 @@ public class CarService {
                 });
     }
 
-    public Flux<CarResponse> updateCarsStatus(String apiKeyToken,
-                                         List<UpdateCarRequest> updateCarRequests) {
+    public Flux<CarResponse> updateCarsStatus(String apiKey, List<String> roles,
+                                              List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + SEPARATOR + "update-statuses")
-                .header(X_API_KEY, apiKeyToken)
+                .header(X_API_KEY, apiKey)
+                .header(X_ROLES, roles.toArray(String[]::new))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(updateCarRequests)

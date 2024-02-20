@@ -23,7 +23,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -253,12 +256,12 @@ class InvoiceServiceTest {
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(anyString(), anyString())).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.just(bookingResponse));
         when(revenueService.saveInvoiceRevenueAndOutboxTransactional(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.closeBooking(anyString(), any(BookingClosingDetails.class)))
+        when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
-        StepVerifier.create(invoiceService.closeInvoice("token", "64f361caf291ae086e179547", invoiceRequest))
+        StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
                 .expectNext(invoiceDto)
                 .verifyComplete();
 
@@ -277,9 +280,9 @@ class InvoiceServiceTest {
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(anyString(), anyString())).thenReturn(Mono.error(new Throwable()));
+        when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.closeInvoice("token", "64f361caf291ae086e179547", invoiceRequest))
+        StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
                 .expectError()
                 .verify();
     }

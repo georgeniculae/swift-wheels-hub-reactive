@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,12 +23,15 @@ public class BookingService {
 
     private static final String X_API_KEY = "X-API-KEY";
 
+    private static final String X_ROLES = "X-ROLES";
+
     private final WebClient webClient;
 
-    public Mono<BookingResponse> closeBooking(String apiKeyToken, BookingClosingDetails bookingClosingDetails) {
+    public Mono<BookingResponse> closeBooking(String apiKey, List<String> roles, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
-                .header(X_API_KEY, apiKeyToken)
+                .header(X_API_KEY, apiKey)
+                .header(X_ROLES, roles.toArray(String[]::new))
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
                 .bodyToMono(BookingResponse.class)
@@ -37,10 +42,11 @@ public class BookingService {
                 });
     }
 
-    public Mono<BookingResponse> findBookingById(String apiKeyToken, String bookingId) {
+    public Mono<BookingResponse> findBookingById(String apiKey, List<String> roles, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "/{id}", bookingId)
-                .header(X_API_KEY, apiKeyToken)
+                .header(X_API_KEY, apiKey)
+                .header(X_ROLES, roles.toArray(String[]::new))
                 .retrieve()
                 .bodyToMono(BookingResponse.class)
                 .onErrorMap(e -> {

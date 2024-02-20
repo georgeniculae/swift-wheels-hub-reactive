@@ -76,15 +76,23 @@ public class BookingHandler {
 
     public Mono<ServerResponse> saveBooking(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BookingRequest.class)
-                .flatMap(bookingRequest ->
-                        bookingService.saveBooking(ServerRequestUtil.getApiKeyHeader(serverRequest), bookingRequest))
+                .flatMap(bookingRequest -> bookingService.saveBooking(
+                        ServerRequestUtil.getApiKeyHeader(serverRequest),
+                        ServerRequestUtil.getRolesHeader(serverRequest),
+                        bookingRequest)
+                )
                 .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
     }
 
     public Mono<ServerResponse> closeBooking(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BookingClosingDetails.class)
                 .flatMap(bookingClosingDetails ->
-                        bookingService.closeBooking(ServerRequestUtil.getApiKeyHeader(serverRequest), bookingClosingDetails))
+                        bookingService.closeBooking(
+                                ServerRequestUtil.getApiKeyHeader(serverRequest),
+                                ServerRequestUtil.getRolesHeader(serverRequest),
+                                bookingClosingDetails
+                        )
+                )
                 .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
     }
 
@@ -93,6 +101,7 @@ public class BookingHandler {
                 .flatMap(bookingRequest ->
                         bookingService.updateBooking(
                                 ServerRequestUtil.getApiKeyHeader(serverRequest),
+                                ServerRequestUtil.getRolesHeader(serverRequest),
                                 ServerRequestUtil.getPathVariable(serverRequest, ID),
                                 bookingRequest
                         )
@@ -103,6 +112,7 @@ public class BookingHandler {
     public Mono<ServerResponse> deleteBookingById(ServerRequest serverRequest) {
         return bookingService.deleteBookingById(
                         ServerRequestUtil.getApiKeyHeader(serverRequest),
+                        ServerRequestUtil.getRolesHeader(serverRequest),
                         ServerRequestUtil.getPathVariable(serverRequest, ID)
                 )
                 .flatMap(bookingResponse -> ServerResponse.noContent().build());

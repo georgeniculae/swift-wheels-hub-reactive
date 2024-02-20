@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -220,7 +221,7 @@ class InvoiceHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(invoiceResponse));
 
-        when(invoiceService.closeInvoice(anyString(), anyString(), any(InvoiceRequest.class)))
+        when(invoiceService.closeInvoice(anyString(), anyList(), anyString(), any(InvoiceRequest.class)))
                 .thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.closeInvoice(serverRequest))

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -235,7 +236,7 @@ class BookingHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(bookingRequest));
 
-        when(bookingService.saveBooking(anyString(), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.saveBooking(anyString(), anyList(), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -256,7 +257,7 @@ class BookingHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(bookingClosingDetails));
 
-        when(bookingService.closeBooking(anyString(), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.closeBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -278,7 +279,7 @@ class BookingHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(bookingRequest));
 
-        when(bookingService.updateBooking(anyString(), anyString(), any(BookingRequest.class)))
+        when(bookingService.updateBooking(anyString(), anyList(), anyString(), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
@@ -294,7 +295,7 @@ class BookingHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(bookingService.deleteBookingById(anyString(), anyString())).thenReturn(Mono.empty());
+        when(bookingService.deleteBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(bookingHandler.deleteBookingById(serverRequest))
                 .expectComplete()

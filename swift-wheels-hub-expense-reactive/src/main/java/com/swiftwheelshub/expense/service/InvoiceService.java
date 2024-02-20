@@ -29,6 +29,7 @@ import reactor.util.function.Tuple2;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -148,13 +149,13 @@ public class InvoiceService {
             sentParameters = {"id", "invoiceRequest"},
             activityDescription = "Invoice closing"
     )
-    public Mono<InvoiceResponse> closeInvoice(String apiKeyToken, String id, InvoiceRequest invoiceRequest) {
+    public Mono<InvoiceResponse> closeInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
                 .flatMap(request -> findEntityById(id))
-                .zipWith(bookingService.findBookingById(apiKeyToken, invoiceRequest.bookingId()))
+                .zipWith(bookingService.findBookingById(apiKey, roles, invoiceRequest.bookingId()))
                 .map(existingInvoiceAndBookingRequest -> updateInvoiceWithBookingDetails(invoiceRequest, existingInvoiceAndBookingRequest))
                 .flatMap(revenueService::saveInvoiceRevenueAndOutboxTransactional)
-                .delayUntil(invoice -> bookingService.closeBooking(apiKeyToken, getBookingClosingDetails(invoice)))
+                .delayUntil(invoice -> bookingService.closeBooking(apiKey, roles, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());

@@ -28,7 +28,7 @@ import java.time.Duration;
 @Slf4j
 public class RequestValidatorFilter implements GlobalFilter, Ordered {
 
-    private final static String API_KEY_HEADER = "X-API-KEY";
+    private static final String API_KEY_HEADER = "X-API-KEY";
 
     private static final String DEFINITION = "definition";
 

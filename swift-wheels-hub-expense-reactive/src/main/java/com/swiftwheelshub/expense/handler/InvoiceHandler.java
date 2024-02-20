@@ -71,7 +71,13 @@ public class InvoiceHandler {
 
     public Mono<ServerResponse> closeInvoice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(InvoiceRequest.class)
-                .flatMap(invoiceRequest -> invoiceService.closeInvoice(ServerRequestUtil.getApiKeyHeader(serverRequest), ServerRequestUtil.getPathVariable(serverRequest, ID), invoiceRequest))
+                .flatMap(invoiceRequest -> invoiceService.closeInvoice(
+                                ServerRequestUtil.getApiKeyHeader(serverRequest),
+                                ServerRequestUtil.getRolesHeader(serverRequest),
+                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                invoiceRequest
+                        )
+                )
                 .flatMap(invoiceResponse -> ServerResponse.ok().bodyValue(invoiceResponse));
     }
 
