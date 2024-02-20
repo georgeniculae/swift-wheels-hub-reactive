@@ -1,51 +1,64 @@
 package com.swiftwheelshub.customer.mapper;
 
 import com.swiftwheelshub.customer.util.AssertionUtils;
+import com.swiftwheelshub.customer.util.TestData;
 import com.swiftwheelshub.customer.util.TestUtils;
-import com.swiftwheelshub.dto.CurrentUserDto;
-import com.swiftwheelshub.dto.UserDto;
+import com.swiftwheelshub.dto.RegistrationResponse;
+import com.swiftwheelshub.dto.UserInfo;
+import com.swiftwheelshub.dto.UserUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 class UserMapperTest {
 
-    private final CustomerMapper customerMapper = new CustomerMapperImpl();
+    private final UserMapper userMapper = new UserMapperImpl();
 
     @Test
-    void mapUserToCurrentUserDtoTest_success() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
+    void mapToUserRepresentationTest_success() {
+        UserUpdateRequest userUpdateRequest =
+                TestUtils.getResourceAsJson("/data/UserUpdateRequest.json", UserUpdateRequest.class);
 
-        CurrentUserDto currentUserDto = assertDoesNotThrow(() -> customerMapper.mapUserToCurrentUserDto(user));
+        UserRepresentation userRepresentation = userMapper.mapToUserRepresentation(userUpdateRequest);
 
-        AssertionUtils.assertCurrentUser(user, currentUserDto);
+        AssertionUtils.assertUserRepresentation(userUpdateRequest, userRepresentation);
     }
 
     @Test
-    void mapUserToCurrentUserDtoTest_null() {
-        CurrentUserDto currentUserDto = assertDoesNotThrow(() -> customerMapper.mapUserToCurrentUserDto(null));
-
-        assertNull(currentUserDto);
+    void mapToUserRepresentationTest_null() {
+        assertNull(userMapper.mapToUserRepresentation(null));
     }
 
     @Test
-    void mapEntityToDtoTest_success() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
+    void mapUserToUserDetailsTest_success() {
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
-        UserDto userDto = assertDoesNotThrow(() -> customerMapper.mapEntityToDto(user));
+        UserInfo userInfo = userMapper.mapUserToUserDetails(userRepresentation);
 
-        AssertionUtils.assertUser(user, userDto);
+        AssertionUtils.assertUserDetails(userRepresentation, userInfo);
     }
 
     @Test
-    void mapEntityToDtoTest_null() {
-        UserDto userDto = assertDoesNotThrow(() -> customerMapper.mapEntityToDto(null));
+    void mapUserToUserDetailsTest_null() {
+        assertNull(userMapper.mapUserToUserDetails(null));
+    }
 
-        assertNull(userDto);
+    @Test
+    void mapToRegistrationResponseTest_success() {
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
+
+        RegistrationResponse registrationResponse = userMapper.mapToRegistrationResponse(userRepresentation);
+
+        AssertionUtils.assertRegistrationResponse(userRepresentation, registrationResponse);
+    }
+
+    @Test
+    void mapToRegistrationResponseTest_null() {
+        assertNull(userMapper.mapToRegistrationResponse(null));
     }
 
 }

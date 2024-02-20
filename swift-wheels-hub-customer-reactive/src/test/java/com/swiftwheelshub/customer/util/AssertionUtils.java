@@ -1,47 +1,56 @@
 package com.swiftwheelshub.customer.util;
 
-import com.swiftwheelshub.dto.CurrentUserDto;
-import com.swiftwheelshub.dto.UserDto;
-
-import java.util.Optional;
+import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.RegistrationResponse;
+import com.swiftwheelshub.dto.UserInfo;
+import com.swiftwheelshub.dto.UserUpdateRequest;
+import org.keycloak.representations.idm.UserRepresentation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssertionUtils {
 
-    public static void assertCurrentUser(User user, CurrentUserDto currentUserDto) {
-        assertEquals(user.getUsername(), currentUserDto.username());
-        assertEquals(user.getPassword(), currentUserDto.password());
-        assertEquals(user.getRole(), currentUserDto.role());
-        assertEquals(user.getFirstName(), currentUserDto.firstName());
-        assertEquals(user.getLastName(), currentUserDto.lastName());
-        assertEquals(user.getEmail(), currentUserDto.email());
-        assertEquals(user.isAccountNonExpired(), currentUserDto.accountNonExpired());
-        assertEquals(user.isAccountNonExpired(), currentUserDto.accountNonExpired());
-        assertEquals(user.isCredentialsNonExpired(), currentUserDto.credentialsNonExpired());
-        assertEquals(user.getAuthorities(), currentUserDto.authorities());
+    public static void assertRegistrationResponse(UserRepresentation userRepresentation, RegistrationResponse registrationResponse) {
+        assertEquals(userRepresentation.getUsername(), registrationResponse.username());
+        assertEquals(userRepresentation.getFirstName(), registrationResponse.firstName());
+        assertEquals(userRepresentation.getLastName(), registrationResponse.lastName());
+        assertEquals(userRepresentation.getEmail(), registrationResponse.email());
+        assertEquals(userRepresentation.getAttributes().get("address").getFirst(), registrationResponse.address());
+        assertEquals(userRepresentation.getAttributes().get("dateOfBirth").getFirst(), registrationResponse.dateOfBirth().toString());
     }
 
-    public static void assertCurrentUser(CurrentUserDto currentUserDto, User user) {
-        assertEquals(user.getUsername(), currentUserDto.username());
-        assertEquals(user.getPassword(), currentUserDto.password());
-        assertEquals(user.getRole(), currentUserDto.role());
-        assertEquals(user.getFirstName(), currentUserDto.firstName());
-        assertEquals(user.getLastName(), currentUserDto.lastName());
-        assertEquals(user.getEmail(), currentUserDto.email());
+    public static void assertRegistrationResponse(RegisterRequest registerRequest, RegistrationResponse registrationResponse) {
+        assertEquals(registerRequest.username(), registrationResponse.username());
+        assertEquals(registerRequest.firstName(), registrationResponse.firstName());
+        assertEquals(registerRequest.lastName(), registrationResponse.lastName());
+        assertEquals(registerRequest.email(), registrationResponse.email());
+        assertEquals(registerRequest.address(), registrationResponse.address());
+        assertEquals(registerRequest.dateOfBirth(), registrationResponse.dateOfBirth());
     }
 
-    public static void assertUser(User user, UserDto userDto) {
-        assertEquals(user.getUsername(), userDto.getUsername());
-        assertEquals(user.getPassword(), userDto.getPassword());
-        assertRole(user.getRole(), Optional.ofNullable(userDto.getRole()).orElseThrow());
-        assertEquals(user.getFirstName(), userDto.getFirstName());
-        assertEquals(user.getLastName(), userDto.getLastName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+    public static void assertUserRepresentation(UserUpdateRequest userUpdateRequest, UserRepresentation userRepresentation) {
+        assertEquals(userUpdateRequest.username(), userRepresentation.getUsername());
+        assertEquals(userUpdateRequest.firstName(), userRepresentation.getFirstName());
+        assertEquals(userUpdateRequest.lastName(), userRepresentation.getLastName());
+        assertEquals(userUpdateRequest.email(), userRepresentation.getEmail());
     }
 
-    private static void assertRole(Role role, UserDto.RoleEnum roleEnum) {
-        assertEquals(role.getName(), roleEnum.getValue());
+    public static void assertUserDetails(UserRepresentation userRepresentation, UserInfo userInfo) {
+        assertEquals(userRepresentation.getUsername(), userInfo.username());
+        assertEquals(userRepresentation.getFirstName(), userInfo.firstName());
+        assertEquals(userRepresentation.getLastName(), userInfo.lastName());
+        assertEquals(userRepresentation.getEmail(), userInfo.email());
+        assertEquals(userRepresentation.getAttributes().get("address").getFirst(), userInfo.address());
+        assertEquals(userRepresentation.getAttributes().get("dateOfBirth").getFirst(), userInfo.dateOfBirth().toString());
+    }
+
+    public static void assertUserDetails(UserUpdateRequest userUpdateRequest, UserInfo userInfo) {
+        assertEquals(userUpdateRequest.username(), userInfo.username());
+        assertEquals(userUpdateRequest.firstName(), userInfo.firstName());
+        assertEquals(userUpdateRequest.lastName(), userInfo.lastName());
+        assertEquals(userUpdateRequest.email(), userInfo.email());
+        assertEquals(userUpdateRequest.address(), userInfo.address());
+        assertEquals(userUpdateRequest.dateOfBirth(), userInfo.dateOfBirth());
     }
 
 }

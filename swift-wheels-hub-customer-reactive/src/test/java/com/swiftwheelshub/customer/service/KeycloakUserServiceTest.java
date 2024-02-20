@@ -1,35 +1,53 @@
 package com.swiftwheelshub.customer.service;
 
-import com.swiftwheelshub.customer.mapper.CustomerMapperImpl;
-import com.swiftwheelshub.customer.model.Outbox;
+import com.swiftwheelshub.customer.mapper.UserMapper;
+import com.swiftwheelshub.customer.mapper.UserMapperImpl;
 import com.swiftwheelshub.customer.util.AssertionUtils;
+import com.swiftwheelshub.customer.util.TestData;
 import com.swiftwheelshub.customer.util.TestUtils;
-import com.swiftwheelshub.dto.CurrentUserDto;
 import com.swiftwheelshub.dto.RegisterRequest;
-import com.swiftwheelshub.dto.UserDto;
-import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
-import com.swiftwheelshub.lib.mapper.UserMapper;
-import com.swiftwheelshub.lib.mapper.UserMapperImpl;
-import com.swiftwheelshub.lib.repository.UserRepository;
-import com.swiftwheelshub.lib.security.jwt.JwtService;
-import org.bson.types.ObjectId;
+import com.swiftwheelshub.dto.RegistrationResponse;
+import com.swiftwheelshub.dto.UserInfo;
+import com.swiftwheelshub.dto.UserUpdateRequest;
+import com.swiftwheelshub.exception.SwiftWheelsHubNotFoundException;
+import com.swiftwheelshub.exception.SwiftWheelsHubResponseStatusException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.core.ServerResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.keycloak.admin.client.CreatedResponseUtil;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.RoleMappingResource;
+import org.keycloak.admin.client.resource.RoleResource;
+import org.keycloak.admin.client.resource.RoleScopeResource;
+import org.keycloak.admin.client.resource.RolesResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,216 +55,259 @@ import static org.mockito.Mockito.when;
 class KeycloakUserServiceTest {
 
     @InjectMocks
-    private KeycloakUserService userService;
+    private KeycloakUserService keycloakUserService;
 
     @Mock
-    private UserRepository userRepository;
+    private Keycloak keycloak;
 
     @Mock
-    private OutboxService outboxService;
+    private UsersResource usersResource;
 
     @Mock
-    private JwtService jwtService;
+    private UserResource userResource;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private RealmResource realmResource;
 
-    @Spy
-    private CustomerMapper customerMapper = new CustomerMapperImpl();
+    @Mock
+    private RolesResource rolesResource;
+
+    @Mock
+    private RoleResource roleResource;
+
+    @Mock
+    private RoleRepresentation roleRepresentation;
+
+    @Mock
+    private RoleMappingResource roleMappingResource;
+
+    @Mock
+    private RoleScopeResource roleScopeResource;
 
     @Spy
     private UserMapper userMapper = new UserMapperImpl();
 
     @Test
-    void registerUserTest_success() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
+    @SuppressWarnings("all")
+    void registerCustomerTest_success() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
         RegisterRequest registerRequest =
                 TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Headers<Object> headers = new Headers<>();
+        headers.put("test", List.of());
+        Response response = new ServerResponse(null, 201, headers);
 
-        String token = "token";
-        String encodedPassword = "$2a$12$ixPC0.X/n6gko36V356aS.CR0EOrPpRHv7Ez7jEoVnT.AnP3oa7xm";
+        mockStatic(CreatedResponseUtil.class);
+        when(CreatedResponseUtil.getCreatedId(any())).thenReturn("id");
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.roles()).thenReturn(rolesResource);
+        when(rolesResource.list()).thenReturn(List.of(roleRepresentation));
+        when(rolesResource.get(anyString())).thenReturn(roleResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.create(any(UserRepresentation.class))).thenReturn(response);
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        when(rolesResource.get(anyString())).thenReturn(roleResource);
+        doNothing().when(roleResource).addComposites(anyList());
+        when(roleResource.toRepresentation()).thenReturn(roleRepresentation);
+        doNothing().when(userResource).resetPassword(any(CredentialRepresentation.class));
+        when(userResource.roles()).thenReturn(roleMappingResource);
+        when(roleMappingResource.realmLevel()).thenReturn(roleScopeResource);
+        doNothing().when(roleScopeResource).add(anyList());
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(false));
-        when(outboxService.saveOutbox(any(User.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
-        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn(encodedPassword);
-        when(userRepository.save(any(User.class))).thenReturn(Mono.just(user));
-        when(jwtService.generateToken(any(UserDetails.class))).thenReturn(token);
+        RegistrationResponse registrationResponse = keycloakUserService.registerCustomer(registerRequest);
 
-        StepVerifier.create(userService.registerUser(registerRequest))
-                .expectNextMatches(actualResponse -> token.equals(actualResponse.getToken()))
-                .verifyComplete();
+        AssertionUtils.assertRegistrationResponse(registerRequest, registrationResponse);
+
+        verify(userMapper).mapToRegistrationResponse(any(UserRepresentation.class));
     }
 
     @Test
-    void registerUserTest_error_passwordTooShort() {
+    void registerCustomerTest_customerUnderAge() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
-        registerRequest.setPassword("123456");
+                TestUtils.getResourceAsJson("/data/RegisterRequestAgeBelow18.json", RegisterRequest.class);
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(false));
+        SwiftWheelsHubResponseStatusException swiftWheelsHubResponseStatusException =
+                assertThrows(SwiftWheelsHubResponseStatusException.class, () -> keycloakUserService.registerCustomer(registerRequest));
 
-        StepVerifier.create(userService.registerUser(registerRequest))
-                .expectError()
-                .verify();
+        assertNotNull(swiftWheelsHubResponseStatusException);
+        assertThat(swiftWheelsHubResponseStatusException.getMessage()).contains("Customer is under 18 years old");
     }
 
     @Test
-    void registerUserTest_error_existingUser() {
+    void registerCustomerTest_passwordTooShort() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtils.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
 
-        when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(true));
+        SwiftWheelsHubResponseStatusException swiftWheelsHubResponseStatusException =
+                assertThrows(SwiftWheelsHubResponseStatusException.class, () -> keycloakUserService.registerCustomer(registerRequest));
 
-        StepVerifier.create(userService.registerUser(registerRequest))
-                .expectError()
-                .verify();
-    }
-
-    @Test
-    void registerUserTest_error_customerUnder18YearsOld() {
-        RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
-        registerRequest.setDateOfBirth(LocalDate.of(2015, Month.JANUARY, 11));
-
-        when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(true));
-
-        StepVerifier.create(userService.registerUser(registerRequest))
-                .expectError()
-                .verify();
+        assertNotNull(swiftWheelsHubResponseStatusException);
+        assertThat(swiftWheelsHubResponseStatusException.getMessage()).contains("Password too short");
     }
 
     @Test
     void getCurrentUserTest_success() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        CurrentUserDto currentUserDto =
-                TestUtils.getResourceAsJson("/data/CurrentUserDto.json", CurrentUserDto.class);
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
-        when(userRepository.findByUsername(anyString())).thenReturn(Mono.just(user));
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
 
-        StepVerifier.create(userService.getCurrentUser("alexandrupopescu"))
-                .assertNext(actualCurrentUserDto -> AssertionUtils.assertCurrentUser(currentUserDto, user))
-                .verifyComplete();
+        UserInfo currentUser = keycloakUserService.getCurrentUser("user");
 
-        verify(customerMapper, times(1)).mapUserToCurrentUserDto(any(User.class));
+        AssertionUtils.assertUserDetails(userRepresentation, currentUser);
+
+        verify(userMapper).mapUserToUserDetails(any(UserRepresentation.class));
     }
 
     @Test
     void getCurrentUserTest_errorOnFindingByUsername() {
-        when(userRepository.findByUsername(anyString())).thenReturn(Mono.error(new Throwable()));
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        StepVerifier.create(userService.getCurrentUser("alexandrupopescu"))
-                .expectError(SwiftWheelsHubException.class)
-                .verify();
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> keycloakUserService.findUserByUsername("user"));
+    }
+
+    @Test
+    void getCurrentUserTest_noUsersFound() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of());
+
+        SwiftWheelsHubNotFoundException notFoundException =
+                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.getCurrentUser("user"));
+
+        assertNotNull(notFoundException);
     }
 
     @Test
     void findUserByUsernameTest_success() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
-        String username = "admin";
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        when(userRepository.findByUsername(anyString())).thenReturn(Mono.just(user));
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
-        StepVerifier.create(userService.findUserByUsername(username))
-                .assertNext(actualUserDto -> AssertionUtils.assertUser(user, actualUserDto))
-                .verifyComplete();
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
+
+        UserInfo user = keycloakUserService.findUserByUsername("user");
+
+        AssertionUtils.assertUserDetails(userRepresentation, user);
     }
 
     @Test
-    void findUserByUsernameTest_errorOnFindingByUsername() {
-        String username = "admin";
+    void findUserByUsernameTest_noUserFound() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        when(userRepository.findByUsername(anyString())).thenReturn(Mono.error(new Throwable()));
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of());
 
-        StepVerifier.create(userService.findUserByUsername(username))
-                .expectError()
-                .verify();
-    }
+        SwiftWheelsHubNotFoundException notFoundException =
+                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.findUserByUsername("user"));
 
-    @Test
-    void countUsersTest_success() {
-        when(userRepository.count()).thenReturn(Mono.just(5L));
-
-        StepVerifier.create(userService.countUsers())
-                .expectNext(5L)
-                .verifyComplete();
-    }
-
-    @Test
-    void countUsersTest_errorOnCounting() {
-        when(userRepository.count()).thenReturn(Mono.error(new Throwable()));
-
-        StepVerifier.create(userService.countUsers())
-                .expectError()
-                .verify();
+        assertNotNull(notFoundException);
     }
 
     @Test
     void updateUserTest_success() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
-        UserDto userDto = TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        outbox.setOperation(Outbox.Operation.UPDATE);
-        String id = "64f361caf291ae086e179547";
-        String encodedPassword = "$2a$12$ixPC0.X/n6gko36V356aS.CR0EOrPpRHv7Ez7jEoVnT.AnP3oa7xm";
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        when(userRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(user));
-        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn(encodedPassword);
-        when(userRepository.save(any(User.class))).thenReturn(Mono.just(user));
-        when(outboxService.saveOutbox(any(User.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
+        UserUpdateRequest userUpdateRequest =
+                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
-        StepVerifier.create(userService.updateUser(id, userDto))
-                .assertNext(actualUserDto -> AssertionUtils.assertUser(user, actualUserDto))
-                .verifyComplete();
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        doNothing().when(userResource).update(any(UserRepresentation.class));
 
-        verify(userMapper, times(1)).mapEntityToDto(any(User.class));
+        UserInfo userInfo = keycloakUserService.updateUser("user", userUpdateRequest);
+
+        AssertionUtils.assertUserDetails(userUpdateRequest, userInfo);
     }
 
     @Test
-    void updateUserTest_errorOnSavingUser() {
-        User user = TestUtils.getResourceAsJson("/data/User.json", User.class);
-        UserDto userDto = TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
-        String id = "64f361caf291ae086e179547";
+    void updateUserTest_errorOnFindingById() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        when(userRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(user));
-        when(userRepository.save(any(User.class))).thenReturn(Mono.error(new Throwable()));
+        UserUpdateRequest userUpdateRequest =
+                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
-        StepVerifier.create(userService.updateUser(id, userDto))
-                .expectError(SwiftWheelsHubException.class)
-                .verify();
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        doThrow(new NotFoundException()).when(userResource).update(any(UserRepresentation.class));
+
+        SwiftWheelsHubNotFoundException notFoundException =
+                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.updateUser("user", userUpdateRequest));
+
+        assertNotNull(notFoundException);
     }
 
     @Test
-    void updateUserTest_emptyResultOnFindingById() {
-        UserDto userDto = TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
-        String id = "64f361caf291ae086e179547";
+    void deleteUserByUsernameTest_success() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        when(userRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        doNothing().when(userResource).remove();
 
-        StepVerifier.create(userService.updateUser(id, userDto))
-                .expectError(SwiftWheelsHubException.class)
-                .verify();
+        assertDoesNotThrow(() -> keycloakUserService.deleteUserByUsername("user"));
     }
 
     @Test
-    void deleteUserByIdTest_success() {
-        when(outboxService.processUserDeletion(anyString(), any(Outbox.Operation.class))).thenReturn(Mono.empty());
+    void deleteUserByUsernameTest_userNotFound() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        StepVerifier.create(userService.deleteUserById("user"))
-                .expectComplete()
-                .verify();
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        doThrow(new NotFoundException()).when(userResource).remove();
+
+        assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.deleteUserByUsername("user"));
     }
 
     @Test
-    void deleteUserByIdTest_errorOnProcessingUserDeletion() {
-        when(outboxService.processUserDeletion(anyString(), any(Outbox.Operation.class))).thenReturn(Mono.error(new Throwable()));
+    void logoutTest_success() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
-        StepVerifier.create(userService.deleteUserById("user"))
-                .expectError()
-                .verify();
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        doNothing().when(userResource).logout();
+
+        assertDoesNotThrow(() -> keycloakUserService.signOut("user"));
+    }
+
+    @Test
+    void logoutTest_errorOnLogout() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
+        when(usersResource.get(anyString())).thenReturn(userResource);
+        doThrow(new NotFoundException()).when(userResource).logout();
+
+        SwiftWheelsHubNotFoundException notFoundException =
+                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.signOut("user"));
+
+        assertNotNull(notFoundException);
     }
 
 }

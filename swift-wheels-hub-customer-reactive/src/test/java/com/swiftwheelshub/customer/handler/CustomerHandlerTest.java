@@ -1,11 +1,11 @@
 package com.swiftwheelshub.customer.handler;
 
-import com.swiftwheelshub.dto.AuthenticationResponse;
-import com.swiftwheelshub.dto.CurrentUserDto;
-import com.swiftwheelshub.customer.service.KeycloakUserService;
+import com.swiftwheelshub.customer.service.CustomerService;
 import com.swiftwheelshub.customer.util.TestUtils;
 import com.swiftwheelshub.dto.RegisterRequest;
-import com.swiftwheelshub.dto.UserDto;
+import com.swiftwheelshub.dto.RegistrationResponse;
+import com.swiftwheelshub.dto.UserInfo;
+import com.swiftwheelshub.dto.UserUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,19 +28,19 @@ class CustomerHandlerTest {
     private CustomerHandler customerHandler;
 
     @Mock
-    private KeycloakUserService keycloakUserService;
+    private CustomerService customerService;
 
     @Test
     void getCurrentUserTest_success() {
-        CurrentUserDto currentUserDto =
-                TestUtils.getResourceAsJson("/data/CurrentUserDto.json", CurrentUserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .header("X-USERNAME", "user")
-                .body(Mono.just(currentUserDto));
+                .build();
 
-        when(keycloakUserService.getCurrentUser(anyString())).thenReturn(Mono.just(currentUserDto));
+        when(customerService.getCurrentUser(anyString())).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(customerHandler.getCurrentUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -49,15 +49,12 @@ class CustomerHandlerTest {
 
     @Test
     void getCurrentUserTest_noResultReturned() {
-        CurrentUserDto currentUserDto =
-                TestUtils.getResourceAsJson("/data/CurrentUserDto.json", CurrentUserDto.class);
-
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .header("X-USERNAME", "user")
-                .body(Mono.just(currentUserDto));
+                .build();
 
-        when(keycloakUserService.getCurrentUser(anyString())).thenReturn(Mono.empty());
+        when(customerService.getCurrentUser(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.getCurrentUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
@@ -66,14 +63,15 @@ class CustomerHandlerTest {
 
     @Test
     void findUserByUsernameTest_success() {
-        UserDto userDto = TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("username", "alexandrupopescu")
-                .body(Mono.just(userDto));
+                .build();
 
-        when(keycloakUserService.findUserByUsername(anyString())).thenReturn(Mono.just(userDto));
+        when(customerService.findUserByUsername(anyString())).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(customerHandler.findUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -82,14 +80,12 @@ class CustomerHandlerTest {
 
     @Test
     void findUserByUsernameTest_noResultReturned() {
-        UserDto userDto = TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
-
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("username", "alexandrupopescu")
-                .body(Mono.just(userDto));
+                .build();
 
-        when(keycloakUserService.findUserByUsername(anyString())).thenReturn(Mono.empty());
+        when(customerService.findUserByUsername(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.findUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
@@ -101,9 +97,9 @@ class CustomerHandlerTest {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("username", "alexandrupopescu")
-                .body(Mono.just(5));
+                .build();
 
-        when(keycloakUserService.countUsers()).thenReturn(Mono.just(5L));
+        when(customerService.countUsers()).thenReturn(Mono.just(5L));
 
         StepVerifier.create(customerHandler.countUsers(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -115,14 +111,14 @@ class CustomerHandlerTest {
         RegisterRequest registerRequest =
                 TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
-        String token = "token";
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse().token(token);
+        RegistrationResponse registrationResponse =
+                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
                 .body(Mono.just(registerRequest));
 
-        when(keycloakUserService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.just(authenticationResponse));
+        when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.just(registrationResponse));
 
         StepVerifier.create(customerHandler.registerUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -138,7 +134,7 @@ class CustomerHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(registerRequest));
 
-        when(keycloakUserService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.empty());
+        when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.registerUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
@@ -147,14 +143,18 @@ class CustomerHandlerTest {
 
     @Test
     void updateUserTest_success() {
-        UserDto userDto = TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+
+        UserUpdateRequest userUpdateRequest =
+                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f48612b92a3b7dfcebae07")
-                .body(Mono.just(userDto));
+                .body(Mono.just(userUpdateRequest));
 
-        when(keycloakUserService.updateUser(anyString(), any(UserDto.class))).thenReturn(Mono.just(userDto));
+        when(customerService.updateUser(anyString(), any(UserUpdateRequest.class))).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(customerHandler.updateUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

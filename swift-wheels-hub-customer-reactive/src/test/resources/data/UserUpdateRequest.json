@@ -3,7 +3,6 @@
   "firstName": "Alexandru",
   "lastName": "Popescu",
   "email": "alexandrupopescu@email.com",
-  "password": "$2a$10$hadYmhDPuigFKchXrkmmUe6i1L8B50Be.ggbdVuszCbYu7yg14Lqa",
   "address": "Ploiesti",
   "dateOfBirth": "1980-01-20"
 }

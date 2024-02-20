@@ -3,6 +3,8 @@ package com.swiftwheelshub.customer.router;
 import com.swiftwheelshub.customer.handler.CustomerHandler;
 import com.swiftwheelshub.customer.util.TestUtils;
 import com.swiftwheelshub.dto.RegisterRequest;
+import com.swiftwheelshub.dto.RegistrationResponse;
+import com.swiftwheelshub.dto.UserInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,35 +40,35 @@ class UserRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void getCurrentUserTest_success() {
-        CurrentUserDto currentUserDto =
-                TestUtils.getResourceAsJson("/data/CurrentUserDto.json", CurrentUserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(currentUserDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.getCurrentUser(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CurrentUserDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<UserInfo> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri("/current")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(CurrentUserDto.class)
+                .returnResult(UserInfo.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(currentUserDto)
+                .expectNext(userInfo)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void getCurrentUserTest_unauthorized() {
-        CurrentUserDto currentUserDto =
-                TestUtils.getResourceAsJson("/data/CurrentUserDto.json", CurrentUserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(currentUserDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.getCurrentUser(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -82,10 +84,13 @@ class UserRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void registerUserTest_success() {
-        Mono<ServerResponse> token = ServerResponse.ok().bodyValue(new AuthenticationResponse().token("token"));
-
         RegisterRequest registerRequest =
                 TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+
+        RegistrationResponse registrationResponse =
+                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+
+        Mono<ServerResponse> token = ServerResponse.ok().bodyValue(registrationResponse);
 
         when(customerHandler.registerUser(any(ServerRequest.class))).thenReturn(token);
 
@@ -103,11 +108,13 @@ class UserRouterTest {
     @Test
     @WithAnonymousUser
     void registerUserTest_forbidden() {
-        Mono<ServerResponse> token = ServerResponse.ok().bodyValue(new AuthenticationResponse().token("token"));
-
         RegisterRequest registerRequest =
                 TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
+        RegistrationResponse registrationResponse =
+                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+
+        Mono<ServerResponse> token = ServerResponse.ok().bodyValue(registrationResponse);
         when(customerHandler.registerUser(any(ServerRequest.class))).thenReturn(token);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
@@ -124,10 +131,13 @@ class UserRouterTest {
     @Test
     @WithAnonymousUser
     void registerUserTest_unauthorized() {
-        Mono<ServerResponse> token = ServerResponse.ok().bodyValue(new AuthenticationResponse().token("token"));
-
         RegisterRequest registerRequest =
                 TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+
+        RegistrationResponse registrationResponse =
+                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+
+        Mono<ServerResponse> token = ServerResponse.ok().bodyValue(registrationResponse);
 
         when(customerHandler.registerUser(any(ServerRequest.class))).thenReturn(token);
 
@@ -144,43 +154,43 @@ class UserRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void updateUserTest_success() {
-        UserDto userDto =
-                TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.updateUser(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<UserDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<UserInfo> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri("/{username}", "admin")
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(userDto)
+                .bodyValue(userInfo)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(UserDto.class)
+                .returnResult(UserInfo.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(userDto)
+                .expectNext(userInfo)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void updateUserTest_forbidden() {
-        UserDto userDto =
-                TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.updateUser(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.put()
                 .uri("/{username}", "admin")
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(userDto)
+                .bodyValue(userInfo)
                 .exchange()
                 .expectStatus()
                 .isForbidden();
@@ -189,10 +199,10 @@ class UserRouterTest {
     @Test
     @WithAnonymousUser
     void updateUserTest_unauthorized() {
-        UserDto userDto =
-                TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.updateUser(any(ServerRequest.class))).thenReturn(serverResponse);
 
@@ -200,7 +210,7 @@ class UserRouterTest {
                 .put()
                 .uri("/{username}", "admin")
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(userDto)
+                .bodyValue(userInfo)
                 .exchange()
                 .expectStatus()
                 .isUnauthorized();
@@ -209,35 +219,35 @@ class UserRouterTest {
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
     void findUserByUsernameTest_success() {
-        UserDto userDto =
-                TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.findUserByUsername(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<UserDto> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<UserInfo> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri("/username/{username}", "admin")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .returnResult(UserDto.class)
+                .returnResult(UserInfo.class)
                 .getResponseBody();
 
         StepVerifier.create(responseBody)
-                .expectNext(userDto)
+                .expectNext(userInfo)
                 .verifyComplete();
     }
 
     @Test
     @WithAnonymousUser
     void findUserByUsernameTest_unauthorized() {
-        UserDto userDto =
-                TestUtils.getResourceAsJson("/data/UserDto.json", UserDto.class);
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userDto);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
         when(customerHandler.findUserByUsername(any(ServerRequest.class))).thenReturn(serverResponse);
 
