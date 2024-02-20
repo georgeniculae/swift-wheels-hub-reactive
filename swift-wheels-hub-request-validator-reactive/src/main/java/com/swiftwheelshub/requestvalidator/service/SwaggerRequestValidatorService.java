@@ -9,11 +9,13 @@ import com.swiftwheelshub.dto.IncomingRequestDetails;
 import com.swiftwheelshub.dto.RequestValidationReport;
 import com.swiftwheelshub.exception.SwiftWheelsHubException;
 import com.swiftwheelshub.requestvalidator.model.SwaggerFolder;
-import com.swiftwheelshub.requestvalidator.repository.SwaggerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.stream.Collectors;
 
@@ -36,13 +38,13 @@ public class SwaggerRequestValidatorService {
 
     private static final String SEPARATOR_REGEX = "/";
 
-    private final SwaggerRepository swaggerRepository;
+    private final ReactiveRedisOperations<String, SwaggerFolder> redisOperations;
 
-    public RequestValidationReport validateRequest(IncomingRequestDetails request) {
-        SimpleRequest simpleRequest = getSimpleRequest(request);
-        ValidationReport validationReport = getValidationReport(simpleRequest);
-
-        return new RequestValidationReport(getValidationErrorMessage(validationReport));
+    public Mono<RequestValidationReport> validateRequest(IncomingRequestDetails request) {
+        return Mono.just(request)
+                .map(this::getSimpleRequest)
+                .flatMap(this::getValidationReport)
+                .map(validationReport -> new RequestValidationReport(getValidationErrorMessage(validationReport)));
     }
 
     private SimpleRequest getSimpleRequest(IncomingRequestDetails request) {
@@ -59,16 +61,19 @@ public class SwaggerRequestValidatorService {
         return simpleRequestBuilder.build();
     }
 
-    private ValidationReport getValidationReport(SimpleRequest simpleRequest) {
-        SwaggerFolder swaggerFolder = swaggerRepository.findById(getMicroserviceIdentifier(simpleRequest))
-                .orElseThrow(() -> new SwiftWheelsHubException("Swagger folder does not exist"));
+    private Mono<ValidationReport> getValidationReport(SimpleRequest simpleRequest) {
+        return redisOperations.opsForValue()
+                .get(getMicroserviceIdentifier(simpleRequest))
+                .filter(ObjectUtils::isNotEmpty)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Swagger folder does not exist"))))
+                .map(swaggerFolder -> {
+                    String swaggerFile = swaggerFolder.getSwaggerContent();
+                    OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerFile)
+                            .withWhitelist(getWhitelist())
+                            .build();
 
-        String swaggerFile = swaggerFolder.getSwaggerContent();
-        OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerFile)
-                .withWhitelist(getWhitelist())
-                .build();
-
-        return validator.validateRequest(simpleRequest);
+                    return validator.validateRequest(simpleRequest);
+                });
     }
 
     private String getMicroserviceIdentifier(SimpleRequest simpleRequest) {
