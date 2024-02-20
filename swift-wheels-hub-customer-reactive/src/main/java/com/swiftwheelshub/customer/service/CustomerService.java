@@ -43,14 +43,14 @@ public class CustomerService {
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<Void> deleteUserById(String username) {
-        return Mono.fromRunnable(() -> keycloakUserService.deleteUserById(username))
+    public Mono<Void> deleteUserById(String id) {
+        return Mono.fromRunnable(() -> keycloakUserService.deleteUserById(id))
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
 
-    public Mono<Void> signOut(String username) {
-        return Mono.fromRunnable(() -> keycloakUserService.signOut(username))
+    public Mono<Void> signOut(String id) {
+        return Mono.fromRunnable(() -> keycloakUserService.signOut(id))
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }

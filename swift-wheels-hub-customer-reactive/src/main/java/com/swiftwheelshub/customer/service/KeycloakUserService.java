@@ -116,8 +116,8 @@ public class KeycloakUserService {
         }
     }
 
-    public void signOut(String username) {
-        UserRepresentation userRepresentation = getUserRepresentation(username);
+    public void signOut(String id) {
+        UserRepresentation userRepresentation = getUserRepresentation(id);
 
         try {
             findById(userRepresentation.getId()).logout();

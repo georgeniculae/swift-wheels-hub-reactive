@@ -49,12 +49,12 @@ public class CustomerHandler {
     }
 
     public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
-        return customerService.deleteUserById(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
+        return customerService.deleteUserById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.noContent().build());
     }
 
     public Mono<ServerResponse> signOut(ServerRequest serverRequest) {
-        return customerService.signOut(ServerRequestUtil.getUsername(serverRequest))
+        return customerService.signOut(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.ok().build());
     }
 

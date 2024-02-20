@@ -161,4 +161,32 @@ class CustomerHandlerTest {
                 .verifyComplete();
     }
 
+    @Test
+    void deleteUserByIdTest_success() {
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.DELETE)
+                .pathVariable("id", "64f48612b92a3b7dfcebae07")
+                .build();
+
+        when(customerService.deleteUserById(anyString())).thenReturn(Mono.empty());
+
+        StepVerifier.create(customerHandler.deleteUserById(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
+
+    @Test
+    void signOutTest_success() {
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.GET)
+                .pathVariable("id", "64f48612b92a3b7dfcebae07")
+                .build();
+
+        when(customerService.signOut(anyString())).thenReturn(Mono.empty());
+
+        StepVerifier.create(customerHandler.signOut(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
+
 }
