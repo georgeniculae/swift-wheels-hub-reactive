@@ -106,9 +106,8 @@ public class KeycloakUserService {
         return userMapper.mapUserToUserDetails(userRepresentation);
     }
 
-    public void deleteUserByUsername(String username) {
-        UserRepresentation userRepresentation = getUserRepresentation(username);
-        UserResource userResource = findById(userRepresentation.getId());
+    public void deleteUserById(String id) {
+        UserResource userResource = findById(id);
 
         try {
             userResource.remove();

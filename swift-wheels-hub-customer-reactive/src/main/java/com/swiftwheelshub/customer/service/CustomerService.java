@@ -43,8 +43,8 @@ public class CustomerService {
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<Void> deleteUserByUsername(String username) {
-        return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
+    public Mono<Void> deleteUserById(String username) {
+        return Mono.fromRunnable(() -> keycloakUserService.deleteUserById(username))
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }

@@ -48,8 +48,8 @@ public class CustomerHandler {
                 .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
 
-    public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
-        return customerService.deleteUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
+    public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
+        return customerService.deleteUserById(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
                 .then(ServerResponse.noContent().build());
     }
 

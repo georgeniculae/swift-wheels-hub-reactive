@@ -82,11 +82,14 @@ logging:
           csrf:
             CsrfFilter: DEBUG
 
+keycloak:
+  serverUrl: http://localhost:8080
+  realm: ${KEYCLOAK_REALM}
+  clientId: ${KEYCLOAK_CLIENT_ID}
+  clientSecret: ${KEYCLOAK_CLIENT_SECRET}
+
 authentication:
   secret: ${API_KEY_SECRET}
-
-scheduled:
-  fixedDelay: 5000
 
 audit:
   enabled: true
