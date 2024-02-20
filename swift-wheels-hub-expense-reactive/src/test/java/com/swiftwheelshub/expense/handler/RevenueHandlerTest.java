@@ -15,6 +15,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -93,7 +95,7 @@ class RevenueHandlerTest {
                 .method(HttpMethod.GET)
                 .build();
 
-        when(revenueService.getTotalAmount()).thenReturn(Mono.just(500.0));
+        when(revenueService.getTotalAmount()).thenReturn(Mono.just(BigDecimal.valueOf(500)));
 
         StepVerifier.create(revenueHandler.getTotalAmount(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

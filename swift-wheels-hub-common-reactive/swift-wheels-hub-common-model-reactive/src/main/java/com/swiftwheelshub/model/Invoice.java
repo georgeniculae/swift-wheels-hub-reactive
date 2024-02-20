@@ -10,6 +10,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Document(collection = "invoice")
@@ -38,11 +39,11 @@ public class Invoice {
 
     private Boolean isVehicleDamaged;
 
-    private Double damageCost;
+    private BigDecimal damageCost;
 
-    private Double additionalPayment;
+    private BigDecimal additionalPayment;
 
-    private Double totalAmount;
+    private BigDecimal totalAmount;
 
     private String comments;
 

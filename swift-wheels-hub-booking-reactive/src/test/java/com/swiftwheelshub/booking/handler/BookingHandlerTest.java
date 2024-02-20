@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -160,7 +161,7 @@ class BookingHandlerTest {
                 .header("X-USERNAME", "user")
                 .build();
 
-        when(bookingService.getAmountSpentByLoggedInUser(anyString())).thenReturn(Mono.just(500.0));
+        when(bookingService.getAmountSpentByLoggedInUser(anyString())).thenReturn(Mono.just(BigDecimal.valueOf(500)));
 
         StepVerifier.create(bookingHandler.getAmountSpentByLoggedInUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -173,7 +174,7 @@ class BookingHandlerTest {
                 .method(HttpMethod.GET)
                 .build();
 
-        when(bookingService.getSumOfAllBookingAmount()).thenReturn(Mono.just(500.0));
+        when(bookingService.getSumOfAllBookingAmount()).thenReturn(Mono.just(BigDecimal.valueOf(500)));
 
         StepVerifier.create(bookingHandler.getSumOfAllBookingAmount(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -67,8 +68,9 @@ public class RevenueService {
                 });
     }
 
-    public Mono<Double> getTotalAmount() {
+    public Mono<BigDecimal> getTotalAmount() {
         return revenueRepository.getTotalAmount()
+                .map(BigDecimal::valueOf)
                 .onErrorResume(e -> {
                     log.error("Error while getting total amount: {}", e.getMessage());
 

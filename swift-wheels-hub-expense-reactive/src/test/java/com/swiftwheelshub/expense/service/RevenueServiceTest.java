@@ -21,6 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -79,7 +81,7 @@ class RevenueServiceTest {
         when(revenueRepository.getTotalAmount()).thenReturn(Mono.just(50D));
 
         StepVerifier.create(revenueService.getTotalAmount())
-                .expectNext(50D)
+                .expectNext(BigDecimal.valueOf(500))
                 .verifyComplete();
     }
 

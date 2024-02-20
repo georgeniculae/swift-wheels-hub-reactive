@@ -272,13 +272,13 @@ public class InvoiceService {
         return existingInvoice;
     }
 
-    private double getDamageCost(InvoiceRequest invoiceRequest) {
-        return ObjectUtils.isEmpty(invoiceRequest.damageCost()) ? 0D : invoiceRequest.damageCost().doubleValue();
+    private BigDecimal getDamageCost(InvoiceRequest invoiceRequest) {
+        return ObjectUtils.isEmpty(invoiceRequest.damageCost()) ? BigDecimal.ZERO : invoiceRequest.damageCost();
     }
 
-    private double getAdditionalPayment(InvoiceRequest invoiceRequest) {
+    private BigDecimal getAdditionalPayment(InvoiceRequest invoiceRequest) {
         return ObjectUtils.isEmpty(invoiceRequest.additionalPayment()) ?
-                0D : invoiceRequest.additionalPayment().doubleValue();
+                BigDecimal.ZERO : invoiceRequest.additionalPayment();
     }
 
     private BookingClosingDetails getBookingClosingDetails(Invoice invoice) {
@@ -292,30 +292,29 @@ public class InvoiceService {
                 .build();
     }
 
-    private Double getTotalAmount(Invoice existingInvoice, BookingResponse bookingResponse, BigDecimal rentalCarPrice) {
+    private BigDecimal getTotalAmount(Invoice existingInvoice, BookingResponse bookingResponse, BigDecimal rentalCarPrice) {
         LocalDate carReturnDate = existingInvoice.getCarDateOfReturn();
         LocalDate bookingDateTo = bookingResponse.dateTo();
         LocalDate bookingDateFrom = bookingResponse.dateFrom();
-        double carAmount = rentalCarPrice.doubleValue();
 
         boolean isReturnDatePassed = carReturnDate.isAfter(bookingDateTo);
 
         if (isReturnDatePassed) {
-            return getMoneyForLateReturn(carReturnDate, bookingDateTo, bookingDateFrom, carAmount);
+            return getMoneyForLateReturn(carReturnDate, bookingDateTo, bookingDateFrom, rentalCarPrice);
         }
 
-        return getDaysPeriod(bookingDateFrom, bookingDateTo) * carAmount +
-                (ObjectUtils.isEmpty(existingInvoice.getDamageCost()) ? 0D : existingInvoice.getDamageCost());
+        return rentalCarPrice.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
+                .add((ObjectUtils.isEmpty(existingInvoice.getDamageCost()) ? BigDecimal.ZERO : existingInvoice.getDamageCost()));
     }
 
     private int getDaysPeriod(LocalDate bookingDateFrom, LocalDate bookingDateTo) {
         return Period.between(bookingDateFrom, bookingDateTo).getDays();
     }
 
-    private double getMoneyForLateReturn(LocalDate carReturnDate, LocalDate bookingDateTo, LocalDate bookingDateFrom,
-                                         Double carAmount) {
-        return getDaysPeriod(bookingDateFrom, bookingDateTo) * carAmount +
-                getDaysPeriod(bookingDateTo, carReturnDate) * 2 * carAmount;
+    private BigDecimal getMoneyForLateReturn(LocalDate carReturnDate, LocalDate bookingDateTo, LocalDate bookingDateFrom,
+                                             BigDecimal carAmount) {
+        return carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
+                .add(carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateTo, carReturnDate) * 2L)));
     }
 
     private CarState getCarStatus(boolean isVehicleDamaged) {

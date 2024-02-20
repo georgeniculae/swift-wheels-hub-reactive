@@ -26,6 +26,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -309,7 +310,7 @@ class BookingServiceTest {
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
 
         StepVerifier.create(bookingService.getAmountSpentByLoggedInUser("username"))
-                .expectNext(500.0)
+                .expectNext(BigDecimal.valueOf(500))
                 .verifyComplete();
     }
 
@@ -320,7 +321,7 @@ class BookingServiceTest {
         when(bookingRepository.findAll()).thenReturn(Flux.just(booking));
 
         StepVerifier.create(bookingService.getSumOfAllBookingAmount())
-                .expectNext(500.0)
+                .expectNext(BigDecimal.valueOf(500))
                 .verifyComplete();
     }
 

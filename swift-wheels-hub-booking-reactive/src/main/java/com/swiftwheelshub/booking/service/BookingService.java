@@ -98,20 +98,18 @@ public class BookingService {
                 });
     }
 
-    public Mono<Double> getAmountSpentByLoggedInUser(String username) {
+    public Mono<BigDecimal> getAmountSpentByLoggedInUser(String username) {
         return findBookingsByLoggedInUser(username)
                 .map(BookingResponse::amount)
                 .filter(Objects::nonNull)
-                .map(BigDecimal::doubleValue)
-                .reduce(0D, Double::sum);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public Mono<Double> getSumOfAllBookingAmount() {
+    public Mono<BigDecimal> getSumOfAllBookingAmount() {
         return findAllBookings()
                 .map(BookingResponse::amount)
                 .filter(Objects::nonNull)
-                .map(BigDecimal::doubleValue)
-                .reduce(0D, Double::sum);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Mono<Long> countBookings() {

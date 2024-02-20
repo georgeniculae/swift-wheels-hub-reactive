@@ -10,6 +10,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Document(collection = "revenue")
@@ -24,6 +25,6 @@ public class Revenue {
     @BsonId
     private ObjectId id;
     private LocalDate dateOfRevenue;
-    private Double amountFromBooking;
+    private BigDecimal amountFromBooking;
 
 }

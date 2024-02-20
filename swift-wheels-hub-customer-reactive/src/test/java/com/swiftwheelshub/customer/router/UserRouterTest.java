@@ -1,11 +1,8 @@
 package com.swiftwheelshub.customer.router;
 
-import com.swiftwheelshub.dto.AuthenticationResponse;
-import com.swiftwheelshub.dto.CurrentUserDto;
 import com.swiftwheelshub.customer.handler.CustomerHandler;
 import com.swiftwheelshub.customer.util.TestUtils;
 import com.swiftwheelshub.dto.RegisterRequest;
-import com.swiftwheelshub.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

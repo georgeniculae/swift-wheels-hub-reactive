@@ -3,6 +3,7 @@ package com.swiftwheelshub.dto;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
@@ -13,7 +14,7 @@ public record RevenueRequest(
         LocalDate dateOfRevenue,
 
         @NonNull
-        Double amountFromBooking
+        BigDecimal amountFromBooking
 ) {
 
     @Override
