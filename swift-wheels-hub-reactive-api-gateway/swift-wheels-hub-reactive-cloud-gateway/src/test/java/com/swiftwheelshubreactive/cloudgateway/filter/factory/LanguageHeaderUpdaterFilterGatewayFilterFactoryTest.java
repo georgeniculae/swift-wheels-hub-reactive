@@ -14,10 +14,10 @@ import org.springframework.mock.web.server.MockServerWebExchange;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
-class LanguageHeaderUpdaterFilterTest {
+class LanguageHeaderUpdaterFilterGatewayFilterFactoryTest {
 
     @InjectMocks
-    private LanguageHeaderUpdaterFilter languageHeaderUpdaterFilter;
+    private LanguageHeaderUpdaterFilterGatewayFilterFactory languageHeaderUpdaterFilterGatewayFilterFactory;
 
     @Test
     void applyTest_success() {
@@ -29,10 +29,10 @@ class LanguageHeaderUpdaterFilterTest {
                 .build();
         MockServerWebExchange.builder(request).build();
 
-        LanguageHeaderUpdaterFilter.LanguageConfig languageConfig =
-                new LanguageHeaderUpdaterFilter.LanguageConfig("EN");
+        LanguageHeaderUpdaterFilterGatewayFilterFactory.LanguageConfig languageConfig =
+                new LanguageHeaderUpdaterFilterGatewayFilterFactory.LanguageConfig("EN");
 
-        GatewayFilter apply = languageHeaderUpdaterFilter.apply(languageConfig);
+        GatewayFilter apply = languageHeaderUpdaterFilterGatewayFilterFactory.apply(languageConfig);
         assertNotNull(apply);
     }
 
