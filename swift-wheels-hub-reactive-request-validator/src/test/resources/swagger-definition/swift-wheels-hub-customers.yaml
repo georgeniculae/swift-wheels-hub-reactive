@@ -1,0 +1,471 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: 'http://172.30.64.1:51558/customers'
+    description: Generated server url
+paths:
+  '/{id}':
+    put:
+      tags:
+        - user-controller
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /register:
+    post:
+      tags:
+        - user-controller
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+  '/{username}':
+    get:
+      tags:
+        - user-controller
+      operationId: findUserByUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+    delete:
+      tags:
+        - user-controller
+      operationId: deleteUserById
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  '/keycloak-user/{username}':
+    get:
+      tags:
+        - user-controller
+      operationId: getUser
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRepresentation'
+  /current:
+    get:
+      tags:
+        - user-controller
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+  /count:
+    get:
+      tags:
+        - user-controller
+      operationId: countUsers
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int64
+components:
+  schemas:
+    UserDto:
+      required:
+        - address
+        - dateOfBirth
+        - email
+        - firstName
+        - lastName
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum:
+            - ROLE_ADMIN
+            - ROLE_USER
+            - ROLE_SUPPORT
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        address:
+          type: string
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        role:
+          type: string
+          enum:
+            - ROLE_ADMIN
+            - ROLE_USER
+            - ROLE_SUPPORT
+        dateOfBirth:
+          type: string
+          format: date
+    AuthenticationResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    CredentialRepresentation:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        userLabel:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        secretData:
+          type: string
+        credentialData:
+          type: string
+        priority:
+          type: integer
+          format: int32
+        value:
+          type: string
+        temporary:
+          type: boolean
+        device:
+          type: string
+          deprecated: true
+        hashedSaltedValue:
+          type: string
+          deprecated: true
+        salt:
+          type: string
+          deprecated: true
+        hashIterations:
+          type: integer
+          format: int32
+          deprecated: true
+        counter:
+          type: integer
+          format: int32
+          deprecated: true
+        algorithm:
+          type: string
+          deprecated: true
+        digits:
+          type: integer
+          format: int32
+          deprecated: true
+        period:
+          type: integer
+          format: int32
+          deprecated: true
+        config:
+          type: object
+          properties:
+            empty:
+              type: boolean
+          additionalProperties:
+            type: array
+            deprecated: true
+            items:
+              type: string
+              deprecated: true
+          deprecated: true
+    FederatedIdentityRepresentation:
+      type: object
+      properties:
+        identityProvider:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: string
+    SocialLinkRepresentation:
+      type: object
+      properties:
+        socialProvider:
+          type: string
+        socialUserId:
+          type: string
+        socialUsername:
+          type: string
+    UserConsentRepresentation:
+      type: object
+      properties:
+        clientId:
+          type: string
+        grantedClientScopes:
+          type: array
+          items:
+            type: string
+        createdDate:
+          type: integer
+          format: int64
+        lastUpdatedDate:
+          type: integer
+          format: int64
+        grantedRealmRoles:
+          type: array
+          deprecated: true
+          items:
+            type: string
+            deprecated: true
+    UserProfileAttributeGroupMetadata:
+      type: object
+      properties:
+        name:
+          type: string
+        displayHeader:
+          type: string
+        displayDescription:
+          type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: object
+    UserProfileAttributeMetadata:
+      type: object
+      properties:
+        name:
+          type: string
+        displayName:
+          type: string
+        required:
+          type: boolean
+        readOnly:
+          type: boolean
+        annotations:
+          type: object
+          additionalProperties:
+            type: object
+        validators:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: object
+        group:
+          type: string
+    UserProfileMetadata:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfileAttributeMetadata'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfileAttributeGroupMetadata'
+    UserRepresentation:
+      type: object
+      properties:
+        self:
+          type: string
+        id:
+          type: string
+        origin:
+          type: string
+        createdTimestamp:
+          type: integer
+          format: int64
+        username:
+          type: string
+        enabled:
+          type: boolean
+        totp:
+          type: boolean
+          deprecated: true
+        emailVerified:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        federationLink:
+          type: string
+        serviceAccountClientId:
+          type: string
+        attributes:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialRepresentation'
+        disableableCredentialTypes:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        requiredActions:
+          type: array
+          items:
+            type: string
+        federatedIdentities:
+          type: array
+          items:
+            $ref: '#/components/schemas/FederatedIdentityRepresentation'
+        realmRoles:
+          type: array
+          items:
+            type: string
+        clientRoles:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        clientConsents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsentRepresentation'
+        notBefore:
+          type: integer
+          format: int32
+        applicationRoles:
+          type: object
+          additionalProperties:
+            type: array
+            deprecated: true
+            items:
+              type: string
+              deprecated: true
+          deprecated: true
+        socialLinks:
+          type: array
+          deprecated: true
+          items:
+            $ref: '#/components/schemas/SocialLinkRepresentation'
+        groups:
+          type: array
+          items:
+            type: string
+        access:
+          type: object
+          additionalProperties:
+            type: boolean
+        userProfileMetadata:
+          $ref: '#/components/schemas/UserProfileMetadata'
+    CurrentUserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum:
+            - ROLE_ADMIN
+            - ROLE_USER
+            - ROLE_SUPPORT
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        credentialsNonExpired:
+          type: boolean
+        accountNonExpired:
+          type: boolean
+        accountNonLocked:
+          type: boolean
+        authorities:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantedAuthority'
+    GrantedAuthority:
+      type: object
+      properties:
+        authority:
+          type: string
