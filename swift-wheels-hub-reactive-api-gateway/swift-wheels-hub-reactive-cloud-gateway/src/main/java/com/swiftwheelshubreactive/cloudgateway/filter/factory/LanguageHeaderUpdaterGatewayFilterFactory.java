@@ -12,11 +12,11 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class LanguageHeaderUpdaterFilterGatewayFilterFactory extends AbstractGatewayFilterFactory<LanguageHeaderUpdaterFilterGatewayFilterFactory.LanguageConfig> {
+public class LanguageHeaderUpdaterGatewayFilterFactory extends AbstractGatewayFilterFactory<LanguageHeaderUpdaterGatewayFilterFactory.LanguageConfig> {
 
     private static final String LANGUAGE = "Language";
 
-    public LanguageHeaderUpdaterFilterGatewayFilterFactory() {
+    public LanguageHeaderUpdaterGatewayFilterFactory() {
         super(LanguageConfig.class);
     }
 
