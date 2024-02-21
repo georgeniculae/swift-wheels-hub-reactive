@@ -40,7 +40,8 @@ public class CustomerService {
     public Mono<Long> countUsers() {
         return Mono.fromCallable(keycloakUserService::countUsers)
                 .subscribeOn(Schedulers.boundedElastic())
-                .cast(Long.class).onErrorMap(e -> {
+                .map(Long::valueOf)
+                .onErrorMap(e -> {
                     log.error("Error while counting users: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e);

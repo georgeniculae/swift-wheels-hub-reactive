@@ -88,6 +88,77 @@ class KeycloakUserServiceTest {
     private UserMapper userMapper = new UserMapperImpl();
 
     @Test
+    void findUserByUsernameTest_success() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
+
+        UserInfo user = keycloakUserService.findUserByUsername("user");
+
+        AssertionUtils.assertUserDetails(userRepresentation, user);
+    }
+
+    @Test
+    void findUserByUsernameTest_noUserFound() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of());
+
+        SwiftWheelsHubNotFoundException notFoundException =
+                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.findUserByUsername("user"));
+
+        assertNotNull(notFoundException);
+    }
+
+    @Test
+    void getCurrentUserTest_success() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
+
+        UserInfo currentUser = keycloakUserService.getCurrentUser("user");
+
+        AssertionUtils.assertUserDetails(userRepresentation, currentUser);
+
+        verify(userMapper).mapUserToUserDetails(any(UserRepresentation.class));
+    }
+
+    @Test
+    void getCurrentUserTest_errorOnFindingByUsername() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> keycloakUserService.findUserByUsername("user"));
+    }
+
+    @Test
+    void getCurrentUserTest_noUsersFound() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of());
+
+        SwiftWheelsHubNotFoundException notFoundException =
+                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.getCurrentUser("user"));
+
+        assertNotNull(notFoundException);
+    }
+
+    @Test
     @SuppressWarnings("all")
     void registerCustomerTest_success() {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
@@ -145,77 +216,6 @@ class KeycloakUserServiceTest {
 
         assertNotNull(swiftWheelsHubResponseStatusException);
         assertThat(swiftWheelsHubResponseStatusException.getMessage()).contains("Password too short");
-    }
-
-    @Test
-    void getCurrentUserTest_success() {
-        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
-
-        UserRepresentation userRepresentation = TestData.getUserRepresentation();
-
-        when(keycloak.realm(anyString())).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
-
-        UserInfo currentUser = keycloakUserService.getCurrentUser("user");
-
-        AssertionUtils.assertUserDetails(userRepresentation, currentUser);
-
-        verify(userMapper).mapUserToUserDetails(any(UserRepresentation.class));
-    }
-
-    @Test
-    void getCurrentUserTest_errorOnFindingByUsername() {
-        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
-
-        when(keycloak.realm(anyString())).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> keycloakUserService.findUserByUsername("user"));
-    }
-
-    @Test
-    void getCurrentUserTest_noUsersFound() {
-        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
-
-        when(keycloak.realm(anyString())).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of());
-
-        SwiftWheelsHubNotFoundException notFoundException =
-                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.getCurrentUser("user"));
-
-        assertNotNull(notFoundException);
-    }
-
-    @Test
-    void findUserByUsernameTest_success() {
-        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
-
-        UserRepresentation userRepresentation = TestData.getUserRepresentation();
-
-        when(keycloak.realm(anyString())).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
-
-        UserInfo user = keycloakUserService.findUserByUsername("user");
-
-        AssertionUtils.assertUserDetails(userRepresentation, user);
-    }
-
-    @Test
-    void findUserByUsernameTest_noUserFound() {
-        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
-
-        when(keycloak.realm(anyString())).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of());
-
-        SwiftWheelsHubNotFoundException notFoundException =
-                assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.findUserByUsername("user"));
-
-        assertNotNull(notFoundException);
     }
 
     @Test
