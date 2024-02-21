@@ -9,6 +9,12 @@ server:
 spring:
   application:
     name: swift-wheels-hub-cloud-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/swift-wheels-hub
+          jwk-set-uri: http://localhost:8080/realms/swift-wheels-hub/protocol/openid-connect/certs
   cloud:
     gateway:
       routes:
