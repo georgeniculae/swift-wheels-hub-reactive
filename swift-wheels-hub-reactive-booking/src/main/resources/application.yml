@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-booking-reactive
+    name: swift-wheels-hub-reactive-booking
   webflux:
     base-path: /bookings
   data:

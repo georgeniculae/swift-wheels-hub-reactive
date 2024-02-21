@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-audit-reactive
+    name: swift-wheels-hub-reactive-audit
   data:
     mongodb:
       database: swift_wheels_hub_audit

@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-email-notification-reactive
+    name: swift-wheels-hub-reactive-email-notification
   cloud:
     discovery:
       enabled: true

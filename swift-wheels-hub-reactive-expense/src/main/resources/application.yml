@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-expense-reactive
+    name: swift-wheels-hub-reactive-expense
   webflux:
     base-path: /expense
   data:

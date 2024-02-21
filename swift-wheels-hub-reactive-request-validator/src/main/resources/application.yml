@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-request-validator-reactive
+    name: swift-wheels-hub-reactive-request-validator
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -39,6 +39,11 @@ logging:
           csrf:
             CsrfFilter: DEBUG
 
-authentication:
-  type: apikey
+apikey:
   secret: ${API_KEY_SECRET}
+
+swagger:
+  agency: lb://swift-wheels-hub-reactive-agency/agency/definition/v3/api-docs
+  booking: lb://swift-wheels-hub-reactive-booking/bookings/definition/v3/api-docs
+  customer: lb://swift-wheels-hub-reactive-customer/customers/definition/v3/api-docs
+  expense: lb://swift-wheels-hub-reactive-expense/expense/definition/v3/api-docs
