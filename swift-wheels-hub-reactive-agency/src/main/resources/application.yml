@@ -87,4 +87,4 @@ authentication:
   secret: ${API_KEY_SECRET}
 
 migration:
-  packageScan: com.swiftwheelshub.agency.migration
+  packageScan: com.swiftwheelshubreactive.agency.migration

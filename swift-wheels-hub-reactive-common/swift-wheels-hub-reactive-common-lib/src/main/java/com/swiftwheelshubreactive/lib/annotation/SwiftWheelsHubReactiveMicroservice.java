@@ -20,9 +20,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootApplication
-@ComponentScan(basePackages = "com.swiftwheelshub")
-@EntityScan("com.swiftwheelshub")
-@EnableReactiveMongoRepositories(basePackages = "com.swiftwheelshub")
+@ComponentScan(basePackages = "com.swiftwheelshubreactive")
+@EntityScan("com.swiftwheelshubreactive")
+@EnableReactiveMongoRepositories(basePackages = "com.swiftwheelshubreactive")
 @EnableTransactionManagement
 @EnableDiscoveryClient
 @EnableScheduling
