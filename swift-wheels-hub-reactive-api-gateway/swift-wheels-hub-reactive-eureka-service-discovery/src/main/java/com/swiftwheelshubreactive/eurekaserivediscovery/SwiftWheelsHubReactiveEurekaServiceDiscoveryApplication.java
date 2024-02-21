@@ -6,10 +6,10 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @SpringBootApplication
 @EnableEurekaServer
-public class SwiftWheelsHubReactiveEureka {
+public class SwiftWheelsHubReactiveEurekaServiceDiscoveryApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SwiftWheelsHubReactiveEureka.class, args);
+        SpringApplication.run(SwiftWheelsHubReactiveEurekaServiceDiscoveryApplication.class, args);
     }
 
 }
