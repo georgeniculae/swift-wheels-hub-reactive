@@ -219,7 +219,7 @@ class InvoiceHandlerTest {
                 .method(HttpMethod.PUT)
                 .header("X-API-KEY", "apikey")
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(invoiceResponse));
+                .body(Mono.just(invoiceRequest));
 
         when(invoiceService.closeInvoice(anyString(), anyList(), anyString(), any(InvoiceRequest.class)))
                 .thenReturn(Mono.just(invoiceResponse));

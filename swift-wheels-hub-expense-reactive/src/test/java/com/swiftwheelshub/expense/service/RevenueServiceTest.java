@@ -78,10 +78,10 @@ class RevenueServiceTest {
 
     @Test
     void getTotalAmountTest_success() {
-        when(revenueRepository.getTotalAmount()).thenReturn(Mono.just(50D));
+        when(revenueRepository.getTotalAmount()).thenReturn(Mono.just(500D));
 
         StepVerifier.create(revenueService.getTotalAmount())
-                .expectNext(BigDecimal.valueOf(500))
+                .expectNext(BigDecimal.valueOf(500D))
                 .verifyComplete();
     }
 
