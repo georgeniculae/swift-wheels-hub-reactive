@@ -1,6 +1,6 @@
 package com.swiftwheelshub.requestvalidator.config;
 
-import com.swiftwheelshub.requestvalidator.model.SwaggerFolder;
+import com.swiftwheelshub.requestvalidator.model.SwaggerFile;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -14,13 +14,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     @Bean
-    public ReactiveRedisOperations<String, SwaggerFolder> redisOperations(ReactiveRedisConnectionFactory factory) {
-        Jackson2JsonRedisSerializer<SwaggerFolder> serializer = new Jackson2JsonRedisSerializer<>(SwaggerFolder.class);
+    public ReactiveRedisOperations<String, SwaggerFile> redisOperations(ReactiveRedisConnectionFactory factory) {
+        Jackson2JsonRedisSerializer<SwaggerFile> serializer = new Jackson2JsonRedisSerializer<>(SwaggerFile.class);
 
-        RedisSerializationContext.RedisSerializationContextBuilder<String, SwaggerFolder> builder =
+        RedisSerializationContext.RedisSerializationContextBuilder<String, SwaggerFile> builder =
                 RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
 
-        RedisSerializationContext<String, SwaggerFolder> context = builder.value(serializer).build();
+        RedisSerializationContext<String, SwaggerFile> context = builder.value(serializer).build();
 
         return new ReactiveRedisTemplate<>(factory, context);
     }

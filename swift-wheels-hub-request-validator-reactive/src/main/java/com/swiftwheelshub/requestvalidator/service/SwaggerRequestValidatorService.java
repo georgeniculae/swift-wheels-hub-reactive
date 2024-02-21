@@ -8,7 +8,7 @@ import com.atlassian.oai.validator.whitelist.rule.WhitelistRules;
 import com.swiftwheelshub.dto.IncomingRequestDetails;
 import com.swiftwheelshub.dto.RequestValidationReport;
 import com.swiftwheelshub.exception.SwiftWheelsHubException;
-import com.swiftwheelshub.requestvalidator.model.SwaggerFolder;
+import com.swiftwheelshub.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -38,7 +38,7 @@ public class SwaggerRequestValidatorService {
 
     private static final String SEPARATOR_REGEX = "/";
 
-    private final ReactiveRedisOperations<String, SwaggerFolder> redisOperations;
+    private final ReactiveRedisOperations<String, SwaggerFile> redisOperations;
 
     public Mono<RequestValidationReport> validateRequest(IncomingRequestDetails request) {
         return Mono.just(request)

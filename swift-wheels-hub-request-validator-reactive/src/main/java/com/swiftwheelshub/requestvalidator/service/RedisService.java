@@ -1,7 +1,7 @@
 package com.swiftwheelshub.requestvalidator.service;
 
 import com.swiftwheelshub.lib.exceptionhandling.SwiftWheelsHubException;
-import com.swiftwheelshub.requestvalidator.model.SwaggerFolder;
+import com.swiftwheelshub.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class RedisService {
 
-    private final ReactiveRedisOperations<String, SwaggerFolder> redisSwagger;
+    private final ReactiveRedisOperations<String, SwaggerFile> redisSwagger;
     private final SwaggerExtractorService swaggerExtractorService;
 
     public Flux<Boolean> addSwaggerFolderToRedis() {
@@ -44,7 +44,7 @@ public class RedisService {
     private Mono<Boolean> addSwaggerToRedis(String key, String value) {
         return redisSwagger.opsForValue().set(
                 key,
-                SwaggerFolder.builder()
+                SwaggerFile.builder()
                         .id(key)
                         .swaggerContent(value)
                         .build()
