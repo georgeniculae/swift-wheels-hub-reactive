@@ -23,12 +23,12 @@ spring:
           group: ${EMAIL_NOTIFICATION_CONSUMER_GROUP}
       kafka:
         binder:
-          auto-create-topics: false
+          auto-create-topics: true
           auto-add-partitions: false
           consumer-properties:
             key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            allow.auto.create.topics: false
+            allow.auto.create.topics: true
   kafka:
     bootstrap-servers: localhost:9092
   mvc:
