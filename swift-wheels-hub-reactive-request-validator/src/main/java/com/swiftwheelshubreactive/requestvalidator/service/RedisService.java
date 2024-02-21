@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -17,12 +19,14 @@ public class RedisService {
     private final ReactiveRedisOperations<String, SwaggerFile> reactiveRedisOperations;
     private final SwaggerExtractorService swaggerExtractorService;
 
-    public Flux<Boolean> addSwaggerFilesToRedis() {
+    public Mono<Boolean> addSwaggerFilesToRedis() {
         return swaggerExtractorService.getSwaggerIdentifierAndContent()
                 .flatMapMany(swaggerIdentifierAndContent -> Flux.fromIterable(swaggerIdentifierAndContent.entrySet()))
                 .flatMap(swaggerEntry -> addSwaggerToRedis(swaggerEntry.getKey(), swaggerEntry.getValue()))
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Redis add failed"))))
+                .collectList()
+                .map(List::getFirst)
                 .onErrorResume(e -> {
                     log.error("Error while setting swagger folder in Redis: {}", e.getMessage());
 
