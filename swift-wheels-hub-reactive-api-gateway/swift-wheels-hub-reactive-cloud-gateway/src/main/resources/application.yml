@@ -19,7 +19,7 @@ spring:
     gateway:
       routes:
         - id: agency
-          uri: lb://swift-wheels-hub-agency-reactive
+          uri: lb://swift-wheels-hub-reactive-agency
           predicates:
             - Path=/agency/**
           filters:
@@ -27,7 +27,7 @@ spring:
               args:
                 language: "EN"
         - id: booking
-          uri: lb://swift-wheels-hub-booking-reactive
+          uri: lb://swift-wheels-hub-reactive-booking
           predicates:
             - Path=/bookings/**
           filters:
@@ -35,7 +35,7 @@ spring:
               args:
                 language: "EN"
         - id: customer
-          uri: lb://swift-wheels-hub-customer-reactive
+          uri: lb://swift-wheels-hub-reactive-customer
           predicates:
             - Path=/customers/**
           filters:
@@ -43,40 +43,13 @@ spring:
               args:
                 language: "EN"
         - id: expense
-          uri: lb://swift-wheels-hub-expense-reactive
+          uri: lb://swift-wheels-hub-reactive-expense
           predicates:
             - Path=/expense/**
           filters:
             - name: LanguageHeaderUpdater
               args:
                 language: "EN"
-    function:
-      definition: savedUserConsumer;updatedUserConsumer;deletedUserConsumer
-    stream:
-      bindings:
-        savedUserConsumer-in-0:
-          binder: kafka
-          destination: ${SAVED_USER_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${GATEWAY_CONSUMER_GROUP}
-        updatedUserConsumer-in-0:
-          binder: kafka
-          destination: ${UPDATED_USER_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${GATEWAY_CONSUMER_GROUP}
-        deletedUserConsumer-in-0:
-          binder: kafka
-          destination: ${DELETED_USER_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${GATEWAY_CONSUMER_GROUP}
-      kafka:
-        binder:
-          auto-create-topics: false
-          auto-add-partitions: false
-          consumer-properties:
-            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            allow.auto.create.topics: false
 
 eureka:
   client:
@@ -100,3 +73,5 @@ logging:
         security: DEBUG
 
 apikey-secret: ${API_KEY_SECRET}
+
+request-validator-url: lb://swift-wheels-hub-reactive-request-validator/request-validator/validate

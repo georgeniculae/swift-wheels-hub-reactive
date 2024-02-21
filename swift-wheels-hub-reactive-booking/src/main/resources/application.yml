@@ -13,15 +13,13 @@ spring:
     base-path: /bookings
   data:
     mongodb:
-      database: swift-wheels-hub_booking
+      database: swift_wheels_hub_booking
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubbooking.vegjl42.mongodb.net/
   cloud:
     discovery:
       enabled: true
-    function:
-      definition: deletedUserConsumer
     stream:
       bindings:
         savedBookingProducer-out-0:
@@ -96,8 +94,8 @@ authentication:
 
 webclient:
   url:
-    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-agency-reactive/agency/employees/cars
-    swift-wheels-hub-agency-employees: lb://swift-wheels-hub-agency-reactive/agency/employees
+    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/employees/cars
+    swift-wheels-hub-agency-employees: lb://swift-wheels-hub-reactive-agency/agency/employees
 
 scheduled:
   fixedDelay: 5000

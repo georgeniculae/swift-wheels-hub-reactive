@@ -101,8 +101,8 @@ authentication:
 
 webClient:
   url:
-    swift-wheels-hub-bookings: lb://swift-wheels-hub-booking-reactive/bookings
-    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-agency-reactive/agency/cars
+    swift-wheels-hub-bookings: lb://swift-wheels-hub-reactive-booking/bookings
+    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/cars
 
 bookingConsumer:
   isMessageAckEnabled: false
