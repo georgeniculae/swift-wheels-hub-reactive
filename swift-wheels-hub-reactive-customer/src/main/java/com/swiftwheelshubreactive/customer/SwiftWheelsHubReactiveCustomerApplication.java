@@ -5,11 +5,11 @@ import org.springframework.boot.SpringApplication;
 import reactor.blockhound.BlockHound;
 
 @SwiftWheelsHubReactiveMicroservice
-public class SwiftWheelsHubCustomerReactiveApplication {
+public class SwiftWheelsHubReactiveCustomerApplication {
 
     public static void main(String[] args) {
         BlockHound.install();
-        SpringApplication.run(SwiftWheelsHubCustomerReactiveApplication.class, args);
+        SpringApplication.run(SwiftWheelsHubReactiveCustomerApplication.class, args);
     }
 
 }
