@@ -27,6 +27,22 @@
             <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-common-lib-reactive</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongodb-driver-reactivestreams</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>io.mongock.professional</groupId>
+                    <artifactId>mongock-springboot</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>io.mongock</groupId>
+                    <artifactId>mongodb-reactive-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
