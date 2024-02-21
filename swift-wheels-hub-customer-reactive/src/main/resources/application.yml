@@ -11,26 +11,11 @@ spring:
     name: swift-wheels-hub-customer-reactive
   webflux:
     base-path: /customers
-  data:
-    mongodb:
-      database: swift_wheels_hub_customer
-      username: ${MONGODB_USERNAME}
-      password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@carrentalservice.soyxkll.mongodb.net/
   cloud:
     discovery:
       enabled: true
     stream:
       bindings:
-        savedUserProducer-out-0:
-          destination: ${SAVED_USER_REACTIVE_TOPIC}
-          contentType: application/json
-        updatedUserProducer-out-0:
-          destination: ${UPDATED_USER_REACTIVE_TOPIC}
-          contentType: application/json
-        deletedUserProducer-out-0:
-          destination: ${DELETED_USER_REACTIVE_TOPIC}
-          contentType: application/json
         auditLogInfoProducer-out-0:
           destination: ${CUSTOMER_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
