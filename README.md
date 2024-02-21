@@ -1,1 +1,1 @@
-# swift-wheels-hub-service-reactive
+# swift-wheels-hub-reactive
