@@ -35,19 +35,8 @@
 
         <dependency>
             <groupId>com.swiftwheelshub</groupId>
-            <artifactId>swift-wheels-hub-reactive-common-dto</artifactId>
-            <version>${swift-wheels-hub-common-reactive.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-reactive-common-lib</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <dependency>
@@ -75,11 +64,6 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
         <dependency>

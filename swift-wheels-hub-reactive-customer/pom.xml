@@ -27,18 +27,6 @@
     <dependencies>
         <dependency>
             <groupId>com.swiftwheelshub</groupId>
-            <artifactId>swift-wheels-hub-reactive-common-dto</artifactId>
-            <version>${swift-wheels-hub-common-reactive.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.swiftwheelshub</groupId>
-            <artifactId>swift-wheels-hub-reactive-common-exception</artifactId>
-            <version>${swift-wheels-hub-common-reactive.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-reactive-common-lib</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
             <exclusions>
@@ -60,34 +48,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
             <version>${keycloak-client.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <dependency>
@@ -100,11 +63,6 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
             <version>${springdoc-openapi.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>

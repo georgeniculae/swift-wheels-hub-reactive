@@ -22,28 +22,6 @@ spring:
       enabled: true
     function:
       definition: savedUserConsumer;updatedUserConsumer
-    stream:
-      bindings:
-        savedUserConsumer-in-0:
-          binder: kafka
-          destination: ${SAVED_USER_TOPIC_REACTIVE}
-          contentType: application/json
-          group: ${AGENCY_CONSUMER_GROUP}
-        updatedUserConsumer-in-0:
-          binder: kafka
-          destination: ${UPDATED_USER_TOPIC_REACTIVE}
-          contentType: application/json
-          group: ${AGENCY_CONSUMER_GROUP}
-      kafka:
-        binder:
-          auto-create-topics: false
-          auto-add-partitions: false
-          consumer-properties:
-            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            allow.auto.create.topics: false
-  kafka:
-    bootstrap-servers: localhost:9092
   mvc:
     throw-exception-if-no-handler-found: true
     web:

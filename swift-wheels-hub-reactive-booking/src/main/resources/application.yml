@@ -34,19 +34,6 @@ spring:
         auditLogInfoProducer-out-0:
           destination: ${BOOKING_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
-        deletedUserConsumer-in-0:
-          binder: kafka
-          destination: ${DELETED_USER_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${BOOKING_CONSUMER_GROUP}
-      kafka:
-        binder:
-          auto-create-topics: false
-          auto-add-partitions: false
-          consumer-properties:
-            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            allow.auto.create.topics: false
   kafka:
     bootstrap-servers: localhost:9092
   mvc:
