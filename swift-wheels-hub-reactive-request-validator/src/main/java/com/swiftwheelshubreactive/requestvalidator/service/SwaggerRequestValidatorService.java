@@ -41,8 +41,7 @@ public class SwaggerRequestValidatorService {
     private final ReactiveRedisOperations<String, SwaggerFile> redisOperations;
 
     public Mono<RequestValidationReport> validateRequest(IncomingRequestDetails request) {
-        return Mono.just(request)
-                .map(this::getSimpleRequest)
+        return Mono.fromSupplier(() -> getSimpleRequest(request))
                 .flatMap(this::getValidationReport)
                 .map(validationReport -> new RequestValidationReport(getValidationErrorMessage(validationReport)));
     }

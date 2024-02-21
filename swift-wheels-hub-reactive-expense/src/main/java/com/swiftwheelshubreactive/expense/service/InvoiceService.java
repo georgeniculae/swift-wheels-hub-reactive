@@ -191,24 +191,23 @@ public class InvoiceService {
     }
 
     private Mono<InvoiceRequest> validateInvoice(InvoiceRequest invoiceRequest) {
-        return Mono.just(invoiceRequest)
-                .flatMap(request -> {
-                    LocalDate dateOfReturnOfTheCar = Optional.ofNullable((invoiceRequest.carDateOfReturn()))
-                            .orElseThrow(() -> new SwiftWheelsHubException("Car return date is null"));
+        return Mono.fromSupplier(() -> {
+            LocalDate dateOfReturnOfTheCar = Optional.ofNullable((invoiceRequest.carDateOfReturn()))
+                    .orElseThrow(() -> new SwiftWheelsHubException("Car return date is null"));
 
-                    validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
+            validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
 
-                    if (Boolean.TRUE.equals(invoiceRequest.isVehicleDamaged()) &&
-                            ObjectUtils.isEmpty(invoiceRequest.damageCost())) {
-                        return Mono.error(new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "If the vehicle is damaged, the damage cost cannot be null/empty"
-                                )
-                        );
-                    }
+            if (Boolean.TRUE.equals(invoiceRequest.isVehicleDamaged()) &&
+                    ObjectUtils.isEmpty(invoiceRequest.damageCost())) {
+                throw new SwiftWheelsHubResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "If the vehicle is damaged, the damage cost cannot be null/empty"
+                );
 
-                    return Mono.just(request);
-                });
+            }
+
+            return invoiceRequest;
+        });
     }
 
     private Mono<Invoice> findEntityById(String id) {

@@ -60,19 +60,18 @@ public class OutboxService {
     }
 
     private Mono<Outbox> processBooking(Outbox outbox) {
-        return Mono.just(outbox)
-                .flatMap(createdOutbox -> sendBookingToCorrespondingTopic(outbox, createdOutbox))
+        return sendBookingToCorrespondingTopic(outbox)
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending booking failed")))
                 .map(response -> outbox);
     }
 
-    private Mono<Boolean> sendBookingToCorrespondingTopic(Outbox outbox, Outbox createdOutbox) {
-        if (Outbox.Operation.CREATE.equals(createdOutbox.getOperation())) {
+    private Mono<Boolean> sendBookingToCorrespondingTopic(Outbox outbox) {
+        if (Outbox.Operation.CREATE.equals(outbox.getOperation())) {
             return savedBookingProducerService.sendMessage(getBookingResponse(outbox.getContent()));
         }
 
-        if (Outbox.Operation.UPDATE.equals(createdOutbox.getOperation())) {
+        if (Outbox.Operation.UPDATE.equals(outbox.getOperation())) {
             return updatedBookingProducerService.sendMessage(getBookingResponse(outbox.getContent()));
         }
 

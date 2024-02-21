@@ -213,32 +213,27 @@ public class BookingService {
     }
 
     private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
-        return Mono.just(newBookingRequest)
-                .flatMap(bookingRequest -> {
-                    LocalDate dateFrom = newBookingRequest.dateFrom();
-                    LocalDate dateTo = newBookingRequest.dateTo();
-                    LocalDate currentDate = LocalDate.now();
+        return Mono.fromSupplier(() -> {
+            LocalDate dateFrom = newBookingRequest.dateFrom();
+            LocalDate dateTo = newBookingRequest.dateTo();
+            LocalDate currentDate = LocalDate.now();
 
-                    if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
-                        return Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "A date of booking cannot be in the past"
-                                )
-                        );
-                    }
+            if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
+                throw new SwiftWheelsHubResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "A date of booking cannot be in the past"
+                );
+            }
 
-                    if (dateFrom.isAfter(dateTo)) {
-                        return Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Date from is after date to"
-                                )
-                        );
-                    }
+            if (dateFrom.isAfter(dateTo)) {
+                throw new SwiftWheelsHubResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Date from is after date to"
+                );
+            }
 
-                    return Mono.just(newBookingRequest);
-                });
+            return newBookingRequest;
+        });
     }
 
     private Mono<BookingResponse> updateCarWhenBookingIsClosed(String apiKey, List<String> roles,

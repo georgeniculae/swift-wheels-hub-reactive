@@ -55,11 +55,11 @@ public class AuditAspect {
         return Mono.deferContextual(contextView -> {
             ServerWebExchange exchange = contextView.get(ServerWebExchange.class);
 
-            return extractHeaderFromRequest(exchange);
+            return extractUsernameHeaderFromRequest(exchange);
         });
     }
 
-    private Mono<String> extractHeaderFromRequest(ServerWebExchange exchange) {
+    private Mono<String> extractUsernameHeaderFromRequest(ServerWebExchange exchange) {
         return Mono.just(getUsername(exchange.getRequest()));
     }
 

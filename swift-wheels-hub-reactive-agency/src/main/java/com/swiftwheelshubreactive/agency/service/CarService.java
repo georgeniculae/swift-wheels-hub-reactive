@@ -111,8 +111,7 @@ public class CarService {
     }
 
     public Mono<CarResponse> saveCar(CarRequest carRequest) {
-        return Mono.just(carRequest)
-                .flatMap(this::getBranches)
+        return getBranches(carRequest)
                 .flatMap(originalBranchAndActualBranch -> {
                     Car newCar = carMapper.mapDtoToEntity(carRequest);
                     newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
