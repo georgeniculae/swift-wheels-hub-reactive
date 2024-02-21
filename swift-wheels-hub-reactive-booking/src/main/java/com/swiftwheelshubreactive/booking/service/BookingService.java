@@ -53,20 +53,20 @@ public class BookingService {
     public Flux<BookingResponse> findAllBookings() {
         return bookingRepository.findAll()
                 .map(bookingMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding bookings: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<BookingResponse> findBookingById(String id) {
         return findEntityById(id)
                 .map(bookingMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding booking by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -81,20 +81,20 @@ public class BookingService {
                                 )
                         )
                 )
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding booking by date of booking: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<BookingResponse> findBookingsByLoggedInUser(String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .map(bookingMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding bookings by logged in customer: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -114,19 +114,19 @@ public class BookingService {
 
     public Mono<Long> countBookings() {
         return bookingRepository.count()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting bookings: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Long> countBookingsOfLoggedInUser(String username) {
         return bookingRepository.countByCustomerUsername(username)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting bookings of logged in user: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -145,10 +145,10 @@ public class BookingService {
                 .flatMap(booking -> outboxService.saveBookingAndOutboxTransactional(booking, Outbox.Operation.CREATE))
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
                 .flatMap(bookingResponse -> setCarForNewBooking(apiKey, roles, bookingResponse))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -160,35 +160,24 @@ public class BookingService {
                                                BookingRequest updatedBookingRequest) {
         return validateBookingDates(updatedBookingRequest)
                 .flatMap(bookingRequest -> findEntityById(id))
-                .flatMap(existingBooking -> getCarIfIsChanged(apiKey, roles, updatedBookingRequest, existingBooking)
-                        .map(carResponse -> updateExistingBookingWithNewCarDetails(updatedBookingRequest, existingBooking, carResponse))
-                        .switchIfEmpty(Mono.defer(() -> Mono.just(updateExistingBooking(updatedBookingRequest, existingBooking))))
-                        .flatMap(updatedExistingBooking -> outboxService.saveBookingAndOutboxTransactional(updatedExistingBooking, Outbox.Operation.UPDATE)
-                                .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
-                                .flatMap(savedBookingResponse -> changeCarsStatus(apiKey, roles, savedBookingResponse, existingBooking))))
-                .onErrorResume(e -> {
+                .flatMap(existingBooking -> updateExistingBooking(apiKey, roles, updatedBookingRequest, existingBooking))
+                .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<BookingResponse> closeBooking(String apiKeySecret, List<String> roles, BookingClosingDetails bookingClosingDetails) {
         return findEntityById(bookingClosingDetails.bookingId())
-                .flatMap(existingBooking -> employeeService.findEmployeeById(apiKeySecret, roles, bookingClosingDetails.receptionistEmployeeId())
-                        .map(employeeResponse -> {
-                            existingBooking.setStatus(BookingStatus.CLOSED);
-                            existingBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
-
-                            return existingBooking;
-                        }))
+                .flatMap(existingBooking -> getUpdatedExistingEmployee(apiKeySecret, roles, bookingClosingDetails, existingBooking))
                 .flatMap(bookingRepository::save)
                 .map(bookingMapper::mapEntityToDto)
                 .flatMap(bookingResponse -> updateCarWhenBookingIsClosed(apiKeySecret, roles, bookingResponse, bookingClosingDetails))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -201,10 +190,10 @@ public class BookingService {
                 .flatMap(booking -> outboxService.processBookingDeletion(booking, Outbox.Operation.DELETE))
                 .flatMap(booking -> carService.changeCarStatus(apiKey, roles, booking.getCarId().toString(), CarState.AVAILABLE))
                 .then()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while deleting booking by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -234,6 +223,31 @@ public class BookingService {
 
             return newBookingRequest;
         });
+    }
+
+    private Mono<Booking> getUpdatedExistingEmployee(String apiKeySecret, List<String> roles,
+                                                     BookingClosingDetails bookingClosingDetails, Booking existingBooking) {
+        return employeeService.findEmployeeById(apiKeySecret, roles, bookingClosingDetails.receptionistEmployeeId())
+                .map(employeeResponse -> {
+                    existingBooking.setStatus(BookingStatus.CLOSED);
+                    existingBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
+
+                    return existingBooking;
+                });
+    }
+
+    private Mono<BookingResponse> updateExistingBooking(String apiKey, List<String> roles, BookingRequest updatedBookingRequest, Booking existingBooking) {
+        return getCarIfIsChanged(apiKey, roles, updatedBookingRequest, existingBooking)
+                .map(carResponse -> updateExistingBookingWithNewCarDetails(updatedBookingRequest, existingBooking, carResponse))
+                .switchIfEmpty(Mono.defer(() -> Mono.just(updateExistingBooking(updatedBookingRequest, existingBooking))))
+                .flatMap(updatedExistingBooking -> processBooking(apiKey, roles, existingBooking, updatedExistingBooking));
+    }
+
+    private Mono<BookingResponse> processBooking(String apiKey, List<String> roles, Booking existingBooking,
+                                                 Booking updatedExistingBooking) {
+        return outboxService.saveBookingAndOutboxTransactional(updatedExistingBooking, Outbox.Operation.UPDATE)
+                .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
+                .flatMap(savedBookingResponse -> changeCarsStatus(apiKey, roles, savedBookingResponse, existingBooking));
     }
 
     private Mono<BookingResponse> updateCarWhenBookingIsClosed(String apiKey, List<String> roles,
