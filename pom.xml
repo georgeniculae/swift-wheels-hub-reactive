@@ -18,15 +18,15 @@
     <name>Swift Wheels Hub Reactive</name>
 
     <modules>
-        <module>swift-wheels-hub-common-reactive</module>
-        <module>swift-wheels-hub-api-gateway-reactive</module>
-        <module>swift-wheels-hub-agency-reactive</module>
-        <module>swift-wheels-hub-audit-reactive</module>
-        <module>swift-wheels-hub-booking-reactive</module>
-        <module>swift-wheels-hub-customer-reactive</module>
-        <module>swift-wheels-hub-email-notification-reactive</module>
-        <module>swift-wheels-hub-expense-reactive</module>
-        <module>swift-wheels-hub-request-validator-reactive</module>
+        <module>swift-wheels-hub-reactive-common</module>
+        <module>swift-wheels-hub-reactive-api-gateway</module>
+        <module>swift-wheels-hub-reactive-agency</module>
+        <module>swift-wheels-hub-reactive-audit</module>
+        <module>swift-wheels-hub-reactive-booking</module>
+        <module>swift-wheels-hub-reactive-customer</module>
+        <module>swift-wheels-hub-reactive-email-notification</module>
+        <module>swift-wheels-hub-reactive-expense</module>
+        <module>swift-wheels-hub-reactive-request-validator</module>
     </modules>
 
     <repositories>
