@@ -19,8 +19,6 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
         <keycloak-client.version>23.0.4</keycloak-client.version>
-        <mongock.version>5.3.6</mongock.version>
-        <mongock-springboot.version>5.2.6</mongock-springboot.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
         <blockhound.version>1.0.8.RELEASE</blockhound.version>
@@ -29,7 +27,13 @@
     <dependencies>
         <dependency>
             <groupId>com.swiftwheelshub</groupId>
-            <artifactId>swift-wheels-hub-common-model-reactive</artifactId>
+            <artifactId>swift-wheels-hub-common-dto-reactive</artifactId>
+            <version>${swift-wheels-hub-common-reactive.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.swiftwheelshub</groupId>
+            <artifactId>swift-wheels-hub-common-exception-reactive</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
         </dependency>
 
@@ -37,16 +41,27 @@
             <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-common-lib-reactive</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongodb-driver-reactivestreams</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>io.mongock.professional</groupId>
+                    <artifactId>mongock-springboot</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>io.mongock</groupId>
+                    <artifactId>mongodb-reactive-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
         </dependency>
 
         <dependency>
@@ -68,28 +83,6 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
             <version>${keycloak-client.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.mongock.professional</groupId>
-            <artifactId>mongock-springboot</artifactId>
-            <version>${mongock-springboot.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.mongock</groupId>
-            <artifactId>mongodb-reactive-driver</artifactId>
-            <version>${mongock.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-reactivestreams</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
         </dependency>
 
         <dependency>
