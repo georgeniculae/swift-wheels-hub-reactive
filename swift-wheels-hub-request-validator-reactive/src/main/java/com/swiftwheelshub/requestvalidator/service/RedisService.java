@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class RedisService {
 
-    private final ReactiveRedisOperations<String, SwaggerFile> redisSwagger;
+    private final ReactiveRedisOperations<String, SwaggerFile> reactiveRedisOperations;
     private final SwaggerExtractorService swaggerExtractorService;
 
-    public Flux<Boolean> addSwaggerFolderToRedis() {
+    public Flux<Boolean> addSwaggerFilesToRedis() {
         return swaggerExtractorService.getSwaggerIdentifierAndContent()
                 .flatMapMany(swaggerIdentifierAndContent -> Flux.fromIterable(swaggerIdentifierAndContent.entrySet()))
                 .flatMap(swaggerEntry -> addSwaggerToRedis(swaggerEntry.getKey(), swaggerEntry.getValue()))
@@ -30,8 +30,8 @@ public class RedisService {
                 });
     }
 
-    public Mono<Boolean> repopulateRedisWithSwaggerFolder(String microserviceName) {
-        return redisSwagger.delete(microserviceName)
+    public Mono<Boolean> repopulateRedisWithSwaggerFiles(String microserviceName) {
+        return reactiveRedisOperations.delete(microserviceName)
                 .flatMap(numberOfDeletedItems -> swaggerExtractorService.getSwaggerFileForMicroservice(microserviceName))
                 .flatMap(swaggerContent -> addSwaggerToRedis(microserviceName, swaggerContent))
                 .onErrorResume(e -> {
@@ -42,7 +42,7 @@ public class RedisService {
     }
 
     private Mono<Boolean> addSwaggerToRedis(String key, String value) {
-        return redisSwagger.opsForValue().set(
+        return reactiveRedisOperations.opsForValue().set(
                 key,
                 SwaggerFile.builder()
                         .id(key)
