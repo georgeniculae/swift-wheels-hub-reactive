@@ -31,7 +31,7 @@ spring:
           predicates:
             - Path=/bookings/**
           filters:
-            - name: LanguageHeaderUpdater
+            - name: LanguageHeader
               args:
                 language: "EN"
         - id: customer
@@ -39,7 +39,7 @@ spring:
           predicates:
             - Path=/customers/**
           filters:
-            - name: LanguageHeaderUpdater
+            - name: LanguageHeader
               args:
                 language: "EN"
         - id: expense
@@ -47,7 +47,7 @@ spring:
           predicates:
             - Path=/expense/**
           filters:
-            - name: LanguageHeaderUpdater
+            - name: LanguageHeader
               args:
                 language: "EN"
 
