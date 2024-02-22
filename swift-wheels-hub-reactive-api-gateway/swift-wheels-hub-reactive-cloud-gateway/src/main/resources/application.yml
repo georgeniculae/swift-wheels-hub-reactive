@@ -23,7 +23,7 @@ spring:
           predicates:
             - Path=/agency/**
           filters:
-            - name: LanguageHeaderUpdater
+            - name: LanguageHeader
               args:
                 language: "EN"
         - id: booking
