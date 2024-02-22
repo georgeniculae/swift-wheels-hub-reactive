@@ -8,7 +8,6 @@ import java.util.List;
 @UtilityClass
 public class ServerRequestUtil {
 
-    private static final String AUTHORIZATION = "Authorization";
     private static final String X_API_KEY = "X-API-KEY";
     private static final String X_USERNAME = "X-USERNAME";
     private static final String X_ROLES = "X-ROLES";
@@ -19,10 +18,6 @@ public class ServerRequestUtil {
 
     public static String getQueryParam(ServerRequest serverRequest, String name) {
         return serverRequest.queryParams().getFirst(name);
-    }
-
-    public static String getAuthorizationHeader(ServerRequest serverRequest) {
-        return serverRequest.headers().firstHeader(AUTHORIZATION);
     }
 
     public static String getApiKeyHeader(ServerRequest serverRequest) {
