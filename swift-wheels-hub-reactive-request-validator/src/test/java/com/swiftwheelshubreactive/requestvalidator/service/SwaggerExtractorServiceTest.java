@@ -52,16 +52,16 @@ class SwaggerExtractorServiceTest {
     @SuppressWarnings("all")
     void getSwaggerIdentifierAndContentTest_success() {
         String agencyContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgency.json", String.class);
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
         String bookingsContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookings.json", String.class);
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
 
         String customersContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomers.json", String.class);
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
 
         String expenseContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpense.json", String.class);
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
         Map<String, String> expected = Map.of(
                 "agency", agencyContent,
