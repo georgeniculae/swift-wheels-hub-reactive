@@ -30,10 +30,10 @@ public class OutboxService {
         return outboxRepository.findAll()
                 .concatMap(this::processBooking)
                 .concatMap(outboxRepository::delete)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while processing/sending booking: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

@@ -22,10 +22,10 @@ public class AuditService {
     public Mono<AuditLogInfoRequest> saveAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
         return auditLogInfoRepository.save(auditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
                 .map(auditLogInfoMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while saving audit log: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e));
+                    return new SwiftWheelsHubException(e);
                 });
     }
 

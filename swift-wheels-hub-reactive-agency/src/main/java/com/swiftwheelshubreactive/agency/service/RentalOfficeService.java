@@ -26,30 +26,30 @@ public class RentalOfficeService {
     public Flux<RentalOfficeResponse> findAllRentalOffices() {
         return rentalOfficeRepository.findAll()
                 .map(rentalOfficeMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding all rental offices: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<RentalOfficeResponse> findRentalOfficeById(String id) {
         return findEntityById(id)
                 .map(rentalOfficeMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding rental office by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<RentalOfficeResponse> findRentalOfficesByNameInsensitiveCase(String name) {
         return rentalOfficeRepository.findAllByNameInsensitiveCase(name)
                 .map(rentalOfficeMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding rental office by name: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 })
                 .switchIfEmpty(
                         Mono.error(
@@ -64,10 +64,10 @@ public class RentalOfficeService {
     public Mono<RentalOfficeResponse> saveRentalOffice(RentalOfficeRequest rentalOfficeRequest) {
         return rentalOfficeRepository.save(rentalOfficeMapper.mapDtoToEntity(rentalOfficeRequest))
                 .map(rentalOfficeMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while saving rental office: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -81,28 +81,28 @@ public class RentalOfficeService {
                     return rentalOfficeRepository.save(existingRentalOffice);
                 })
                 .map(rentalOfficeMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while updating rental office: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Long> countRentalOffices() {
         return rentalOfficeRepository.count()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting rental offices: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Void> deleteRentalOfficeById(String id) {
         return rentalOfficeRepository.deleteById(MongoUtil.getObjectId(id))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while deleting rental office: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
 
     }

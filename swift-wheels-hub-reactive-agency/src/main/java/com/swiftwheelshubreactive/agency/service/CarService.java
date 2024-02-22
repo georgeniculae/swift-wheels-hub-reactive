@@ -53,30 +53,30 @@ public class CarService {
     public Flux<CarResponse> findAllCars() {
         return carRepository.findAll()
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding all cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<CarResponse> findCarById(String id) {
         return findEntityById(id)
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding car by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<CarResponse> findCarsByMake(String make) {
         return carRepository.findCarsByMake(make)
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding cars by make: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -92,20 +92,20 @@ public class CarService {
                                 )
                         )
                 )
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while getting available car: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<CarResponse> findCarsByFilterInsensitiveCase(String filter) {
         return carRepository.findAllByFilterInsensitiveCase(filter)
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while searching car by criteria: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 })
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
     }
@@ -120,10 +120,10 @@ public class CarService {
                     return carRepository.save(newCar);
                 })
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -134,10 +134,10 @@ public class CarService {
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while uploading cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -154,10 +154,10 @@ public class CarService {
                     return carRepository.save(existingCarUpdated);
                 })
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while updating cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -169,28 +169,28 @@ public class CarService {
                     return carRepository.save(car);
                 })
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while updating car status cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Void> deleteCarById(String id) {
         return carRepository.deleteById(MongoUtil.getObjectId(id))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while deleting cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Long> countCars() {
         return carRepository.count()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
 
     }
@@ -201,19 +201,19 @@ public class CarService {
                 .map(carEmployee -> updateCarDetails(carUpdateDetails, carEmployee))
                 .flatMap(carRepository::save)
                 .map(carMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting cars: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     private Mono<Car> findEntityById(String id) {
         return carRepository.findById(MongoUtil.getObjectId(id))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 })
                 .switchIfEmpty(
                         Mono.error(

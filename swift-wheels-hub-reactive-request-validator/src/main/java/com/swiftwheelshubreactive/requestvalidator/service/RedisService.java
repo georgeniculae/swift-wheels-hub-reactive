@@ -27,10 +27,10 @@ public class RedisService {
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Redis add failed"))))
                 .collectList()
                 .map(List::getFirst)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while setting swagger folder in Redis: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e));
+                    return new SwiftWheelsHubException(e);
                 });
     }
 
@@ -38,10 +38,10 @@ public class RedisService {
         return reactiveRedisOperations.delete(microserviceName)
                 .flatMap(numberOfDeletedItems -> swaggerExtractorService.getSwaggerFileForMicroservice(microserviceName))
                 .flatMap(swaggerContent -> addSwaggerToRedis(microserviceName, swaggerContent))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while repopulating swagger folder in Redis: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e));
+                    return new SwiftWheelsHubException(e);
                 });
     }
 

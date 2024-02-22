@@ -47,40 +47,40 @@ public class InvoiceService {
     public Flux<InvoiceResponse> findAllInvoices() {
         return invoiceRepository.findAll()
                 .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding all invoices: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<InvoiceResponse> findAllActiveInvoices() {
         return findActiveInvoices()
                 .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding all active invoices: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<InvoiceResponse> findAllInvoicesByCustomerUsername(String customerUsername) {
         return invoiceRepository.findByCustomerUsername(customerUsername)
                 .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding invoices by customer id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<InvoiceResponse> findInvoiceById(String id) {
         return findEntityById(id)
                 .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding invoice by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -95,28 +95,28 @@ public class InvoiceService {
                         )
                 )
                 .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding invoices by comments: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Long> countInvoices() {
         return invoiceRepository.count()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting all invoices: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Long> countAllActiveInvoices() {
         return countActiveInvoices()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting all active invoices: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -157,10 +157,10 @@ public class InvoiceService {
                 .flatMap(revenueService::saveInvoiceRevenueAndOutboxTransactional)
                 .delayUntil(invoice -> bookingService.closeBooking(apiKey, roles, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

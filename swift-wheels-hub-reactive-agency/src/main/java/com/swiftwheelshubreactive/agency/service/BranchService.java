@@ -26,30 +26,31 @@ public class BranchService {
 
     public Flux<BranchResponse> findAllBranches() {
         return branchRepository.findAll()
-                .map(branchMapper::mapEntityToDto).onErrorResume(e -> {
+                .map(branchMapper::mapEntityToDto)
+                .onErrorMap(e -> {
                     log.error("Error while finding all branches: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<BranchResponse> findBranchById(String id) {
         return findEntityById(id)
                 .map(branchMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding branch by id: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Flux<BranchResponse> findBranchesByFilterInsensitiveCase(String filter) {
         return branchRepository.findAllByFilterInsensitiveCase(filter)
                 .map(branchMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding branch by filter: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 })
                 .switchIfEmpty(
                         Mono.error(
@@ -63,10 +64,10 @@ public class BranchService {
 
     public Mono<Long> countBranches() {
         return branchRepository.count()
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while counting branches: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -79,10 +80,10 @@ public class BranchService {
                     return branchRepository.save(newBranch);
                 })
                 .map(branchMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while saving branch: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -99,19 +100,19 @@ public class BranchService {
                                 }))
                 .flatMap(branchRepository::save)
                 .map(branchMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while updating branch: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<Void> deleteBranchById(String id) {
         return branchRepository.deleteById(MongoUtil.getObjectId(id))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while deleting branch: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

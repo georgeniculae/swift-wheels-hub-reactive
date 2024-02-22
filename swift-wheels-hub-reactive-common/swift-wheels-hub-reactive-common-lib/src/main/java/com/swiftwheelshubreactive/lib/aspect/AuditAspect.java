@@ -36,10 +36,10 @@ public class AuditAspect {
         return getJoinPointProceed(joinPoint)
                 .delayUntil(jointPointProceed -> extractUsernameHeaderFromWebFluxContext()
                         .flatMap(username -> sendAuditLogInfoDto(joinPoint, username)))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while logging activity: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e));
+                    return new SwiftWheelsHubException(e);
                 });
     }
 

@@ -43,10 +43,10 @@ public class RevenueService {
     public Flux<RevenueResponse> findAllRevenues() {
         return revenueRepository.findAll()
                 .map(revenueMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding all revenues: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -61,20 +61,20 @@ public class RevenueService {
                         )
                 )
                 .map(revenueMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while finding revenues by date: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
     public Mono<BigDecimal> getTotalAmount() {
         return revenueRepository.getTotalAmount()
                 .map(BigDecimal::valueOf)
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error while getting total amount: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -84,10 +84,10 @@ public class RevenueService {
                 .flatMap(savedInvoice -> outboxService.saveOutbox(invoice, Outbox.Operation.CLOSE))
                 .flatMap(savedOutbox -> revenueRepository.save(getRevenue(savedOutbox.getContent()))
                         .map(revenue -> savedOutbox.getContent()))
-                .onErrorResume(e -> {
+                .onErrorMap(e -> {
                     log.error("Error during transactional saving of outbox and revenue: {}", e.getMessage());
 
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
