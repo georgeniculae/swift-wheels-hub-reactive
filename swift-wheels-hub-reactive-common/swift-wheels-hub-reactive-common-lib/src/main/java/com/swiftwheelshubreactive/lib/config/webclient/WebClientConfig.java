@@ -15,8 +15,8 @@ public class WebClientConfig {
     }
 
     @Bean
-    public WebClient webClient(WebClient.Builder loadBalancedWebClientBuilder) {
-        return loadBalancedWebClientBuilder.build();
+    public WebClient webClient() {
+        return loadBalancedWebClientBuilder().build();
     }
 
 }
