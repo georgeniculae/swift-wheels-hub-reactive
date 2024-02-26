@@ -62,10 +62,6 @@ eureka:
     preferIpAddress: true
     leaseRenewalIntervalInSeconds: 10
 
-ribbon:
-  eureka:
-    enabled: false
-
 logging:
   level:
     org:
@@ -74,4 +70,4 @@ logging:
 
 apikey-secret: ${API_KEY_SECRET}
 
-request-validator-url: lb://swift-wheels-hub-reactive-request-validator/request-validator/validate
+request-validator-url: lb://swift-wheels-hub-reactive-request-validator/validate
