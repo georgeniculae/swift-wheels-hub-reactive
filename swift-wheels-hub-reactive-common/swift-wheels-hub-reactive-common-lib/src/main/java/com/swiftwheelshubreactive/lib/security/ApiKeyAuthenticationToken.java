@@ -1,58 +1,36 @@
 package com.swiftwheelshubreactive.lib.security;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.Transient;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collection;
+import java.util.List;
 
-public class ApiKeyAuthenticationToken implements Authentication {
+@Transient
+public final class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String apiKey;
-    private String principal;
-    private boolean authenticated = false;
 
-    public ApiKeyAuthenticationToken(String apiKey) {
+    public ApiKeyAuthenticationToken(List<SimpleGrantedAuthority> grantedAuthorities, String apiKey) {
+        super(grantedAuthorities);
+        super.setAuthenticated(false);
         this.apiKey = apiKey;
     }
 
-    public ApiKeyAuthenticationToken(String apiKey, String principal) {
+    public ApiKeyAuthenticationToken(List<SimpleGrantedAuthority> grantedAuthorities, String apiKey, boolean isAuthenticated) {
+        super(grantedAuthorities);
+        super.setAuthenticated(isAuthenticated);
         this.apiKey = apiKey;
-        this.principal = principal;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
     }
 
     @Override
     public Object getCredentials() {
-        return apiKey;
-    }
-
-    @Override
-    public Object getDetails() {
         return null;
     }
 
     @Override
     public Object getPrincipal() {
-        return principal;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return authenticated;
-    }
-
-    @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        this.authenticated = isAuthenticated;
-    }
-
-    @Override
-    public String getName() {
-        return principal;
+        return apiKey;
     }
 
 }

@@ -39,12 +39,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.mongock.professional</groupId>
-            <artifactId>mongock-springboot</artifactId>
-            <version>${mongock-springboot.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>io.mongock</groupId>
             <artifactId>mongodb-reactive-driver</artifactId>
             <version>${mongock.version}</version>
@@ -58,6 +52,12 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.mongock.professional</groupId>
+            <artifactId>mongock-springboot</artifactId>
+            <version>${mongock-springboot.version}</version>
         </dependency>
 
         <dependency>
