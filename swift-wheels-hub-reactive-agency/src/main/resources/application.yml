@@ -16,7 +16,7 @@ spring:
       database: swift_wheels_hub_agency
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubagency.iugyrin.mongodb.net/
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubagency.cyhkw29.mongodb.net
   cloud:
     discovery:
       enabled: true
