@@ -33,15 +33,15 @@ public class GrantedAuthoritiesConverterConfig {
         return source -> {
             Map<String, List<String>> claims = (Map<String, List<String>>) source.getClaims().get(REALM_ACCESS);
 
-            if (ObjectUtils.isEmpty(claims)) {
-                return Collections.emptyList();
-            }
-
-            return claims.get(ROLES)
-                    .stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+            return ObjectUtils.isEmpty(claims) ? Collections.emptyList() : getAuthorities(claims);
         };
+    }
+
+    private List<GrantedAuthority> getAuthorities(Map<String, List<String>> claims) {
+        return claims.get(ROLES)
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     public interface JwtGrantedAuthorityConverter extends Converter<Jwt, Collection<GrantedAuthority>> {

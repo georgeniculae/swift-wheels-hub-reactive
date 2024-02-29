@@ -64,9 +64,5 @@ eureka:
     preferIpAddress: true
     leaseRenewalIntervalInSeconds: 10
 
-ribbon:
-  eureka:
-    enabled: false
-
 auditConsumer:
   isMessageAckEnabled: false

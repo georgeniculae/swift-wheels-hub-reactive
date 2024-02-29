@@ -62,10 +62,6 @@ springdoc:
     path: /definition/v3/api-docs
   show-actuator: true
 
-ribbon:
-  eureka:
-    enabled: false
-
 logging:
   level:
     org:
@@ -75,8 +71,7 @@ logging:
           csrf:
             CsrfFilter: DEBUG
 
-authentication:
-  type: apikey
+apikey:
   secret: ${API_KEY_SECRET}
 
 webclient:

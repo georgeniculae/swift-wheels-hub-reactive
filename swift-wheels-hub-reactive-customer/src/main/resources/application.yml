@@ -46,10 +46,6 @@ springdoc:
   api-docs:
     path: /definition/v3/api-docs
 
-ribbon:
-  eureka:
-    enabled: false
-
 logging:
   level:
     org:
@@ -65,7 +61,7 @@ keycloak:
   clientId: ${KEYCLOAK_CLIENT_ID}
   clientSecret: ${KEYCLOAK_CLIENT_SECRET}
 
-authentication:
+apikey:
   secret: ${API_KEY_SECRET}
 
 audit:

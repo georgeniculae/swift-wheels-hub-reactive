@@ -16,18 +16,18 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-        return Mono.fromSupplier(() -> {
-            if (authentication != null && ObjectUtils.isNotEmpty(authentication.getCredentials())) {
-                new ApiKeyAuthenticationToken(getRoles(authentication), authentication.getPrincipal().toString(), true);
-            }
+        return Mono.justOrEmpty(authentication)
+                .map(auth -> getApiKeyAuthenticationToken(authentication));
+    }
 
-            return authentication;
-        });
+    private ApiKeyAuthenticationToken getApiKeyAuthenticationToken(Authentication authentication) {
+        return new ApiKeyAuthenticationToken(getRoles(authentication), authentication.getPrincipal().toString(), true);
     }
 
     private List<SimpleGrantedAuthority> getRoles(Authentication authentication) {
         return authentication.getAuthorities()
                 .stream()
+                .filter(ObjectUtils::isNotEmpty)
                 .map(grantedAuthority -> new SimpleGrantedAuthority(grantedAuthority.getAuthority()))
                 .toList();
     }

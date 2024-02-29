@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -13,8 +14,9 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 
 @Configuration
 @EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "authentication", name = "type", havingValue = "apikey")
+@ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class ApiKeySecurityConfig {
 
     private final AuthenticationWebFilter authenticationWebFilter;

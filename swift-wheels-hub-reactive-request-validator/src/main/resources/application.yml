@@ -26,10 +26,6 @@ eureka:
     preferIpAddress: true
     leaseRenewalIntervalInSeconds: 10
 
-ribbon:
-  eureka:
-    enabled: false
-
 logging:
   level:
     org:
