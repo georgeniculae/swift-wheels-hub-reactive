@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.ReactiveMongoTransactionManager;
 
 @Configuration
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "spring", name = "data")
+@ConditionalOnProperty(prefix = "spring.data", name = "mongodb")
 public class MongoTransactionManagerConfig {
 
     @Bean
