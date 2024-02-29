@@ -20,8 +20,6 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
         <mustache.version>0.9.11</mustache.version>
-        <mongock.version>5.3.3</mongock.version>
-        <mongock-springboot.version>5.2.6</mongock-springboot.version>
         <jackson-datatype-jsr310.version>2.16.0</jackson-datatype-jsr310.version>
     </properties>
 
@@ -52,18 +50,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.mongock.professional</groupId>
-            <artifactId>mongock-springboot</artifactId>
-            <version>${mongock-springboot.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.mongock</groupId>
-            <artifactId>mongodb-reactive-driver</artifactId>
-            <version>${mongock.version}</version>
         </dependency>
 
         <dependency>

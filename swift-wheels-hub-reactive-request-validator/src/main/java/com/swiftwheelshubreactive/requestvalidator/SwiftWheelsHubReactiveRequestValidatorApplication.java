@@ -8,7 +8,7 @@ import reactor.blockhound.BlockHound;
 public class SwiftWheelsHubReactiveRequestValidatorApplication {
 
     public static void main(String[] args) {
-        BlockHound.install();
+//        BlockHound.install(builder -> builder.allowBlockingCallsInside("jdk.internal.misc.Unsafe", "park"));
         SpringApplication.run(SwiftWheelsHubReactiveRequestValidatorApplication.class, args);
     }
 

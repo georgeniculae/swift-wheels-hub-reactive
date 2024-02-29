@@ -82,36 +82,47 @@ public class SwaggerExtractorService {
     }
 
     private Mono<String> getSwiftWheelsHubRentalAgencySwagger() {
-        return getRestCallResponse(agencyApiDocUrl)
+        return webClient.get()
+                .uri(agencyApiDocUrl)
+                .header(X_API_KEY, apikey)
+                .retrieve()
+                .bodyToMono(String.class)
+                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Agency swagger is empty")));
     }
 
     private Mono<String> getSwiftWheelsHubBookingSwagger() {
-        return getRestCallResponse(bookingApiDocUrl)
+        return webClient.get()
+                .uri(bookingApiDocUrl)
+                .header(X_API_KEY, apikey)
+                .retrieve()
+                .bodyToMono(String.class)
+                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Booking swagger is empty")));
     }
 
     private Mono<String> getSwiftWheelsHubCustomerSwagger() {
-        return getRestCallResponse(customerApiDocUrl)
+        return webClient.get()
+                .uri(customerApiDocUrl)
+                .header(X_API_KEY, apikey)
+                .retrieve()
+                .bodyToMono(String.class)
+                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Customers swagger is empty")));
     }
 
     private Mono<String> getSwiftWheelsHubExpenseSwagger() {
-        return getRestCallResponse(expenseApiDocUrl)
-                .filter(StringUtils::isNotBlank)
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Customers swagger is empty")));
-    }
-
-    private Mono<String> getRestCallResponse(String url) {
         return webClient.get()
-                .uri(url)
+                .uri(expenseApiDocUrl)
                 .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)));
+                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+                .filter(StringUtils::isNotBlank)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Customers swagger is empty")));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.lib.config.mongodb;
+package com.swiftwheelshubreactive.agency.migration;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
