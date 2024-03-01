@@ -87,7 +87,7 @@ public class SwaggerExtractorService {
                 .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Agency swagger is empty")));
     }
@@ -98,7 +98,7 @@ public class SwaggerExtractorService {
                 .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Booking swagger is empty")));
     }
@@ -109,7 +109,7 @@ public class SwaggerExtractorService {
                 .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Customers swagger is empty")));
     }
@@ -120,7 +120,7 @@ public class SwaggerExtractorService {
                 .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swift Wheels Hub Customers swagger is empty")));
     }

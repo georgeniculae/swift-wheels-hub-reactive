@@ -15,13 +15,13 @@ import java.lang.annotation.Target;
 @RouterOperations(
         {
                 @RouterOperation(method = RequestMethod.GET, beanClass = EmployeeService.class, beanMethod = "findAllEmployees"),
-                @RouterOperation(method = RequestMethod.GET, path = "/branch/{id}", beanClass = EmployeeService.class, beanMethod = "findAllEmployees"),
-                @RouterOperation(method = RequestMethod.GET, path = "/filter/{filter}", beanClass = EmployeeService.class, beanMethod = "findEmployeeByFilterInsensitiveCase"),
+                @RouterOperation(method = RequestMethod.GET, path = "/branch/{id}", params = "id", beanClass = EmployeeService.class, beanMethod = "findEmployeesByBranchId"),
+                @RouterOperation(method = RequestMethod.GET, path = "/filter/{filter}", params = "filter", beanClass = EmployeeService.class, beanMethod = "findEmployeeByFilterInsensitiveCase"),
                 @RouterOperation(method = RequestMethod.GET, path = "/count", beanClass = EmployeeService.class, beanMethod = "countEmployees"),
-                @RouterOperation(method = RequestMethod.GET, path = "/{id}", beanClass = EmployeeService.class, beanMethod = "findEmployeeById"),
+                @RouterOperation(method = RequestMethod.GET, path = "/{id}", params = "id", beanClass = EmployeeService.class, beanMethod = "findEmployeeById"),
                 @RouterOperation(method = RequestMethod.POST, beanClass = EmployeeService.class, beanMethod = "saveEmployee"),
                 @RouterOperation(method = RequestMethod.PUT, beanClass = EmployeeService.class, beanMethod = "updateEmployee"),
-                @RouterOperation(method = RequestMethod.DELETE, beanClass = EmployeeService.class, beanMethod = "deleteEmployeeById")
+                @RouterOperation(method = RequestMethod.DELETE, params = "id", beanClass = EmployeeService.class, beanMethod = "deleteEmployeeById")
         }
 )
 public @interface SwaggerEmployeeRouterOperations {
