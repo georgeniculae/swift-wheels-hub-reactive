@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.router;
 
 import com.swiftwheelshubreactive.agency.handler.RentalOfficeHandler;
+import com.swiftwheelshubreactive.agency.swaggeroperation.SwaggerRentalOfficeRouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ public class RentalOfficeRouter {
     private static final String REQUEST_MAPPING = "/rental-offices";
 
     @Bean
+    @SwaggerRentalOfficeRouterOperations
     public RouterFunction<ServerResponse> routeRentalOffice(RentalOfficeHandler rentalOfficeHandler) {
         return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), rentalOfficeHandler::findAllRentalOffices)
