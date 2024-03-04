@@ -106,5 +106,5 @@ import java.util.List;
                 )
         }
 )
-public @interface SwaggerRevenueRouterOperation {
+public @interface SwaggerRouteRevenueOperation {
 }
