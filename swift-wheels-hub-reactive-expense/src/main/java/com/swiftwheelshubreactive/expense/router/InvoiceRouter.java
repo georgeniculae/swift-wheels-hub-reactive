@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.expense.router;
 
 import com.swiftwheelshubreactive.expense.handler.InvoiceHandler;
+import com.swiftwheelshubreactive.expense.swaggeroperation.SwaggerRouteInvoice;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ public class InvoiceRouter {
     private static final String REQUEST_MAPPING = "/invoices";
 
     @Bean
+    @SwaggerRouteInvoice
     public RouterFunction<ServerResponse> routeInvoice(InvoiceHandler invoiceHandler) {
         return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), invoiceHandler::findAllInvoices)
