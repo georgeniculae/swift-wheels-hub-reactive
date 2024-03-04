@@ -246,5 +246,5 @@ import java.util.List;
                 )
         }
 )
-public @interface SwaggerRouteInvoice {
+public @interface SwaggerRouteInvoiceOperation {
 }
