@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.expense.swaggeroperation;
 
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
+import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
@@ -217,6 +219,11 @@ import java.util.List;
                         beanMethod = "closeInvoice",
                         operation = @Operation(
                                 operationId = "closeInvoice",
+                                requestBody = @RequestBody(
+                                        description = "Close invoice",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = InvoiceRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
