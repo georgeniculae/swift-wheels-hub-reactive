@@ -309,12 +309,12 @@ public class BookingService {
                 );
     }
 
-    private Booking setupNewBooking(BookingRequest newBookingDto, CarResponse carResponse) {
-        Booking newBooking = bookingMapper.mapDtoToEntity(newBookingDto);
+    private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse) {
+        Booking newBooking = bookingMapper.mapDtoToEntity(newBookingRequest);
         BigDecimal amount = carResponse.amount();
 
         newBooking.setCustomerUsername(newBooking.getCustomerUsername());
-        newBooking.setCustomerEmail(newBookingDto.customerEmail());
+        newBooking.setCustomerEmail(newBookingRequest.customerEmail());
         newBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
         newBooking.setDateOfBooking(LocalDate.now());
         newBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));

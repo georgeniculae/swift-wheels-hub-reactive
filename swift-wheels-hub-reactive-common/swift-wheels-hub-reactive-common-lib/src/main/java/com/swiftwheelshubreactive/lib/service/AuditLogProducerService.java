@@ -33,8 +33,8 @@ public class AuditLogProducerService {
                 .then();
     }
 
-    private Message<AuditLogInfoRequest> buildMessage(AuditLogInfoRequest auditLogInfoDto) {
-        return MessageBuilder.withPayload(auditLogInfoDto)
+    private Message<AuditLogInfoRequest> buildMessage(AuditLogInfoRequest auditLogInfoRequest) {
+        return MessageBuilder.withPayload(auditLogInfoRequest)
                 .build();
     }
 

@@ -22,13 +22,13 @@ public class RentalOfficeHandler {
         return rentalOfficeService.findAllRentalOffices()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(rentalOfficeDtoList -> ServerResponse.ok().bodyValue(rentalOfficeDtoList))
+                .flatMap(rentalOfficeResponses -> ServerResponse.ok().bodyValue(rentalOfficeResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findRentalOfficeById(ServerRequest serverRequest) {
         return rentalOfficeService.findRentalOfficeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(rentalOfficeDto -> ServerResponse.ok().bodyValue(rentalOfficeDto))
+                .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -36,7 +36,7 @@ public class RentalOfficeHandler {
         return rentalOfficeService.findRentalOfficesByNameInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, NAME))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(rentalOfficeDtoList -> ServerResponse.ok().bodyValue(rentalOfficeDtoList))
+                .flatMap(rentalOfficeResponses -> ServerResponse.ok().bodyValue(rentalOfficeResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -53,9 +53,9 @@ public class RentalOfficeHandler {
 
     public Mono<ServerResponse> updateRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
-                .flatMap(rentalOfficeDto ->
-                        rentalOfficeService.updateRentalOffice(ServerRequestUtil.getPathVariable(serverRequest, ID), rentalOfficeDto))
-                .flatMap(rentalOfficeDto -> ServerResponse.ok().bodyValue(rentalOfficeDto));
+                .flatMap(rentalOfficeRequest ->
+                        rentalOfficeService.updateRentalOffice(ServerRequestUtil.getPathVariable(serverRequest, ID), rentalOfficeRequest))
+                .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
 
     public Mono<ServerResponse> deleteRentalOfficeById(ServerRequest serverRequest) {

@@ -22,13 +22,13 @@ public class EmployeeHandler {
         return employeeService.findAllEmployees()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(employeeDtoList -> ServerResponse.ok().bodyValue(employeeDtoList))
+                .flatMap(employeeResponses -> ServerResponse.ok().bodyValue(employeeResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findEmployeeById(ServerRequest serverRequest) {
         return employeeService.findEmployeeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(employeeDto -> ServerResponse.ok().bodyValue(employeeDto))
+                .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -36,7 +36,7 @@ public class EmployeeHandler {
         return employeeService.findEmployeesByBranchId(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(employeeDtoList -> ServerResponse.ok().bodyValue(employeeDtoList))
+                .flatMap(employeeResponses -> ServerResponse.ok().bodyValue(employeeResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -44,7 +44,7 @@ public class EmployeeHandler {
         return employeeService.findEmployeeByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(employeeDtoList -> ServerResponse.ok().bodyValue(employeeDtoList))
+                .flatMap(employeeResponses -> ServerResponse.ok().bodyValue(employeeResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -56,14 +56,14 @@ public class EmployeeHandler {
     public Mono<ServerResponse> saveEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
                 .flatMap(employeeService::saveEmployee)
-                .flatMap(employeeDto -> ServerResponse.ok().bodyValue(employeeDto));
+                .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
 
     public Mono<ServerResponse> updateEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
-                .flatMap(employeeDto ->
-                        employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeDto))
-                .flatMap(employeeDto -> ServerResponse.ok().bodyValue(employeeDto));
+                .flatMap(employeeRequest ->
+                        employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeRequest))
+                .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
 
     public Mono<ServerResponse> deleteEmployeeById(ServerRequest serverRequest) {

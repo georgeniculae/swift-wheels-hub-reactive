@@ -35,7 +35,7 @@ public class AuditAspect {
     public Mono<?> logActivity(ProceedingJoinPoint joinPoint) {
         return getJoinPointProceed(joinPoint)
                 .delayUntil(jointPointProceed -> extractUsernameHeaderFromWebFluxContext()
-                        .flatMap(username -> sendAuditLogInfoDto(joinPoint, username)))
+                        .flatMap(username -> sendAuditLogInfoRequest(joinPoint, username)))
                 .onErrorMap(e -> {
                     log.error("Error while logging activity: {}", e.getMessage());
 
@@ -68,14 +68,14 @@ public class AuditAspect {
                 .orElse(StringUtils.EMPTY);
     }
 
-    private Mono<AuditLogInfoRequest> sendAuditLogInfoDto(ProceedingJoinPoint joinPoint, String username) {
-        AuditLogInfoRequest auditLogInfoRequest = getAuditLogInfoDto(joinPoint, username);
+    private Mono<AuditLogInfoRequest> sendAuditLogInfoRequest(ProceedingJoinPoint joinPoint, String username) {
+        AuditLogInfoRequest auditLogInfoRequest = getAuditLogInfoRequest(joinPoint, username);
 
         return auditLogProducerService.sendAuditLog(auditLogInfoRequest)
                 .thenReturn(auditLogInfoRequest);
     }
 
-    private AuditLogInfoRequest getAuditLogInfoDto(ProceedingJoinPoint joinPoint, String username) {
+    private AuditLogInfoRequest getAuditLogInfoRequest(ProceedingJoinPoint joinPoint, String username) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         LogActivity logActivity = method.getAnnotation(LogActivity.class);

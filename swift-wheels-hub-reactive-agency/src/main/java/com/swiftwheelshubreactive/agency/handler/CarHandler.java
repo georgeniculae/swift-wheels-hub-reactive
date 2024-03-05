@@ -29,13 +29,13 @@ public class CarHandler {
         return carService.findAllCars()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(carDtoList -> ServerResponse.ok().bodyValue(carDtoList))
+                .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findCarById(ServerRequest serverRequest) {
         return carService.findCarById(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto))
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -43,7 +43,7 @@ public class CarHandler {
         return carService.findCarsByMake(ServerRequestUtil.getPathVariable(serverRequest, MAKE))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto))
+                .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -51,13 +51,13 @@ public class CarHandler {
         return carService.findCarsByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto))
+                .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> getAvailableCar(ServerRequest serverRequest) {
         return carService.getAvailableCar(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(response -> ServerResponse.ok().bodyValue(response));
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
     public Mono<ServerResponse> countCars(ServerRequest serverRequest) {
@@ -68,7 +68,7 @@ public class CarHandler {
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarRequest.class)
                 .flatMap(carService::saveCar)
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto))
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -79,24 +79,24 @@ public class CarHandler {
                 .cast(FilePart.class)
                 .flatMap(carService::uploadCars)
                 .collectList()
-                .flatMap(cars -> ServerResponse.ok().bodyValue(cars));
+                .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarRequest.class)
-                .flatMap(carDto -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), carDto))
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto));
+                .flatMap(carRequest -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), carRequest))
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarState.class)
                 .flatMap(carStatus -> carService.updateCarStatus(ServerRequestUtil.getPathVariable(serverRequest, ID), carStatus))
-                .flatMap(carDto -> ServerResponse.ok().bodyValue(carDto));
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
-                .flatMap(carDetailsForUpdateDto -> carService.updateCarWhenBookingIsClosed(ServerRequestUtil.getPathVariable(serverRequest, ID), carDetailsForUpdateDto))
+                .flatMap(carUpdateDetails -> carService.updateCarWhenBookingIsClosed(ServerRequestUtil.getPathVariable(serverRequest, ID), carUpdateDetails))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
@@ -104,7 +104,7 @@ public class CarHandler {
         return serverRequest.bodyToFlux(UpdateCarRequest.class)
                 .flatMap(updateCarRequest -> carService.updateCarStatus(updateCarRequest.carId(), updateCarRequest.carState()))
                 .collectList()
-                .flatMap(carDtoList -> ServerResponse.ok().bodyValue(carDtoList));
+                .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
     public Mono<ServerResponse> deleteCarById(ServerRequest serverRequest) {

@@ -22,13 +22,13 @@ public class BranchHandler {
         return branchService.findAllBranches()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(branchDtoList -> ServerResponse.ok().bodyValue(branchDtoList))
+                .flatMap(branchResponses -> ServerResponse.ok().bodyValue(branchResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findBranchById(ServerRequest serverRequest) {
         return branchService.findBranchById(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(branchDto -> ServerResponse.ok().bodyValue(branchDto))
+                .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -36,14 +36,14 @@ public class BranchHandler {
         return branchService.findBranchesByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(branchDtoList -> ServerResponse.ok().bodyValue(branchDtoList))
+                .flatMap(branchResponses -> ServerResponse.ok().bodyValue(branchResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> updateBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
-                .flatMap(branchDto -> branchService.updateBranch(ServerRequestUtil.getPathVariable(serverRequest, ID), branchDto))
-                .flatMap(branchDto -> ServerResponse.ok().bodyValue(branchDto));
+                .flatMap(branchRequest -> branchService.updateBranch(ServerRequestUtil.getPathVariable(serverRequest, ID), branchRequest))
+                .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
 
     public Mono<ServerResponse> countBranches(ServerRequest serverRequest) {
@@ -54,7 +54,7 @@ public class BranchHandler {
     public Mono<ServerResponse> saveBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
                 .flatMap(branchService::saveBranch)
-                .flatMap(branchDto -> ServerResponse.ok().bodyValue(branchDto));
+                .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
 
     public Mono<ServerResponse> deleteBranchById(ServerRequest serverRequest) {
