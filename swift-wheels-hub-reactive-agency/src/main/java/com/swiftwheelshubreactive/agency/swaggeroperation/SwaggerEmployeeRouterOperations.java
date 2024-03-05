@@ -142,7 +142,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
@@ -175,6 +176,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
+                        path = "/{id}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "updateEmployee",
                         operation = @Operation(
@@ -204,6 +206,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
+                        path = "/{id}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "deleteEmployeeById",
                         operation = @Operation(
