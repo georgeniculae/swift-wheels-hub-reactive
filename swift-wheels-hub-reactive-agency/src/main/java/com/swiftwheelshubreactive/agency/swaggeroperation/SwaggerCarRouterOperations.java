@@ -364,11 +364,6 @@ import java.util.List;
                         beanMethod = "deleteCarById",
                         operation = @Operation(
                                 operationId = "deleteCarById",
-                                requestBody = @RequestBody(
-                                        description = "Delete car by id",
-                                        required = true,
-                                        content = @Content(schema = @Schema(implementation = CarRequest.class))
-                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
