@@ -65,14 +65,7 @@ public class SwaggerRequestValidatorService {
                 .get(getMicroserviceIdentifier(simpleRequest))
                 .filter(ObjectUtils::isNotEmpty)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Swagger folder does not exist"))))
-                .map(swaggerFile -> {
-                    String swaggerContent = swaggerFile.getSwaggerContent();
-                    OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerContent)
-                            .withWhitelist(getWhitelist())
-                            .build();
-
-                    return validator.validateRequest(simpleRequest);
-                });
+                .map(swaggerFile -> getValidationReport(simpleRequest, swaggerFile));
     }
 
     private String getMicroserviceIdentifier(SimpleRequest simpleRequest) {
@@ -94,6 +87,15 @@ public class SwaggerRequestValidatorService {
                 .withRule(SWAGGER_MESSAGE, WhitelistRules.messageContainsSubstring(SWAGGER))
                 .withRule(V3_PATH, WhitelistRules.pathContainsSubstring(V3))
                 .withRule(V3_MESSAGE, WhitelistRules.messageContainsSubstring(V3));
+    }
+
+    private ValidationReport getValidationReport(SimpleRequest simpleRequest, SwaggerFile swaggerFile) {
+        String swaggerContent = swaggerFile.getSwaggerContent();
+        OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerContent)
+                .withWhitelist(getWhitelist())
+                .build();
+
+        return validator.validateRequest(simpleRequest);
     }
 
 }
