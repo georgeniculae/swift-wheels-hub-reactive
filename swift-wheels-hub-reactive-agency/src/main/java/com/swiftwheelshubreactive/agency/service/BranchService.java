@@ -87,13 +87,13 @@ public class BranchService {
                 });
     }
 
-    public Mono<BranchResponse> updateBranch(String id, BranchRequest updatedBranchDto) {
+    public Mono<BranchResponse> updateBranch(String id, BranchRequest branchRequest) {
         return findEntityById(id)
                 .flatMap(exitingBranch ->
-                        rentalOfficeService.findEntityById(updatedBranchDto.rentalOfficeId())
+                        rentalOfficeService.findEntityById(branchRequest.rentalOfficeId())
                                 .map(rentalOffice -> {
-                                    exitingBranch.setName(updatedBranchDto.name());
-                                    exitingBranch.setAddress(updatedBranchDto.address());
+                                    exitingBranch.setName(branchRequest.name());
+                                    exitingBranch.setAddress(branchRequest.address());
                                     exitingBranch.setRentalOffice(rentalOffice);
 
                                     return exitingBranch;
