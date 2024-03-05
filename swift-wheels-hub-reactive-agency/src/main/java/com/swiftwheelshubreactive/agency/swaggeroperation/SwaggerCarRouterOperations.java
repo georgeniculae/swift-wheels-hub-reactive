@@ -1,15 +1,21 @@
 package com.swiftwheelshubreactive.agency.swaggeroperation;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
+import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
+import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.ElementType;
@@ -142,7 +148,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
@@ -166,7 +173,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
@@ -174,7 +182,12 @@ import java.util.List;
                         beanClass = CarService.class,
                         beanMethod = "saveCar",
                         operation = @Operation(
-                                operationId = "findCarById",
+                                operationId = "saveCar",
+                                requestBody = @RequestBody(
+                                        description = "Save new car",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = CarRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -199,6 +212,11 @@ import java.util.List;
                         beanMethod = "uploadCars",
                         operation = @Operation(
                                 operationId = "uploadCars",
+                                requestBody = @RequestBody(
+                                        description = "Upload cars",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = FilePart.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -223,6 +241,11 @@ import java.util.List;
                         beanMethod = "updateCarsStatus",
                         operation = @Operation(
                                 operationId = "updateCarsStatus",
+                                requestBody = @RequestBody(
+                                        description = "Update cars status",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = UpdateCarRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -242,12 +265,17 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}/set-car-not-available",
+                        path = "/{id}/change-status",
                         params = "id",
                         beanClass = CarService.class,
                         beanMethod = "updateCarStatus",
                         operation = @Operation(
                                 operationId = "updateCarStatus",
+                                requestBody = @RequestBody(
+                                        description = "Update car status",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = CarState.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -262,7 +290,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
@@ -273,6 +302,11 @@ import java.util.List;
                         beanMethod = "updateCarWhenBookingIsClosed",
                         operation = @Operation(
                                 operationId = "updateCarWhenBookingIsClosed",
+                                requestBody = @RequestBody(
+                                        description = "Update car status",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = CarUpdateDetails.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -287,7 +321,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
@@ -298,6 +333,11 @@ import java.util.List;
                         beanMethod = "updateCar",
                         operation = @Operation(
                                 operationId = "updateCar",
+                                requestBody = @RequestBody(
+                                        description = "Update car",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = CarRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -312,7 +352,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
@@ -323,6 +364,11 @@ import java.util.List;
                         beanMethod = "deleteCarById",
                         operation = @Operation(
                                 operationId = "deleteCarById",
+                                requestBody = @RequestBody(
+                                        description = "Delete car by id",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = CarRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -336,7 +382,8 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         )
-                                }
+                                },
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
         }
