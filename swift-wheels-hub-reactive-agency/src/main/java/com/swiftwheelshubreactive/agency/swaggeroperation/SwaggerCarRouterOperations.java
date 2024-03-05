@@ -83,7 +83,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "make",
+                                        in = ParameterIn.PATH,
+                                        name = "make",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -113,7 +114,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "filter",
+                                        in = ParameterIn.PATH,
+                                        name = "filter",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -169,7 +171,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "id",
+                                        in = ParameterIn.PATH,
+                                        name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -199,7 +202,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "id",
+                                        in = ParameterIn.PATH,
+                                        name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -336,7 +340,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "id",
+                                        in = ParameterIn.PATH,
+                                        name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -371,7 +376,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "id",
+                                        in = ParameterIn.PATH,
+                                        name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -406,7 +412,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "id",
+                                        in = ParameterIn.PATH,
+                                        name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -436,7 +443,8 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH, name = "id",
+                                        in = ParameterIn.PATH,
+                                        name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
