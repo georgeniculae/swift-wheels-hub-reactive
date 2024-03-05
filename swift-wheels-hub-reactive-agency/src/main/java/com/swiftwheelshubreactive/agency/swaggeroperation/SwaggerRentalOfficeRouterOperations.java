@@ -39,11 +39,13 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         )
                                 }
                         )
@@ -63,14 +65,20 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         )
                                 },
-                                parameters = @Parameter(in = ParameterIn.PATH, name = "name")
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "name",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -88,11 +96,13 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         )
                                 }
                         )
@@ -112,14 +122,20 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         )
                                 },
-                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -142,11 +158,13 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         )
                                 }
                         )
@@ -171,14 +189,20 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         )
                                 },
-                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -191,18 +215,25 @@ import java.util.List;
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
-                                                description = "Successful"
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request"
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error"
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
                                         ),
                                 },
-                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 )
         }
