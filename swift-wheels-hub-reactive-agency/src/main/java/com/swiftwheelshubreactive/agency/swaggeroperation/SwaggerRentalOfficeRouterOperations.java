@@ -26,6 +26,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
+                        path = "/rental-offices",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "findAllRentalOffices",
                         operation = @Operation(
@@ -49,7 +50,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/office/{name}",
+                        path = "/rental-offices/office/{name}",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "findRentalOfficesByNameInsensitiveCase",
                         operation = @Operation(
@@ -74,7 +75,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/count",
+                        path = "/rental-offices/count",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "countRentalOffices",
                         operation = @Operation(
@@ -98,7 +99,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/{id}",
+                        path = "/rental-offices/{id}",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "findRentalOfficeById",
                         operation = @Operation(
@@ -123,6 +124,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
+                        path = "/rental-offices",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "saveRentalOffice",
                         operation = @Operation(
@@ -151,7 +153,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}",
+                        path = "/rental-offices/{id}",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "updateRentalOffice",
                         operation = @Operation(
@@ -181,7 +183,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        path = "/{id}",
+                        path = "/rental-offices/{id}",
                         beanClass = RentalOfficeHandler.class,
                         beanMethod = "deleteRentalOfficeById",
                         operation = @Operation(

@@ -30,6 +30,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
+                        path = "/cars",
                         beanClass = CarHandler.class,
                         beanMethod = "findAllCars",
                         operation = @Operation(
@@ -53,7 +54,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/make/{make}",
+                        path = "/cars/make/{make}",
                         beanClass = CarHandler.class,
                         beanMethod = "findCarsByMake",
                         operation = @Operation(
@@ -78,7 +79,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/filter/{filter}",
+                        path = "/cars/filter/{filter}",
                         beanClass = CarHandler.class,
                         beanMethod = "findCarsByFilterInsensitiveCase",
                         operation = @Operation(
@@ -103,7 +104,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/count",
+                        path = "/cars/count",
                         beanClass = CarHandler.class,
                         beanMethod = "countCars",
                         operation = @Operation(
@@ -127,7 +128,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/{id}/availability",
+                        path = "/cars/{id}/availability",
                         beanClass = CarHandler.class,
                         beanMethod = "getAvailableCar",
                         operation = @Operation(
@@ -152,7 +153,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/{id}",
+                        path = "/cars/{id}",
                         beanClass = CarHandler.class,
                         beanMethod = "findCarById",
                         operation = @Operation(
@@ -177,6 +178,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
+                        path = "/cars",
                         beanClass = CarHandler.class,
                         beanMethod = "saveCar",
                         operation = @Operation(
@@ -205,7 +207,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
-                        path = "/upload",
+                        path = "/cars/upload",
                         beanClass = CarHandler.class,
                         beanMethod = "uploadCars",
                         operation = @Operation(
@@ -234,7 +236,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/update-statuses",
+                        path = "/cars/update-statuses",
                         beanClass = CarHandler.class,
                         beanMethod = "updateCarsStatus",
                         operation = @Operation(
@@ -263,7 +265,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}/change-status",
+                        path = "/cars/{id}/change-status",
                         beanClass = CarHandler.class,
                         beanMethod = "updateCarStatus",
                         operation = @Operation(
@@ -293,7 +295,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}/update-after-return",
+                        path = "/cars/{id}/update-after-return",
                         beanClass = CarHandler.class,
                         beanMethod = "updateCarWhenBookingIsClosed",
                         operation = @Operation(
@@ -323,7 +325,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}",
+                        path = "/cars/{id}",
                         beanClass = CarHandler.class,
                         beanMethod = "updateCar",
                         operation = @Operation(
@@ -353,7 +355,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        path = "/{id}",
+                        path = "/cars/{id}",
                         beanClass = CarHandler.class,
                         beanMethod = "deleteCarById",
                         operation = @Operation(

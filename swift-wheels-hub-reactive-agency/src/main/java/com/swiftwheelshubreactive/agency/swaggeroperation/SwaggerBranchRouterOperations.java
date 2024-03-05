@@ -26,7 +26,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/cars",
+                        path = "/branches",
                         beanClass = BranchHandler.class,
                         beanMethod = "findAllBranches",
                         operation = @Operation(
@@ -50,7 +50,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/cars/filter/{filter}",
+                        path = "/branches/filter/{filter}",
                         beanClass = BranchHandler.class,
                         beanMethod = "findBranchesByFilterInsensitiveCase",
                         operation = @Operation(
@@ -75,7 +75,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/cars/count",
+                        path = "/branches/count",
                         beanClass = BranchHandler.class,
                         beanMethod = "countBranches",
                         operation = @Operation(
@@ -99,7 +99,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/cars/{id}",
+                        path = "/branches/{id}",
                         beanClass = BranchHandler.class,
                         beanMethod = "findBranchById",
                         operation = @Operation(
@@ -124,7 +124,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
-                        path = "/cars",
+                        path = "/branches",
                         beanClass = BranchHandler.class,
                         beanMethod = "saveBranch",
                         operation = @Operation(
@@ -153,7 +153,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/cars/{id}",
+                        path = "/branches/{id}",
                         beanClass = BranchHandler.class,
                         beanMethod = "updateBranch",
                         operation = @Operation(
@@ -183,7 +183,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        path = "/cars/{id}",
+                        path = "/branches/{id}",
                         beanClass = BranchHandler.class,
                         beanMethod = "deleteBranchById",
                         operation = @Operation(
