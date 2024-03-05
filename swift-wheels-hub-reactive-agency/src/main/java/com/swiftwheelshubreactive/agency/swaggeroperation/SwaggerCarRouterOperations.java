@@ -58,7 +58,7 @@ import java.util.List;
                         beanClass = CarHandler.class,
                         beanMethod = "findCarsByMake",
                         operation = @Operation(
-                                operationId = "findAllCars",
+                                operationId = "findCarsByMake",
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
