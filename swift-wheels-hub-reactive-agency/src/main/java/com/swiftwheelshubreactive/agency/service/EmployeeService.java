@@ -94,8 +94,8 @@ public class EmployeeService {
                 });
     }
 
-    public Flux<EmployeeResponse> findEmployeeByFilterInsensitiveCase(String searchString) {
-        return employeeRepository.findAllByFilterInsensitiveCase(searchString)
+    public Flux<EmployeeResponse> findEmployeeByFilterInsensitiveCase(String filter) {
+        return employeeRepository.findAllByFilterInsensitiveCase(filter)
                 .map(employeeMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while finding employee by filter: {}", e.getMessage());
@@ -106,7 +106,7 @@ public class EmployeeService {
                         Mono.error(
                                 new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.NOT_FOUND,
-                                        "Employee with filter: " + searchString + " does not exist"
+                                        "Employee with filter: " + filter + " does not exist"
                                 )
                         )
                 );
