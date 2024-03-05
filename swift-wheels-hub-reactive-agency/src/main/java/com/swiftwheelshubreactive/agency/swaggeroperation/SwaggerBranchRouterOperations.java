@@ -148,8 +148,7 @@ import java.util.List;
                                                 responseCode = "500",
                                                 description = "Internal Server Error"
                                         ),
-                                },
-                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
+                                }
                         )
                 ),
                 @RouterOperation(
