@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.agency.swaggeroperation;
 
-import com.swiftwheelshubreactive.agency.service.BranchService;
+import com.swiftwheelshubreactive.agency.handler.BranchHandler;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "findAllBranches",
                         operation = @Operation(
                                 operationId = "findAllBranches",
@@ -50,8 +50,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/filter/{filter}",
-                        params = "filter",
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "findBranchesByFilterInsensitiveCase",
                         operation = @Operation(
                                 operationId = "findBranchesByFilterInsensitiveCase",
@@ -76,7 +75,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/count",
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "countBranches",
                         operation = @Operation(
                                 operationId = "countBranches",
@@ -100,8 +99,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/{id}",
-                        params = "id",
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "findBranchById",
                         operation = @Operation(
                                 operationId = "findBranchById",
@@ -125,7 +123,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "saveBranch",
                         operation = @Operation(
                                 operationId = "saveBranch",
@@ -154,8 +152,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.PUT,
                         path = "/{id}",
-                        params = "id",
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "updateBranch",
                         operation = @Operation(
                                 operationId = "updateBranch",
@@ -185,8 +182,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.DELETE,
                         path = "/{id}",
-                        params = "id",
-                        beanClass = BranchService.class,
+                        beanClass = BranchHandler.class,
                         beanMethod = "deleteBranchById",
                         operation = @Operation(
                                 operationId = "deleteBranchById",

@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.agency.swaggeroperation;
 
-import com.swiftwheelshubreactive.agency.service.EmployeeService;
+import com.swiftwheelshubreactive.agency.handler.EmployeeHandler;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "findAllEmployees",
                         operation = @Operation(
                                 operationId = "findAllEmployees",
@@ -50,8 +50,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/branch/{id}",
-                        params = "id",
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "findEmployeesByBranchId",
                         operation = @Operation(
                                 operationId = "findEmployeesByBranchId",
@@ -76,8 +75,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/filter/{filter}",
-                        params = "filter",
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "findEmployeeByFilterInsensitiveCase",
                         operation = @Operation(
                                 operationId = "findEmployeeByFilterInsensitiveCase",
@@ -102,7 +100,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/count",
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "countEmployees",
                         operation = @Operation(
                                 operationId = "countEmployees",
@@ -126,8 +124,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/{id}",
-                        params = "id",
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "findEmployeeById",
                         operation = @Operation(
                                 operationId = "findEmployeeById",
@@ -150,7 +147,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "saveEmployee",
                         operation = @Operation(
                                 operationId = "saveEmployee",
@@ -178,7 +175,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "updateEmployee",
                         operation = @Operation(
                                 operationId = "updateEmployee",
@@ -207,8 +204,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        params = "id",
-                        beanClass = EmployeeService.class,
+                        beanClass = EmployeeHandler.class,
                         beanMethod = "deleteEmployeeById",
                         operation = @Operation(
                                 operationId = "deleteEmployeeById",

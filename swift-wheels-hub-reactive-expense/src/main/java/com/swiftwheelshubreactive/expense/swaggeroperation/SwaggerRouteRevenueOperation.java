@@ -81,7 +81,6 @@ import java.util.List;
                         method = RequestMethod.GET,
                         beanClass = RevenueService.class,
                         beanMethod = "findRevenuesByDate",
-                        params = "date",
                         operation = @Operation(
                                 operationId = "findRevenuesByDate",
                                 responses =

@@ -55,7 +55,6 @@ import java.util.List;
                         method = RequestMethod.GET,
                         path = "/{id}",
                         beanClass = InvoiceService.class,
-                        params = "id",
                         beanMethod = "findInvoiceById",
                         operation = @Operation(
                                 operationId = "findInvoiceById",
@@ -135,7 +134,6 @@ import java.util.List;
                         method = RequestMethod.GET,
                         path = "/by-customer/{customerUsername}",
                         beanClass = InvoiceService.class,
-                        params = "customerUsername",
                         beanMethod = "findAllInvoicesByCustomerUsername",
                         operation = @Operation(
                                 operationId = "findAllInvoicesByCustomerUsername",
@@ -215,7 +213,6 @@ import java.util.List;
                         method = RequestMethod.PUT,
                         path = "/{id}",
                         beanClass = InvoiceService.class,
-                        params = "id",
                         beanMethod = "closeInvoice",
                         operation = @Operation(
                                 operationId = "closeInvoice",
