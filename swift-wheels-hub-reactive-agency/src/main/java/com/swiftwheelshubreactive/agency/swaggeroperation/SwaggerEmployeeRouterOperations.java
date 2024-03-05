@@ -26,6 +26,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
+                        path = "/employees",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "findAllEmployees",
                         operation = @Operation(
@@ -49,7 +50,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/branch/{id}",
+                        path = "/employees/branch/{id}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "findEmployeesByBranchId",
                         operation = @Operation(
@@ -74,7 +75,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/filter/{filter}",
+                        path = "/employees/filter/{filter}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "findEmployeeByFilterInsensitiveCase",
                         operation = @Operation(
@@ -99,7 +100,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/count",
+                        path = "/employees/count",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "countEmployees",
                         operation = @Operation(
@@ -123,7 +124,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/{id}",
+                        path = "/employees/{id}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "findEmployeeById",
                         operation = @Operation(
@@ -148,6 +149,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
+                        path = "/employees",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "saveEmployee",
                         operation = @Operation(
@@ -176,7 +178,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}",
+                        path = "/employees/{id}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "updateEmployee",
                         operation = @Operation(
@@ -206,7 +208,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        path = "/{id}",
+                        path = "/employees/{id}",
                         beanClass = EmployeeHandler.class,
                         beanMethod = "deleteEmployeeById",
                         operation = @Operation(
