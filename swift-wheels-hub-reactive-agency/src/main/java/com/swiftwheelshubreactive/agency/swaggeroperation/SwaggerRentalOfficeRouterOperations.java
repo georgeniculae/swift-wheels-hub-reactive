@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.agency.swaggeroperation;
 
-import com.swiftwheelshubreactive.agency.handler.EmployeeHandler;
+import com.swiftwheelshubreactive.agency.handler.RentalOfficeHandler;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ import java.util.List;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "findAllRentalOffices",
                         operation = @Operation(
                                 operationId = "findAllRentalOffices",
@@ -50,7 +50,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/office/{name}",
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "findRentalOfficesByNameInsensitiveCase",
                         operation = @Operation(
                                 operationId = "findRentalOfficesByNameInsensitiveCase",
@@ -75,7 +75,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/count",
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "countRentalOffices",
                         operation = @Operation(
                                 operationId = "countRentalOffices",
@@ -99,7 +99,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/{id}",
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "findRentalOfficeById",
                         operation = @Operation(
                                 operationId = "findRentalOfficeById",
@@ -123,7 +123,7 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "saveRentalOffice",
                         operation = @Operation(
                                 operationId = "saveRentalOffice",
@@ -152,7 +152,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.PUT,
                         path = "/{id}",
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "updateRentalOffice",
                         operation = @Operation(
                                 operationId = "updateRentalOffice",
@@ -182,7 +182,7 @@ import java.util.List;
                 @RouterOperation(
                         method = RequestMethod.DELETE,
                         path = "/{id}",
-                        beanClass = EmployeeHandler.class,
+                        beanClass = RentalOfficeHandler.class,
                         beanMethod = "deleteRentalOfficeById",
                         operation = @Operation(
                                 operationId = "deleteRentalOfficeById",
