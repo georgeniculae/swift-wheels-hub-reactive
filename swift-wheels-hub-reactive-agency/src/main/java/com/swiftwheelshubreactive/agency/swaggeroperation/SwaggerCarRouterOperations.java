@@ -2,7 +2,6 @@ package com.swiftwheelshubreactive.agency.swaggeroperation;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -37,13 +36,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -64,13 +61,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 },
                                 parameters = @Parameter(in = ParameterIn.PATH, name = "make")
@@ -92,13 +87,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 },
                                 parameters = @Parameter(in = ParameterIn.PATH, name = "filter")
@@ -119,13 +112,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -145,13 +136,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -171,13 +160,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -196,13 +183,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -222,13 +207,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -248,13 +231,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -275,13 +256,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -302,13 +281,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -329,13 +306,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
@@ -355,13 +330,11 @@ import java.util.List;
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Bad Request"
                                         ),
                                         @ApiResponse(
                                                 responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema(implementation = SwiftWheelsHubException.class))
+                                                description = "Internal Server Error"
                                         )
                                 }
                         )
