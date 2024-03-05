@@ -65,7 +65,10 @@ import java.lang.annotation.Target;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = BranchResponse.class))
+                                                content = @Content(
+                                                        array = @ArraySchema(schema = @Schema(implementation = BranchResponse.class)),
+                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
+                                                )
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
