@@ -69,7 +69,7 @@ import java.util.List;
                                                 description = "Internal Server Error"
                                         )
                                 },
-                                parameters = @Parameter(in = ParameterIn.PATH, name = "filter")
+                                parameters = @Parameter(in = ParameterIn.PATH, name = "id")
                         )
                 ),
                 @RouterOperation(
