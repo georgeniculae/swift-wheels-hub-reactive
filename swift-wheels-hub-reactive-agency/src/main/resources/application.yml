@@ -59,5 +59,8 @@ logging:
 apikey:
   secret: ${API_KEY_SECRET}
 
+transactions:
+  enabled: true
+
 migration:
   packageScan: com.swiftwheelshubreactive.agency.migration

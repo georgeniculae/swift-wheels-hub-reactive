@@ -74,6 +74,9 @@ logging:
 apikey:
   secret: ${API_KEY_SECRET}
 
+transactions:
+  enabled: true
+
 webclient:
   url:
     swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/cars
