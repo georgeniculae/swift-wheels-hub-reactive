@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,23 +19,27 @@ public class CustomerHandler {
     private static final String ID = "id";
     private final CustomerService customerService;
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> getCurrentUser(ServerRequest serverRequest) {
         return customerService.getCurrentUser(ServerRequestUtil.getUsername(serverRequest))
                 .flatMap(currentUserDto -> ServerResponse.ok().bodyValue(currentUserDto))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findUserByUsername(ServerRequest serverRequest) {
         return customerService.findUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
                 .flatMap(userDto -> ServerResponse.ok().bodyValue(userDto))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> countUsers(ServerRequest serverRequest) {
         return customerService.countUsers()
                 .flatMap(userCount -> ServerResponse.ok().bodyValue(userCount));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> registerUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RegisterRequest.class)
                 .flatMap(customerService::registerUser)
@@ -42,17 +47,20 @@ public class CustomerHandler {
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(UserUpdateRequest.class)
                 .flatMap(userDto -> customerService.updateUser(ServerRequestUtil.getPathVariable(serverRequest, ID), userDto))
                 .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
         return customerService.deleteUserById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.noContent().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> signOut(ServerRequest serverRequest) {
         return customerService.signOut(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.ok().build());

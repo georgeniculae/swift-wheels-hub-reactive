@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,6 +19,7 @@ public class EmployeeHandler {
     private static final String FILTER = "filter";
     private final EmployeeService employeeService;
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findAllEmployees(ServerRequest serverRequest) {
         return employeeService.findAllEmployees()
                 .collectList()
@@ -26,12 +28,14 @@ public class EmployeeHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findEmployeeById(ServerRequest serverRequest) {
         return employeeService.findEmployeeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findEmployeesByBranchId(ServerRequest serverRequest) {
         return employeeService.findEmployeesByBranchId(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .collectList()
@@ -40,6 +44,7 @@ public class EmployeeHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findEmployeeByFilterInsensitiveCase(ServerRequest serverRequest) {
         return employeeService.findEmployeeByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
@@ -48,17 +53,20 @@ public class EmployeeHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> countEmployees(ServerRequest serverRequest) {
         return employeeService.countEmployees()
                 .flatMap(numberOfEmployees -> ServerResponse.ok().bodyValue(numberOfEmployees));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
                 .flatMap(employeeService::saveEmployee)
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
                 .flatMap(employeeRequest ->
@@ -66,6 +74,7 @@ public class EmployeeHandler {
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> deleteEmployeeById(ServerRequest serverRequest) {
         return employeeService.deleteEmployeeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.noContent().build());

@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -19,6 +20,7 @@ public class InvoiceHandler {
     private static final String COMMENTS = "comments";
     private final InvoiceService invoiceService;
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllInvoices(ServerRequest serverRequest) {
         return invoiceService.findAllInvoices()
                 .collectList()
@@ -27,6 +29,7 @@ public class InvoiceHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllActiveInvoices(ServerRequest serverRequest) {
         return invoiceService.findAllActiveInvoices()
                 .collectList()
@@ -35,6 +38,7 @@ public class InvoiceHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllInvoicesByCustomerUsername(ServerRequest serverRequest) {
         return invoiceService.findAllInvoicesByCustomerUsername(ServerRequestUtil.getPathVariable(serverRequest, CUSTOMER_ID))
                 .collectList()
@@ -43,12 +47,14 @@ public class InvoiceHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findInvoiceById(ServerRequest serverRequest) {
         return invoiceService.findInvoiceById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(invoiceDto -> ServerResponse.ok().bodyValue(invoiceDto))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findInvoiceByComments(ServerRequest serverRequest) {
         return invoiceService.findInvoicesByComments(ServerRequestUtil.getPathVariable(serverRequest, COMMENTS))
                 .collectList()
@@ -57,18 +63,21 @@ public class InvoiceHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> countInvoices(ServerRequest serverRequest) {
         return invoiceService.countInvoices()
                 .flatMap(numberOfInvoices -> ServerResponse.ok().bodyValue(numberOfInvoices))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> countAllActiveInvoices(ServerRequest serverRequest) {
         return invoiceService.countAllActiveInvoices()
                 .flatMap(numberOfActiveInvoices -> ServerResponse.ok().bodyValue(numberOfActiveInvoices))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> closeInvoice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(InvoiceRequest.class)
                 .flatMap(invoiceRequest -> invoiceService.closeInvoice(

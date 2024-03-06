@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.expense.service.RevenueService;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -16,6 +17,7 @@ public class RevenueHandler {
     private static final String DATE_OF_REVENUE = "dateOfRevenue";
     private final RevenueService revenueService;
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findAllRevenues(ServerRequest serverRequest) {
         return revenueService.findAllRevenues()
                 .collectList()
@@ -24,6 +26,7 @@ public class RevenueHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findRevenuesByDate(ServerRequest serverRequest) {
         return revenueService.findRevenuesByDate(ServerRequestUtil.getPathVariable(serverRequest, DATE_OF_REVENUE))
                 .collectList()
@@ -32,6 +35,7 @@ public class RevenueHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> getTotalAmount(ServerRequest serverRequest) {
         return revenueService.getTotalAmount()
                 .flatMap(totalAmount -> ServerResponse.ok().bodyValue(totalAmount));

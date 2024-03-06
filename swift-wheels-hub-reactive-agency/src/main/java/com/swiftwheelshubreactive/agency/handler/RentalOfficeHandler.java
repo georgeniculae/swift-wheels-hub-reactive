@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,6 +19,7 @@ public class RentalOfficeHandler {
     private static final String NAME = "name";
     private final RentalOfficeService rentalOfficeService;
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findAllRentalOffices(ServerRequest serverRequest) {
         return rentalOfficeService.findAllRentalOffices()
                 .collectList()
@@ -26,12 +28,14 @@ public class RentalOfficeHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findRentalOfficeById(ServerRequest serverRequest) {
         return rentalOfficeService.findRentalOfficeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findRentalOfficesByNameInsensitiveCase(ServerRequest serverRequest) {
         return rentalOfficeService.findRentalOfficesByNameInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, NAME))
                 .collectList()
@@ -40,17 +44,20 @@ public class RentalOfficeHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> countRentalOffices(ServerRequest serverRequest) {
         return rentalOfficeService.countRentalOffices()
                 .flatMap(numberOfRentalOffices -> ServerResponse.ok().bodyValue(numberOfRentalOffices));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
                 .flatMap(rentalOfficeService::saveRentalOffice)
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
                 .flatMap(rentalOfficeRequest ->
@@ -58,6 +65,7 @@ public class RentalOfficeHandler {
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> deleteRentalOfficeById(ServerRequest serverRequest) {
         return rentalOfficeService.deleteRentalOfficeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.noContent().build());
