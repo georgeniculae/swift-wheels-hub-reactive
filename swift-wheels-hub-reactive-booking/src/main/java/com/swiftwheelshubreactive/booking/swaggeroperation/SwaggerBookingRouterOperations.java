@@ -1,9 +1,12 @@
 package com.swiftwheelshubreactive.booking.swaggeroperation;
 
 import com.swiftwheelshubreactive.booking.handler.BookingHandler;
+import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,6 +21,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -137,31 +142,134 @@ import java.lang.annotation.Target;
                         method = RequestMethod.GET,
                         path = "/bookings/current-date",
                         beanClass = BookingHandler.class,
-                        beanMethod = "getCurrentDate"
+                        beanMethod = "getCurrentDate",
+                        operation = @Operation(
+                                operationId = "getCurrentDate",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema(implementation = LocalDate.class))
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/bookings/bookings-amount-sum",
                         beanClass = BookingHandler.class,
-                        beanMethod = "getSumOfAllBookingAmount"
+                        beanMethod = "getSumOfAllBookingAmount",
+                        operation = @Operation(
+                                operationId = "getSumOfAllBookingAmount",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema(implementation = BigDecimal.class))
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/bookings/amount-by-user",
                         beanClass = BookingHandler.class,
-                        beanMethod = "getAmountSpentByLoggedInUser"
+                        beanMethod = "getAmountSpentByLoggedInUser",
+                        operation = @Operation(
+                                operationId = "getAmountSpentByLoggedInUser",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema(implementation = BigDecimal.class))
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/bookings/by-current-user",
                         beanClass = BookingHandler.class,
-                        beanMethod = "findBookingsByLoggedInUser"
+                        beanMethod = "findBookingsByLoggedInUser",
+                        operation = @Operation(
+                                operationId = "findBookingsByLoggedInUser",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(
+                                                        array = @ArraySchema(schema = @Schema(implementation = BookingResponse.class)),
+                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
+                                                )
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/bookings/{id}",
                         beanClass = BookingHandler.class,
-                        beanMethod = "findBookingById"
+                        beanMethod = "findBookingById",
+                        operation = @Operation(
+                                operationId = "findBookingById",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema(implementation = BookingResponse.class))
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.POST,
@@ -199,19 +307,96 @@ import java.lang.annotation.Target;
                         method = RequestMethod.POST,
                         path = "/bookings/close-booking",
                         beanClass = BookingHandler.class,
-                        beanMethod = "closeBooking"
+                        beanMethod = "closeBooking",
+                        operation = @Operation(
+                                description = "Close booking",
+                                operationId = "closeBooking", tags = "Close booking",
+                                requestBody = @RequestBody(
+                                        description = "Close booking",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = BookingClosingDetails.class))
+                                ),
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema(implementation = BookingResponse.class))
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        )
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
                         path = "/bookings/{id}",
                         beanClass = BookingHandler.class,
-                        beanMethod = "updateBooking"
+                        beanMethod = "updateBooking",
+                        operation = @Operation(
+                                description = "Update booking",
+                                operationId = "Update booking", tags = "Update booking",
+                                requestBody = @RequestBody(
+                                        description = "Update booking",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = BookingRequest.class))
+                                ),
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema(implementation = BookingResponse.class))
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        )
+                                }
+                        )
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
                         path = "/bookings/{id}",
                         beanClass = BookingHandler.class,
-                        beanMethod = "deleteBookingById"
+                        beanMethod = "deleteBookingById",
+                        operation = @Operation(
+                                operationId = "deleteBookingById",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
+                        )
                 )
         }
 )
