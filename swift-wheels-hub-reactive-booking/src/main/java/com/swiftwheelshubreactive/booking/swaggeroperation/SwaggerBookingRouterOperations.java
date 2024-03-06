@@ -83,7 +83,12 @@ import java.time.LocalDate;
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
                                         ),
-                                }
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "date",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -268,7 +273,12 @@ import java.time.LocalDate;
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
                                         ),
-                                }
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -364,7 +374,12 @@ import java.time.LocalDate;
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
                                         )
-                                }
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(

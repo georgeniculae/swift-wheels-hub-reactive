@@ -4,6 +4,8 @@ import com.swiftwheelshubreactive.customer.handler.CustomerHandler;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -95,7 +97,12 @@ import java.lang.annotation.Target;
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
                                         )
-                                }
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "username",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -147,7 +154,12 @@ import java.lang.annotation.Target;
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
                                         )
-                                }
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
@@ -173,7 +185,12 @@ import java.lang.annotation.Target;
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
                                         )
-                                }
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
                         )
                 ),
                 @RouterOperation(
