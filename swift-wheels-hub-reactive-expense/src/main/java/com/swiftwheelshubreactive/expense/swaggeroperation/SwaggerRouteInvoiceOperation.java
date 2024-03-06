@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.swaggeroperation;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.expense.service.InvoiceService;
+import com.swiftwheelshubreactive.expense.handler.InvoiceHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "findAllInvoices",
                         operation = @Operation(
                                 operationId = "findAllInvoices",
@@ -57,7 +57,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices/{id}",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "findInvoiceById",
                         operation = @Operation(
                                 operationId = "findInvoiceById",
@@ -88,7 +88,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices/active",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "findAllActiveInvoices",
                         operation = @Operation(
                                 operationId = "findAllActiveInvoices",
@@ -117,7 +117,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices/by-comments",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "findInvoicesByComments",
                         operation = @Operation(
                                 operationId = "findInvoiceByComments",
@@ -146,7 +146,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices/by-customer/{customerUsername}",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "findAllInvoicesByCustomerUsername",
                         operation = @Operation(
                                 operationId = "findAllInvoicesByCustomerUsername",
@@ -180,7 +180,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices/count",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "countInvoices",
                         operation = @Operation(
                                 operationId = "countInvoices",
@@ -206,7 +206,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/invoices/count-active",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "countAllActiveInvoices",
                         operation = @Operation(
                                 operationId = "countAllActiveInvoices",
@@ -232,7 +232,7 @@ import java.lang.annotation.Target;
                 @RouterOperation(
                         method = RequestMethod.PUT,
                         path = "/invoices/{id}",
-                        beanClass = InvoiceService.class,
+                        beanClass = InvoiceHandler.class,
                         beanMethod = "closeInvoice",
                         operation = @Operation(
                                 operationId = "closeInvoice",
@@ -245,10 +245,7 @@ import java.lang.annotation.Target;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = InvoiceResponse.class)),
-                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
-                                                )
+                                                content = @Content(schema = @Schema(implementation = InvoiceRequest.class))
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
