@@ -1,8 +1,7 @@
 package com.swiftwheelshubreactive.expense.swaggeroperation;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
-import com.swiftwheelshubreactive.expense.service.InvoiceService;
-import com.swiftwheelshubreactive.expense.service.RevenueService;
+import com.swiftwheelshubreactive.expense.handler.RevenueHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -28,7 +27,7 @@ import java.math.BigDecimal;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/revenues",
-                        beanClass = RevenueService.class,
+                        beanClass = RevenueHandler.class,
                         beanMethod = "findAllRevenues",
                         operation = @Operation(
                                 operationId = "findAllRevenues",
@@ -58,7 +57,7 @@ import java.math.BigDecimal;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/revenues/total",
-                        beanClass = InvoiceService.class,
+                        beanClass = RevenueHandler.class,
                         beanMethod = "getTotalAmount",
                         operation = @Operation(
                                 operationId = "getTotalAmount",
@@ -84,7 +83,7 @@ import java.math.BigDecimal;
                 @RouterOperation(
                         method = RequestMethod.GET,
                         path = "/revenues/{date}",
-                        beanClass = RevenueService.class,
+                        beanClass = RevenueHandler.class,
                         beanMethod = "findRevenuesByDate",
                         operation = @Operation(
                                 operationId = "findRevenuesByDate",
