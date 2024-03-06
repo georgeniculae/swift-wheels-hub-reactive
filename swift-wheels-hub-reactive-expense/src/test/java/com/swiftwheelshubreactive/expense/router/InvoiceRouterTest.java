@@ -290,13 +290,13 @@ class InvoiceRouterTest {
 
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
-    void findInvoiceByCommentsTest_success() {
+    void findInvoicesByCommentsTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
-        when(invoiceHandler.findInvoiceByComments(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(invoiceHandler.findInvoicesByComments(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<InvoiceResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
@@ -321,7 +321,7 @@ class InvoiceRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
-        when(invoiceHandler.findInvoiceByComments(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(invoiceHandler.findInvoicesByComments(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()

@@ -21,7 +21,7 @@ public class InvoiceRouter {
         return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), invoiceHandler::findAllInvoices)
                         .andRoute(RequestPredicates.GET("/active"), invoiceHandler::findAllActiveInvoices)
-                        .andRoute(RequestPredicates.GET("/by-comments"), invoiceHandler::findInvoiceByComments)
+                        .andRoute(RequestPredicates.GET("/by-comments"), invoiceHandler::findInvoicesByComments)
                         .andRoute(RequestPredicates.GET("/by-customer/{customerUsername}"), invoiceHandler::findAllInvoicesByCustomerUsername)
                         .andRoute(RequestPredicates.GET("/count"), invoiceHandler::countInvoices)
                         .andRoute(RequestPredicates.GET("/count-active"), invoiceHandler::countAllActiveInvoices)

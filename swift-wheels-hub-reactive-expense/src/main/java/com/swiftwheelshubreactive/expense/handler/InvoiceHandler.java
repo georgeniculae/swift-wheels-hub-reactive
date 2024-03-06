@@ -55,7 +55,7 @@ public class InvoiceHandler {
     }
 
     @PreAuthorize("hasAuthority('user')")
-    public Mono<ServerResponse> findInvoiceByComments(ServerRequest serverRequest) {
+    public Mono<ServerResponse> findInvoicesByComments(ServerRequest serverRequest) {
         return invoiceService.findInvoicesByComments(ServerRequestUtil.getPathVariable(serverRequest, COMMENTS))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)

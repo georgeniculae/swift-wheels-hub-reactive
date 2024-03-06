@@ -162,7 +162,7 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findInvoicesByComments(anyString())).thenReturn(Flux.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.findInvoiceByComments(serverRequest))
+        StepVerifier.create(invoiceHandler.findInvoicesByComments(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -176,7 +176,7 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findInvoicesByComments(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(invoiceHandler.findInvoiceByComments(serverRequest))
+        StepVerifier.create(invoiceHandler.findInvoicesByComments(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }

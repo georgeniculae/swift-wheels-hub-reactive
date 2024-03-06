@@ -118,7 +118,7 @@ import java.lang.annotation.Target;
                         method = RequestMethod.GET,
                         path = "/invoices/by-comments",
                         beanClass = InvoiceService.class,
-                        beanMethod = "findInvoiceByComments",
+                        beanMethod = "findInvoicesByComments",
                         operation = @Operation(
                                 operationId = "findInvoiceByComments",
                                 responses = {
@@ -214,10 +214,7 @@ import java.lang.annotation.Target;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = InvoiceResponse.class)),
-                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
-                                                )
+                                                content = @Content(schema = @Schema(implementation = Long.class))
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
