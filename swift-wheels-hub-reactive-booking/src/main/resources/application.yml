@@ -76,7 +76,7 @@ apikey:
 
 webclient:
   url:
-    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/employees/cars
+    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/cars
     swift-wheels-hub-agency-employees: lb://swift-wheels-hub-reactive-agency/agency/employees
 
 scheduled:
