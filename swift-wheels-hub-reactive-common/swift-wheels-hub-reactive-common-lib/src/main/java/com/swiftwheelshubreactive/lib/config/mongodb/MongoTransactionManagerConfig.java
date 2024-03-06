@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory;
 import org.springframework.data.mongodb.ReactiveMongoTransactionManager;
 
 @Configuration
-@ConditionalOnProperty(prefix = "spring.data", name = "mongodb")
+@ConditionalOnProperty(prefix = "spring.data", name = "mongodb", matchIfMissing = true)
 public class MongoTransactionManagerConfig {
 
     @Bean
