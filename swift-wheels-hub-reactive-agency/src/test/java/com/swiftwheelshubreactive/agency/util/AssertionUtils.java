@@ -54,13 +54,13 @@ public class AssertionUtils {
     public static void assertRentalOfficeRequest(RentalOffice rentalOffice, RentalOfficeRequest rentalOfficeRequest) {
         assertEquals(rentalOffice.getName(), rentalOfficeRequest.name());
         assertEquals(rentalOffice.getContactAddress(), rentalOfficeRequest.contactAddress());
-        assertEquals(rentalOffice.getLogoType(), rentalOfficeRequest.logoType());
+        assertEquals(rentalOffice.getPhoneNumber(), rentalOfficeRequest.phoneNumber());
     }
 
     public static void assertRentalOfficeResponse(RentalOffice rentalOffice, RentalOfficeResponse rentalOfficeResponse) {
         assertEquals(rentalOffice.getName(), rentalOfficeResponse.name());
         assertEquals(rentalOffice.getContactAddress(), rentalOfficeResponse.contactAddress());
-        assertEquals(rentalOffice.getLogoType(), rentalOfficeResponse.logoType());
+        assertEquals(rentalOffice.getPhoneNumber(), rentalOfficeResponse.phoneNumber());
     }
 
     public static void assertEmployeeRequest(Employee employee, EmployeeRequest employeeRequest) {

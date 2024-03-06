@@ -29,6 +29,6 @@ public class RentalOffice {
     @NonNull
     private String contactAddress;
 
-    private String logoType;
+    private String phoneNumber;
 
 }

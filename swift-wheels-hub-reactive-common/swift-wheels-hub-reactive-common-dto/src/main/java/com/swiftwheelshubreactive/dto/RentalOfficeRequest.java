@@ -13,7 +13,7 @@ public record RentalOfficeRequest(
         @NonNull
         String contactAddress,
 
-        String logoType
+        String phoneNumber
 ) {
 
     @Override
@@ -22,7 +22,7 @@ public record RentalOfficeRequest(
                 "id=" + id + "\n" +
                 "name='" + name + "\n" +
                 "contactAddress='" + contactAddress + "\n" +
-                "logoType='" + logoType + "\n" +
+                "phoneNumber='" + phoneNumber + "\n" +
                 "}";
     }
 

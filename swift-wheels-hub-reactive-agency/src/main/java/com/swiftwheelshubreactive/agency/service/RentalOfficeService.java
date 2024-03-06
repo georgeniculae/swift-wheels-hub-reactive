@@ -76,7 +76,7 @@ public class RentalOfficeService {
                 .flatMap(existingRentalOffice -> {
                     existingRentalOffice.setName(updatedRentalOfficeRequest.name());
                     existingRentalOffice.setContactAddress(updatedRentalOfficeRequest.contactAddress());
-                    existingRentalOffice.setLogoType(updatedRentalOfficeRequest.logoType());
+                    existingRentalOffice.setPhoneNumber(updatedRentalOfficeRequest.phoneNumber());
 
                     return rentalOfficeRepository.save(existingRentalOffice);
                 })
