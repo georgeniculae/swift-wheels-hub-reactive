@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
         {
                 @RouterOperation(
                         method = RequestMethod.GET,
+                        path = "/invoices",
                         beanClass = InvoiceService.class,
                         beanMethod = "findAllInvoices",
                         operation = @Operation(
@@ -55,7 +56,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/{id}",
+                        path = "/invoices/{id}",
                         beanClass = InvoiceService.class,
                         beanMethod = "findInvoiceById",
                         operation = @Operation(
@@ -86,7 +87,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/active",
+                        path = "/invoices/active",
                         beanClass = InvoiceService.class,
                         beanMethod = "findAllActiveInvoices",
                         operation = @Operation(
@@ -115,7 +116,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/by-comments",
+                        path = "/invoices/by-comments",
                         beanClass = InvoiceService.class,
                         beanMethod = "findInvoiceByComments",
                         operation = @Operation(
@@ -144,7 +145,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/by-customer/{customerUsername}",
+                        path = "/invoices/by-customer/{customerUsername}",
                         beanClass = InvoiceService.class,
                         beanMethod = "findAllInvoicesByCustomerUsername",
                         operation = @Operation(
@@ -178,7 +179,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/count",
+                        path = "/invoices/count",
                         beanClass = InvoiceService.class,
                         beanMethod = "countInvoices",
                         operation = @Operation(
@@ -204,7 +205,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/count-active",
+                        path = "/invoices/count-active",
                         beanClass = InvoiceService.class,
                         beanMethod = "countAllActiveInvoices",
                         operation = @Operation(
@@ -233,7 +234,7 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.PUT,
-                        path = "/{id}",
+                        path = "/invoices/{id}",
                         beanClass = InvoiceService.class,
                         beanMethod = "closeInvoice",
                         operation = @Operation(
