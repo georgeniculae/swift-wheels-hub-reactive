@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -20,6 +21,7 @@ import org.springframework.mock.web.reactive.function.server.MockServerRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -41,6 +43,9 @@ class CarHandlerTest {
 
     @Mock
     private FilePart filePart;
+
+    @Mock
+    private CarRequestValidator carRequestValidator;
 
     @Test
     void findAllCarsTest_success() {
@@ -203,10 +208,13 @@ class CarHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(carRequest));
 
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carRequest);
+
+        when(carRequestValidator.handleRequest(any(ServerRequest.class))).thenReturn(serverResponse);
         when(carService.saveCar(any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.saveCar(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .expectNextMatches(actualServerResponse -> actualServerResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
 
