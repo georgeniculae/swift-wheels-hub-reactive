@@ -29,7 +29,8 @@ public abstract class AbstractValidationHandler<T, U extends Validator> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
                         return Mono.just(request);
                     } else {
-                        return Mono.error(new SwiftWheelsHubResponseStatusException(
+                        return Mono.error(
+                                new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         errors.toString()
                                 )
