@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.RentalOfficeService;
+import com.swiftwheelshubreactive.agency.validator.RentalOfficeRequestValidator;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class RentalOfficeHandler {
     private static final String ID = "id";
     private static final String NAME = "name";
     private final RentalOfficeService rentalOfficeService;
+    private final RentalOfficeRequestValidator rentalOfficeRequestValidator;
 
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findAllRentalOffices(ServerRequest serverRequest) {
@@ -53,6 +55,7 @@ public class RentalOfficeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
+                .flatMap(rentalOfficeRequestValidator::handleRequest)
                 .flatMap(rentalOfficeService::saveRentalOffice)
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
@@ -60,8 +63,8 @@ public class RentalOfficeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
-                .flatMap(rentalOfficeRequest ->
-                        rentalOfficeService.updateRentalOffice(ServerRequestUtil.getPathVariable(serverRequest, ID), rentalOfficeRequest))
+                .flatMap(rentalOfficeRequestValidator::handleRequest)
+                .flatMap(rentalOfficeRequest -> rentalOfficeService.updateRentalOffice(ServerRequestUtil.getPathVariable(serverRequest, ID), rentalOfficeRequest))
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
 

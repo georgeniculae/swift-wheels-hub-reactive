@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.RentalOfficeService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.validator.RentalOfficeRequestValidator;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class RentalOfficeHandlerTest {
 
     @Mock
     private RentalOfficeService rentalOfficeService;
+
+    @Mock
+    private RentalOfficeRequestValidator rentalOfficeRequestValidator;
 
     @Test
     void findAllRentalOfficesTest_success() {
@@ -149,6 +153,7 @@ class RentalOfficeHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(rentalOfficeRequest));
 
+        when(rentalOfficeRequestValidator.handleRequest(any())).thenReturn(Mono.just(rentalOfficeRequest));
         when(rentalOfficeService.saveRentalOffice(any(RentalOfficeRequest.class))).thenReturn(Mono.just(rentalOfficeResponse));
 
         StepVerifier.create(rentalOfficeHandler.saveRentalOffice(serverRequest))
@@ -169,6 +174,7 @@ class RentalOfficeHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(rentalOfficeRequest));
 
+        when(rentalOfficeRequestValidator.handleRequest(any())).thenReturn(Mono.just(rentalOfficeRequest));
         when(rentalOfficeService.updateRentalOffice(anyString(), any(RentalOfficeRequest.class)))
                 .thenReturn(Mono.just(rentalOfficeResponse));
 
