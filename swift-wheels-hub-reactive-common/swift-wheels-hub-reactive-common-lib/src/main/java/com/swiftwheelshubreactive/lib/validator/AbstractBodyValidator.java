@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.lib.handlervalidator;
+package com.swiftwheelshubreactive.lib.validator;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import org.apache.commons.lang3.ObjectUtils;

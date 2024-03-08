@@ -1,6 +1,8 @@
 package com.swiftwheelshubreactive.booking.handler;
 
 import com.swiftwheelshubreactive.booking.service.BookingService;
+import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidator;
+import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
@@ -19,6 +21,8 @@ public class BookingHandler {
     private static final String ID = "id";
     private static final String DATE = "date";
     private final BookingService bookingService;
+    private final BookingRequestValidator bookingRequestValidator;
+    private final BookingClosingDetailsValidator bookingClosingDetailsValidator;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllBookings(ServerRequest serverRequest) {
@@ -87,6 +91,7 @@ public class BookingHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> saveBooking(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BookingRequest.class)
+                .flatMap(bookingRequestValidator::validateBody)
                 .flatMap(bookingRequest -> bookingService.saveBooking(
                         ServerRequestUtil.getApiKeyHeader(serverRequest),
                         ServerRequestUtil.getRolesHeader(serverRequest),
@@ -98,6 +103,7 @@ public class BookingHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> closeBooking(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BookingClosingDetails.class)
+                .flatMap(bookingClosingDetailsValidator::validateBody)
                 .flatMap(bookingClosingDetails ->
                         bookingService.closeBooking(
                                 ServerRequestUtil.getApiKeyHeader(serverRequest),
@@ -111,6 +117,7 @@ public class BookingHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> updateBooking(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BookingRequest.class)
+                .flatMap(bookingRequestValidator::validateBody)
                 .flatMap(bookingRequest ->
                         bookingService.updateBooking(
                                 ServerRequestUtil.getApiKeyHeader(serverRequest),

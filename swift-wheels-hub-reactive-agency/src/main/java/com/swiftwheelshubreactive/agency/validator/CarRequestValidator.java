@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.validator;
 
 import com.swiftwheelshubreactive.dto.CarRequest;
-import com.swiftwheelshubreactive.lib.handlervalidator.AbstractBodyValidator;
+import com.swiftwheelshubreactive.lib.validator.AbstractBodyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;

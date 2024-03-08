@@ -2,6 +2,8 @@ package com.swiftwheelshubreactive.booking.handler;
 
 import com.swiftwheelshubreactive.booking.service.BookingService;
 import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidator;
+import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
@@ -32,6 +34,12 @@ class BookingHandlerTest {
 
     @Mock
     private BookingService bookingService;
+
+    @Mock
+    private BookingRequestValidator bookingRequestValidator;
+
+    @Mock
+    private BookingClosingDetailsValidator bookingClosingDetailsValidator;
 
     @Test
     void findAllBookingsTest_success() {
@@ -236,6 +244,7 @@ class BookingHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(bookingRequest));
 
+        when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
         when(bookingService.saveBooking(anyString(), anyList(), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
@@ -257,6 +266,7 @@ class BookingHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(bookingClosingDetails));
 
+        when(bookingClosingDetailsValidator.validateBody(any())).thenReturn(Mono.just(bookingClosingDetails));
         when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.closeBooking(serverRequest))
@@ -279,6 +289,7 @@ class BookingHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(bookingRequest));
 
+        when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
         when(bookingService.updateBooking(anyString(), anyList(), anyString(), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
