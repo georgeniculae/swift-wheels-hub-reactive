@@ -18,7 +18,7 @@
 
     <modules>
         <module>swift-wheels-hub-reactive-cloud-gateway</module>
-        <module>swift-wheels-hub-reactive-eureka-service-discovery</module>
+        <module>swift-wheels-hub-reactive-service-discovery</module>
     </modules>
 
 </project>

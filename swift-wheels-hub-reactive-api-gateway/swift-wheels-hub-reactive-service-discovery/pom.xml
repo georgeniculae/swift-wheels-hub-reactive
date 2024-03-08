@@ -9,10 +9,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>swift-wheels-hub-reactive-eureka-service-discovery</artifactId>
+    <artifactId>swift-wheels-hub-reactive-service-discovery</artifactId>
 
-    <name>Swift Wheels Hub Reactive Eureka Service Discovery</name>
-    <description>Swift Wheels Hub Reactive Eureka Service Discovery for Swift Wheels Hub WebFlux microservices</description>
+    <name>Swift Wheels Hub Reactive Service Discovery</name>
+    <description>Swift Wheels Hub Reactive Service Discovery for Swift Wheels Hub WebFlux microservices</description>
 
     <properties>
         <java.version>21</java.version>

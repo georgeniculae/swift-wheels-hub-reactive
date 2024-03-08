@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.eurekaserivediscovery.config;
+package com.swiftwheelshubreactive.serivediscovery.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
