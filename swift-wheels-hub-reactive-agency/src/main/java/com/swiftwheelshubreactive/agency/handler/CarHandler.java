@@ -2,6 +2,8 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
+import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
+import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
@@ -27,6 +29,8 @@ public class CarHandler {
     private static final String FILE = "file";
     private final CarService carService;
     private final CarRequestValidator carRequestValidator;
+    private final CarUpdateDetailsValidator carUpdateDetailsValidator;
+    private final UpdateCarRequestValidator updateCarRequestValidator;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {
@@ -97,6 +101,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarRequest.class)
+                .flatMap(carRequestValidator::handleRequest)
                 .flatMap(carRequest -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), carRequest))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
@@ -111,6 +116,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
+                .flatMap(carUpdateDetailsValidator::handleRequest)
                 .flatMap(carUpdateDetails -> carService.updateCarWhenBookingIsClosed(ServerRequestUtil.getPathVariable(serverRequest, ID), carUpdateDetails))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
@@ -118,6 +124,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
         return serverRequest.bodyToFlux(UpdateCarRequest.class)
+                .flatMap(updateCarRequestValidator::handleRequest)
                 .flatMap(updateCarRequest -> carService.updateCarStatus(updateCarRequest.carId(), updateCarRequest.carState()))
                 .collectList()
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));

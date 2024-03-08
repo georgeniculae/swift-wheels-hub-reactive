@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.BranchService;
+import com.swiftwheelshubreactive.agency.validator.BranchRequestValidator;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class BranchHandler {
     private static final String ID = "id";
     private static final String FILTER = "filter";
     private final BranchService branchService;
+    private final BranchRequestValidator branchRequestValidator;
 
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findAllBranches(ServerRequest serverRequest) {
@@ -53,6 +55,7 @@ public class BranchHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
+                .flatMap(branchRequestValidator::handleRequest)
                 .flatMap(branchService::saveBranch)
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
@@ -60,6 +63,7 @@ public class BranchHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
+                .flatMap(branchRequestValidator::handleRequest)
                 .flatMap(branchRequest -> branchService.updateBranch(ServerRequestUtil.getPathVariable(serverRequest, ID), branchRequest))
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }

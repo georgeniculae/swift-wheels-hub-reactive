@@ -9,7 +9,7 @@ import org.springframework.validation.Validator;
 @Component
 public class CarUpdateDetailsValidator extends AbstractValidationHandler<CarUpdateDetails, Validator> {
 
-    private CarUpdateDetailsValidator(@Autowired Validator validator) {
+    public CarUpdateDetailsValidator(@Autowired Validator validator) {
         super(CarUpdateDetails.class, validator);
     }
 
