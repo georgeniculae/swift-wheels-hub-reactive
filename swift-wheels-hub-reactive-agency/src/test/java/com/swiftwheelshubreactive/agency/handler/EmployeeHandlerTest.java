@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.EmployeeService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.validator.EmployeeRequestValidator;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class EmployeeHandlerTest {
 
     @Mock
     private EmployeeService employeeService;
+
+    @Mock
+    private EmployeeRequestValidator employeeRequestValidator;
 
     @Test
     void findAllEmployees_success() {
@@ -168,6 +172,7 @@ class EmployeeHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(employeeRequest));
 
+        when(employeeRequestValidator.handleRequest(any())).thenReturn(Mono.just(employeeRequest));
         when(employeeService.saveEmployee(any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
         StepVerifier.create(employeeHandler.saveEmployee(serverRequest))
@@ -188,6 +193,7 @@ class EmployeeHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(employeeRequest));
 
+        when(employeeRequestValidator.handleRequest(any())).thenReturn(Mono.just(employeeRequest));
         when(employeeService.updateEmployee(anyString(), any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
         StepVerifier.create(employeeHandler.updateEmployee(serverRequest))

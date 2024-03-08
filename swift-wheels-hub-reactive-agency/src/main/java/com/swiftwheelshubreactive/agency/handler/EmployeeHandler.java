@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.EmployeeService;
+import com.swiftwheelshubreactive.agency.validator.EmployeeRequestValidator;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class EmployeeHandler {
     private static final String ID = "id";
     private static final String FILTER = "filter";
     private final EmployeeService employeeService;
+    private final EmployeeRequestValidator employeeRequestValidator;
 
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findAllEmployees(ServerRequest serverRequest) {
@@ -62,6 +64,7 @@ public class EmployeeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
+                .flatMap(employeeRequestValidator::handleRequest)
                 .flatMap(employeeService::saveEmployee)
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
@@ -69,8 +72,8 @@ public class EmployeeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
-                .flatMap(employeeRequest ->
-                        employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeRequest))
+                .flatMap(employeeRequestValidator::handleRequest)
+                .flatMap(employeeRequest -> employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeRequest))
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
 

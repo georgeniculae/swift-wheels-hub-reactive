@@ -1,16 +1,16 @@
 package com.swiftwheelshubreactive.agency.validator;
 
-import com.swiftwheelshubreactive.dto.BranchRequest;
+import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.lib.handlervalidator.AbstractValidationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
 
 @Component
-public class BranchRequestValidator extends AbstractValidationHandler<BranchRequest, Validator> {
+public class EmployeeRequestValidator extends AbstractValidationHandler<EmployeeRequest, Validator> {
 
-    public BranchRequestValidator(@Autowired Validator validator) {
-        super(BranchRequest.class, validator);
+    public EmployeeRequestValidator(@Autowired Validator validator) {
+        super(EmployeeRequest.class, validator);
     }
 
 }
