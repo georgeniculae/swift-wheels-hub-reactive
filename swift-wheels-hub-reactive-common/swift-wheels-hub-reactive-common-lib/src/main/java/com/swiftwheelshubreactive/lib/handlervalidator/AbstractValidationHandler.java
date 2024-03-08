@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 public abstract class AbstractValidationHandler<T, U extends Validator> {
@@ -20,23 +19,20 @@ public abstract class AbstractValidationHandler<T, U extends Validator> {
         this.validator = validator;
     }
 
-    public final Mono<ServerRequest> handleRequest(final ServerRequest request) {
-        return request.bodyToMono(validationClass)
-                .flatMap(body -> {
-                    Errors errors = new BeanPropertyBindingResult(body, validationClass.getName());
-                    validator.validate(body, errors);
+    public final Mono<T> handleRequest(T body) {
+        return Mono.fromSupplier(() -> {
+            Errors errors = new BeanPropertyBindingResult(body, validationClass.getName());
+            validator.validate(body, errors);
 
-                    if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return Mono.just(request);
-                    } else {
-                        return Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        errors.toString()
-                                )
-                        );
-                    }
-                });
+            if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
+                return body;
+            } else {
+                throw new SwiftWheelsHubResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        errors.toString()
+                );
+            }
+        });
     }
 
 }

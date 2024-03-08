@@ -207,7 +207,7 @@ class CarHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(carRequest));
 
-        when(carRequestValidator.handleRequest(any(ServerRequest.class))).thenReturn(Mono.just(serverRequest));
+        when(carRequestValidator.handleRequest(any())).thenReturn(Mono.just(carRequest));
         when(carService.saveCar(any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.saveCar(serverRequest))

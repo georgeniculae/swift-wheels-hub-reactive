@@ -76,8 +76,8 @@ public class CarHandler {
 
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
-        return carRequestValidator.handleRequest(serverRequest)
-                .flatMap(validatedServerRequest -> validatedServerRequest.bodyToMono(CarRequest.class))
+        return serverRequest.bodyToMono(CarRequest.class)
+                .flatMap(carRequestValidator::handleRequest)
                 .flatMap(carService::saveCar)
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
