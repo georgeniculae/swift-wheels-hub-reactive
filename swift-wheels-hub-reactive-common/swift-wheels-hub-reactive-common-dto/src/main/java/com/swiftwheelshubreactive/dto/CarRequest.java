@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.dto;
 
+import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 
@@ -10,21 +11,26 @@ public record CarRequest(
         String id,
 
         @NonNull
+        @Min(2)
         String make,
 
         @NonNull
         String model,
 
+        @NonNull
         BodyCategory bodyCategory,
 
         int yearOfProduction,
 
+        @NonNull
         String color,
 
         int mileage,
 
+        @NonNull
         CarState carState,
 
+        @NonNull
         BigDecimal amount,
 
         String originalBranchId,
