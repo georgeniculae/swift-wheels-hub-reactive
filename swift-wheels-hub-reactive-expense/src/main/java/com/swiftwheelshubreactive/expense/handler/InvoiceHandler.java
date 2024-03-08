@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
+import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -19,6 +20,7 @@ public class InvoiceHandler {
     private static final String ID = "id";
     private static final String COMMENTS = "comments";
     private final InvoiceService invoiceService;
+    private final InvoiceRequestValidator invoiceRequestValidator;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllInvoices(ServerRequest serverRequest) {
@@ -80,6 +82,7 @@ public class InvoiceHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> closeInvoice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(InvoiceRequest.class)
+                .flatMap(invoiceRequestValidator::validateBody)
                 .flatMap(invoiceRequest -> invoiceService.closeInvoice(
                                 ServerRequestUtil.getApiKeyHeader(serverRequest),
                                 ServerRequestUtil.getRolesHeader(serverRequest),

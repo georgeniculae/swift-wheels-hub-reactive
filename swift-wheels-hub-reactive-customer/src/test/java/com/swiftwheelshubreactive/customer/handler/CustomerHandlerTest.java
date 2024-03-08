@@ -2,6 +2,8 @@ package com.swiftwheelshubreactive.customer.handler;
 
 import com.swiftwheelshubreactive.customer.service.CustomerService;
 import com.swiftwheelshubreactive.customer.util.TestUtils;
+import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
+import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
@@ -29,6 +31,12 @@ class CustomerHandlerTest {
 
     @Mock
     private CustomerService customerService;
+
+    @Mock
+    private RegisterRequestValidator registerRequestValidator;
+
+    @Mock
+    private UserUpdateRequestValidator userUpdateRequestValidator;
 
     @Test
     void getCurrentUserTest_success() {
@@ -118,6 +126,7 @@ class CustomerHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(registerRequest));
 
+        when(registerRequestValidator.validateBody(any())).thenReturn(Mono.just(registerRequest));
         when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.just(registrationResponse));
 
         StepVerifier.create(customerHandler.registerUser(serverRequest))
@@ -134,6 +143,7 @@ class CustomerHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(registerRequest));
 
+        when(registerRequestValidator.validateBody(any())).thenReturn(Mono.just(registerRequest));
         when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.registerUser(serverRequest))
@@ -154,6 +164,7 @@ class CustomerHandlerTest {
                 .pathVariable("id", "64f48612b92a3b7dfcebae07")
                 .body(Mono.just(userUpdateRequest));
 
+        when(userUpdateRequestValidator.validateBody(any())).thenReturn(Mono.just(userUpdateRequest));
         when(customerService.updateUser(anyString(), any(UserUpdateRequest.class))).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(customerHandler.updateUser(serverRequest))

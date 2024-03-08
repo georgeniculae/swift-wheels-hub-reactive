@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,9 @@ class InvoiceHandlerTest {
 
     @Mock
     private InvoiceService invoiceService;
+
+    @Mock
+    private InvoiceRequestValidator invoiceRequestValidator;
 
     @Test
     void findAllInvoicesTest_success() {
@@ -221,6 +225,7 @@ class InvoiceHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(invoiceRequest));
 
+        when(invoiceRequestValidator.validateBody(any())).thenReturn(Mono.just(invoiceRequest));
         when(invoiceService.closeInvoice(anyString(), anyList(), anyString(), any(InvoiceRequest.class)))
                 .thenReturn(Mono.just(invoiceResponse));
 

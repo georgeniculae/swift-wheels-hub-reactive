@@ -1,6 +1,8 @@
 package com.swiftwheelshubreactive.customer.handler;
 
 import com.swiftwheelshubreactive.customer.service.CustomerService;
+import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
+import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
@@ -18,6 +20,8 @@ public class CustomerHandler {
     private static final String USERNAME = "username";
     private static final String ID = "id";
     private final CustomerService customerService;
+    private final RegisterRequestValidator registerRequestValidator;
+    private final UserUpdateRequestValidator userUpdateRequestValidator;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> getCurrentUser(ServerRequest serverRequest) {
@@ -42,6 +46,7 @@ public class CustomerHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> registerUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RegisterRequest.class)
+                .flatMap(registerRequestValidator::validateBody)
                 .flatMap(customerService::registerUser)
                 .flatMap(authenticationResponse -> ServerResponse.ok().bodyValue(authenticationResponse))
                 .switchIfEmpty(ServerResponse.badRequest().build());
@@ -50,6 +55,7 @@ public class CustomerHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(UserUpdateRequest.class)
+                .flatMap(userUpdateRequestValidator::validateBody)
                 .flatMap(userDto -> customerService.updateUser(ServerRequestUtil.getPathVariable(serverRequest, ID), userDto))
                 .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
