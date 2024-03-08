@@ -55,7 +55,7 @@ public class RentalOfficeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
-                .flatMap(rentalOfficeRequestValidator::handleRequest)
+                .flatMap(rentalOfficeRequestValidator::validateBody)
                 .flatMap(rentalOfficeService::saveRentalOffice)
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }
@@ -63,7 +63,7 @@ public class RentalOfficeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateRentalOffice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RentalOfficeRequest.class)
-                .flatMap(rentalOfficeRequestValidator::handleRequest)
+                .flatMap(rentalOfficeRequestValidator::validateBody)
                 .flatMap(rentalOfficeRequest -> rentalOfficeService.updateRentalOffice(ServerRequestUtil.getPathVariable(serverRequest, ID), rentalOfficeRequest))
                 .flatMap(rentalOfficeResponse -> ServerResponse.ok().bodyValue(rentalOfficeResponse));
     }

@@ -81,7 +81,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarRequest.class)
-                .flatMap(carRequestValidator::handleRequest)
+                .flatMap(carRequestValidator::validateBody)
                 .flatMap(carService::saveCar)
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -101,7 +101,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarRequest.class)
-                .flatMap(carRequestValidator::handleRequest)
+                .flatMap(carRequestValidator::validateBody)
                 .flatMap(carRequest -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), carRequest))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
@@ -116,7 +116,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
-                .flatMap(carUpdateDetailsValidator::handleRequest)
+                .flatMap(carUpdateDetailsValidator::validateBody)
                 .flatMap(carUpdateDetails -> carService.updateCarWhenBookingIsClosed(ServerRequestUtil.getPathVariable(serverRequest, ID), carUpdateDetails))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
@@ -124,7 +124,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
         return serverRequest.bodyToFlux(UpdateCarRequest.class)
-                .flatMap(updateCarRequestValidator::handleRequest)
+                .flatMap(updateCarRequestValidator::validateBody)
                 .flatMap(updateCarRequest -> carService.updateCarStatus(updateCarRequest.carId(), updateCarRequest.carState()))
                 .collectList()
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));

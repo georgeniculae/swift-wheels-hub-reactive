@@ -8,30 +8,30 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import reactor.core.publisher.Mono;
 
-public abstract class AbstractValidationHandler<T, U extends Validator> {
+public abstract class AbstractBodyValidator<T, U extends Validator> {
 
     private final Class<T> validationClass;
 
     private final U validator;
 
-    protected AbstractValidationHandler(Class<T> clazz, U validator) {
+    protected AbstractBodyValidator(Class<T> clazz, U validator) {
         this.validationClass = clazz;
         this.validator = validator;
     }
 
-    public final Mono<T> handleRequest(T body) {
+    public final Mono<T> validateBody(T body) {
         return Mono.fromSupplier(() -> {
             Errors errors = new BeanPropertyBindingResult(body, validationClass.getName());
             validator.validate(body, errors);
 
             if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
                 return body;
-            } else {
-                throw new SwiftWheelsHubResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        errors.toString()
-                );
             }
+
+            throw new SwiftWheelsHubResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    errors.toString()
+            );
         });
     }
 

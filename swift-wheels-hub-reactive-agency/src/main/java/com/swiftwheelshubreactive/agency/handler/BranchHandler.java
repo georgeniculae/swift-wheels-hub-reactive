@@ -55,7 +55,7 @@ public class BranchHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
-                .flatMap(branchRequestValidator::handleRequest)
+                .flatMap(branchRequestValidator::validateBody)
                 .flatMap(branchService::saveBranch)
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
@@ -63,7 +63,7 @@ public class BranchHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
-                .flatMap(branchRequestValidator::handleRequest)
+                .flatMap(branchRequestValidator::validateBody)
                 .flatMap(branchRequest -> branchService.updateBranch(ServerRequestUtil.getPathVariable(serverRequest, ID), branchRequest))
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }

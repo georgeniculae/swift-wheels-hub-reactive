@@ -153,7 +153,7 @@ class RentalOfficeHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(rentalOfficeRequest));
 
-        when(rentalOfficeRequestValidator.handleRequest(any())).thenReturn(Mono.just(rentalOfficeRequest));
+        when(rentalOfficeRequestValidator.validateBody(any())).thenReturn(Mono.just(rentalOfficeRequest));
         when(rentalOfficeService.saveRentalOffice(any(RentalOfficeRequest.class))).thenReturn(Mono.just(rentalOfficeResponse));
 
         StepVerifier.create(rentalOfficeHandler.saveRentalOffice(serverRequest))
@@ -174,7 +174,7 @@ class RentalOfficeHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(rentalOfficeRequest));
 
-        when(rentalOfficeRequestValidator.handleRequest(any())).thenReturn(Mono.just(rentalOfficeRequest));
+        when(rentalOfficeRequestValidator.validateBody(any())).thenReturn(Mono.just(rentalOfficeRequest));
         when(rentalOfficeService.updateRentalOffice(anyString(), any(RentalOfficeRequest.class)))
                 .thenReturn(Mono.just(rentalOfficeResponse));
 

@@ -64,7 +64,7 @@ public class EmployeeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
-                .flatMap(employeeRequestValidator::handleRequest)
+                .flatMap(employeeRequestValidator::validateBody)
                 .flatMap(employeeService::saveEmployee)
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
@@ -72,7 +72,7 @@ public class EmployeeHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
-                .flatMap(employeeRequestValidator::handleRequest)
+                .flatMap(employeeRequestValidator::validateBody)
                 .flatMap(employeeRequest -> employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeRequest))
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }

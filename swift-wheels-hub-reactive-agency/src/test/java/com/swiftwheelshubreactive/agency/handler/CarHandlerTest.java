@@ -215,7 +215,7 @@ class CarHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(carRequest));
 
-        when(carRequestValidator.handleRequest(any())).thenReturn(Mono.just(carRequest));
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(carService.saveCar(any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.saveCar(serverRequest))
@@ -252,7 +252,7 @@ class CarHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(carRequest));
 
-        when(carRequestValidator.handleRequest(any())).thenReturn(Mono.just(carRequest));
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(carService.updateCar(anyString(), any(CarRequest.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCar(serverRequest))
@@ -272,7 +272,7 @@ class CarHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(carUpdateDetails));
 
-        when(carUpdateDetailsValidator.handleRequest(any())).thenReturn(Mono.just(carUpdateDetails));
+        when(carUpdateDetailsValidator.validateBody(any())).thenReturn(Mono.just(carUpdateDetails));
         when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(carDto));
 
@@ -308,7 +308,7 @@ class CarHandlerTest {
                 .method(HttpMethod.PUT)
                 .body(Flux.just(updateCarRequest));
 
-        when(updateCarRequestValidator.handleRequest(any())).thenReturn(Mono.just(updateCarRequest));
+        when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
         when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))

@@ -172,7 +172,7 @@ class EmployeeHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(employeeRequest));
 
-        when(employeeRequestValidator.handleRequest(any())).thenReturn(Mono.just(employeeRequest));
+        when(employeeRequestValidator.validateBody(any())).thenReturn(Mono.just(employeeRequest));
         when(employeeService.saveEmployee(any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
         StepVerifier.create(employeeHandler.saveEmployee(serverRequest))
@@ -193,7 +193,7 @@ class EmployeeHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(employeeRequest));
 
-        when(employeeRequestValidator.handleRequest(any())).thenReturn(Mono.just(employeeRequest));
+        when(employeeRequestValidator.validateBody(any())).thenReturn(Mono.just(employeeRequest));
         when(employeeService.updateEmployee(anyString(), any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
         StepVerifier.create(employeeHandler.updateEmployee(serverRequest))

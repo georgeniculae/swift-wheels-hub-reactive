@@ -139,7 +139,7 @@ class BranchHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(branchRequest));
 
-        when(branchRequestValidator.handleRequest(any())).thenReturn(Mono.just(branchRequest));
+        when(branchRequestValidator.validateBody(any())).thenReturn(Mono.just(branchRequest));
         when(branchService.saveBranch(any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
         StepVerifier.create(branchHandler.saveBranch(serverRequest))
@@ -160,7 +160,7 @@ class BranchHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(branchRequest));
 
-        when(branchRequestValidator.handleRequest(any())).thenReturn(Mono.just(branchRequest));
+        when(branchRequestValidator.validateBody(any())).thenReturn(Mono.just(branchRequest));
         when(branchService.updateBranch(anyString(), any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
         StepVerifier.create(branchHandler.updateBranch(serverRequest))
