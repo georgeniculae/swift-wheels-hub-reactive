@@ -1,12 +1,12 @@
 package com.swiftwheelshubreactive.lib.handlervalidator;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 public abstract class AbstractValidationHandler<T, U extends Validator> {
@@ -20,30 +20,22 @@ public abstract class AbstractValidationHandler<T, U extends Validator> {
         this.validator = validator;
     }
 
-    public final Mono<ServerResponse> handleRequest(final ServerRequest request) {
+    public final Mono<ServerRequest> handleRequest(final ServerRequest request) {
         return request.bodyToMono(validationClass)
                 .flatMap(body -> {
                     Errors errors = new BeanPropertyBindingResult(body, validationClass.getName());
                     validator.validate(body, errors);
 
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return processBody(body, request);
+                        return Mono.just(request);
                     } else {
-                        return onValidationErrors(errors, body, request);
+                        return Mono.error(new SwiftWheelsHubResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        errors.toString()
+                                )
+                        );
                     }
                 });
-    }
-
-    protected Mono<ServerResponse> processBody(T validBody, final ServerRequest originalRequest) {
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(validBody);
-    }
-
-    protected Mono<ServerResponse> onValidationErrors(Errors errors, T invalidBody, final ServerRequest request) {
-        return ServerResponse.badRequest()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(String.format("Invalid request body: %s", errors.getAllErrors()));
     }
 
 }

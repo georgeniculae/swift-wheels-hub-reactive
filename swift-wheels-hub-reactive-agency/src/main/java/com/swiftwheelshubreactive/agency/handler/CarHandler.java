@@ -2,8 +2,6 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
-import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
-import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
@@ -29,8 +27,6 @@ public class CarHandler {
     private static final String FILE = "file";
     private final CarService carService;
     private final CarRequestValidator carRequestValidator;
-    private final CarUpdateDetailsValidator carUpdateDetailsValidator;
-    private final UpdateCarRequestValidator updateCarRequestValidator;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {
@@ -81,7 +77,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
         return carRequestValidator.handleRequest(serverRequest)
-                .flatMap(serverResponse -> serverRequest.bodyToMono(CarRequest.class))
+                .flatMap(validatedServerRequest -> validatedServerRequest.bodyToMono(CarRequest.class))
                 .flatMap(carService::saveCar)
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
