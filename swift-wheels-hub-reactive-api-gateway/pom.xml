@@ -17,7 +17,7 @@
     <description>Swift Wheels Hub Reactive API Gateway Reactive</description>
 
     <modules>
-        <module>swift-wheels-hub-reactive-cloud-gateway</module>
+        <module>swift-wheels-hub-reactive-gateway</module>
         <module>swift-wheels-hub-reactive-service-discovery</module>
     </modules>
 
