@@ -2,7 +2,6 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
-import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
@@ -43,9 +42,6 @@ class CarHandlerTest {
 
     @Mock
     private FilePart filePart;
-
-    @Mock
-    private CarRequestValidator carRequestValidator;
 
     @Mock
     private CarUpdateDetailsValidator carUpdateDetailsValidator;
@@ -208,7 +204,7 @@ class CarHandlerTest {
     @Test
     void saveCarTest_success() {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-        MultiValueMap<String, Integer> multiValueMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -243,7 +239,7 @@ class CarHandlerTest {
     @Test
     void updateCarTest_success() {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-        MultiValueMap<String, Integer> multiValueMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
