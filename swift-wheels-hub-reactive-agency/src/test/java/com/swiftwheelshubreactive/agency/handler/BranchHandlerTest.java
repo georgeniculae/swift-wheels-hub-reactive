@@ -109,7 +109,7 @@ class BranchHandlerTest {
 
         when(branchService.findBranchesByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branchResponse));
 
-        StepVerifier.create(branchHandler.findBranchByFilterInsensitiveCase(serverRequest))
+        StepVerifier.create(branchHandler.findBranchesByFilterInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

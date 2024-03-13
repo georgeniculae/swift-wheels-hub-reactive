@@ -130,7 +130,7 @@ class BranchRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
-        when(branchHandler.findBranchByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(branchHandler.findBranchesByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
@@ -150,7 +150,7 @@ class BranchRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(branchResponse);
 
-        when(branchHandler.findBranchByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(branchHandler.findBranchesByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()

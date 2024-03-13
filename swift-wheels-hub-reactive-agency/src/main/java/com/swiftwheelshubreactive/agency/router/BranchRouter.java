@@ -20,7 +20,7 @@ public class BranchRouter {
     public RouterFunction<ServerResponse> routeBranch(BranchHandler branchHandler) {
         return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), branchHandler::findAllBranches)
-                        .andRoute(RequestPredicates.GET("/filter/{filter}"), branchHandler::findBranchByFilterInsensitiveCase)
+                        .andRoute(RequestPredicates.GET("/filter/{filter}"), branchHandler::findBranchesByFilterInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/count"), branchHandler::countBranches)
                         .andRoute(RequestPredicates.GET("/{id}"), branchHandler::findBranchById)
                         .andRoute(RequestPredicates.POST(""), branchHandler::saveBranch)

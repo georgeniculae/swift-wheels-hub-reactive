@@ -38,7 +38,7 @@ public class BranchHandler {
     }
 
     @PreAuthorize("hasAuthority('user')")
-    public Mono<ServerResponse> findBranchByFilterInsensitiveCase(ServerRequest serverRequest) {
+    public Mono<ServerResponse> findBranchesByFilterInsensitiveCase(ServerRequest serverRequest) {
         return branchService.findBranchesByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
