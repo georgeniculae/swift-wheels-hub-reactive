@@ -218,7 +218,10 @@ import java.lang.annotation.Target;
                                 requestBody = @RequestBody(
                                         description = "Save new car",
                                         required = true,
-                                        content = @Content(schema = @Schema(implementation = CarRequest.class))
+                                        content = @Content(
+                                                schema = @Schema(implementation = CarRequest.class),
+                                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                        )
                                 ),
                                 responses = {
                                         @ApiResponse(
@@ -392,7 +395,10 @@ import java.lang.annotation.Target;
                                 requestBody = @RequestBody(
                                         description = "Update car",
                                         required = true,
-                                        content = @Content(schema = @Schema(implementation = CarRequest.class))
+                                        content = @Content(
+                                                schema = @Schema(implementation = CarRequest.class),
+                                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                        )
                                 ),
                                 responses = {
                                         @ApiResponse(
