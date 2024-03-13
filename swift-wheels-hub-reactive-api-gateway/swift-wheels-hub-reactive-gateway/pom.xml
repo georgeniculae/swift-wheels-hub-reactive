@@ -11,8 +11,8 @@
 
     <artifactId>swift-wheels-hub-reactive-gateway</artifactId>
 
-    <name>Swift Wheels Hub Reactive Cloud Gateway</name>
-    <description>Swift Wheels Hub Reactive Cloud Gateway for Swift Wheels Hub WebFlux microservices</description>
+    <name>Swift Wheels Hub Reactive Gateway</name>
+    <description>Swift Wheels Hub Reactive Gateway for Swift Wheels Hub WebFlux microservices</description>
 
     <properties>
         <java.version>21</java.version>
