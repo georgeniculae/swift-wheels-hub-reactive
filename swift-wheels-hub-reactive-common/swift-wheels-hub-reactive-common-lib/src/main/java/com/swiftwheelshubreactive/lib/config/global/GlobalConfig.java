@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.lib.config.cors;
+package com.swiftwheelshubreactive.lib.config.global;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -9,7 +9,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @Configuration
 @EnableWebFlux
-public class CorsGlobalConfig implements WebFluxConfigurer {
+public class GlobalConfig implements WebFluxConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
