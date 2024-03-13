@@ -5,11 +5,11 @@ import org.springframework.boot.SpringApplication;
 import reactor.blockhound.BlockHound;
 
 @SwiftWheelsHubReactiveMicroservice
-public class SwiftWheelsHubReactiveCloudGatewayApplication {
+public class SwiftWheelsHubReactiveGatewayApplication {
 
     public static void main(String[] args) {
         BlockHound.install(builder -> builder.allowBlockingCallsInside("io.netty.util.concurrent.FastThreadLocalRunnable", "run"));
-        SpringApplication.run(SwiftWheelsHubReactiveCloudGatewayApplication.class, args);
+        SpringApplication.run(SwiftWheelsHubReactiveGatewayApplication.class, args);
     }
 
 }
