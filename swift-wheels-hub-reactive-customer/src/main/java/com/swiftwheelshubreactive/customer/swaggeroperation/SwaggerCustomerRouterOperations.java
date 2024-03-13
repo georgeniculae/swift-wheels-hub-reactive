@@ -1,13 +1,16 @@
 package com.swiftwheelshubreactive.customer.swaggeroperation;
 
 import com.swiftwheelshubreactive.customer.handler.CustomerHandler;
+import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
+import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
@@ -112,6 +115,11 @@ import java.lang.annotation.Target;
                         beanMethod = "registerUser",
                         operation = @Operation(
                                 operationId = "registerUser",
+                                requestBody = @RequestBody(
+                                        description = "Register user",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = RegisterRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -138,6 +146,11 @@ import java.lang.annotation.Target;
                         beanMethod = "updateUser",
                         operation = @Operation(
                                 operationId = "updateUser",
+                                requestBody = @RequestBody(
+                                        description = "Update user",
+                                        required = true,
+                                        content = @Content(schema = @Schema(implementation = UserUpdateRequest.class))
+                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
