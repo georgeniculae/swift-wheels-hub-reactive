@@ -29,8 +29,8 @@ public class DatabaseCollectionCreator {
 
     public static List<Car> getCars() {
         return List.of(
-                createCar("65072052d5d4531e66a0c00c", "Volkswagen", "Golf", BodyType.HATCHBACK, 2010, "black", 232000, BigDecimal.valueOf(500), createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222")), createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222")), "url1"),
-                createCar("65072052d5d4531e66a0c00d", "Audi", "A4", BodyType.SEDAN, 2015, "white", 187000, BigDecimal.valueOf(800), createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")), createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")), "url2")
+                createCar("65072052d5d4531e66a0c00c", "Volkswagen", "Golf", BodyType.HATCHBACK, 2010, "black", 232000, BigDecimal.valueOf(500), createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222")), createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222"))),
+                createCar("65072052d5d4531e66a0c00d", "Audi", "A4", BodyType.SEDAN, 2015, "white", 187000, BigDecimal.valueOf(800), createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")), createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")))
         );
     }
 
@@ -44,7 +44,7 @@ public class DatabaseCollectionCreator {
     }
 
     private static Car createCar(String id, String make, String model, BodyType bodyType, int yearOfProduction, String color,
-                                 int mileage, BigDecimal amount, Branch originalBranch, Branch actualBranch, String urlOfImage) {
+                                 int mileage, BigDecimal amount, Branch originalBranch, Branch actualBranch) {
         return Car.builder()
                 .id(new ObjectId(id))
                 .make(make)
@@ -57,7 +57,6 @@ public class DatabaseCollectionCreator {
                 .amount(amount)
                 .originalBranch(originalBranch)
                 .actualBranch(actualBranch)
-                .urlOfImage(urlOfImage)
                 .build();
     }
 
