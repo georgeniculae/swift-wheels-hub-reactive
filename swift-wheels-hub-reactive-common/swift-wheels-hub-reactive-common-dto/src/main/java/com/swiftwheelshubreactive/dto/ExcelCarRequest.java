@@ -1,17 +1,18 @@
 package com.swiftwheelshubreactive.dto;
 
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 import lombok.Builder;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.lang.NonNull;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Builder
-public record CarRequest(
+public record ExcelCarRequest(
+
+        String id,
+
         @NonNull
-        @Size(min = 2)
+        @Min(2)
         String make,
 
         @NonNull
@@ -37,12 +38,13 @@ public record CarRequest(
 
         String actualBranchId,
 
-        FilePart image
-) implements Serializable {
+        byte[] image
+) {
 
     @Override
     public String toString() {
-        return "CarRequest{" + "\n" +
+        return "ExcelCarRequest{" + "\n" +
+                "id=" + id +
                 "make='" + make + "\n" +
                 "model='" + model + "\n" +
                 "bodyCategory=" + bodyCategory + "\n" +

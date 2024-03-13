@@ -17,7 +17,7 @@ public enum CarFields {
     AMOUNT("AMOUNT"),
     ORIGINAL_BRANCH("ORIGINAL BRANCH ID"),
     ACTUAL_BRANCH("ACTUAL BRANCH ID"),
-    URL_OF_IMAGE("URL OF IMAGE");
+    IMAGE("IMAGE");
 
     private final String excelValue;
 
