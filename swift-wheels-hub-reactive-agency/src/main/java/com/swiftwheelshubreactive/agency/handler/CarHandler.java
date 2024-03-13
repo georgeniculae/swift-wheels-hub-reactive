@@ -94,13 +94,12 @@ public class CarHandler {
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
-//    @PreAuthorize("hasAuthority('user')")
-//    public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
-//        return serverRequest.bodyToMono(CarRequest.class)
-//                .flatMap(carRequestValidator::validateBody)
-//                .flatMap(carRequest -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), carRequest))
-//                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
-//    }
+    @PreAuthorize("hasAuthority('user')")
+    public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
+        return serverRequest.multipartData()
+                .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), updatedCarRequestMultivalueMap))
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
+    }
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {

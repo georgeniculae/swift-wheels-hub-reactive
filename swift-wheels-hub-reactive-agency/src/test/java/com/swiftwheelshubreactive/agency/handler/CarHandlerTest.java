@@ -5,7 +5,6 @@ import com.swiftwheelshubreactive.agency.util.TestUtils;
 import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
-import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
@@ -208,15 +207,14 @@ class CarHandlerTest {
 
     @Test
     void saveCarTest_success() {
-        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        MultiValueMap<String, Integer> multiValueMap = new LinkedMultiValueMap<>();
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(carRequest));
+                .body(Mono.just(multiValueMap));
 
-        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
-        when(carService.saveCar(any(CarRequest.class))).thenReturn(Mono.just(carResponse));
+        when(carService.saveCar(any())).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.saveCar(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -244,16 +242,15 @@ class CarHandlerTest {
 
     @Test
     void updateCarTest_success() {
-        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        MultiValueMap<String, Integer> multiValueMap = new LinkedMultiValueMap<>();
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(carRequest));
+                .body(Mono.just(multiValueMap));
 
-        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
-        when(carService.updateCar(anyString(), any(CarRequest.class))).thenReturn(Mono.just(carResponse));
+        when(carService.updateCar(anyString(), any())).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCar(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

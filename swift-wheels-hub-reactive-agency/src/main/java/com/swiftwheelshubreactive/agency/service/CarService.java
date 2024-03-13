@@ -62,6 +62,17 @@ import java.util.Optional;
 @Slf4j
 public class CarService {
 
+    private static final String MAKE = "make";
+    private static final String MODEL = "model";
+    private static final String BODY_CATEGORY = "bodyCategory";
+    private static final String YEAR_OF_PRODUCTION = "yearOfProduction";
+    private static final String COLOR = "color";
+    private static final String MILEAGE = "mileage";
+    private static final String CAR_STATE = "carState";
+    private static final String AMOUNT = "amount";
+    private static final String ORIGINAL_BRANCH_ID = "originalBranchId";
+    private static final String ACTUAL_BRANCH_ID = "actualBranchId";
+    private static final String IMAGE = "image";
     private final CarRepository carRepository;
     private final BranchService branchService;
     private final EmployeeService employeeService;
@@ -128,8 +139,8 @@ public class CarService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
     }
 
-    public Mono<CarResponse> saveCar(MultiValueMap<String, Part> multiValueMap) {
-        return getCarRequest(multiValueMap)
+    public Mono<CarResponse> saveCar(MultiValueMap<String, Part> carRequestMultivalueMap) {
+        return getCarRequest(carRequestMultivalueMap)
                 .flatMap(carRequestValidator::validateBody)
                 .flatMap(carRequest -> getBranches(carRequest.originalBranchId(), carRequest.actualBranchId())
                         .flatMap(originalBranchAndActualBranch -> getImageContent(carRequest.image())
@@ -163,27 +174,17 @@ public class CarService {
                 });
     }
 
-//    public Mono<CarResponse> updateCar(String id, CarRequest updatedCarRequest) {
-//        return findEntityById(id)
-//                .zipWith(getBranches(updatedCarRequest.originalBranchId(), updatedCarRequest.actualBranchId()))
-//                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> getImageContent(updatedCarRequest)
-//                        .flatMap(imageContent -> {
-//                            Car existingCarUpdated = updateExistingCar(
-//                                    updatedCarRequest,
-//                                    existingCarAndOriginalBranchActualBranchTuple.getT1(),
-//                                    existingCarAndOriginalBranchActualBranchTuple.getT2(),
-//                                    imageContent
-//                            );
-//
-//                            return carRepository.save(existingCarUpdated);
-//                        }))
-//                .map(carMapper::mapEntityToDto)
-//                .onErrorMap(e -> {
-//                    log.error("Error while updating cars: {}", e.getMessage());
-//
-//                    return new SwiftWheelsHubException(e.getMessage());
-//                });
-//    }
+    public Mono<CarResponse> updateCar(String id, MultiValueMap<String, Part> updatedCarRequestMultivalueMap) {
+        return getCarRequest(updatedCarRequestMultivalueMap)
+                .flatMap(carRequestValidator::validateBody)
+                .flatMap(updatedCarRequest -> saveExistingCarUpdated(id, updatedCarRequest))
+                .map(carMapper::mapEntityToDto)
+                .onErrorMap(e -> {
+                    log.error("Error while updating cars: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e.getMessage());
+                });
+    }
 
     public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
@@ -260,16 +261,16 @@ public class CarService {
 
     private List<Mono<String>> getFieldValuesAsListOfMono(Map<String, Part> fieldsAndValues) {
         return List.of(
-                convertPartToString(fieldsAndValues.get("make")),
-                convertPartToString(fieldsAndValues.get("model")),
-                convertPartToString(fieldsAndValues.get("bodyCategory")),
-                convertPartToString(fieldsAndValues.get("yearOfProduction")),
-                convertPartToString(fieldsAndValues.get("color")),
-                convertPartToString(fieldsAndValues.get("mileage")),
-                convertPartToString(fieldsAndValues.get("carState")),
-                convertPartToString(fieldsAndValues.get("amount")),
-                convertPartToString(fieldsAndValues.get("originalBranchId")),
-                convertPartToString(fieldsAndValues.get("actualBranchId"))
+                convertPartToString(fieldsAndValues.get(MAKE)),
+                convertPartToString(fieldsAndValues.get(MODEL)),
+                convertPartToString(fieldsAndValues.get(BODY_CATEGORY)),
+                convertPartToString(fieldsAndValues.get(YEAR_OF_PRODUCTION)),
+                convertPartToString(fieldsAndValues.get(COLOR)),
+                convertPartToString(fieldsAndValues.get(MILEAGE)),
+                convertPartToString(fieldsAndValues.get(CAR_STATE)),
+                convertPartToString(fieldsAndValues.get(AMOUNT)),
+                convertPartToString(fieldsAndValues.get(ORIGINAL_BRANCH_ID)),
+                convertPartToString(fieldsAndValues.get(ACTUAL_BRANCH_ID))
         );
     }
 
@@ -285,8 +286,24 @@ public class CarService {
                 .amount(BigDecimal.valueOf(Long.parseLong((String) fieldsValue[7])))
                 .originalBranchId((String) fieldsValue[8])
                 .actualBranchId((String) fieldsValue[9])
-                .image((FilePart) fieldsAndValues.get("image"))
+                .image((FilePart) fieldsAndValues.get(IMAGE))
                 .build();
+    }
+
+    private Mono<Car> saveExistingCarUpdated(String id, CarRequest updatedCarRequest) {
+        return findEntityById(id)
+                .zipWith(getBranches(updatedCarRequest.originalBranchId(), updatedCarRequest.actualBranchId()))
+                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> getImageContent(updatedCarRequest.image())
+                        .flatMap(imageContent -> {
+                            Car existingCarUpdated = updateExistingCar(
+                                    updatedCarRequest,
+                                    existingCarAndOriginalBranchActualBranchTuple.getT1(),
+                                    existingCarAndOriginalBranchActualBranchTuple.getT2(),
+                                    imageContent
+                            );
+
+                            return carRepository.save(existingCarUpdated);
+                        }));
     }
 
     private Mono<String> convertPartToString(Part part) {

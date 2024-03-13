@@ -30,7 +30,7 @@ public class CarRouter {
                         .andRoute(RequestPredicates.PUT("/update-statuses"), carHandler::updateCarsStatus)
                         .andRoute(RequestPredicates.PUT("/{id}/change-status"), carHandler::updateCarStatus)
                         .andRoute(RequestPredicates.PUT("/{id}/update-after-return"), carHandler::updateCarWhenBookingIsClosed)
-//                        .andRoute(RequestPredicates.PUT("/{id}").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::updateCar)
+                        .andRoute(RequestPredicates.PUT("/{id}").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::updateCar)
                         .andRoute(RequestPredicates.DELETE("/{id}"), carHandler::deleteCarById));
     }
 
