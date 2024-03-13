@@ -2,11 +2,13 @@ package com.swiftwheelshubreactive.agency.service;
 
 import com.swiftwheelshubreactive.agency.mapper.CarMapper;
 import com.swiftwheelshubreactive.agency.repository.CarRepository;
+import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.BodyCategory;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
@@ -18,16 +20,28 @@ import com.swiftwheelshubreactive.model.CarStatus;
 import com.swiftwheelshubreactive.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -35,10 +49,13 @@ import reactor.util.function.Tuple2;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +66,7 @@ public class CarService {
     private final BranchService branchService;
     private final EmployeeService employeeService;
     private final CarMapper carMapper;
+    private final CarRequestValidator carRequestValidator;
 
     public Flux<CarResponse> findAllCars() {
         return carRepository.findAll()
@@ -110,15 +128,19 @@ public class CarService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
     }
 
-    public Mono<CarResponse> saveCar(CarRequest carRequest) {
-        return getBranches(carRequest)
-                .flatMap(originalBranchAndActualBranch -> {
-                    Car newCar = carMapper.mapDtoToEntity(carRequest);
-                    newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
-                    newCar.setActualBranch(originalBranchAndActualBranch.getT2());
+    public Mono<CarResponse> saveCar(MultiValueMap<String, Part> multiValueMap) {
+        return getCarRequest(multiValueMap)
+                .flatMap(carRequestValidator::validateBody)
+                .flatMap(carRequest -> getBranches(carRequest.originalBranchId(), carRequest.actualBranchId())
+                        .flatMap(originalBranchAndActualBranch -> getImageContent(carRequest.image())
+                                .flatMap(imageContent -> {
+                                    Car newCar = carMapper.mapDtoToEntity(carRequest);
+                                    newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
+                                    newCar.setActualBranch(originalBranchAndActualBranch.getT2());
+                                    newCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
 
-                    return carRepository.save(newCar);
-                })
+                                    return carRepository.save(newCar);
+                                })))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -141,25 +163,27 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> updateCar(String id, CarRequest updatedCarDto) {
-        return findEntityById(id)
-                .zipWith(getBranches(updatedCarDto))
-                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> {
-                    Car existingCarUpdated = updateExistingCar(
-                            updatedCarDto,
-                            existingCarAndOriginalBranchActualBranchTuple.getT1(),
-                            existingCarAndOriginalBranchActualBranchTuple.getT2()
-                    );
-
-                    return carRepository.save(existingCarUpdated);
-                })
-                .map(carMapper::mapEntityToDto)
-                .onErrorMap(e -> {
-                    log.error("Error while updating cars: {}", e.getMessage());
-
-                    return new SwiftWheelsHubException(e.getMessage());
-                });
-    }
+//    public Mono<CarResponse> updateCar(String id, CarRequest updatedCarRequest) {
+//        return findEntityById(id)
+//                .zipWith(getBranches(updatedCarRequest.originalBranchId(), updatedCarRequest.actualBranchId()))
+//                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> getImageContent(updatedCarRequest)
+//                        .flatMap(imageContent -> {
+//                            Car existingCarUpdated = updateExistingCar(
+//                                    updatedCarRequest,
+//                                    existingCarAndOriginalBranchActualBranchTuple.getT1(),
+//                                    existingCarAndOriginalBranchActualBranchTuple.getT2(),
+//                                    imageContent
+//                            );
+//
+//                            return carRepository.save(existingCarUpdated);
+//                        }))
+//                .map(carMapper::mapEntityToDto)
+//                .onErrorMap(e -> {
+//                    log.error("Error while updating cars: {}", e.getMessage());
+//
+//                    return new SwiftWheelsHubException(e.getMessage());
+//                });
+//    }
 
     public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
@@ -225,12 +249,65 @@ public class CarService {
                 );
     }
 
-    private Mono<Tuple2<Branch, Branch>> getBranches(CarRequest carRequest) {
-        return branchService.findEntityById(carRequest.originalBranchId())
-                .zipWith(branchService.findEntityById(carRequest.actualBranchId()));
+    private Mono<CarRequest> getCarRequest(MultiValueMap<String, Part> multiValueMap) {
+        return Mono.just(multiValueMap.toSingleValueMap())
+                .flatMap(fieldsAndValues -> Mono.zip(
+                                getFieldValuesAsListOfMono(fieldsAndValues),
+                                fieldsValue -> createCarRequest(fieldsAndValues, fieldsValue)
+                        )
+                );
     }
 
-    private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar, Tuple2<Branch, Branch> originalBranchAndActualBranch) {
+    private List<Mono<String>> getFieldValuesAsListOfMono(Map<String, Part> fieldsAndValues) {
+        return List.of(
+                convertPartToString(fieldsAndValues.get("make")),
+                convertPartToString(fieldsAndValues.get("model")),
+                convertPartToString(fieldsAndValues.get("bodyCategory")),
+                convertPartToString(fieldsAndValues.get("yearOfProduction")),
+                convertPartToString(fieldsAndValues.get("color")),
+                convertPartToString(fieldsAndValues.get("mileage")),
+                convertPartToString(fieldsAndValues.get("carState")),
+                convertPartToString(fieldsAndValues.get("amount")),
+                convertPartToString(fieldsAndValues.get("originalBranchId")),
+                convertPartToString(fieldsAndValues.get("actualBranchId"))
+        );
+    }
+
+    private CarRequest createCarRequest(Map<String, Part> fieldsAndValues, Object[] fieldsValue) {
+        return CarRequest.builder()
+                .make((String) fieldsValue[0])
+                .model((String) fieldsValue[1])
+                .bodyCategory(BodyCategory.valueOf((String) fieldsValue[2]))
+                .yearOfProduction(Integer.parseInt((String) fieldsValue[3]))
+                .color((String) fieldsValue[4])
+                .mileage(Integer.parseInt((String) fieldsValue[5]))
+                .carState(CarState.valueOf((String) fieldsValue[6]))
+                .amount(BigDecimal.valueOf(Long.parseLong((String) fieldsValue[7])))
+                .originalBranchId((String) fieldsValue[8])
+                .actualBranchId((String) fieldsValue[9])
+                .image((FilePart) fieldsAndValues.get("image"))
+                .build();
+    }
+
+    private Mono<String> convertPartToString(Part part) {
+        return part.content()
+                .map(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+
+                    return new String(bytes, StandardCharsets.UTF_8);
+                })
+                .reduce(StringUtils.EMPTY, (actual, next) -> actual + next);
+    }
+
+    private Mono<Tuple2<Branch, Branch>> getBranches(String originalBranchId, String actualBranchId) {
+        return branchService.findEntityById(originalBranchId)
+                .zipWith(branchService.findEntityById(actualBranchId));
+    }
+
+    private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar,
+                                  Tuple2<Branch, Branch> originalBranchAndActualBranch, byte[] imageContent) {
         existingCar.setMake(updatedCarRequest.make());
         existingCar.setModel(updatedCarRequest.model());
         existingCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
@@ -241,7 +318,7 @@ public class CarService {
         existingCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
         existingCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
         existingCar.setActualBranch(originalBranchAndActualBranch.getT2());
-        existingCar.setUrlOfImage(updatedCarRequest.urlOfImage());
+        existingCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
 
         return existingCar;
     }
@@ -256,18 +333,29 @@ public class CarService {
         return car;
     }
 
-    private Flux<CarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
+    private Mono<byte[]> getImageContent(FilePart filePart) {
+        return DataBufferUtils.join(filePart.content())
+                .map(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+
+                    return bytes;
+                });
+    }
+
+    private Flux<ExcelCarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
         return Mono.fromCallable(() -> extractDataFromExcel(dataBuffer.asInputStream()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);
     }
 
-    private Mono<Car> createNewCar(CarRequest carRequest) {
-        return getBranches(carRequest)
-                .map(originalBranchActualBranchTuple -> generateCar(carRequest, originalBranchActualBranchTuple));
+    private Mono<Car> createNewCar(ExcelCarRequest excelCarRequest) {
+        return getBranches(excelCarRequest.originalBranchId(), excelCarRequest.actualBranchId())
+                .map(originalBranchActualBranchTuple -> generateCar(excelCarRequest, originalBranchActualBranchTuple));
     }
 
-    private List<CarRequest> extractDataFromExcel(InputStream inputStream) {
+    private List<ExcelCarRequest> extractDataFromExcel(InputStream inputStream) {
         try (Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -277,9 +365,9 @@ public class CarService {
         }
     }
 
-    private List<CarRequest> getValuesFromSheet(Sheet sheet) {
+    private List<ExcelCarRequest> getValuesFromSheet(Sheet sheet) {
         DataFormatter dataFormatter = new DataFormatter();
-        List<CarRequest> carRequests = new ArrayList<>();
+        List<ExcelCarRequest> excelCarRequests = new ArrayList<>();
 
         for (int index = 1; index <= sheet.getLastRowNum(); index++) {
             List<Object> values = new ArrayList<>();
@@ -293,25 +381,47 @@ public class CarService {
                 switch (cell.getCellType()) {
                     case STRING -> values.add(cell.getStringCellValue());
                     case NUMERIC -> values.add(dataFormatter.formatCellValue(cell));
+                    default -> throw new SwiftWheelsHubException("Unknown Excel cell type");
                 }
+
+                getPictureData(sheet, cell).ifPresent(values::add);
             }
 
-            carRequests.add(generateCarRequest(values));
+            excelCarRequests.add(generateExcelCarRequest(values));
         }
 
-        return Collections.unmodifiableList(carRequests);
+        return Collections.unmodifiableList(excelCarRequests);
     }
 
-    private Car generateCar(CarRequest carRequest, Tuple2<Branch, Branch> originalBranchAndActualBranchTuple) {
-        Car car = carMapper.mapDtoToEntity(carRequest);
+    private Car generateCar(ExcelCarRequest excelCarRequest, Tuple2<Branch, Branch> originalBranchAndActualBranchTuple) {
+        Car car = carMapper.mapExcelCarRequestToEntity(excelCarRequest);
         car.setOriginalBranch(originalBranchAndActualBranchTuple.getT1());
         car.setActualBranch(originalBranchAndActualBranchTuple.getT2());
 
         return car;
     }
 
-    private CarRequest generateCarRequest(List<Object> values) {
-        return CarRequest.builder()
+    private Optional<PictureData> getPictureData(Sheet sheet, Cell cell) {
+        XSSFDrawing drawingPatriarch = ((XSSFSheet) sheet).createDrawingPatriarch();
+
+        return drawingPatriarch.getShapes()
+                .stream()
+                .filter(xssfShape -> xssfShape instanceof Picture)
+                .map(xssfShape -> ((Picture) xssfShape))
+                .filter(picture -> checkIfImageCorrespondsToRowAndColumn(cell, picture))
+                .map(Picture::getPictureData)
+                .findFirst();
+    }
+
+    private boolean checkIfImageCorrespondsToRowAndColumn(Cell cell, Picture picture) {
+        ClientAnchor clientAnchor = picture.getClientAnchor();
+
+        return cell.getColumnIndex() + 1 == clientAnchor.getCol1() &&
+                cell.getRowIndex() == clientAnchor.getRow1();
+    }
+
+    private ExcelCarRequest generateExcelCarRequest(List<Object> values) {
+        return ExcelCarRequest.builder()
                 .make((String) values.get(CarFields.MAKE.ordinal()))
                 .model((String) values.get(CarFields.MODEL.ordinal()))
                 .bodyCategory(BodyCategory.valueOf(((String) values.get(CarFields.BODY_TYPE.ordinal())).toUpperCase()))
@@ -322,8 +432,12 @@ public class CarService {
                 .amount(new BigDecimal((String) values.get(CarFields.AMOUNT.ordinal())))
                 .originalBranchId((String) values.get(CarFields.ORIGINAL_BRANCH.ordinal()))
                 .actualBranchId((String) values.get(CarFields.ACTUAL_BRANCH.ordinal()))
-                .urlOfImage((String) values.get(CarFields.URL_OF_IMAGE.ordinal()))
+                .image(getImageData((PictureData) values.get(CarFields.IMAGE.ordinal())))
                 .build();
+    }
+
+    private byte[] getImageData(PictureData pictureData) {
+        return ObjectUtils.isEmpty(pictureData) ? null : pictureData.getData();
     }
 
 }

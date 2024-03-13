@@ -18,19 +18,19 @@ public class CarRouter {
     @Bean
     @SwaggerCarRouterOperations
     public RouterFunction<ServerResponse> routeCar(CarHandler carHandler) {
-        return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
+        return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING),
                 RouterFunctions.route(RequestPredicates.GET(""), carHandler::findAllCars)
                         .andRoute(RequestPredicates.GET("/make/{make}"), carHandler::findCarsByMake)
                         .andRoute(RequestPredicates.GET("/filter/{filter}"), carHandler::findCarsByFilterInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/count"), carHandler::countCars)
                         .andRoute(RequestPredicates.GET("/{id}/availability"), carHandler::getAvailableCar)
                         .andRoute(RequestPredicates.GET("/{id}"), carHandler::findCarById)
-                        .andRoute(RequestPredicates.POST(""), carHandler::saveCar)
-                        .andRoute(RequestPredicates.POST("/upload"), carHandler::uploadCars)
+                        .andRoute(RequestPredicates.POST("").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::saveCar)
+                        .andRoute(RequestPredicates.POST("/upload").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::uploadCars)
                         .andRoute(RequestPredicates.PUT("/update-statuses"), carHandler::updateCarsStatus)
                         .andRoute(RequestPredicates.PUT("/{id}/change-status"), carHandler::updateCarStatus)
                         .andRoute(RequestPredicates.PUT("/{id}/update-after-return"), carHandler::updateCarWhenBookingIsClosed)
-                        .andRoute(RequestPredicates.PUT("/{id}"), carHandler::updateCar)
+//                        .andRoute(RequestPredicates.PUT("/{id}").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::updateCar)
                         .andRoute(RequestPredicates.DELETE("/{id}"), carHandler::deleteCarById));
     }
 

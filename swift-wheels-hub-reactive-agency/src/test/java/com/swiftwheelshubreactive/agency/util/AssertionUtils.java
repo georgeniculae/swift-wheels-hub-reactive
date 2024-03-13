@@ -26,7 +26,7 @@ public class AssertionUtils {
         assertEquals(car.getMileage(), carRequest.mileage());
         assertEquals(car.getCarStatus().name(), carRequest.carState().name());
         assertEquals(car.getAmount(), carRequest.amount());
-        assertEquals(car.getUrlOfImage(), carRequest.urlOfImage());
+        assertEquals(car.getImage(), carRequest.image());
     }
 
     public static void assertCarResponse(Car car, CarResponse carResponse) {
@@ -38,7 +38,6 @@ public class AssertionUtils {
         assertEquals(car.getMileage(), carResponse.mileage());
         assertEquals(car.getCarStatus().name(), carResponse.carState().name());
         assertEquals(car.getAmount(), carResponse.amount());
-        assertEquals(car.getUrlOfImage(), carResponse.urlOfImage());
     }
 
     public static void assertBranchRequest(Branch branch, BranchRequest branchRequest) {

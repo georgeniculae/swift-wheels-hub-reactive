@@ -2,8 +2,11 @@ package com.swiftwheelshubreactive.agency.mapper;
 
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
+import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.model.Car;
 import org.apache.commons.lang3.ObjectUtils;
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -25,7 +28,17 @@ public interface CarMapper {
 
     @Mapping(target = "bodyType", source = "bodyCategory")
     @Mapping(target = "carStatus", source = "carState")
+    @Mapping(target = "image", ignore = true)
     Car mapDtoToEntity(CarRequest carRequest);
+
+    @Mapping(target = "bodyType", source = "bodyCategory")
+    @Mapping(target = "carStatus", source = "carState")
+    @Mapping(target = "image", expression = "java(mapByteArrayToBinary(excelCarRequest.image()))")
+    Car mapExcelCarRequestToEntity(ExcelCarRequest excelCarRequest);
+
+    default Binary mapByteArrayToBinary(byte[] bytes) {
+        return new Binary(BsonBinarySubType.BINARY, bytes);
+    }
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
