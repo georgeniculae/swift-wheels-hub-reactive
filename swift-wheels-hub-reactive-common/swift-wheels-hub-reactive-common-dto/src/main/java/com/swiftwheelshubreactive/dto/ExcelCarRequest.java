@@ -8,9 +8,6 @@ import java.math.BigDecimal;
 
 @Builder
 public record ExcelCarRequest(
-
-        String id,
-
         @NonNull
         @Min(2)
         String make,
@@ -44,7 +41,6 @@ public record ExcelCarRequest(
     @Override
     public String toString() {
         return "ExcelCarRequest{" + "\n" +
-                "id=" + id +
                 "make='" + make + "\n" +
                 "model='" + model + "\n" +
                 "bodyCategory=" + bodyCategory + "\n" +

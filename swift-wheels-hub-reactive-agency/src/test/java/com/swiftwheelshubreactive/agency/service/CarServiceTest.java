@@ -10,6 +10,7 @@ import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
@@ -32,6 +33,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -62,6 +64,9 @@ class CarServiceTest {
 
     @Mock
     private CarRequestValidator carRequestValidator;
+
+    @Mock
+    private ExcelProcessorService excelProcessorService;
 
     @Spy
     private CarMapper carMapper = new CarMapperImpl();
@@ -267,11 +272,14 @@ class CarServiceTest {
         CarResponse carResponse =
                 TestUtils.getResourceAsJson("/data/UploadedCarResponse.json", CarResponse.class);
 
+        ExcelCarRequest excelCarRequest = TestData.getExcelCarRequest();
+
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
         Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
 
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
+        when(excelProcessorService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
 
         StepVerifier.create(carService.uploadCars(filePart))
@@ -282,12 +290,14 @@ class CarServiceTest {
     @Test
     void uploadCarsTest_errorOnSavingCars() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        ExcelCarRequest excelCarRequest = TestData.getExcelCarRequest();
 
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
         Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
 
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
+        when(excelProcessorService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new SwiftWheelsHubException("error")));
 
         StepVerifier.create(carService.uploadCars(filePart))

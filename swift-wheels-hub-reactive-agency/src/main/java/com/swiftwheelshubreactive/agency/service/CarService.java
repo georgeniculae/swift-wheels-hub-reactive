@@ -15,24 +15,12 @@ import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.BodyType;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
-import com.swiftwheelshubreactive.model.CarFields;
 import com.swiftwheelshubreactive.model.CarStatus;
 import com.swiftwheelshubreactive.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Picture;
-import org.apache.poi.ss.usermodel.PictureData;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -47,15 +35,10 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +59,7 @@ public class CarService {
     private final CarRepository carRepository;
     private final BranchService branchService;
     private final EmployeeService employeeService;
+    private final ExcelProcessorService excelProcessorService;
     private final CarMapper carMapper;
     private final CarRequestValidator carRequestValidator;
 
@@ -392,7 +376,7 @@ public class CarService {
     }
 
     private Flux<ExcelCarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
-        return Mono.fromCallable(() -> extractDataFromExcel(dataBuffer.asInputStream()))
+        return Mono.fromCallable(() -> excelProcessorService.extractDataFromExcel(dataBuffer.asInputStream()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);
     }
@@ -402,89 +386,12 @@ public class CarService {
                 .map(originalBranchActualBranchTuple -> generateCar(excelCarRequest, originalBranchActualBranchTuple));
     }
 
-    private List<ExcelCarRequest> extractDataFromExcel(InputStream inputStream) {
-        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            return getValuesFromSheet(sheet);
-        } catch (Exception e) {
-            throw new SwiftWheelsHubException(e);
-        }
-    }
-
-    private List<ExcelCarRequest> getValuesFromSheet(Sheet sheet) {
-        DataFormatter dataFormatter = new DataFormatter();
-        List<ExcelCarRequest> excelCarRequests = new ArrayList<>();
-
-        for (int index = 1; index <= sheet.getLastRowNum(); index++) {
-            List<Object> values = new ArrayList<>();
-
-            Row currentRow = sheet.getRow(index);
-            Iterator<Cell> cellIterator = currentRow.cellIterator();
-
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-
-                switch (cell.getCellType()) {
-                    case STRING -> values.add(cell.getStringCellValue());
-                    case NUMERIC -> values.add(dataFormatter.formatCellValue(cell));
-                    default -> throw new SwiftWheelsHubException("Unknown Excel cell type");
-                }
-
-                getPictureData(sheet, cell).ifPresent(values::add);
-            }
-
-            excelCarRequests.add(generateExcelCarRequest(values));
-        }
-
-        return Collections.unmodifiableList(excelCarRequests);
-    }
-
     private Car generateCar(ExcelCarRequest excelCarRequest, Tuple2<Branch, Branch> originalBranchAndActualBranchTuple) {
         Car car = carMapper.mapExcelCarRequestToEntity(excelCarRequest);
         car.setOriginalBranch(originalBranchAndActualBranchTuple.getT1());
         car.setActualBranch(originalBranchAndActualBranchTuple.getT2());
 
         return car;
-    }
-
-    private Optional<PictureData> getPictureData(Sheet sheet, Cell cell) {
-        XSSFDrawing drawingPatriarch = ((XSSFSheet) sheet).createDrawingPatriarch();
-
-        return drawingPatriarch.getShapes()
-                .stream()
-                .filter(xssfShape -> xssfShape instanceof Picture)
-                .map(xssfShape -> ((Picture) xssfShape))
-                .filter(picture -> checkIfImageCorrespondsToRowAndColumn(cell, picture))
-                .map(Picture::getPictureData)
-                .findFirst();
-    }
-
-    private boolean checkIfImageCorrespondsToRowAndColumn(Cell cell, Picture picture) {
-        ClientAnchor clientAnchor = picture.getClientAnchor();
-
-        return cell.getColumnIndex() + 1 == clientAnchor.getCol1() &&
-                cell.getRowIndex() == clientAnchor.getRow1();
-    }
-
-    private ExcelCarRequest generateExcelCarRequest(List<Object> values) {
-        return ExcelCarRequest.builder()
-                .make((String) values.get(CarFields.MAKE.ordinal()))
-                .model((String) values.get(CarFields.MODEL.ordinal()))
-                .bodyCategory(BodyCategory.valueOf(((String) values.get(CarFields.BODY_TYPE.ordinal())).toUpperCase()))
-                .yearOfProduction(Integer.parseInt((String) values.get(CarFields.YEAR_OF_PRODUCTION.ordinal())))
-                .color((String) values.get(CarFields.COLOR.ordinal()))
-                .mileage(Integer.parseInt((String) values.get(CarFields.MILEAGE.ordinal())))
-                .carState(CarState.valueOf(((String) values.get(CarFields.CAR_STATUS.ordinal())).toUpperCase()))
-                .amount(new BigDecimal((String) values.get(CarFields.AMOUNT.ordinal())))
-                .originalBranchId((String) values.get(CarFields.ORIGINAL_BRANCH.ordinal()))
-                .actualBranchId((String) values.get(CarFields.ACTUAL_BRANCH.ordinal()))
-                .image(getImageData((PictureData) values.get(CarFields.IMAGE.ordinal())))
-                .build();
-    }
-
-    private byte[] getImageData(PictureData pictureData) {
-        return ObjectUtils.isEmpty(pictureData) ? null : pictureData.getData();
     }
 
 }

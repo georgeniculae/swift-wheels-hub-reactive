@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.agency.util;
 import com.swiftwheelshubreactive.dto.BodyCategory;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.model.BodyType;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
@@ -66,7 +67,24 @@ public class TestData {
 
         return multiValueMap;
     }
+    public static ExcelCarRequest getExcelCarRequest() {
+        Path path = Paths.get("src/test/resources/image/car.jpg");
+        Flux<DataBuffer> imageDataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
 
+        return ExcelCarRequest.builder()
+                .make("Volkswagen")
+                .model("Golf")
+                .bodyCategory(BodyCategory.HATCHBACK)
+                .yearOfProduction(2010)
+                .color("black")
+                .mileage(270000)
+                .carState(CarState.AVAILABLE)
+                .amount(BigDecimal.valueOf(500))
+                .originalBranchId("64f361caf291ae086e179547")
+                .actualBranchId("64f361caf291ae086e179547")
+                .image(new Binary(getImageContent(getFilePart("image", "car", imageDataBuffer))).getData())
+                .build();
+    }
     public static Car getCar() {
         Path path = Paths.get("src/test/resources/image/car.jpg");
         Flux<DataBuffer> imageDataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
