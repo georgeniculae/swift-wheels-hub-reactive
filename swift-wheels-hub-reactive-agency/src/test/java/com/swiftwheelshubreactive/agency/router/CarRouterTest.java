@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.router;
 
 import com.swiftwheelshubreactive.agency.handler.CarHandler;
+import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import org.junit.jupiter.api.Test;
@@ -218,6 +219,7 @@ class CarRouterTest {
                 .post()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromMultipartData(TestData.getCarRequestMultivalueMap()))
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -269,8 +271,8 @@ class CarRouterTest {
     void uploadCarsTest_success() {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(carResponse));
 
@@ -280,7 +282,7 @@ class CarRouterTest {
                 .post()
                 .uri(PATH + "/upload")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromMultipartData(builder.build()))
+                .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -347,6 +349,7 @@ class CarRouterTest {
         Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
+                .body(BodyInserters.fromMultipartData(TestData.getCarRequestMultivalueMap()))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()

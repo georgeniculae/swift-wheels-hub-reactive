@@ -33,8 +33,10 @@ public record CarRequest(
         @NonNull
         BigDecimal amount,
 
+        @NonNull
         String originalBranchId,
 
+        @NonNull
         String actualBranchId,
 
         FilePart image

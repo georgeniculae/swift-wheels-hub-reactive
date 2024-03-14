@@ -3,7 +3,9 @@ package com.swiftwheelshubreactive.agency.service;
 import com.swiftwheelshubreactive.agency.mapper.CarMapper;
 import com.swiftwheelshubreactive.agency.mapper.CarMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.CarRepository;
+import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -23,6 +25,8 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -54,6 +58,9 @@ class CarServiceTest {
 
     @Mock
     private FilePart filePart;
+
+    @Mock
+    private CarRequestValidator carRequestValidator;
 
     @Spy
     private CarMapper carMapper = new CarMapperImpl();
@@ -204,10 +211,13 @@ class CarServiceTest {
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
+        MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
+
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.saveCar(carRequest))
+        StepVerifier.create(carService.saveCar(multivalueMap))
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -216,11 +226,13 @@ class CarServiceTest {
     void saveCarTest_errorOnSaving() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.saveCar(carRequest))
+        StepVerifier.create(carService.saveCar(multivalueMap))
                 .expectError()
                 .verify();
     }
@@ -235,7 +247,7 @@ class CarServiceTest {
                 TestUtils.getResourceAsJson("/data/UploadedCarResponse.json", CarResponse.class);
 
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
-        Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 16384);
+        Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
 
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
@@ -252,12 +264,14 @@ class CarServiceTest {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carRequest))
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap))
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -292,12 +306,14 @@ class CarServiceTest {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", carRequest))
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap))
                 .expectError()
                 .verify();
     }

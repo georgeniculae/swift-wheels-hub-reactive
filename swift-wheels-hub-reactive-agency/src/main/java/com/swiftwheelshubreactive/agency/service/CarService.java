@@ -144,14 +144,8 @@ public class CarService {
                 .flatMap(carRequestValidator::validateBody)
                 .flatMap(carRequest -> getBranches(carRequest.originalBranchId(), carRequest.actualBranchId())
                         .flatMap(originalBranchAndActualBranch -> getImageContent(carRequest.image())
-                                .flatMap(imageContent -> {
-                                    Car newCar = carMapper.mapDtoToEntity(carRequest);
-                                    newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
-                                    newCar.setActualBranch(originalBranchAndActualBranch.getT2());
-                                    newCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
-
-                                    return carRepository.save(newCar);
-                                })))
+                                .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})))
+                                .flatMap(imageContent -> processCar(carRequest, originalBranchAndActualBranch, imageContent))))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -250,31 +244,31 @@ public class CarService {
                 );
     }
 
-    private Mono<CarRequest> getCarRequest(MultiValueMap<String, Part> multiValueMap) {
-        return Mono.just(multiValueMap.toSingleValueMap())
-                .flatMap(fieldsAndValues -> Mono.zip(
-                                getFieldValuesAsListOfMono(fieldsAndValues),
-                                fieldsValue -> createCarRequest(fieldsAndValues, fieldsValue)
+    private Mono<CarRequest> getCarRequest(MultiValueMap<String, Part> carRequestMultivalueMap) {
+        return Mono.just(carRequestMultivalueMap.toSingleValueMap())
+                .flatMap(fieldsAndValuesMap -> Mono.zip(
+                                getFieldValuesAsListOfMono(fieldsAndValuesMap),
+                                fieldsValue -> createCarRequest(fieldsAndValuesMap, fieldsValue)
                         )
                 );
     }
 
-    private List<Mono<String>> getFieldValuesAsListOfMono(Map<String, Part> fieldsAndValues) {
+    private List<Mono<String>> getFieldValuesAsListOfMono(Map<String, Part> fieldsAndValuesMap) {
         return List.of(
-                convertPartToString(fieldsAndValues.get(MAKE)),
-                convertPartToString(fieldsAndValues.get(MODEL)),
-                convertPartToString(fieldsAndValues.get(BODY_CATEGORY)),
-                convertPartToString(fieldsAndValues.get(YEAR_OF_PRODUCTION)),
-                convertPartToString(fieldsAndValues.get(COLOR)),
-                convertPartToString(fieldsAndValues.get(MILEAGE)),
-                convertPartToString(fieldsAndValues.get(CAR_STATE)),
-                convertPartToString(fieldsAndValues.get(AMOUNT)),
-                convertPartToString(fieldsAndValues.get(ORIGINAL_BRANCH_ID)),
-                convertPartToString(fieldsAndValues.get(ACTUAL_BRANCH_ID))
+                convertPartToString(fieldsAndValuesMap.get(MAKE)),
+                convertPartToString(fieldsAndValuesMap.get(MODEL)),
+                convertPartToString(fieldsAndValuesMap.get(BODY_CATEGORY)),
+                convertPartToString(fieldsAndValuesMap.get(YEAR_OF_PRODUCTION)),
+                convertPartToString(fieldsAndValuesMap.get(COLOR)),
+                convertPartToString(fieldsAndValuesMap.get(MILEAGE)),
+                convertPartToString(fieldsAndValuesMap.get(CAR_STATE)),
+                convertPartToString(fieldsAndValuesMap.get(AMOUNT)),
+                convertPartToString(fieldsAndValuesMap.get(ORIGINAL_BRANCH_ID)),
+                convertPartToString(fieldsAndValuesMap.get(ACTUAL_BRANCH_ID))
         );
     }
 
-    private CarRequest createCarRequest(Map<String, Part> fieldsAndValues, Object[] fieldsValue) {
+    private CarRequest createCarRequest(Map<String, Part> fieldsAndValuesMap, Object[] fieldsValue) {
         return CarRequest.builder()
                 .make((String) fieldsValue[0])
                 .model((String) fieldsValue[1])
@@ -286,7 +280,7 @@ public class CarService {
                 .amount(BigDecimal.valueOf(Long.parseLong((String) fieldsValue[7])))
                 .originalBranchId((String) fieldsValue[8])
                 .actualBranchId((String) fieldsValue[9])
-                .image((FilePart) fieldsAndValues.get(IMAGE))
+                .image((FilePart) fieldsAndValuesMap.get(IMAGE))
                 .build();
     }
 
@@ -294,20 +288,25 @@ public class CarService {
         return findEntityById(id)
                 .zipWith(getBranches(updatedCarRequest.originalBranchId(), updatedCarRequest.actualBranchId()))
                 .flatMap(existingCarAndOriginalBranchActualBranchTuple -> getImageContent(updatedCarRequest.image())
-                        .flatMap(imageContent -> {
-                            Car existingCarUpdated = updateExistingCar(
-                                    updatedCarRequest,
-                                    existingCarAndOriginalBranchActualBranchTuple.getT1(),
-                                    existingCarAndOriginalBranchActualBranchTuple.getT2(),
-                                    imageContent
-                            );
+                        .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})))
+                        .flatMap(imageContent -> processCar(updatedCarRequest, existingCarAndOriginalBranchActualBranchTuple.getT2(), imageContent)));
+    }
 
-                            return carRepository.save(existingCarUpdated);
-                        }));
+    private Mono<Car> processCar(CarRequest carRequest, Tuple2<Branch, Branch> originalBranchAndActualBranch, byte[] imageContent) {
+        Car newCar = carMapper.mapDtoToEntity(carRequest);
+        newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
+        newCar.setActualBranch(originalBranchAndActualBranch.getT2());
+
+        if (imageContent.length != 0) {
+            newCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
+        }
+
+        return carRepository.save(newCar);
     }
 
     private Mono<String> convertPartToString(Part part) {
-        return part.content()
+        return Mono.justOrEmpty(part)
+                .flatMapMany(Part::content)
                 .map(dataBuffer -> {
                     byte[] bytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(bytes);
@@ -351,7 +350,7 @@ public class CarService {
     }
 
     private Mono<byte[]> getImageContent(FilePart filePart) {
-        return DataBufferUtils.join(filePart.content())
+        return DataBufferUtils.join(getFilePartContent(filePart))
                 .map(dataBuffer -> {
                     byte[] bytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(bytes);
@@ -359,6 +358,10 @@ public class CarService {
 
                     return bytes;
                 });
+    }
+
+    private Flux<DataBuffer> getFilePartContent(FilePart filePart) {
+        return ObjectUtils.isEmpty(filePart) ? Flux.empty() : filePart.content();
     }
 
     private Flux<ExcelCarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
