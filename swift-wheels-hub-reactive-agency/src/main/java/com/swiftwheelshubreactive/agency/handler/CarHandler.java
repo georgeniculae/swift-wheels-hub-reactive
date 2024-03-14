@@ -66,7 +66,15 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> getAvailableCar(ServerRequest serverRequest) {
         return carService.getAvailableCar(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    @PreAuthorize("hasAuthority('user')")
+    public Mono<ServerResponse> getCarImage(ServerRequest serverRequest) {
+        return carService.getCarImage(ServerRequestUtil.getPathVariable(serverRequest, ID))
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasAuthority('user')")
@@ -75,15 +83,14 @@ public class CarHandler {
                 .flatMap(numberOfCars -> ServerResponse.ok().bodyValue(numberOfCars));
     }
 
-    @PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
                 .flatMap(carService::saveCar)
-                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> uploadCars(ServerRequest serverRequest) {
         return serverRequest.multipartData()
                 .map(multiValueMap -> multiValueMap.get(FILE))
@@ -94,7 +101,7 @@ public class CarHandler {
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
-    @PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
                 .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), updatedCarRequestMultivalueMap))

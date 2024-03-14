@@ -50,8 +50,7 @@ class CarRouterTest {
 
         when(carHandler.findAllCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        Flux<CarResponse> responseBody = webTestClient.get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -75,8 +74,7 @@ class CarRouterTest {
 
         when(carHandler.findAllCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        webTestClient.get()
                 .uri(PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -93,8 +91,7 @@ class CarRouterTest {
 
         when(carHandler.findCarById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        Flux<CarResponse> responseBody = webTestClient.get()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -117,8 +114,7 @@ class CarRouterTest {
 
         when(carHandler.findCarById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        webTestClient.get()
                 .uri(PATH + "/{id}", "64f361caf291ae086e179547")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -135,8 +131,7 @@ class CarRouterTest {
 
         when(carHandler.findCarsByMake(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        Flux<CarResponse> responseBody = webTestClient.get()
                 .uri(PATH + "/make/{make}", "Volkswagen")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -159,10 +154,45 @@ class CarRouterTest {
 
         when(carHandler.findCarsByMake(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        webTestClient.get()
                 .uri(PATH + "/make/{make}", "Volkswagen")
                 .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
+
+    @Test
+    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    void getCarImageTest_success() {
+        byte[] body = new byte[]{};
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(body);
+
+        when(carHandler.getCarImage(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<byte[]> responseBody = webTestClient.get()
+                .uri(PATH + "/{id}/image", "64f361caf291ae086e179547")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(byte[].class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNextMatches(bytes -> bytes.length == body.length)
+                .verifyComplete();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getCarImageTest_unauthorized() {
+        byte[] body = new byte[]{};
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(body);
+
+        when(carHandler.getCarImage(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.get()
+                .uri(PATH + "/{id}/image", "64f361caf291ae086e179547")
                 .exchange()
                 .expectStatus()
                 .isUnauthorized();
@@ -175,8 +205,7 @@ class CarRouterTest {
 
         when(carHandler.countCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<Long> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        Flux<Long> responseBody = webTestClient.get()
                 .uri(PATH + "/count")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -197,8 +226,7 @@ class CarRouterTest {
 
         when(carHandler.countCars(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .get()
+        webTestClient.get()
                 .uri(PATH + "/count")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -517,7 +545,7 @@ class CarRouterTest {
 
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
-    void setCarStatusNotAvailableTest_success() {
+    void updateCarStatus_success() {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);

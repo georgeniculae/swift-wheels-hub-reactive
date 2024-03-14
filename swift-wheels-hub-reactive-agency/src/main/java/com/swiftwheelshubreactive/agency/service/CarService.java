@@ -139,6 +139,17 @@ public class CarService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.NOT_FOUND, "No result")));
     }
 
+    public Mono<byte[]> getCarImage(String id) {
+        return carRepository.findById(MongoUtil.getObjectId(id))
+                .map(Car::getImage)
+                .map(Binary::getData)
+                .onErrorMap(e -> {
+                    log.error("Error while getting car image: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e.getMessage());
+                });
+    }
+
     public Mono<CarResponse> saveCar(MultiValueMap<String, Part> carRequestMultivalueMap) {
         return getCarRequest(carRequestMultivalueMap)
                 .flatMap(carRequestValidator::validateBody)

@@ -189,7 +189,35 @@ class CarHandlerTest {
     }
 
     @Test
-    void countCarsTest_noResultReturned() {
+    void getCarImageTest_noResultReturned() {
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.GET)
+                .pathVariable("id", "64f361caf291ae086e179547")
+                .build();
+
+        when(carService.getCarImage(anyString())).thenReturn(Mono.empty());
+
+        StepVerifier.create(carHandler.getCarImage(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
+                .verifyComplete();
+    }
+
+    @Test
+    void getCarImageTest_success() {
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.GET)
+                .pathVariable("id", "64f361caf291ae086e179547")
+                .build();
+
+        when(carService.getCarImage(anyString())).thenReturn(Mono.just(new byte[]{}));
+
+        StepVerifier.create(carHandler.getCarImage(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
+
+    @Test
+    void countCarsTest_success() {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();

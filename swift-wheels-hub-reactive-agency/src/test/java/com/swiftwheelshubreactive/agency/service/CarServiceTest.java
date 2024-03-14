@@ -10,6 +10,7 @@ import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
 import com.swiftwheelshubreactive.model.CarStatus;
@@ -178,6 +179,26 @@ class CarServiceTest {
     }
 
     @Test
+    void getCarImageTest_success() {
+        Car car = TestData.getCar();
+
+        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
+
+        StepVerifier.create(carService.getCarImage("64f361caf291ae086e179547"))
+                .expectNextCount(1)
+                .verifyComplete();
+    }
+
+    @Test
+    void getCarImageTest_errorOnFindingById() {
+        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new SwiftWheelsHubException("error")));
+
+        StepVerifier.create(carService.getCarImage("64f361caf291ae086e179547"))
+                .expectError()
+                .verify();
+    }
+
+    @Test
     void findCarByFilterTest_errorOnFindingByFilter() {
         when(carRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
@@ -259,10 +280,26 @@ class CarServiceTest {
     }
 
     @Test
+    void uploadCarsTest_errorOnSavingCars() {
+        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+
+        Path path = Paths.get("src/test/resources/file/Cars.xlsx");
+        Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
+
+        when(filePart.content()).thenReturn(dataBuffer);
+        when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
+        when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new SwiftWheelsHubException("error")));
+
+        StepVerifier.create(carService.uploadCars(filePart))
+                .expectError()
+                .verify();
+    }
+
+    @Test
     void updateCarTest_success() {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        CarRequest carRequest = TestData.getCarRequest();
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 

@@ -209,6 +209,40 @@ import java.lang.annotation.Target;
                         )
                 ),
                 @RouterOperation(
+                        method = RequestMethod.GET,
+                        path = "/cars/{id}/image",
+                        beanClass = CarHandler.class,
+                        beanMethod = "getCarImage",
+                        operation = @Operation(
+                                operationId = "getCarImage",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(
+                                                        schema = @Schema(implementation = byte[].class),
+                                                        mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                                )
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        )
+                                },
+                                parameters = @Parameter(
+                                        in = ParameterIn.PATH,
+                                        name = "id",
+                                        content = @Content(schema = @Schema(implementation = String.class))
+                                )
+                        )
+                ),
+                @RouterOperation(
                         method = RequestMethod.POST,
                         path = "/cars",
                         beanClass = CarHandler.class,
