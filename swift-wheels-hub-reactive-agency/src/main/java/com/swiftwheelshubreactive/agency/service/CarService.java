@@ -142,10 +142,7 @@ public class CarService {
     public Mono<CarResponse> saveCar(MultiValueMap<String, Part> carRequestMultivalueMap) {
         return getCarRequest(carRequestMultivalueMap)
                 .flatMap(carRequestValidator::validateBody)
-                .flatMap(carRequest -> getBranches(carRequest.originalBranchId(), carRequest.actualBranchId())
-                        .flatMap(originalBranchAndActualBranch -> getImageContent(carRequest.image())
-                                .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})))
-                                .flatMap(imageContent -> processCar(carRequest, originalBranchAndActualBranch, imageContent))))
+                .flatMap(this::processNewCar)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -284,15 +281,18 @@ public class CarService {
                 .build();
     }
 
-    private Mono<Car> saveExistingCarUpdated(String id, CarRequest updatedCarRequest) {
-        return findEntityById(id)
-                .zipWith(getBranches(updatedCarRequest.originalBranchId(), updatedCarRequest.actualBranchId()))
-                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> getImageContent(updatedCarRequest.image())
-                        .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})))
-                        .flatMap(imageContent -> processCar(updatedCarRequest, existingCarAndOriginalBranchActualBranchTuple.getT2(), imageContent)));
+    private Mono<Car> processNewCar(CarRequest carRequest) {
+        return getBranches(carRequest.originalBranchId(), carRequest.actualBranchId())
+                .flatMap(originalBranchAndActualBranch -> setupNewCar(carRequest, originalBranchAndActualBranch));
     }
 
-    private Mono<Car> processCar(CarRequest carRequest, Tuple2<Branch, Branch> originalBranchAndActualBranch, byte[] imageContent) {
+    private Mono<Car> setupNewCar(CarRequest carRequest, Tuple2<Branch, Branch> originalBranchAndActualBranch) {
+        return getImageContent(carRequest.image())
+                .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})))
+                .flatMap(imageContent -> saveProcessedCar(carRequest, originalBranchAndActualBranch, imageContent));
+    }
+
+    private Mono<Car> saveProcessedCar(CarRequest carRequest, Tuple2<Branch, Branch> originalBranchAndActualBranch, byte[] imageContent) {
         Car newCar = carMapper.mapDtoToEntity(carRequest);
         newCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
         newCar.setActualBranch(originalBranchAndActualBranch.getT2());
@@ -302,6 +302,39 @@ public class CarService {
         }
 
         return carRepository.save(newCar);
+    }
+
+    private Mono<Car> saveExistingCarUpdated(String id, CarRequest updatedCarRequest) {
+        return findEntityById(id)
+                .zipWith(getBranches(updatedCarRequest.originalBranchId(), updatedCarRequest.actualBranchId()))
+                .flatMap(existingCarAndOriginalBranchActualBranchTuple -> processCar(updatedCarRequest, existingCarAndOriginalBranchActualBranchTuple))
+                .flatMap(carRepository::save);
+    }
+
+    private Mono<Car> processCar(CarRequest updatedCarRequest, Tuple2<Car, Tuple2<Branch, Branch>> existingCarAndOriginalBranchActualBranchTuple) {
+        return getImageContent(updatedCarRequest.image())
+                .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})))
+                .map(imageContent -> updateExistingCar(updatedCarRequest, existingCarAndOriginalBranchActualBranchTuple.getT1(), existingCarAndOriginalBranchActualBranchTuple.getT2(), imageContent));
+    }
+
+    private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar,
+                                  Tuple2<Branch, Branch> originalBranchAndActualBranch, byte[] imageContent) {
+        existingCar.setMake(updatedCarRequest.make());
+        existingCar.setModel(updatedCarRequest.model());
+        existingCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
+        existingCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
+        existingCar.setColor(updatedCarRequest.color());
+        existingCar.setMileage(updatedCarRequest.mileage());
+        existingCar.setAmount(updatedCarRequest.amount());
+        existingCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
+        existingCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
+        existingCar.setActualBranch(originalBranchAndActualBranch.getT2());
+
+        if (imageContent.length != 0) {
+            existingCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
+        }
+
+        return existingCar;
     }
 
     private Mono<String> convertPartToString(Part part) {
@@ -320,23 +353,6 @@ public class CarService {
     private Mono<Tuple2<Branch, Branch>> getBranches(String originalBranchId, String actualBranchId) {
         return branchService.findEntityById(originalBranchId)
                 .zipWith(branchService.findEntityById(actualBranchId));
-    }
-
-    private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar,
-                                  Tuple2<Branch, Branch> originalBranchAndActualBranch, byte[] imageContent) {
-        existingCar.setMake(updatedCarRequest.make());
-        existingCar.setModel(updatedCarRequest.model());
-        existingCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
-        existingCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
-        existingCar.setColor(updatedCarRequest.color());
-        existingCar.setMileage(updatedCarRequest.mileage());
-        existingCar.setAmount(updatedCarRequest.amount());
-        existingCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
-        existingCar.setOriginalBranch(originalBranchAndActualBranch.getT1());
-        existingCar.setActualBranch(originalBranchAndActualBranch.getT2());
-        existingCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
-
-        return existingCar;
     }
 
     private Car updateCarDetails(CarUpdateDetails carUpdateDetails, Tuple2<Car, Employee> carAndEmployee) {
