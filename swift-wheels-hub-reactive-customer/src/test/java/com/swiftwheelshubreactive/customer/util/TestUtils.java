@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.customer.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,7 +19,7 @@ public class TestUtils {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new SwiftWheelsHubException(e);
         }
     }
 
@@ -26,7 +27,7 @@ public class TestUtils {
         try {
             return OBJECT_MAPPER.readValue(getResourceAsString(resourceName), valueType);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed getting resource: " + resourceName + ", cause: " + e.getMessage());
+            throw new SwiftWheelsHubException("Failed getting resource: " + resourceName + ", cause: " + e.getMessage());
         }
     }
 
@@ -34,13 +35,13 @@ public class TestUtils {
         URL resource = TestUtils.class.getResource(resourceName);
 
         if (resource == null) {
-            throw new RuntimeException("Failed getting resource: " + resourceName);
+            throw new SwiftWheelsHubException("Failed getting resource: " + resourceName);
         }
 
         try {
             return new String(Files.readAllBytes(Paths.get(resource.toURI())));
         } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("Failed getting resource: " + resourceName);
+            throw new SwiftWheelsHubException("Failed getting resource: " + resourceName);
         }
     }
 

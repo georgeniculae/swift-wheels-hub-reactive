@@ -47,7 +47,7 @@ public class AuditAspect {
         try {
             return (Mono<?>) joinPoint.proceed();
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new SwiftWheelsHubException(e);
         }
     }
 

@@ -19,7 +19,7 @@ public class TestUtils {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new SwiftWheelsHubException(e);
         }
     }
 
