@@ -67,6 +67,7 @@ public class TestData {
 
         return multiValueMap;
     }
+
     public static ExcelCarRequest getExcelCarRequest() {
         Path path = Paths.get("src/test/resources/image/car.jpg");
         Flux<DataBuffer> imageDataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
@@ -85,6 +86,7 @@ public class TestData {
                 .image(new Binary(getImageContent(getFilePart("image", "car", imageDataBuffer))).getData())
                 .build();
     }
+
     public static Car getCar() {
         Path path = Paths.get("src/test/resources/image/car.jpg");
         Flux<DataBuffer> imageDataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
