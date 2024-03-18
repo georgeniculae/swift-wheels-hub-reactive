@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.lib.annotation;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
@@ -27,5 +28,6 @@ import java.lang.annotation.Target;
 @EnableTransactionManagement
 @EnableDiscoveryClient
 @EnableScheduling
+@EnableConfigurationProperties
 public @interface SwiftWheelsHubReactiveMicroservice {
 }

@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.requestvalidator.service;
 
+import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,11 +9,14 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -40,13 +43,8 @@ class SwaggerExtractorServiceTest {
     @Mock
     private WebClient.ResponseSpec responseSpec;
 
-    @BeforeEach
-    public void setupUrls() {
-        ReflectionTestUtils.setField(swaggerExtractorService, "agencyApiDocUrl", "/agency");
-        ReflectionTestUtils.setField(swaggerExtractorService, "bookingApiDocUrl", "/bookings");
-        ReflectionTestUtils.setField(swaggerExtractorService, "customerApiDocUrl", "/customers");
-        ReflectionTestUtils.setField(swaggerExtractorService, "expenseApiDocUrl", "/expense");
-    }
+    @Mock
+    private RegisteredEndpoints registeredEndpoints;
 
     @Test
     @SuppressWarnings("all")
@@ -63,13 +61,20 @@ class SwaggerExtractorServiceTest {
         String expenseContent =
                 TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
-        Map<String, String> expected = Map.of(
-                "agency", agencyContent,
-                "bookings", bookingsContent,
-                "customers", customersContent,
-                "expense", expenseContent
+        Map<String, String> endpoints = new LinkedHashMap<>();
+        endpoints.put("agency", agencyContent);
+        endpoints.put("bookings", bookingsContent);
+        endpoints.put("customers", customersContent);
+        endpoints.put("expense", expenseContent);
+
+        List<Tuple2<String, String>> expected = List.of(
+                Tuples.of("agency", agencyContent),
+                Tuples.of("bookings", bookingsContent),
+                Tuples.of("customers", customersContent),
+                Tuples.of("expense", expenseContent)
         );
 
+        when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.header(anyString(), any(String[].class))).thenReturn(requestHeadersSpec);
@@ -95,7 +100,10 @@ class SwaggerExtractorServiceTest {
 
         swaggerExtractorService.getSwaggerIdentifierAndContent()
                 .as(StepVerifier::create)
-                .expectNext(expected)
+                .expectNext(expected.getFirst())
+                .expectNext(expected.get(1))
+                .expectNext(expected.get(2))
+                .expectNext(expected.getLast())
                 .verifyComplete();
     }
 

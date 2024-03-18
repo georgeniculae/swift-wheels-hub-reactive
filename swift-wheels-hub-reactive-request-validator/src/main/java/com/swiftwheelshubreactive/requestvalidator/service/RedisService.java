@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -21,8 +20,7 @@ public class RedisService {
 
     public Mono<Boolean> addSwaggerFilesToRedis() {
         return swaggerExtractorService.getSwaggerIdentifierAndContent()
-                .flatMapMany(swaggerIdentifierAndContent -> Flux.fromIterable(swaggerIdentifierAndContent.entrySet()))
-                .flatMap(swaggerEntry -> addSwaggerToRedis(swaggerEntry.getKey(), swaggerEntry.getValue()))
+                .flatMap(swaggerEntry -> addSwaggerToRedis(swaggerEntry.getT1(), swaggerEntry.getT2()))
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Redis add failed"))))
                 .collectList()
