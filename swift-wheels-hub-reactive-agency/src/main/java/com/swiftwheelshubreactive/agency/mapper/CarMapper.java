@@ -1,9 +1,13 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
+import com.swiftwheelshubreactive.dto.BodyCategory;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
+import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
+import com.swiftwheelshubreactive.model.BodyType;
 import com.swiftwheelshubreactive.model.Car;
+import com.swiftwheelshubreactive.model.CarStatus;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
@@ -26,10 +30,10 @@ public interface CarMapper {
     @Mapping(target = "carState", source = "carStatus")
     CarResponse mapEntityToDto(Car car);
 
-    @Mapping(target = "bodyType", source = "bodyCategory")
-    @Mapping(target = "carStatus", source = "carState")
-    @Mapping(target = "image", ignore = true)
-    Car mapDtoToEntity(CarRequest carRequest);
+    @Mapping(target = "bodyType", expression = "java(mapToBodyType(carRequest.bodyCategory()))")
+    @Mapping(target = "carStatus", expression = "java(mapToCarStatus(carRequest.carState()))")
+    @Mapping(target = "image", expression = "java(mapByteArrayToBinary(imageContent))")
+    Car mapDtoToEntity(CarRequest carRequest, byte[] imageContent);
 
     @Mapping(target = "bodyType", source = "bodyCategory")
     @Mapping(target = "carStatus", source = "carState")
@@ -44,8 +48,12 @@ public interface CarMapper {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
     }
 
-    default ObjectId mapStringToObjectId(String id) {
-        return ObjectUtils.isEmpty(id) ? null : new ObjectId(id);
+    default BodyType mapToBodyType(BodyCategory bodyCategory) {
+        return BodyType.valueOf(bodyCategory.name());
+    }
+
+    default CarStatus mapToCarStatus(CarState carState) {
+        return CarStatus.valueOf(carState.name());
     }
 
 }

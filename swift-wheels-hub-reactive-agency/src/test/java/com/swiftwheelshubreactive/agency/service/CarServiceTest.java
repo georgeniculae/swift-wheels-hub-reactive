@@ -1,5 +1,7 @@
 package com.swiftwheelshubreactive.agency.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swiftwheelshubreactive.agency.mapper.CarMapper;
 import com.swiftwheelshubreactive.agency.mapper.CarMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.CarRepository;
@@ -41,6 +43,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,6 +70,9 @@ class CarServiceTest {
 
     @Mock
     private ExcelProcessorService excelProcessorService;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @Spy
     private CarMapper carMapper = new CarMapperImpl();
@@ -231,7 +237,7 @@ class CarServiceTest {
     }
 
     @Test
-    void saveCarTest_success() {
+    void saveCarTest_success() throws JsonProcessingException {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
@@ -239,26 +245,28 @@ class CarServiceTest {
 
         MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(objectMapper.readValue(anyString(), eq(CarRequest.class))).thenReturn(carRequest);
         when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.saveCar(multivalueMap))
+        StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
                 .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
-    void saveCarTest_errorOnSaving() {
+    void saveCarTest_errorOnSaving() throws JsonProcessingException {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(objectMapper.readValue(anyString(), eq(CarRequest.class))).thenReturn(carRequest);
         when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.saveCar(multivalueMap))
+        StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
                 .expectError()
                 .verify();
     }
@@ -306,19 +314,20 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCarTest_success() {
+    void updateCarTest_success() throws JsonProcessingException {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
-        CarRequest carRequest = TestData.getCarRequest();
+        CarRequest carRequest =TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(objectMapper.readValue(anyString(), eq(CarRequest.class))).thenReturn(carRequest);
         when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap))
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap()))
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -349,18 +358,19 @@ class CarServiceTest {
     }
 
     @Test
-    void updateCarTest_errorOnSaving() {
+    void updateCarTest_errorOnSaving() throws JsonProcessingException {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
         MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
+        when(objectMapper.readValue(anyString(), eq(CarRequest.class))).thenReturn(carRequest);
         when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap))
+        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap()))
                 .expectError()
                 .verify();
     }

@@ -104,7 +104,7 @@ class RevenueServiceTest {
         when(outboxService.saveOutbox(any(Invoice.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
         when(revenueRepository.save(any(Revenue.class))).thenReturn(Mono.just(revenue));
 
-        StepVerifier.create(revenueService.saveInvoiceRevenueAndOutboxTransactional(invoice))
+        StepVerifier.create(revenueService.saveInvoiceRevenueAndOutbox(invoice))
                 .assertNext(actualInvoice -> assertThat(invoice).usingRecursiveComparison().isEqualTo(actualInvoice))
                 .verifyComplete();
     }
@@ -118,7 +118,7 @@ class RevenueServiceTest {
         when(outboxService.saveOutbox(any(Invoice.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
         when(revenueRepository.save(any(Revenue.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(revenueService.saveInvoiceRevenueAndOutboxTransactional(invoice))
+        StepVerifier.create(revenueService.saveInvoiceRevenueAndOutbox(invoice))
                 .expectError()
                 .verify();
     }

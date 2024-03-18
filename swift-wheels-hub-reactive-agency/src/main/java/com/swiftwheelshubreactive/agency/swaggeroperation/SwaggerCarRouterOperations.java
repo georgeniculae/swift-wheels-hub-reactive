@@ -252,16 +252,25 @@ import java.lang.annotation.Target;
                                 requestBody = @RequestBody(
                                         description = "Save new car",
                                         required = true,
-                                        content = @Content(
-                                                schema = @Schema(implementation = CarRequest.class),
-                                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
-                                        )
+                                        content = {
+                                                @Content(
+                                                        schema = @Schema(implementation = FilePart.class),
+                                                        mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                                ),
+                                                @Content(
+                                                        schema = @Schema(implementation = CarRequest.class),
+                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
+                                                )
+                                        }
                                 ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = CarResponse.class))
+                                                content = @Content(
+                                                        schema = @Schema(implementation = CarResponse.class),
+                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
+                                                )
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",
@@ -429,16 +438,25 @@ import java.lang.annotation.Target;
                                 requestBody = @RequestBody(
                                         description = "Update car",
                                         required = true,
-                                        content = @Content(
-                                                schema = @Schema(implementation = CarRequest.class),
-                                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
-                                        )
+                                        content = {
+                                                @Content(
+                                                        schema = @Schema(implementation = FilePart.class),
+                                                        mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                                ),
+                                                @Content(
+                                                        schema = @Schema(implementation = CarRequest.class),
+                                                        mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                                )
+                                        }
                                 ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = CarResponse.class))
+                                                content = @Content(schema = @Schema(
+                                                        implementation = CarResponse.class),
+                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
+                                                )
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",

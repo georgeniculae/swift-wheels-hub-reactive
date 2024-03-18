@@ -2,7 +2,6 @@ package com.swiftwheelshubreactive.dto;
 
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
@@ -37,9 +36,7 @@ public record CarRequest(
         String originalBranchId,
 
         @NonNull
-        String actualBranchId,
-
-        FilePart image
+        String actualBranchId
 ) implements Serializable {
 
     @Override

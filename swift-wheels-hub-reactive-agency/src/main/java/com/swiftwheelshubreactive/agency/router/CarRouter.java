@@ -4,7 +4,6 @@ import com.swiftwheelshubreactive.agency.handler.CarHandler;
 import com.swiftwheelshubreactive.agency.swaggeroperation.SwaggerCarRouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -26,12 +25,12 @@ public class CarRouter {
                         .andRoute(RequestPredicates.GET("/{id}/availability"), carHandler::getAvailableCar)
                         .andRoute(RequestPredicates.GET("/{id}/image"), carHandler::getCarImage)
                         .andRoute(RequestPredicates.GET("/{id}"), carHandler::findCarById)
-                        .andRoute(RequestPredicates.POST("").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::saveCar)
-                        .andRoute(RequestPredicates.POST("/upload").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::uploadCars)
+                        .andRoute(RequestPredicates.POST(""), carHandler::saveCar)
+                        .andRoute(RequestPredicates.POST("/upload"), carHandler::uploadCars)
                         .andRoute(RequestPredicates.PUT("/update-statuses"), carHandler::updateCarsStatus)
                         .andRoute(RequestPredicates.PUT("/{id}/change-status"), carHandler::updateCarStatus)
                         .andRoute(RequestPredicates.PUT("/{id}/update-after-return"), carHandler::updateCarWhenBookingIsClosed)
-                        .andRoute(RequestPredicates.PUT("/{id}").and(RequestPredicates.contentType(MediaType.MULTIPART_FORM_DATA)), carHandler::updateCar)
+                        .andRoute(RequestPredicates.PUT("/{id}"), carHandler::updateCar)
                         .andRoute(RequestPredicates.DELETE("/{id}"), carHandler::deleteCarById));
     }
 

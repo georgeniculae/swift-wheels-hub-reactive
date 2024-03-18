@@ -26,7 +26,6 @@ public class AssertionUtils {
         assertEquals(car.getMileage(), carRequest.mileage());
         assertEquals(car.getCarStatus().name(), carRequest.carState().name());
         assertEquals(car.getAmount(), carRequest.amount());
-        assertEquals(car.getImage(), carRequest.image());
     }
 
     public static void assertCarResponse(Car car, CarResponse carResponse) {

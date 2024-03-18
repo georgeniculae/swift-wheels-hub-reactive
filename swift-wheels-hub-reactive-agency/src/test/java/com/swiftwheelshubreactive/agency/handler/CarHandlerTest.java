@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
+import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
@@ -232,11 +233,11 @@ class CarHandlerTest {
     @Test
     void saveCarTest_success() {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-        MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
-                .body(Mono.just(multiValueMap));
+                .body(Mono.just(multivalueMap));
 
         when(carService.saveCar(any())).thenReturn(Mono.just(carResponse));
 

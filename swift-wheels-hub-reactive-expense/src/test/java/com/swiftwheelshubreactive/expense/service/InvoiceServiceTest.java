@@ -257,7 +257,7 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.just(bookingResponse));
-        when(revenueService.saveInvoiceRevenueAndOutboxTransactional(any(Invoice.class))).thenReturn(Mono.just(invoice));
+        when(revenueService.saveInvoiceRevenueAndOutbox(any(Invoice.class))).thenReturn(Mono.just(invoice));
         when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class)))
                 .thenReturn(Mono.just(bookingResponse));
 

@@ -1,8 +1,10 @@
 package com.swiftwheelshubreactive.agency.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
+import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
@@ -28,6 +30,7 @@ public class CarHandler {
     private final CarService carService;
     private final CarUpdateDetailsValidator carUpdateDetailsValidator;
     private final UpdateCarRequestValidator updateCarRequestValidator;
+    private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {
@@ -86,8 +89,8 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
-                .flatMap(carService::saveCar)
-                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
+                .map(carRequestMultivalueMap -> carService.saveCar(carRequestMultivalueMap.toSingleValueMap()))
+                .flatMap(carResponse -> ServerResponse.ok().body(carResponse, CarResponse.class));
     }
 
     @PreAuthorize("hasAuthority('admin')")
@@ -104,7 +107,7 @@ public class CarHandler {
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
-                .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), updatedCarRequestMultivalueMap))
+                .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), updatedCarRequestMultivalueMap.toSingleValueMap()))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 

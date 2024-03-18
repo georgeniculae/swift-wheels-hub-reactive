@@ -36,7 +36,7 @@ class CarMapperTest {
     void mapDtoToEntityTest_success() {
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
 
-        Car car = carMapper.mapDtoToEntity(carRequest);
+        Car car = carMapper.mapDtoToEntity(carRequest, new byte[]{});
 
         assertNotNull(car);
         AssertionUtils.assertCarRequest(car, carRequest);
@@ -44,7 +44,7 @@ class CarMapperTest {
 
     @Test
     void mapDtoToEntityTest_null() {
-        assertNull(carMapper.mapDtoToEntity(null));
+        assertNull(carMapper.mapDtoToEntity(null, null));
     }
 
 }

@@ -79,7 +79,7 @@ public class RevenueService {
     }
 
     @Transactional
-    public Mono<Invoice> saveInvoiceRevenueAndOutboxTransactional(Invoice invoice) {
+    public Mono<Invoice> saveInvoiceRevenueAndOutbox(Invoice invoice) {
         return invoiceRepository.save(invoice)
                 .flatMap(savedInvoice -> outboxService.saveOutbox(invoice, Outbox.Operation.CLOSE))
                 .flatMap(savedOutbox -> revenueRepository.save(getRevenue(savedOutbox.getContent()))

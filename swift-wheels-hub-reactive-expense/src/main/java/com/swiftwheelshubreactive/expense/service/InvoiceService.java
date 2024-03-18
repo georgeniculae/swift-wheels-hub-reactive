@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -151,10 +150,8 @@ public class InvoiceService {
     )
     public Mono<InvoiceResponse> closeInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
-                .flatMap(request -> findEntityById(id))
-                .zipWith(bookingService.findBookingById(apiKey, roles, invoiceRequest.bookingId()))
-                .map(existingInvoiceAndBookingRequest -> updateInvoiceWithBookingDetails(invoiceRequest, existingInvoiceAndBookingRequest))
-                .flatMap(revenueService::saveInvoiceRevenueAndOutboxTransactional)
+                .flatMap(request -> setupExistingInvoice(apiKey, roles, id, invoiceRequest, request))
+                .flatMap(revenueService::saveInvoiceRevenueAndOutbox)
                 .delayUntil(invoice -> bookingService.closeBooking(apiKey, roles, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorMap(e -> {
@@ -247,10 +244,15 @@ public class InvoiceService {
         }
     }
 
+    private Mono<Invoice> setupExistingInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest, InvoiceRequest request) {
+        return Mono.zip(
+                findEntityById(id),
+                bookingService.findBookingById(apiKey, roles, invoiceRequest.bookingId()),
+                (existingInvoice, bookingResponse) -> updateInvoiceWithBookingDetails(request, existingInvoice, bookingResponse));
+    }
+
     private Invoice updateInvoiceWithBookingDetails(InvoiceRequest invoiceRequest,
-                                                    Tuple2<Invoice, BookingResponse> existingInvoiceBookingResponse) {
-        Invoice existingInvoice = existingInvoiceBookingResponse.getT1();
-        BookingResponse bookingResponse = existingInvoiceBookingResponse.getT2();
+                                                    Invoice existingInvoice, BookingResponse bookingResponse) {
         String receptionistEmployeeIdAsString = invoiceRequest.receptionistEmployeeId();
         String carId = invoiceRequest.carId();
         ObjectId receptionistEmployeeId = MongoUtil.getObjectId(receptionistEmployeeIdAsString);
