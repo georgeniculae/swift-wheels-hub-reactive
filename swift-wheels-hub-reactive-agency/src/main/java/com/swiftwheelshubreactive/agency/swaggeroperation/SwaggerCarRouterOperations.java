@@ -254,12 +254,12 @@ import java.lang.annotation.Target;
                                         required = true,
                                         content = {
                                                 @Content(
-                                                        schema = @Schema(implementation = FilePart.class),
-                                                        mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
-                                                ),
-                                                @Content(
                                                         schema = @Schema(implementation = CarRequest.class),
                                                         mediaType = MediaType.APPLICATION_JSON_VALUE
+                                                ),
+                                                @Content(
+                                                        schema = @Schema(implementation = FilePart.class),
+                                                        mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
                                                 )
                                         }
                                 ),
@@ -440,11 +440,11 @@ import java.lang.annotation.Target;
                                         required = true,
                                         content = {
                                                 @Content(
-                                                        schema = @Schema(implementation = FilePart.class),
+                                                        schema = @Schema(implementation = CarRequest.class),
                                                         mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
                                                 ),
                                                 @Content(
-                                                        schema = @Schema(implementation = CarRequest.class),
+                                                        schema = @Schema(implementation = FilePart.class),
                                                         mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
                                                 )
                                         }
