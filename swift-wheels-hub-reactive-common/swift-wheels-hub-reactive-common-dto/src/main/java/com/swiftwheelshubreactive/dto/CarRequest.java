@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Builder
@@ -37,7 +36,7 @@ public record CarRequest(
 
         @NonNull
         String actualBranchId
-) implements Serializable {
+) {
 
     @Override
     public String toString() {
