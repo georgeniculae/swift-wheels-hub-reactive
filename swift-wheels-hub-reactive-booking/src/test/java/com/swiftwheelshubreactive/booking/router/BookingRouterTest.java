@@ -441,7 +441,7 @@ class BookingRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
-        when(bookingHandler.deleteBookingById(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(bookingHandler.deleteBookingByCustomerUsername(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<Void> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .delete()
@@ -466,7 +466,7 @@ class BookingRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
-        when(bookingHandler.deleteBookingById(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(bookingHandler.deleteBookingByCustomerUsername(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .delete()

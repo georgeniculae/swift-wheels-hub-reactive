@@ -303,12 +303,12 @@ class BookingHandlerTest {
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.DELETE)
                 .header("X-API-KEY", "apiKey")
-                .pathVariable("id", "64f361caf291ae086e179547")
+                .pathVariable("username", "user")
                 .build();
 
-        when(bookingService.deleteBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
+        when(bookingService.deleteBookingByCustomerUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(bookingHandler.deleteBookingById(serverRequest))
+        StepVerifier.create(bookingHandler.deleteBookingByCustomerUsername(serverRequest))
                 .expectComplete()
                 .verify();
     }

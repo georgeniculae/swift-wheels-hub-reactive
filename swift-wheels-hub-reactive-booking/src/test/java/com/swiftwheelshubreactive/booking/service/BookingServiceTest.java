@@ -353,20 +353,20 @@ class BookingServiceTest {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
+        when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
         when(outboxService.processBookingDeletion(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
         when(carService.changeCarStatus(anyString(), anyList(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(bookingService.deleteBookingById("apiKey", List.of("admin"), "64f361caf291ae086e179547"))
+        StepVerifier.create(bookingService.deleteBookingByCustomerUsername("apiKey", List.of("admin"), "64f361caf291ae086e179547"))
                 .expectComplete()
                 .verify();
     }
 
     @Test
     void deleteBookingByIdTest_errorOnFindingById() {
-        when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
+        when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(bookingService.deleteBookingById("apiKey", List.of("admin"), "64f361caf291ae086e179547"))
+        StepVerifier.create(bookingService.deleteBookingByCustomerUsername("apiKey", List.of("admin"), "64f361caf291ae086e179547"))
                 .expectError()
                 .verify();
     }

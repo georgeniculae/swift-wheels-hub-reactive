@@ -45,7 +45,7 @@ public class OutboxService {
 
     @Transactional
     public Mono<Booking> processBookingDeletion(Booking booking, Outbox.Operation operation) {
-        return bookingRepository.deleteById(booking.getCarId())
+        return bookingRepository.deleteByCustomerUsername(booking.getCustomerUsername())
                 .then(saveOutbox(booking, operation))
                 .map(Outbox::getContent);
     }

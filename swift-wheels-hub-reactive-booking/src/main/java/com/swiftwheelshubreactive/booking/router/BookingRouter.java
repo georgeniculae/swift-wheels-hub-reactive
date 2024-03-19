@@ -29,7 +29,7 @@ public class BookingRouter {
                         .andRoute(RequestPredicates.POST("/new"), bookingHandler::saveBooking)
                         .andRoute(RequestPredicates.POST("/close-booking"), bookingHandler::closeBooking)
                         .andRoute(RequestPredicates.PUT("/{id}"), bookingHandler::updateBooking)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), bookingHandler::deleteBookingById));
+                        .andRoute(RequestPredicates.DELETE("/{username}"), bookingHandler::deleteBookingByCustomerUsername));
     }
 
 }

@@ -20,6 +20,7 @@ public class BookingHandler {
 
     private static final String ID = "id";
     private static final String DATE = "date";
+    private static final String USERNAME = "username";
     private final BookingService bookingService;
     private final BookingRequestValidator bookingRequestValidator;
     private final BookingClosingDetailsValidator bookingClosingDetailsValidator;
@@ -130,11 +131,11 @@ public class BookingHandler {
     }
 
     @PreAuthorize("hasAuthority('user')")
-    public Mono<ServerResponse> deleteBookingById(ServerRequest serverRequest) {
-        return bookingService.deleteBookingById(
+    public Mono<ServerResponse> deleteBookingByCustomerUsername(ServerRequest serverRequest) {
+        return bookingService.deleteBookingByCustomerUsername(
                         ServerRequestUtil.getApiKeyHeader(serverRequest),
                         ServerRequestUtil.getRolesHeader(serverRequest),
-                        ServerRequestUtil.getPathVariable(serverRequest, ID)
+                        ServerRequestUtil.getPathVariable(serverRequest, USERNAME)
                 )
                 .flatMap(bookingResponse -> ServerResponse.noContent().build());
     }

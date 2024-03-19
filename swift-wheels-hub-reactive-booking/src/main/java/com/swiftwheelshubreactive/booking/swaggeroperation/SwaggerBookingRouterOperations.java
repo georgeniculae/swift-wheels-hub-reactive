@@ -384,11 +384,11 @@ import java.time.LocalDate;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        path = "/bookings/{id}",
+                        path = "/bookings/{username}",
                         beanClass = BookingHandler.class,
-                        beanMethod = "deleteBookingById",
+                        beanMethod = "deleteBookingByCustomerUsername",
                         operation = @Operation(
-                                operationId = "deleteBookingById",
+                                operationId = "deleteBookingByCustomerUsername",
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -408,7 +408,7 @@ import java.time.LocalDate;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
-                                        name = "id",
+                                        name = "username",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )

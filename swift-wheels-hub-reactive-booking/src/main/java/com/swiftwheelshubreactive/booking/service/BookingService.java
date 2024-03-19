@@ -185,20 +185,16 @@ public class BookingService {
             activityDescription = "Booking deletion",
             sentParameters = "id"
     )
-    public Mono<Void> deleteBookingById(String apiKey, List<String> roles, String id) {
-        return findEntityById(id)
+    public Mono<Void> deleteBookingByCustomerUsername(String apiKey, List<String> roles, String username) {
+        return bookingRepository.findByCustomerUsername(username)
                 .flatMap(booking -> outboxService.processBookingDeletion(booking, Outbox.Operation.DELETE))
                 .flatMap(booking -> carService.changeCarStatus(apiKey, roles, booking.getCarId().toString(), CarState.AVAILABLE))
                 .then()
                 .onErrorMap(e -> {
-                    log.error("Error while deleting booking by id: {}", e.getMessage());
+                    log.error("Error while deleting booking by username: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e.getMessage());
                 });
-    }
-
-    public Mono<Void> processBookingDeletion(String username) {
-        return bookingRepository.deleteByCustomerUsername(username);
     }
 
     private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
