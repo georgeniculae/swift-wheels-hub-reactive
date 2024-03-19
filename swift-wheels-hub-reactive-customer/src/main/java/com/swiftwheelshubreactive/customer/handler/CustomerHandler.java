@@ -61,8 +61,8 @@ public class CustomerHandler {
     }
 
     @PreAuthorize("hasAuthority('admin')")
-    public Mono<ServerResponse> deleteUserById(ServerRequest serverRequest) {
-        return customerService.deleteUserById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+    public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
+        return customerService.deleteUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
                 .then(ServerResponse.noContent().build());
     }
 

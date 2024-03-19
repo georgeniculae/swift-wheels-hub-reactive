@@ -68,8 +68,8 @@ public class CustomerService {
                 });
     }
 
-    public Mono<Void> deleteUserById(String id) {
-        return Mono.fromRunnable(() -> keycloakUserService.deleteUserById(id))
+    public Mono<Void> deleteUserByUsername(String username) {
+        return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
                 .subscribeOn(Schedulers.boundedElastic())
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());

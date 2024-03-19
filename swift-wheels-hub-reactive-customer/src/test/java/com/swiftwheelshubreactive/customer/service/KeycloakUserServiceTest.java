@@ -254,28 +254,33 @@ class KeycloakUserServiceTest {
     }
 
     @Test
-    void deleteUserByIdTest_success() {
+    void deleteUserByUsernameTest_success() {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
         when(keycloak.realm(anyString())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(usersResource);
         when(usersResource.get(anyString())).thenReturn(userResource);
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
         doNothing().when(userResource).remove();
 
-        assertDoesNotThrow(() -> keycloakUserService.deleteUserById("user"));
+        assertDoesNotThrow(() -> keycloakUserService.deleteUserByUsername("user"));
     }
 
     @Test
-    void deleteUserByIdTest_userNotFound() {
+    void deleteUserByUsernameTest_userNotFound() {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
         when(keycloak.realm(anyString())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(usersResource);
         when(usersResource.get(anyString())).thenReturn(userResource);
-
+        when(usersResource.searchByUsername(anyString(), anyBoolean())).thenReturn(List.of(userRepresentation));
         doThrow(new NotFoundException()).when(userResource).remove();
 
-        assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.deleteUserById("user"));
+        assertThrows(SwiftWheelsHubNotFoundException.class, () -> keycloakUserService.deleteUserByUsername("user"));
     }
 
     @Test

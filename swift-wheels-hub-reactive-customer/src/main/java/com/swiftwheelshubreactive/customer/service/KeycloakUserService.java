@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -106,8 +105,9 @@ public class KeycloakUserService {
         return userMapper.mapUserToUserDetails(userRepresentation);
     }
 
-    public void deleteUserById(String id) {
-        UserResource userResource = findById(id);
+    public void deleteUserByUsername(String username) {
+        UserRepresentation userRepresentation = getUserRepresentation(username);
+        UserResource userResource = findById(userRepresentation.getId());
 
         try {
             userResource.remove();
@@ -241,11 +241,11 @@ public class KeycloakUserService {
     }
 
     private void validateRequest(RegisterRequest request) {
-        if (Optional.ofNullable(request.password()).orElseThrow().length() < 8) {
+        if (request.password().length() < 8) {
             throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Password too short");
         }
 
-        if (Period.between(Optional.ofNullable(request.dateOfBirth()).orElseThrow(), LocalDate.now()).getYears() < 18) {
+        if (Period.between(request.dateOfBirth(), LocalDate.now()).getYears() < 18) {
             throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Customer is under 18 years old");
         }
     }

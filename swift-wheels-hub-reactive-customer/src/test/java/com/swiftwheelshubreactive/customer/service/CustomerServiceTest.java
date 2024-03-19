@@ -153,20 +153,20 @@ class CustomerServiceTest {
     }
 
     @Test
-    void deleteUserByIdTest_success() {
-        doNothing().when(keycloakUserService).deleteUserById(anyString());
+    void deleteUserByUsernameTest_success() {
+        doNothing().when(keycloakUserService).deleteUserByUsername(anyString());
 
-        customerService.deleteUserById("1")
+        customerService.deleteUserByUsername("1")
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
 
     @Test
-    void deleteUserByIdTest_errorOnDeleting() {
-        doThrow(new SwiftWheelsHubException("")).when(keycloakUserService).deleteUserById(anyString());
+    void deleteUserByUsernameTest_errorOnDeleting() {
+        doThrow(new SwiftWheelsHubException("")).when(keycloakUserService).deleteUserByUsername(anyString());
 
-        customerService.deleteUserById("1")
+        customerService.deleteUserByUsername("1")
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();

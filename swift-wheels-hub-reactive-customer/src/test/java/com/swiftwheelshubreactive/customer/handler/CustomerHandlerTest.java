@@ -173,15 +173,15 @@ class CustomerHandlerTest {
     }
 
     @Test
-    void deleteUserByIdTest_success() {
+    void deleteUserByUsernameTest_success() {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.DELETE)
-                .pathVariable("id", "64f48612b92a3b7dfcebae07")
+                .pathVariable("username", "username")
                 .build();
 
-        when(customerService.deleteUserById(anyString())).thenReturn(Mono.empty());
+        when(customerService.deleteUserByUsername(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.deleteUserById(serverRequest))
+        StepVerifier.create(customerHandler.deleteUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
