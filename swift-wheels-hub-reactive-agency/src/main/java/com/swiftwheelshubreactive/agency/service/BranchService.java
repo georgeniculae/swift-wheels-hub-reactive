@@ -88,16 +88,17 @@ public class BranchService {
     }
 
     public Mono<BranchResponse> updateBranch(String id, BranchRequest branchRequest) {
-        return findEntityById(id)
-                .flatMap(exitingBranch ->
-                        rentalOfficeService.findEntityById(branchRequest.rentalOfficeId())
-                                .map(rentalOffice -> {
-                                    exitingBranch.setName(branchRequest.name());
-                                    exitingBranch.setAddress(branchRequest.address());
-                                    exitingBranch.setRentalOffice(rentalOffice);
+        return Mono.zip(
+                        findEntityById(id),
+                        rentalOfficeService.findEntityById(branchRequest.rentalOfficeId()),
+                        (existingBranch, rentalOffice) -> {
+                            existingBranch.setName(branchRequest.name());
+                            existingBranch.setAddress(branchRequest.address());
+                            existingBranch.setRentalOffice(rentalOffice);
 
-                                    return exitingBranch;
-                                }))
+                            return existingBranch;
+                        }
+                )
                 .flatMap(branchRepository::save)
                 .map(branchMapper::mapEntityToDto)
                 .onErrorMap(e -> {
