@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BookingAuditLogInfoConsumerMessageTest {
+class BookingBookingAuditLogInfoConsumerMessageTest {
 
     @InjectMocks
     private BookingAuditLogInfoConsumerMessage bookingAuditLogInfoConsumerMessage;
@@ -47,7 +47,7 @@ class BookingAuditLogInfoConsumerMessageTest {
         Message<AuditLogInfoRequest> message = MessageBuilder.createMessage(auditLogInfoRequest, messageHeaders);
         Flux<Message<AuditLogInfoRequest>> messageFlux = Flux.just(message);
 
-        when(auditService.saveAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoRequest));
+        when(auditService.saveBookingAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoRequest));
 
         StepVerifier.create(bookingAuditLogInfoConsumerMessage.bookingAuditLogInfoConsumer().apply(messageFlux))
                 .expectComplete()
@@ -64,7 +64,7 @@ class BookingAuditLogInfoConsumerMessageTest {
         Message<AuditLogInfoRequest> message = new GenericMessage<>(auditLogInfoDto);
         Flux<Message<AuditLogInfoRequest>> messageFlux = Flux.just(message);
 
-        when(auditService.saveAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoDto));
+        when(auditService.saveBookingAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoDto));
 
         StepVerifier.create(bookingAuditLogInfoConsumerMessage.bookingAuditLogInfoConsumer().apply(messageFlux))
                 .expectComplete()

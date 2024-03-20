@@ -36,7 +36,7 @@ public class ExpenseAuditLogInfoConsumerMessage {
     }
 
     private Mono<AuditLogInfoRequest> processMessage(Message<AuditLogInfoRequest> message) {
-        return auditService.saveAuditLogInfo(message.getPayload())
+        return auditService.saveExpenseAuditLogInfo(message.getPayload())
                 .doOnNext(auditLogInfoDto -> {
                     log.info("Audit log saved: {}", auditLogInfoDto);
 

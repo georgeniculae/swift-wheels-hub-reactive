@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.audit.mapper;
 
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
-import com.swiftwheelshubreactive.model.AuditLogInfo;
+import com.swiftwheelshubreactive.model.BookingAuditLogInfo;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -11,10 +11,10 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
-public interface AuditLogInfoMapper {
+public interface BookingAuditLogInfoMapper {
 
-    AuditLogInfoRequest mapEntityToDto(AuditLogInfo auditLogInfo);
+    AuditLogInfoRequest mapEntityToDto(BookingAuditLogInfo bookingAuditLogInfo);
 
-    AuditLogInfo mapDtoToEntity(AuditLogInfoRequest auditLogInfoRequest);
+    BookingAuditLogInfo mapDtoToEntity(AuditLogInfoRequest auditLogInfoRequest);
 
 }

@@ -13,13 +13,13 @@ import org.springframework.lang.NonNull;
 
 import java.util.List;
 
-@Document(collection = "audit_log_info")
+@Document(collection = "booking_audit_log_info")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class AuditLogInfo {
+public class BookingAuditLogInfo {
 
     @BsonProperty("_id")
     @BsonId

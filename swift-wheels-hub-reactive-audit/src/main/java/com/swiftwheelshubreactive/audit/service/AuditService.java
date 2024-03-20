@@ -1,13 +1,16 @@
 package com.swiftwheelshubreactive.audit.service;
 
-import com.swiftwheelshubreactive.audit.mapper.AuditLogInfoMapper;
-import com.swiftwheelshubreactive.audit.repository.AuditLogInfoRepository;
+import com.swiftwheelshubreactive.audit.mapper.BookingAuditLogInfoMapper;
+import com.swiftwheelshubreactive.audit.mapper.CustomerAuditLogInfoMapper;
+import com.swiftwheelshubreactive.audit.mapper.ExpenseAuditLogInfoMapper;
+import com.swiftwheelshubreactive.audit.repository.BookingAuditLogInfoRepository;
+import com.swiftwheelshubreactive.audit.repository.CustomerAuditLogInfoRepository;
+import com.swiftwheelshubreactive.audit.repository.ExpenseAuditLogInfoRepository;
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -15,15 +18,38 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class AuditService {
 
-    private final AuditLogInfoRepository auditLogInfoRepository;
-    private final AuditLogInfoMapper auditLogInfoMapper;
+    private final BookingAuditLogInfoRepository bookingAuditLogInfoRepository;
+    private final CustomerAuditLogInfoRepository customerAuditLogInfoRepository;
+    private final ExpenseAuditLogInfoRepository expenseAuditLogInfoRepository;
+    private final BookingAuditLogInfoMapper bookingAuditLogInfoMapper;
+    private final CustomerAuditLogInfoMapper customerAuditLogInfoMapper;
+    private final ExpenseAuditLogInfoMapper expenseAuditLogInfoMapper;
 
-    @Transactional
-    public Mono<AuditLogInfoRequest> saveAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
-        return auditLogInfoRepository.save(auditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
-                .map(auditLogInfoMapper::mapEntityToDto)
+    public Mono<AuditLogInfoRequest> saveBookingAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
+        return bookingAuditLogInfoRepository.save(bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
+                .map(bookingAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
-                    log.error("Error while saving audit log: {}", e.getMessage());
+                    log.error("Error while saving booking audit log: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e);
+                });
+    }
+
+    public Mono<AuditLogInfoRequest> saveCustomerAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
+        return customerAuditLogInfoRepository.save(customerAuditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
+                .map(customerAuditLogInfoMapper::mapEntityToDto)
+                .onErrorMap(e -> {
+                    log.error("Error while saving booking audit log: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e);
+                });
+    }
+
+    public Mono<AuditLogInfoRequest> saveExpenseAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
+        return expenseAuditLogInfoRepository.save(expenseAuditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
+                .map(expenseAuditLogInfoMapper::mapEntityToDto)
+                .onErrorMap(e -> {
+                    log.error("Error while saving booking audit log: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e);
                 });
