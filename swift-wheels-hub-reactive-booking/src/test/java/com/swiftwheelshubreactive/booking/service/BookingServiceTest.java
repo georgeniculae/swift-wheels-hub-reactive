@@ -183,7 +183,7 @@ class BookingServiceTest {
         when(carService.findAvailableCarById(anyString(), anyList(), anyString())).thenReturn(Mono.just(carResponse));
         when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
-        when(carService.changeCarStatus(anyString(), anyList(), anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
+        when(carService.changeCarStatus(anyString(), anyList(), anyString(), any(CarState.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(bookingService.saveBooking(apikey, List.of("admin"), bookingRequest))
                 .expectNext(bookingResponse)
@@ -212,7 +212,6 @@ class BookingServiceTest {
                 TestUtils.getResourceAsJson("/data/ClosedBookingResponse.json", BookingResponse.class);
         BookingClosingDetails bookingClosingDetails =
                 TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
         String apikey = "apikey";
@@ -221,7 +220,7 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(employeeService.findEmployeeById(anyString(), anyList(), anyString())).thenReturn(Mono.just(employeeResponse));
         when(carService.updateCarWhenBookingIsFinished(anyString(), anyList(), any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(carResponse));
+                .thenReturn(Mono.empty());
 
         StepVerifier.create(bookingService.closeBooking(apikey, List.of("admin"), bookingClosingDetails))
                 .expectNext(closedBookingResponse)

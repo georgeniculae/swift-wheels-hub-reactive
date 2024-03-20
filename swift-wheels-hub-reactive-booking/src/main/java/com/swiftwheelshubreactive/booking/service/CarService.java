@@ -46,7 +46,7 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
+    public Mono<Void> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
                 .header(X_API_KEY, apiKey)
@@ -55,7 +55,7 @@ public class CarService {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carState)
                 .retrieve()
-                .bodyToMono(CarResponse.class)
+                .bodyToMono(Void.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
@@ -63,7 +63,7 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> updateCarWhenBookingIsFinished(String apiKey, List<String> roles,
+    public Mono<Void> updateCarWhenBookingIsFinished(String apiKey, List<String> roles,
                                                             CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
@@ -73,7 +73,7 @@ public class CarService {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
                 .retrieve()
-                .bodyToMono(CarResponse.class)
+                .bodyToMono(Void.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

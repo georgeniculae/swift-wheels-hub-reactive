@@ -27,14 +27,14 @@ public class BookingService {
 
     private final WebClient webClient;
 
-    public Mono<BookingResponse> closeBooking(String apiKey, List<String> roles, BookingClosingDetails bookingClosingDetails) {
+    public Mono<Void> closeBooking(String apiKey, List<String> roles, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
                 .header(X_API_KEY, apiKey)
                 .header(X_ROLES, roles.toArray(String[]::new))
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
-                .bodyToMono(BookingResponse.class)
+                .bodyToMono(Void.class)
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

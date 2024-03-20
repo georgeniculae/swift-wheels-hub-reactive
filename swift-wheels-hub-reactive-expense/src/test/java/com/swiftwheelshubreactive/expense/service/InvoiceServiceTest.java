@@ -259,7 +259,7 @@ class InvoiceServiceTest {
         when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.just(bookingResponse));
         when(revenueService.saveInvoiceRevenueAndOutbox(any(Invoice.class))).thenReturn(Mono.just(invoice));
         when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(bookingResponse));
+                .thenReturn(Mono.empty());
 
         StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
                 .expectNext(invoiceDto)

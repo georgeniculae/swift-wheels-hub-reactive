@@ -144,7 +144,7 @@ public class BookingService {
                 .map(carResponse -> setupNewBooking(newBookingRequest, carResponse))
                 .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
-                .flatMap(bookingResponse -> setCarForNewBooking(apiKey, roles, bookingResponse))
+                .delayUntil(bookingResponse -> setCarForNewBooking(apiKey, roles, bookingResponse))
                 .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
@@ -173,7 +173,7 @@ public class BookingService {
                 .flatMap(existingBooking -> getUpdatedExistingEmployee(apiKeySecret, roles, bookingClosingDetails, existingBooking))
                 .flatMap(bookingRepository::save)
                 .map(bookingMapper::mapEntityToDto)
-                .flatMap(bookingResponse -> updateCarWhenBookingIsClosed(apiKeySecret, roles, bookingResponse, bookingClosingDetails))
+                .delayUntil(bookingResponse -> updateCarWhenBookingIsClosed(apiKeySecret, roles, bookingResponse, bookingClosingDetails))
                 .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
@@ -252,21 +252,19 @@ public class BookingService {
                 .delayUntil(savedBookingResponse -> changeCarsStatusIfNeeded(apiKey, roles, savedBookingResponse, existingBooking));
     }
 
-    private Mono<BookingResponse> updateCarWhenBookingIsClosed(String apiKey, List<String> roles,
-                                                               BookingResponse bookingResponse, BookingClosingDetails bookingClosingDetails) {
+    private Mono<Void> updateCarWhenBookingIsClosed(String apiKey, List<String> roles,
+                                                    BookingResponse bookingResponse, BookingClosingDetails bookingClosingDetails) {
         CarUpdateDetails carUpdateDetails = CarUpdateDetails.builder()
                 .carId(bookingResponse.carId())
                 .receptionistEmployeeId(bookingClosingDetails.receptionistEmployeeId())
                 .carState(bookingClosingDetails.carState())
                 .build();
 
-        return carService.updateCarWhenBookingIsFinished(apiKey, roles, carUpdateDetails)
-                .map(carResponse -> bookingResponse);
+        return carService.updateCarWhenBookingIsFinished(apiKey, roles, carUpdateDetails);
     }
 
-    private Mono<BookingResponse> setCarForNewBooking(String apiKey, List<String> roles, BookingResponse bookingResponse) {
-        return carService.changeCarStatus(apiKey, roles, bookingResponse.carId(), CarState.NOT_AVAILABLE)
-                .map(carResponse -> bookingResponse);
+    private Mono<Void> setCarForNewBooking(String apiKey, List<String> roles, BookingResponse bookingResponse) {
+        return carService.changeCarStatus(apiKey, roles, bookingResponse.carId(), CarState.NOT_AVAILABLE);
     }
 
     private Mono<CarResponse> getCarIfIsChanged(String apiKey, List<String> roles, BookingRequest updatedBookingRequest,
@@ -274,17 +272,7 @@ public class BookingService {
         return Mono.just(updatedBookingRequest.carId())
                 .filter(id -> !existingBooking.getCarId().toString().equals(id))
                 .flatMap(newCarId -> carService.findAvailableCarById(apiKey, roles, newCarId))
-                .flatMap(carResponse -> {
-                    if (updatedBookingRequest.rentalBranchId().equals(carResponse.actualBranchId())) {
-                        return Mono.just(carResponse);
-                    }
-
-                    return Mono.error(
-                            new SwiftWheelsHubResponseStatusException(
-                                    HttpStatus.BAD_REQUEST,
-                                    "Cannot choose car from other branch than selected one")
-                    );
-                })
+                .flatMap(carResponse -> checkIfCarIsFromRightBranch(updatedBookingRequest, carResponse))
                 .switchIfEmpty(Mono.empty());
     }
 
@@ -394,6 +382,18 @@ public class BookingService {
         }
 
         return amount.multiply(BigDecimal.valueOf(bookingDays));
+    }
+
+    private Mono<CarResponse> checkIfCarIsFromRightBranch(BookingRequest updatedBookingRequest, CarResponse carResponse) {
+        if (updatedBookingRequest.rentalBranchId().equals(carResponse.actualBranchId())) {
+            return Mono.just(carResponse);
+        }
+
+        return Mono.error(
+                new SwiftWheelsHubResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Cannot choose car from other branch than selected one")
+        );
     }
 
 }

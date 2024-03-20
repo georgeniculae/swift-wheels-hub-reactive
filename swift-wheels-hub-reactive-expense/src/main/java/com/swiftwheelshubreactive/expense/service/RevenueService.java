@@ -82,8 +82,8 @@ public class RevenueService {
     public Mono<Invoice> saveInvoiceRevenueAndOutbox(Invoice invoice) {
         return invoiceRepository.save(invoice)
                 .flatMap(savedInvoice -> outboxService.saveOutbox(invoice, Outbox.Operation.CLOSE))
-                .flatMap(savedOutbox -> revenueRepository.save(getRevenue(savedOutbox.getContent()))
-                        .map(revenue -> savedOutbox.getContent()))
+                .delayUntil(savedOutbox -> revenueRepository.save(getRevenue(savedOutbox.getContent())))
+                .map(Outbox::getContent)
                 .onErrorMap(e -> {
                     log.error("Error during transactional saving of outbox and revenue: {}", e.getMessage());
 
@@ -112,9 +112,11 @@ public class RevenueService {
             dateOfBookingAsDate = new SimpleDateFormat(DATE_FORMAT).parse(dateOfRevenue);
 
             dayAfterDateOfBookingAsDate = new SimpleDateFormat(DATE_FORMAT)
-                    .parse(LocalDate.parse(dateOfRevenue)
-                            .plusDays(1)
-                            .format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
+                    .parse(
+                            LocalDate.parse(dateOfRevenue)
+                                    .plusDays(1)
+                                    .format(DateTimeFormatter.ofPattern(DATE_FORMAT))
+                    );
         } catch (ParseException e) {
             throw new SwiftWheelsHubException(e.getMessage());
         }

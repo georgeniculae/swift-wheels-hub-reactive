@@ -21,7 +21,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -161,18 +160,8 @@ public class InvoiceService {
                 });
     }
 
-    @Transactional
     public Mono<Void> deleteInvoiceByBookingId(String bookingId) {
         return invoiceRepository.findByBookingId(MongoUtil.getObjectId(bookingId))
-                .filter(invoice -> ObjectUtils.isEmpty(invoice.getTotalAmount()))
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Invoice cannot be deleted if booking is in progress"
-                                )
-                        )
-                )
                 .flatMap(invoice -> invoiceRepository.deleteById(invoice.getId()));
     }
 
@@ -244,11 +233,13 @@ public class InvoiceService {
         }
     }
 
-    private Mono<Invoice> setupExistingInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest, InvoiceRequest request) {
+    private Mono<Invoice> setupExistingInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest,
+                                               InvoiceRequest request) {
         return Mono.zip(
                 findEntityById(id),
                 bookingService.findBookingById(apiKey, roles, invoiceRequest.bookingId()),
-                (existingInvoice, bookingResponse) -> updateInvoiceWithBookingDetails(request, existingInvoice, bookingResponse));
+                (existingInvoice, bookingResponse) -> updateInvoiceWithBookingDetails(request, existingInvoice, bookingResponse)
+        );
     }
 
     private Invoice updateInvoiceWithBookingDetails(InvoiceRequest invoiceRequest,
