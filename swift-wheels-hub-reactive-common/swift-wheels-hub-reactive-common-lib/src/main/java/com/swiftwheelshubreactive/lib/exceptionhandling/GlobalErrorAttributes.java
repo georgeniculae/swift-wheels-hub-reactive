@@ -1,11 +1,11 @@
 package com.swiftwheelshubreactive.lib.exceptionhandling;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -33,11 +33,17 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
     }
 
     private String getMessage(Map<String, Object> errorAttributes, Throwable error) {
-        if (HttpStatus.INTERNAL_SERVER_ERROR.value() == (Integer) errorAttributes.get(STATUS)) {
+        String message = error.getMessage();
+
+        if (HttpStatus.INTERNAL_SERVER_ERROR.value() == (Integer) errorAttributes.get(STATUS) && message.length() > 500) {
             return UNEXPECTED_ERROR;
         }
 
-        return ((ResponseStatusException) error).getReason();
+        if (error instanceof SwiftWheelsHubResponseStatusException swiftWheelsHubResponseStatusException) {
+            return swiftWheelsHubResponseStatusException.getReason();
+        }
+
+        return message;
     }
 
 }

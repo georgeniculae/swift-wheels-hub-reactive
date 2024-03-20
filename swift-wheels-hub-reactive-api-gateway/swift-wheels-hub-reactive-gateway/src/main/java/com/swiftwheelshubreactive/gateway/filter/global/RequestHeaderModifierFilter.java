@@ -1,8 +1,10 @@
 package com.swiftwheelshubreactive.gateway.filter.global;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.gateway.security.JwtAuthenticationTokenConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,7 @@ import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
     private static final String X_API_KEY_HEADER = "X-API-KEY";
@@ -46,7 +49,12 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return modifyHeaders(exchange)
-                .flatMap(chain::filter);
+                .flatMap(chain::filter)
+                .onErrorMap(e -> {
+                    log.error("Error while trying to log headers: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e);
+                });
     }
 
     @Override

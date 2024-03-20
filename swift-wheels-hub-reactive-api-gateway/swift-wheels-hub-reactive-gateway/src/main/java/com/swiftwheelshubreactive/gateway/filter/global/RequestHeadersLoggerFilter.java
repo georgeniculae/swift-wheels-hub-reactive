@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.gateway.filter.global;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -18,7 +19,11 @@ public class RequestHeadersLoggerFilter implements GlobalFilter, Ordered {
         return Mono.just(exchange)
                 .map(webExchange -> webExchange.getRequest().getHeaders())
                 .doOnNext(this::logHeaders)
-                .flatMap(httpHeaders -> chain.filter(exchange));
+                .flatMap(httpHeaders -> chain.filter(exchange)).onErrorMap(e -> {
+                    log.error("Error while trying to log headers: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e);
+                });
     }
 
     @Override
