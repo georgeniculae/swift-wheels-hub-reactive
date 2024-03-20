@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,10 @@ public class CustomerService {
                 });
     }
 
+    @LogActivity(
+            sentParameters = "registerRequest",
+            activityDescription = "User registration"
+    )
     public Mono<RegistrationResponse> registerUser(RegisterRequest request) {
         return Mono.fromCallable(() -> keycloakUserService.registerCustomer(request))
                 .subscribeOn(Schedulers.boundedElastic())
@@ -61,6 +66,10 @@ public class CustomerService {
                 });
     }
 
+    @LogActivity(
+            sentParameters = "id",
+            activityDescription = "User update"
+    )
     public Mono<UserInfo> updateUser(String id, UserUpdateRequest userUpdateRequest) {
         return Mono.fromCallable(() -> keycloakUserService.updateUser(id, userUpdateRequest))
                 .subscribeOn(Schedulers.boundedElastic())
@@ -71,6 +80,10 @@ public class CustomerService {
                 });
     }
 
+    @LogActivity(
+            sentParameters = "username",
+            activityDescription = "User deletion"
+    )
     public Mono<Void> deleteUserByUsername(String apiKey, List<String> roles, String username) {
         return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
                 .subscribeOn(Schedulers.boundedElastic())
