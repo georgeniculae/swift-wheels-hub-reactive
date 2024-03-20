@@ -53,7 +53,7 @@ public class CustomerService {
     }
 
     @LogActivity(
-            sentParameters = "registerRequest",
+            sentParameters = "request",
             activityDescription = "User registration"
     )
     public Mono<RegistrationResponse> registerUser(RegisterRequest request) {

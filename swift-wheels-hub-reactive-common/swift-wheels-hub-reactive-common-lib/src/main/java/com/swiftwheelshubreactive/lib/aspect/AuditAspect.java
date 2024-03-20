@@ -92,8 +92,13 @@ public class AuditAspect {
         return Arrays.stream(logActivity.sentParameters())
                 .map(parameter -> {
                     List<String> parameters = Arrays.asList(signature.getParameterNames());
+                    int indexOfElement = parameters.indexOf(parameter);
 
-                    return joinPoint.getArgs()[parameters.indexOf(parameter)].toString();
+                    if (indexOfElement < 0) {
+                        return StringUtils.EMPTY;
+                    }
+
+                    return joinPoint.getArgs()[indexOfElement].toString();
                 })
                 .toList();
     }
