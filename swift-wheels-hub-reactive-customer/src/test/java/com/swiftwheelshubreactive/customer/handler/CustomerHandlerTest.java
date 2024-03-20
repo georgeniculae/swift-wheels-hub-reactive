@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -173,13 +174,29 @@ class CustomerHandlerTest {
     }
 
     @Test
+    void deleteCurrentUserTest_success() {
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.DELETE)
+                .header("X-USERNAME", "user")
+                .header("X-API-KEY", "apikey")
+                .build();
+
+        when(customerService.deleteUserByUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
+
+        StepVerifier.create(customerHandler.deleteCurrentUser(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
+
+    @Test
     void deleteUserByUsernameTest_success() {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.DELETE)
-                .pathVariable("username", "username")
+                .pathVariable("username", "user")
+                .header("X-API-KEY", "apikey")
                 .build();
 
-        when(customerService.deleteUserByUsername(anyString())).thenReturn(Mono.empty());
+        when(customerService.deleteUserByUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.deleteUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

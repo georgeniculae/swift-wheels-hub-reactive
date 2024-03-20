@@ -22,6 +22,7 @@ public class UserRouter {
                         .andRoute(RequestPredicates.GET("/username/{username}"), customerHandler::findUserByUsername)
                         .andRoute(RequestPredicates.POST("/register"), customerHandler::registerUser)
                         .andRoute(RequestPredicates.PUT("/{id}"), customerHandler::updateUser)
+                        .andRoute(RequestPredicates.DELETE("/current"), customerHandler::deleteCurrentUser)
                         .andRoute(RequestPredicates.DELETE("/{username}"), customerHandler::deleteUserByUsername)
                         .andRoute(RequestPredicates.GET("/sign-out"), customerHandler::signOut));
     }

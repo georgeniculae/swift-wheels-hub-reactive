@@ -66,3 +66,6 @@ apikey:
 
 audit:
   enabled: true
+
+booking-service:
+  url: lb://swift-wheels-hub-reactive-booking/bookings

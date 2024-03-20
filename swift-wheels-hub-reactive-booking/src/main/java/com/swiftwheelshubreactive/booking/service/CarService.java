@@ -4,13 +4,13 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
-                    return e;
+                    return new SwiftWheelsHubException(e);
                 });
     }
 
@@ -81,10 +81,10 @@ public class CarService {
                 });
     }
 
-    public Flux<CarResponse> updateCarsStatus(String apiKey, List<String> roles,
-                                              List<UpdateCarRequest> updateCarRequests) {
+    public Mono<Void> updateCarsStatus(String apiKey, List<String> roles,
+                                       List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
-                .uri(url + SEPARATOR + SEPARATOR + "update-statuses")
+                .uri(url + SEPARATOR + "update-statuses")
                 .header(X_API_KEY, apiKey)
                 .header(X_ROLES, roles.toArray(String[]::new))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -92,6 +92,7 @@ public class CarService {
                 .bodyValue(updateCarRequests)
                 .retrieve()
                 .bodyToFlux(CarResponse.class)
+                .then()
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

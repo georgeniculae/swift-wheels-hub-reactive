@@ -177,11 +177,11 @@ import java.lang.annotation.Target;
                 ),
                 @RouterOperation(
                         method = RequestMethod.DELETE,
-                        path = "/{id}",
+                        path = "/{username}",
                         beanClass = CustomerHandler.class,
-                        beanMethod = "deleteUserById",
+                        beanMethod = "deleteUserByUsername",
                         operation = @Operation(
-                                operationId = "deleteUserById",
+                                operationId = "deleteUserByUsername",
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -201,9 +201,35 @@ import java.lang.annotation.Target;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
-                                        name = "id",
+                                        name = "username",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
+                        )
+                ),
+                @RouterOperation(
+                        method = RequestMethod.DELETE,
+                        path = "/current",
+                        beanClass = CustomerHandler.class,
+                        beanMethod = "deleteCurrentUser",
+                        operation = @Operation(
+                                operationId = "deleteCurrentUser",
+                                responses = {
+                                        @ApiResponse(
+                                                responseCode = "200",
+                                                description = "Successful",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "400",
+                                                description = "Bad Request",
+                                                content = @Content(schema = @Schema())
+                                        ),
+                                        @ApiResponse(
+                                                responseCode = "500",
+                                                description = "Internal Server Error",
+                                                content = @Content(schema = @Schema())
+                                        )
+                                }
                         )
                 ),
                 @RouterOperation(

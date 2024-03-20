@@ -43,7 +43,6 @@ public class CustomerHandler {
                 .flatMap(userCount -> ServerResponse.ok().bodyValue(userCount));
     }
 
-    @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> registerUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RegisterRequest.class)
                 .flatMap(registerRequestValidator::validateBody)
@@ -62,7 +61,21 @@ public class CustomerHandler {
 
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
-        return customerService.deleteUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
+        return customerService.deleteUserByUsername(
+                        ServerRequestUtil.getApiKeyHeader(serverRequest),
+                        ServerRequestUtil.getRolesHeader(serverRequest),
+                        ServerRequestUtil.getPathVariable(serverRequest, USERNAME)
+                )
+                .then(ServerResponse.noContent().build());
+    }
+
+    @PreAuthorize("hasAuthority('user')")
+    public Mono<ServerResponse> deleteCurrentUser(ServerRequest serverRequest) {
+        return customerService.deleteUserByUsername(
+                        ServerRequestUtil.getApiKeyHeader(serverRequest),
+                        ServerRequestUtil.getRolesHeader(serverRequest),
+                        ServerRequestUtil.getUsername(serverRequest)
+                )
                 .then(ServerResponse.noContent().build());
     }
 

@@ -9,10 +9,13 @@ import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.model.Booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,25 +41,43 @@ public class OutboxService {
     }
 
     @Transactional
-    public Mono<Outbox> saveBookingAndOutboxTransactional(Booking booking, Outbox.Operation operation) {
+    public Mono<Outbox> saveBookingAndOutbox(Booking booking, Outbox.Operation operation) {
         return bookingRepository.save(booking)
                 .flatMap(savedBooking -> saveOutbox(savedBooking, operation));
     }
 
     @Transactional
-    public Mono<Booking> processBookingDeletion(Booking booking, Outbox.Operation operation) {
-        return bookingRepository.deleteByCustomerUsername(booking.getCustomerUsername())
-                .then(saveOutbox(booking, operation))
-                .map(Outbox::getContent);
+    public Mono<List<String>> processBookingDeletion(List<Booking> bookings, Outbox.Operation operation) {
+        return bookingRepository.deleteAllById(getBookingsIds(bookings))
+                .then(Mono.defer(() -> handleOutboxes(bookings, operation)));
+    }
+
+    private List<ObjectId> getBookingsIds(List<Booking> bookings) {
+        return bookings.stream()
+                .map(Booking::getId)
+                .toList();
     }
 
     private Mono<Outbox> saveOutbox(Booking savedBooking, Outbox.Operation operation) {
-        Outbox outbox = Outbox.builder()
+        Outbox outbox = createOutbox(savedBooking, operation);
+
+        return outboxRepository.save(outbox);
+    }
+
+    private Mono<List<String>> handleOutboxes(List<Booking> bookings, Outbox.Operation operation) {
+        return Flux.fromIterable(bookings)
+                .map(booking -> createOutbox(booking, operation))
+                .collectList()
+                .flatMapMany(outboxRepository::saveAll)
+                .map(outbox -> outbox.getContent().getCarId().toString())
+                .collectList();
+    }
+
+    private Outbox createOutbox(Booking savedBooking, Outbox.Operation operation) {
+        return Outbox.builder()
                 .operation(operation)
                 .content(savedBooking)
                 .build();
-
-        return outboxRepository.save(outbox);
     }
 
     private Mono<Outbox> processBooking(Outbox outbox) {

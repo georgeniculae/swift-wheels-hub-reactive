@@ -11,9 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -27,6 +31,9 @@ class CustomerServiceTest {
 
     @Mock
     private KeycloakUserService keycloakUserService;
+
+    @Mock
+    private BookingService bookingService;
 
     @Test
     void findUserByUsernameTest_success() {
@@ -155,8 +162,9 @@ class CustomerServiceTest {
     @Test
     void deleteUserByUsernameTest_success() {
         doNothing().when(keycloakUserService).deleteUserByUsername(anyString());
+        when(bookingService.deleteBookingsByUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
 
-        customerService.deleteUserByUsername("1")
+        customerService.deleteUserByUsername("apiKey", List.of("USER"), "user")
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
@@ -164,9 +172,9 @@ class CustomerServiceTest {
 
     @Test
     void deleteUserByUsernameTest_errorOnDeleting() {
-        doThrow(new SwiftWheelsHubException("")).when(keycloakUserService).deleteUserByUsername(anyString());
+        doThrow(new SwiftWheelsHubException("error")).when(keycloakUserService).deleteUserByUsername(anyString());
 
-        customerService.deleteUserByUsername("1")
+        customerService.deleteUserByUsername("apiKey", List.of("USER"), "user")
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();

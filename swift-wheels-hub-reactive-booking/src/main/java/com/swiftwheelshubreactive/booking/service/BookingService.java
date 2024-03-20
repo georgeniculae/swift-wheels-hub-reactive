@@ -142,7 +142,7 @@ public class BookingService {
         return validateBookingDates(newBookingRequest)
                 .flatMap(bookingRequest -> carService.findAvailableCarById(apiKey, roles, bookingRequest.carId()))
                 .map(carResponse -> setupNewBooking(newBookingRequest, carResponse))
-                .flatMap(booking -> outboxService.saveBookingAndOutboxTransactional(booking, Outbox.Operation.CREATE))
+                .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
                 .flatMap(bookingResponse -> setCarForNewBooking(apiKey, roles, bookingResponse))
                 .onErrorMap(e -> {
@@ -187,14 +187,20 @@ public class BookingService {
     )
     public Mono<Void> deleteBookingByCustomerUsername(String apiKey, List<String> roles, String username) {
         return bookingRepository.findByCustomerUsername(username)
-                .flatMap(booking -> outboxService.processBookingDeletion(booking, Outbox.Operation.DELETE))
-                .flatMap(booking -> carService.changeCarStatus(apiKey, roles, booking.getCarId().toString(), CarState.AVAILABLE))
-                .then()
+                .collectList()
+                .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
+                .flatMap(carsIds -> carService.updateCarsStatus(apiKey, roles, getUpdateCarRequest(carsIds)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e.getMessage());
                 });
+    }
+
+    private List<UpdateCarRequest> getUpdateCarRequest(List<String> bookingsIds) {
+        return bookingsIds.stream()
+                .map(id -> new UpdateCarRequest(id, CarState.AVAILABLE))
+                .toList();
     }
 
     private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
@@ -241,9 +247,9 @@ public class BookingService {
 
     private Mono<BookingResponse> processBooking(String apiKey, List<String> roles, Booking existingBooking,
                                                  Booking updatedExistingBooking) {
-        return outboxService.saveBookingAndOutboxTransactional(updatedExistingBooking, Outbox.Operation.UPDATE)
+        return outboxService.saveBookingAndOutbox(updatedExistingBooking, Outbox.Operation.UPDATE)
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
-                .flatMap(savedBookingResponse -> changeCarsStatus(apiKey, roles, savedBookingResponse, existingBooking));
+                .delayUntil(savedBookingResponse -> changeCarsStatusIfNeeded(apiKey, roles, savedBookingResponse, existingBooking));
     }
 
     private Mono<BookingResponse> updateCarWhenBookingIsClosed(String apiKey, List<String> roles,
@@ -268,6 +274,17 @@ public class BookingService {
         return Mono.just(updatedBookingRequest.carId())
                 .filter(id -> !existingBooking.getCarId().toString().equals(id))
                 .flatMap(newCarId -> carService.findAvailableCarById(apiKey, roles, newCarId))
+                .flatMap(carResponse -> {
+                    if (updatedBookingRequest.rentalBranchId().equals(carResponse.actualBranchId())) {
+                        return Mono.just(carResponse);
+                    }
+
+                    return Mono.error(
+                            new SwiftWheelsHubResponseStatusException(
+                                    HttpStatus.BAD_REQUEST,
+                                    "Cannot choose car from other branch than selected one")
+                    );
+                })
                 .switchIfEmpty(Mono.empty());
     }
 
@@ -350,22 +367,19 @@ public class BookingService {
         return updatedExistingBooking;
     }
 
-    private Mono<BookingResponse> changeCarsStatus(String apiKey, List<String> roles,
-                                                   BookingResponse updatedBookingResponse, Booking existingBooking) {
+    private Mono<Void> changeCarsStatusIfNeeded(String apiKey, List<String> roles,
+                                                BookingResponse updatedBookingResponse, Booking existingBooking) {
         return Mono.just(existingBooking.getCarId().toString())
                 .filter(existingBookingCarId -> !existingBookingCarId.equals(updatedBookingResponse.carId()))
                 .flatMap(existingBookingCarId -> {
                     List<UpdateCarRequest> updateCarRequests =
-                            getCarsForStatusUpdate(existingBookingCarId, updatedBookingResponse.carId());
+                            getUpdateCarRequest(existingBookingCarId, updatedBookingResponse.carId());
 
-                    return carService.updateCarsStatus(apiKey, roles, updateCarRequests)
-                            .collectList()
-                            .map(carResponses -> updatedBookingResponse);
-                })
-                .switchIfEmpty(Mono.defer(() -> Mono.just(updatedBookingResponse)));
+                    return carService.updateCarsStatus(apiKey, roles, updateCarRequests);
+                });
     }
 
-    private List<UpdateCarRequest> getCarsForStatusUpdate(String existingCarId, String newCarId) {
+    private List<UpdateCarRequest> getUpdateCarRequest(String existingCarId, String newCarId) {
         return List.of(
                 new UpdateCarRequest(existingCarId, CarState.AVAILABLE),
                 new UpdateCarRequest(newCarId, CarState.NOT_AVAILABLE)

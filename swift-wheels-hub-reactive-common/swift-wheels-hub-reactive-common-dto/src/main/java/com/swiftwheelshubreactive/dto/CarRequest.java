@@ -18,12 +18,12 @@ public record CarRequest(
         @NonNull
         BodyCategory bodyCategory,
 
-        int yearOfProduction,
+        Integer yearOfProduction,
 
         @NonNull
         String color,
 
-        int mileage,
+        Integer mileage,
 
         @NonNull
         CarState carState,

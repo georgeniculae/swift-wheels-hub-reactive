@@ -43,8 +43,8 @@ public class DatabaseCollectionCreator {
         );
     }
 
-    private static Car createCar(String id, String make, String model, BodyType bodyType, int yearOfProduction, String color,
-                                 int mileage, BigDecimal amount, Branch originalBranch, Branch actualBranch) {
+    private static Car createCar(String id, String make, String model, BodyType bodyType, int yearOfProduction,
+                                 String color, int mileage, BigDecimal amount, Branch originalBranch, Branch actualBranch) {
         return Car.builder()
                 .id(new ObjectId(id))
                 .make(make)

@@ -11,12 +11,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CustomerService {
 
     private final KeycloakUserService keycloakUserService;
+    private final BookingService bookingService;
 
     public Mono<UserInfo> findUserByUsername(String username) {
         return Mono.fromCallable(() -> keycloakUserService.findUserByUsername(username))
@@ -68,9 +71,10 @@ public class CustomerService {
                 });
     }
 
-    public Mono<Void> deleteUserByUsername(String username) {
+    public Mono<Void> deleteUserByUsername(String apiKey, List<String> roles, String username) {
         return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
                 .subscribeOn(Schedulers.boundedElastic())
+                .then(Mono.defer(() -> bookingService.deleteBookingsByUsername(apiKey, roles, username)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 

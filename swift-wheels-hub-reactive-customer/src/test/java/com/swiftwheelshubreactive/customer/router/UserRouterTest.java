@@ -295,4 +295,80 @@ class UserRouterTest {
                 .isUnauthorized();
     }
 
+    @Test
+    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    void deleteCurrentUserTest_success() {
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().build();
+
+        when(customerHandler.deleteCurrentUser(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<Void> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .delete()
+                .uri("/current")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(Void.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void deleteCurrentUserTest_unauthorized() {
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().build();
+
+        when(customerHandler.deleteCurrentUser(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .delete()
+                .uri("/current")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
+
+    @Test
+    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    void deleteUserByUsernameTest_success() {
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().build();
+
+        when(customerHandler.deleteUserByUsername(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<Void> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .delete()
+                .uri("/{username}", "user")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(Void.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void deleteUserByUsernameTest_unauthorized() {
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().build();
+
+        when(customerHandler.deleteUserByUsername(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .delete()
+                .uri("/{username}", "user")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
+
 }

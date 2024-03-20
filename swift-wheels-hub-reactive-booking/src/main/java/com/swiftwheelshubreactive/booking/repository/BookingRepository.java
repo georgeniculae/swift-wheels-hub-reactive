@@ -15,6 +15,4 @@ public interface BookingRepository extends ReactiveMongoRepository<Booking, Obje
     @Query(value = "{ 'customerUsername': ?0 }", count = true)
     Mono<Long> countByCustomerUsername(String customerUsername);
 
-    Mono<Void> deleteByCustomerUsername(String customerUsername);
-
 }
