@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.agency.service;
 
 import com.swiftwheelshubreactive.agency.mapper.RentalOfficeMapper;
 import com.swiftwheelshubreactive.agency.mapper.RentalOfficeMapperImpl;
+import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
@@ -36,6 +37,9 @@ class RentalOfficeServiceTest {
 
     @Mock
     private RentalOfficeRepository rentalOfficeRepository;
+
+    @Mock
+    private BranchRepository branchRepository;
 
     @Spy
     private RentalOfficeMapper rentalOfficeMapper = new RentalOfficeMapperImpl();
@@ -206,6 +210,7 @@ class RentalOfficeServiceTest {
     @Test
     void deleteRentalOfficeByIdTest_success() {
         when(rentalOfficeRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
+        when(branchRepository.deleteByRentalOfficeId(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(rentalOfficeService.deleteRentalOfficeById("64f361caf291ae086e179547"))
                 .expectComplete()

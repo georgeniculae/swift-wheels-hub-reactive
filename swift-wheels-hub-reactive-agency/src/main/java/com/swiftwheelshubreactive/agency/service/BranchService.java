@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.agency.service;
 
 import com.swiftwheelshubreactive.agency.mapper.BranchMapper;
 import com.swiftwheelshubreactive.agency.repository.BranchRepository;
+import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono;
 public class BranchService {
 
     private final BranchRepository branchRepository;
+    private final EmployeeRepository employeeRepository;
     private final RentalOfficeService rentalOfficeService;
     private final BranchMapper branchMapper;
 
@@ -110,6 +112,7 @@ public class BranchService {
 
     public Mono<Void> deleteBranchById(String id) {
         return branchRepository.deleteById(MongoUtil.getObjectId(id))
+                .then(Mono.defer(() -> employeeRepository.deleteByBranchId(id)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting branch: {}", e.getMessage());
 

@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.service;
 
 import com.swiftwheelshubreactive.agency.mapper.RentalOfficeMapper;
+import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono;
 public class RentalOfficeService {
 
     private final RentalOfficeRepository rentalOfficeRepository;
+    private final BranchRepository branchRepository;
     private final RentalOfficeMapper rentalOfficeMapper;
 
     public Flux<RentalOfficeResponse> findAllRentalOffices() {
@@ -99,6 +101,7 @@ public class RentalOfficeService {
 
     public Mono<Void> deleteRentalOfficeById(String id) {
         return rentalOfficeRepository.deleteById(MongoUtil.getObjectId(id))
+                .then(Mono.defer(() -> branchRepository.deleteByRentalOfficeId(id)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting rental office: {}", e.getMessage());
 

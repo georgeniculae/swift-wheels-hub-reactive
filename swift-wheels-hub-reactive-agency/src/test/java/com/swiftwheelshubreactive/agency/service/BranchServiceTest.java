@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.agency.service;
 import com.swiftwheelshubreactive.agency.mapper.BranchMapper;
 import com.swiftwheelshubreactive.agency.mapper.BranchMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.BranchRepository;
+import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
@@ -39,6 +40,9 @@ class BranchServiceTest {
 
     @Mock
     private RentalOfficeService rentalOfficeService;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @Spy
     private BranchMapper branchMapper = new BranchMapperImpl();
@@ -215,6 +219,7 @@ class BranchServiceTest {
     @Test
     void deleteBranchByIdTest_success() {
         when(branchRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
+        when(employeeRepository.deleteByBranchId(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(branchService.deleteBranchById("64f361caf291ae086e179547"))
                 .expectComplete()
