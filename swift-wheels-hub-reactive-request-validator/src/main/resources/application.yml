@@ -9,6 +9,11 @@ server:
 spring:
   application:
     name: swift-wheels-hub-reactive-request-validator
+  redis:
+    host: ${REDIS_HOST}
+    password: ${REDIS_PASSWORD}
+    port: 6379
+    database: 0
   codec:
     max-in-memory-size: 20MB
   mvc:
