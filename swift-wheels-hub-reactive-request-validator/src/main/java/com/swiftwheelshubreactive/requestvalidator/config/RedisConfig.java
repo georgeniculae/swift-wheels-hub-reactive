@@ -17,21 +17,21 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
-    private String redisHost;
+    private String host;
 
     @Value("${spring.redis.port}")
-    private int redisPort;
+    private int port;
 
     @Value("${spring.redis.password}")
-    private String redisPassword;
+    private String password;
 
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfig = new RedisStandaloneConfiguration();
 
-        redisStandaloneConfig.setHostName(redisHost);
-        redisStandaloneConfig.setPort(redisPort);
-        redisStandaloneConfig.setPassword(redisPassword);
+        redisStandaloneConfig.setHostName(host);
+        redisStandaloneConfig.setPort(port);
+        redisStandaloneConfig.setPassword(password);
 
         return new LettuceConnectionFactory(redisStandaloneConfig);
     }
