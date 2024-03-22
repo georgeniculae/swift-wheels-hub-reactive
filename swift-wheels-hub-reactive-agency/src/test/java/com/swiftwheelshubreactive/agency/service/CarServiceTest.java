@@ -193,7 +193,7 @@ class CarServiceTest {
     void getCarImageTest_success() {
         Car car = TestData.getCar();
 
-        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
+        when(carRepository.findCarImageById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
         StepVerifier.create(carService.getCarImage("64f361caf291ae086e179547"))
                 .expectNextCount(1)
@@ -202,7 +202,7 @@ class CarServiceTest {
 
     @Test
     void getCarImageTest_errorOnFindingById() {
-        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new SwiftWheelsHubException("error")));
+        when(carRepository.findCarImageById(any(ObjectId.class))).thenReturn(Mono.error(new SwiftWheelsHubException("error")));
 
         StepVerifier.create(carService.getCarImage("64f361caf291ae086e179547"))
                 .expectError()

@@ -24,6 +24,15 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
 
     @Query(
             value = """
+                    { 'id' : ?0 }""",
+            fields = """
+                    { 'image' : 1 }"""
+    )
+    @NonNull
+    Mono<Car> findCarImageById(@NonNull ObjectId id);
+
+    @Query(
+            value = """
                     {$or : [{'make' : {$regex: '(?i)?0'}}, {'model' : {$regex: '(?i)?0'}}]}""",
             fields = """
                     {
