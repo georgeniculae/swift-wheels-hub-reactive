@@ -48,6 +48,6 @@ apikey:
 swagger:
   endpoints:
     agency: lb://swift-wheels-hub-reactive-agency/agency/definition/v3/api-docs
-    booking: lb://swift-wheels-hub-reactive-booking/bookings/definition/v3/api-docs
-    customer: lb://swift-wheels-hub-reactive-customer/customers/definition/v3/api-docs
+    bookings: lb://swift-wheels-hub-reactive-booking/bookings/definition/v3/api-docs
+    customers: lb://swift-wheels-hub-reactive-customer/customers/definition/v3/api-docs
     expense: lb://swift-wheels-hub-reactive-expense/expense/definition/v3/api-docs

@@ -64,7 +64,7 @@ public class SwaggerRequestValidatorService {
         return redisOperations.opsForValue()
                 .get(getMicroserviceIdentifier(simpleRequest))
                 .filter(ObjectUtils::isNotEmpty)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Swagger folder does not exist"))))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Swagger does not exist"))))
                 .map(swaggerFile -> getValidationReport(simpleRequest, swaggerFile));
     }
 

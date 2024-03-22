@@ -62,13 +62,13 @@ class SwaggerExtractorServiceTest {
 
         Map<String, String> endpoints = new LinkedHashMap<>();
         endpoints.put("agency", agencyContent);
-        endpoints.put("booking", bookingsContent);
-        endpoints.put("customer", customersContent);
+        endpoints.put("bookings", bookingsContent);
+        endpoints.put("customers", customersContent);
         endpoints.put("expense", expenseContent);
 
         SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
-        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("booking").swaggerContent(bookingsContent).build();
-        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customer").swaggerContent(customersContent).build();
+        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
+        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
         SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
 
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
