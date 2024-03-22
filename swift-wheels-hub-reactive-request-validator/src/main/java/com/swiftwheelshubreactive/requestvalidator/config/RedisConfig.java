@@ -37,7 +37,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public ReactiveRedisOperations<String, SwaggerFile> redisOperations(ReactiveRedisConnectionFactory factory) {
+    public ReactiveRedisOperations<String, SwaggerFile> redisOperations(LettuceConnectionFactory factory) {
         Jackson2JsonRedisSerializer<SwaggerFile> serializer = new Jackson2JsonRedisSerializer<>(SwaggerFile.class);
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, SwaggerFile> builder =
