@@ -44,13 +44,14 @@ public class RedisService {
     }
 
     private Mono<Boolean> addSwaggerToRedis(String key, String value) {
-        return reactiveRedisOperations.opsForValue().set(
-                key,
-                SwaggerFile.builder()
-                        .id(key)
-                        .swaggerContent(value)
-                        .build()
-        );
+        return reactiveRedisOperations.opsForValue()
+                .set(
+                        key,
+                        SwaggerFile.builder()
+                                .id(key)
+                                .swaggerContent(value)
+                                .build()
+                );
     }
 
 }
