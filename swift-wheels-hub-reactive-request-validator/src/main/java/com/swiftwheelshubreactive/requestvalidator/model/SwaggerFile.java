@@ -15,7 +15,7 @@ import org.springframework.data.redis.core.RedisHash;
 @Setter
 public class SwaggerFile {
 
-    private String id;
+    private String identifier;
     private String swaggerContent;
 
 }

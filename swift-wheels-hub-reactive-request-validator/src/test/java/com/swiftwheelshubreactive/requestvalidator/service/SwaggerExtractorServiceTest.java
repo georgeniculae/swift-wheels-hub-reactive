@@ -1,6 +1,8 @@
 package com.swiftwheelshubreactive.requestvalidator.service;
 
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
+import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
+import com.swiftwheelshubreactive.requestvalidator.util.AssertionUtil;
 import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +14,8 @@ import org.mockito.stubbing.Answer;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -63,16 +62,14 @@ class SwaggerExtractorServiceTest {
 
         Map<String, String> endpoints = new LinkedHashMap<>();
         endpoints.put("agency", agencyContent);
-        endpoints.put("bookings", bookingsContent);
-        endpoints.put("customers", customersContent);
+        endpoints.put("booking", bookingsContent);
+        endpoints.put("customer", customersContent);
         endpoints.put("expense", expenseContent);
 
-        List<Tuple2<String, String>> expected = List.of(
-                Tuples.of("agency", agencyContent),
-                Tuples.of("bookings", bookingsContent),
-                Tuples.of("customers", customersContent),
-                Tuples.of("expense", expenseContent)
-        );
+        SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
+        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("booking").swaggerContent(bookingsContent).build();
+        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customer").swaggerContent(customersContent).build();
+        SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
 
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
@@ -98,12 +95,12 @@ class SwaggerExtractorServiceTest {
             }
         });
 
-        swaggerExtractorService.getSwaggerIdentifierAndContent()
+        swaggerExtractorService.getSwaggerFiles()
                 .as(StepVerifier::create)
-                .expectNext(expected.getFirst())
-                .expectNext(expected.get(1))
-                .expectNext(expected.get(2))
-                .expectNext(expected.getLast())
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(agencySwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(bookingSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(customerSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(expenseSwagger, swaggerFile))
                 .verifyComplete();
     }
 

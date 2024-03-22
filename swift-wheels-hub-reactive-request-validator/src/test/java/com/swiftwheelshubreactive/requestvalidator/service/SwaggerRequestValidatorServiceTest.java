@@ -41,7 +41,7 @@ class SwaggerRequestValidatorServiceTest {
                 TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
         SwaggerFile swaggerFile = SwaggerFile.builder()
-                .id("agency")
+                .identifier("agency")
                 .swaggerContent(agencyContent)
                 .build();
 

@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.requestvalidator.service;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
+import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -32,18 +31,18 @@ public class SwaggerExtractorService {
 
     private final RegisteredEndpoints registeredEndpoints;
 
-    public Flux<Tuple2<String, String>> getSwaggerIdentifierAndContent() {
+    public Flux<SwaggerFile> getSwaggerFiles() {
         return Flux.fromIterable(registeredEndpoints.getEndpoints().entrySet())
-                .flatMap(this::mapIdentifierToSwagger);
+                .flatMap(this::createSwaggerFile);
     }
 
-    public Mono<String> getSwaggerFileForMicroservice(String microserviceName) {
-        return getSwaggerIdentifierAndContent()
-                .map(swaggerIdentifierAndContent -> {
-                    String microserviceIdentifier = swaggerIdentifierAndContent.getT1();
+    public Mono<SwaggerFile> getSwaggerFileForMicroservice(String microserviceName) {
+        return getSwaggerFiles()
+                .map(swaggerFile -> {
+                    String identifier = swaggerFile.getIdentifier();
 
-                    if (microserviceName.contains(microserviceIdentifier)) {
-                        return swaggerIdentifierAndContent.getT2();
+                    if (microserviceName.contains(identifier)) {
+                        return swaggerFile;
                     }
 
                     throw new SwiftWheelsHubException("Microservice " + microserviceName + " not existent");
@@ -52,12 +51,12 @@ public class SwaggerExtractorService {
                 .map(List::getFirst);
     }
 
-    private Mono<Tuple2<String, String>> mapIdentifierToSwagger(Map.Entry<String, String> endpoints) {
-        return getSwagger(endpoints.getKey(), endpoints.getValue())
-                .map(swaggerContent -> Tuples.of(endpoints.getKey(), swaggerContent));
+    private Mono<SwaggerFile> createSwaggerFile(Map.Entry<String, String> endpoints) {
+        return getSwaggerContent(endpoints.getKey(), endpoints.getValue())
+                .map(swaggerContent -> getSwaggerFile(endpoints, swaggerContent));
     }
 
-    private Mono<String> getSwagger(String microserviceName, String url) {
+    private Mono<String> getSwaggerContent(String microserviceName, String url) {
         return webClient.get()
                 .uri(url)
                 .header(X_API_KEY, apikey)
@@ -66,6 +65,13 @@ public class SwaggerExtractorService {
                 .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + microserviceName + " is empty")));
+    }
+
+    private SwaggerFile getSwaggerFile(Map.Entry<String, String> endpoints, String swaggerContent) {
+        return SwaggerFile.builder()
+                .identifier(endpoints.getKey())
+                .swaggerContent(swaggerContent)
+                .build();
     }
 
 }

@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,12 +19,11 @@ public class RedisService {
     private final SwaggerExtractorService swaggerExtractorService;
 
     public Mono<Boolean> addSwaggerFilesToRedis() {
-        return swaggerExtractorService.getSwaggerIdentifierAndContent()
-                .flatMap(swaggerEntry -> addSwaggerToRedis(swaggerEntry.getT1(), swaggerEntry.getT2()))
+        return swaggerExtractorService.getSwaggerFiles()
+                .collectMap(SwaggerFile::getIdentifier)
+                .flatMap(this::addSwaggersToRedis)
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Redis add failed"))))
-                .collectList()
-                .map(List::getFirst)
                 .onErrorMap(e -> {
                     log.error("Error while setting swagger folder in Redis: {}", e.getMessage());
 
@@ -34,8 +33,8 @@ public class RedisService {
 
     public Mono<Boolean> repopulateRedisWithSwaggerFiles(String microserviceName) {
         return reactiveRedisOperations.delete(microserviceName)
-                .flatMap(numberOfDeletedItems -> swaggerExtractorService.getSwaggerFileForMicroservice(microserviceName))
-                .flatMap(swaggerContent -> addSwaggerToRedis(microserviceName, swaggerContent))
+                .then(Mono.defer(() -> swaggerExtractorService.getSwaggerFileForMicroservice(microserviceName)))
+                .flatMap(this::addSwaggerToRedis)
                 .onErrorMap(e -> {
                     log.error("Error while repopulating swagger folder in Redis: {}", e.getMessage());
 
@@ -43,15 +42,14 @@ public class RedisService {
                 });
     }
 
-    private Mono<Boolean> addSwaggerToRedis(String key, String value) {
+    private Mono<Boolean> addSwaggersToRedis(Map<String, SwaggerFile> swaggerFilesMap) {
         return reactiveRedisOperations.opsForValue()
-                .set(
-                        key,
-                        SwaggerFile.builder()
-                                .id(key)
-                                .swaggerContent(value)
-                                .build()
-                );
+                .multiSet(swaggerFilesMap);
+    }
+
+    private Mono<Boolean> addSwaggerToRedis(SwaggerFile swaggerFile) {
+        return reactiveRedisOperations.opsForValue()
+                .set(swaggerFile.getIdentifier(), swaggerFile);
     }
 
 }
