@@ -34,8 +34,7 @@ public class AuditAspect {
     @Around("@annotation(LogActivity)")
     public Mono<?> logActivity(ProceedingJoinPoint joinPoint) {
         return getJoinPointProceed(joinPoint)
-                .delayUntil(jointPointProceed -> extractUsernameHeaderFromWebFluxContext()
-                        .flatMap(username -> sendAuditLogInfoRequest(joinPoint, username)))
+                .delayUntil(jointPointProceed -> sendAuditLogInfoRequest(joinPoint))
                 .onErrorMap(e -> {
                     log.error("Error while logging activity: {}", e.getMessage());
 
@@ -49,6 +48,11 @@ public class AuditAspect {
         } catch (Throwable e) {
             throw new SwiftWheelsHubException(e);
         }
+    }
+
+    private Mono<AuditLogInfoRequest> sendAuditLogInfoRequest(ProceedingJoinPoint joinPoint) {
+        return extractUsernameHeaderFromWebFluxContext()
+                .flatMap(username -> sendAuditLogInfoRequest(joinPoint, username));
     }
 
     private Mono<String> extractUsernameHeaderFromWebFluxContext() {
