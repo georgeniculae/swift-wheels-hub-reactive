@@ -37,8 +37,8 @@ public class CustomerAuditLogInfoConsumerMessage {
 
     private Mono<AuditLogInfoRequest> processMessage(Message<AuditLogInfoRequest> message) {
         return auditService.saveCustomerAuditLogInfo(message.getPayload())
-                .doOnNext(auditLogInfoDto -> {
-                    log.info("Audit log saved: {}", auditLogInfoDto);
+                .doOnNext(auditLogInfoRequest -> {
+                    log.info("Customer audit log saved: {}", auditLogInfoRequest);
 
                     if (isMessageAckEnabled) {
                         this.sendMessageAcknowledgement(message.getHeaders());

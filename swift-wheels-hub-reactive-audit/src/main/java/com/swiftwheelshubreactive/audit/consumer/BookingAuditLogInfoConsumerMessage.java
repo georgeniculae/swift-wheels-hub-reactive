@@ -37,8 +37,8 @@ public class BookingAuditLogInfoConsumerMessage {
 
     private Mono<AuditLogInfoRequest> processMessage(Message<AuditLogInfoRequest> message) {
         return auditService.saveBookingAuditLogInfo(message.getPayload())
-                .doOnNext(auditLogInfoDto -> {
-                    log.info("Audit log saved: {}", auditLogInfoDto);
+                .doOnNext(auditLogInfoRequest -> {
+                    log.info("Booking audit log saved: {}", auditLogInfoRequest);
 
                     if (isMessageAckEnabled) {
                         this.sendMessageAcknowledgement(message.getHeaders());

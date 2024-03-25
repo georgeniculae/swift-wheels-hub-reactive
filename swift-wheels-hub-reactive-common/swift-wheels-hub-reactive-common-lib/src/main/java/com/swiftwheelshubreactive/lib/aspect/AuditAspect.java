@@ -17,6 +17,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +89,7 @@ public class AuditAspect {
 
         List<String> parametersValues = getParametersValues(joinPoint, logActivity, signature);
 
-        return new AuditLogInfoRequest(method.getName(), username, parametersValues);
+        return new AuditLogInfoRequest(method.getName(), username, LocalDateTime.now(), parametersValues);
     }
 
     private List<String> getParametersValues(ProceedingJoinPoint joinPoint, LogActivity logActivity,

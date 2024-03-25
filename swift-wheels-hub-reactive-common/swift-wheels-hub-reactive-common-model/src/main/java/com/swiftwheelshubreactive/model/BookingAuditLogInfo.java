@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "booking_audit_log_info")
@@ -27,6 +28,8 @@ public class BookingAuditLogInfo {
 
     @NonNull
     private String methodName;
+
+    private LocalDateTime timestamp;
 
     private String username;
 

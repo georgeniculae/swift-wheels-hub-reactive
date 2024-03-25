@@ -41,7 +41,7 @@ public record RegisterRequest(
                 "email='" + email + "\n" +
                 "address='" + address + "\n" +
                 "dateOfBirth=" + dateOfBirth + "\n" +
-                "needsEmailVerification" + needsEmailVerification + "\n" +
+                "needsEmailVerification=" + needsEmailVerification + "\n" +
                 "}";
     }
 
