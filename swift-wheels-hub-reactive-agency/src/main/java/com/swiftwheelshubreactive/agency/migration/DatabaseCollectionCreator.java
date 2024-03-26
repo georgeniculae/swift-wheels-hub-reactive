@@ -59,24 +59,6 @@ public class DatabaseCollectionCreator {
         );
     }
 
-    private static Branch getBranch1() {
-        return createBranch(
-                "65072051d5d4531e66a0c00a",
-                "Branch 1",
-                "Ploiesti",
-                getRentalOffice1()
-        );
-    }
-
-    private static Branch getBranch2() {
-        return createBranch(
-                "65072051d5d4531e66a0c00b",
-                "Branch 2",
-                "Bucuresti",
-                getRentalOffice2()
-        );
-    }
-
     private static RentalOffice getRentalOffice1() {
         return createRentalOffice(
                 "65072050d5d4531e66a0c008",
@@ -95,20 +77,30 @@ public class DatabaseCollectionCreator {
         );
     }
 
-    private static Car createCar(String id, String make, String model, BodyType bodyType, int yearOfProduction,
-                                 String color, int mileage, BigDecimal amount, Branch originalBranch, Branch actualBranch) {
-        return Car.builder()
+    private static Branch getBranch1() {
+        return createBranch(
+                "65072051d5d4531e66a0c00a",
+                "Branch 1",
+                "Ploiesti",
+                getRentalOffice1()
+        );
+    }
+
+    private static Branch getBranch2() {
+        return createBranch(
+                "65072051d5d4531e66a0c00b",
+                "Branch 2",
+                "Bucuresti",
+                getRentalOffice2()
+        );
+    }
+
+    private static RentalOffice createRentalOffice(String id, String name, String contactAddress, String phoneNumber) {
+        return RentalOffice.builder()
                 .id(new ObjectId(id))
-                .make(make)
-                .model(model)
-                .bodyType(bodyType)
-                .yearOfProduction(yearOfProduction)
-                .color(color)
-                .mileage(mileage)
-                .carStatus(CarStatus.AVAILABLE)
-                .amount(amount)
-                .originalBranch(originalBranch)
-                .actualBranch(actualBranch)
+                .name(name)
+                .contactAddress(contactAddress)
+                .phoneNumber(phoneNumber)
                 .build();
     }
 
@@ -121,21 +113,30 @@ public class DatabaseCollectionCreator {
                 .build();
     }
 
-    private static RentalOffice createRentalOffice(String id, String name, String contactAddress, String phoneNumber) {
-        return RentalOffice.builder()
-                .id(new ObjectId(id))
-                .name(name)
-                .contactAddress(contactAddress)
-                .phoneNumber(phoneNumber)
-                .build();
-    }
-
     private static Employee createEmployee(String firstName, String lastName, String jobPosition, Branch branch) {
         return Employee.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .jobPosition(jobPosition)
                 .workingBranch(branch)
+                .build();
+    }
+
+    private static Car createCar(String id, String make, String model, BodyType bodyType, Integer yearOfProduction,
+                                 String color, Integer mileage, BigDecimal amount, Branch originalBranch,
+                                 Branch actualBranch) {
+        return Car.builder()
+                .id(new ObjectId(id))
+                .make(make)
+                .model(model)
+                .bodyType(bodyType)
+                .yearOfProduction(yearOfProduction)
+                .color(color)
+                .mileage(mileage)
+                .carStatus(CarStatus.AVAILABLE)
+                .amount(amount)
+                .originalBranch(originalBranch)
+                .actualBranch(actualBranch)
                 .build();
     }
 
