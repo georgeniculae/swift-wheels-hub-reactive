@@ -14,32 +14,84 @@ import java.util.List;
 public class DatabaseCollectionCreator {
 
     public static List<RentalOffice> getRentalOffices() {
-        return List.of(
-                createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222"),
-                createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")
-        );
+        return List.of(getRentalOffice1(), getRentalOffice2());
     }
 
     public static List<Branch> getBranches() {
-        return List.of(
-                createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222")),
-                createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223"))
-        );
+        return List.of(getBranch1(), getBranch2());
     }
 
     public static List<Car> getCars() {
         return List.of(
-                createCar("65072052d5d4531e66a0c00c", "Volkswagen", "Golf", BodyType.HATCHBACK, 2010, "black", 232000, BigDecimal.valueOf(500), createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222")), createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222"))),
-                createCar("65072052d5d4531e66a0c00d", "Audi", "A4", BodyType.SEDAN, 2015, "white", 187000, BigDecimal.valueOf(800), createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")), createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")))
+                createCar(
+                        "65072052d5d4531e66a0c00c",
+                        "Volkswagen",
+                        "Golf",
+                        BodyType.HATCHBACK,
+                        2010,
+                        "black",
+                        232000,
+                        BigDecimal.valueOf(500),
+                        getBranch1(),
+                        getBranch1()
+                ),
+                createCar(
+                        "65072052d5d4531e66a0c00d",
+                        "Audi",
+                        "A4",
+                        BodyType.SEDAN,
+                        2015,
+                        "white",
+                        187000,
+                        BigDecimal.valueOf(800),
+                        getBranch2(),
+                        getBranch2()
+                )
         );
     }
 
     public static List<Employee> getEmployees() {
         return List.of(
-                createEmployee("Claudiu", "Alexandrescu", "manager", createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222"))),
-                createEmployee("Marius", "Ionescu", "employee", createBranch("65072051d5d4531e66a0c00a", "Branch 1", "Ploiesti", createRentalOffice("65072050d5d4531e66a0c008", "Rental Office 1", "contact address 1", "0722222222"))),
-                createEmployee("Andrei", "Stefanescu", "manager", createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223"))),
-                createEmployee("Alexandru", "Serbanescu", "employee", createBranch("65072051d5d4531e66a0c00b", "Branch 2", "Bucuresti", createRentalOffice("65072050d5d4531e66a0c009", "Rental Office 2", "contact address 2", "0722222223")))
+                createEmployee("Claudiu", "Alexandrescu", "manager", getBranch1()),
+                createEmployee("Marius", "Ionescu", "employee", getBranch1()),
+                createEmployee("Andrei", "Stefanescu", "manager", getBranch2()),
+                createEmployee("Alexandru", "Serbanescu", "employee", getBranch2())
+        );
+    }
+
+    private static Branch getBranch1() {
+        return createBranch(
+                "65072051d5d4531e66a0c00a",
+                "Branch 1",
+                "Ploiesti",
+                getRentalOffice1()
+        );
+    }
+
+    private static Branch getBranch2() {
+        return createBranch(
+                "65072051d5d4531e66a0c00b",
+                "Branch 2",
+                "Bucuresti",
+                getRentalOffice2()
+        );
+    }
+
+    private static RentalOffice getRentalOffice1() {
+        return createRentalOffice(
+                "65072050d5d4531e66a0c008",
+                "Rental Office 1",
+                "contact address 1",
+                "0722222222"
+        );
+    }
+
+    private static RentalOffice getRentalOffice2() {
+        return createRentalOffice(
+                "65072050d5d4531e66a0c009",
+                "Rental Office 2",
+                "contact address 2",
+                "0722222223"
         );
     }
 
