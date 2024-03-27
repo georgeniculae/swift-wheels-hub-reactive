@@ -3,9 +3,7 @@ package com.swiftwheelshubreactive.agency.repository;
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
 import com.swiftwheelshubreactive.model.Car;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +36,6 @@ class CarRepositoryTest {
     private final Car car1 = DatabaseCollectionCreator.getCars().getFirst();
 
     private final Car car2 = DatabaseCollectionCreator.getCars().getLast();
-
-    @BeforeAll
-    static void start() {
-        mongoDbContainer.start();
-    }
-
-    @AfterAll
-    static void stop() {
-        mongoDbContainer.stop();
-    }
 
     @BeforeEach
     void initDb() {
