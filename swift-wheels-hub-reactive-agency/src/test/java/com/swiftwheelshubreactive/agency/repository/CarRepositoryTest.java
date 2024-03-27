@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.agency.repository;
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
 import com.swiftwheelshubreactive.model.Car;
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,11 @@ class CarRepositoryTest {
 
         carRepository.save(car1).subscribe();
         carRepository.save(car2).subscribe();
+    }
+
+    @AfterEach
+    public void eraseDb() {
+        carRepository.deleteAll().subscribe();
     }
 
     @Test
