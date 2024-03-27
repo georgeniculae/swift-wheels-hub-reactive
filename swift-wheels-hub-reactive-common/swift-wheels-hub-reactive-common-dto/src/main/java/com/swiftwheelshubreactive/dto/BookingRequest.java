@@ -11,8 +11,6 @@ public record BookingRequest(
         @NonNull
         LocalDate dateOfBooking,
 
-        BookingState status,
-
         @NonNull
         String customerUsername,
 
@@ -42,7 +40,6 @@ public record BookingRequest(
     public String toString() {
         return "BookingRequest{" + "\n" +
                 "dateOfBooking=" + dateOfBooking + "\n" +
-                "status=" + status +
                 "customerUsername='" + customerUsername + "\n" +
                 "customerEmail='" + customerEmail + "\n" +
                 "carId=" + carId + "\n" +
