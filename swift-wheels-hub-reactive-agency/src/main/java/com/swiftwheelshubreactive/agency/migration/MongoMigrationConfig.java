@@ -10,16 +10,16 @@ import io.mongock.runner.springboot.base.MongockInitializingBeanRunner;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 @Configuration
-@ConditionalOnProperty(prefix = "migration", name = "packageScan")
+@Profile("!test")
 public class MongoMigrationConfig {
 
     @Value("${migration.packageScan}")
