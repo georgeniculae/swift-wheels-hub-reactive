@@ -10,7 +10,12 @@ import reactor.core.publisher.Mono;
 public interface EmployeeRepository extends ReactiveMongoRepository<Employee, ObjectId> {
 
     @Query("""
-            {$or : [{'firstName': {$regex: '(?i)?0'}}, {'lastName': {$regex: '(?i)?0'}}]}""")
+            {$or : [
+            { 'firstName': {$regex: '(?i)?0' } },
+            { 'lastName': {$regex: '(?i)?0' } },
+            { 'jobPosition': {$regex: '(?i)?0' } },
+            { 'workingBranch.name': {$regex: '(?i)?0' } },
+            ]}""")
     Flux<Employee> findAllByFilterInsensitiveCase(String filter);
 
     @Query("""

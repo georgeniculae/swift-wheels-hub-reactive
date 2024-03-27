@@ -10,7 +10,11 @@ import reactor.core.publisher.Mono;
 public interface BranchRepository extends ReactiveMongoRepository<Branch, ObjectId> {
 
     @Query("""
-            {$or : [{'name': {$regex: '(?i)?0'}}, {'rentalOffice.name': {$regex: '(?i)?0'}}]}""")
+            {$or : [
+            { 'name': { $regex: '(?i)?0' } },
+            { 'address': { $regex: '(?i)?0' } },
+            { 'rentalOffice.name': { $regex: '(?i)?0' } }
+            ]}""")
     Flux<Branch> findAllByFilterInsensitiveCase(String filter);
 
     @Query(

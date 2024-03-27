@@ -33,7 +33,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
 
     @Query(
             value = """
-                    {$or : [{'make' : {$regex: '(?i)?0'}}, {'model' : {$regex: '(?i)?0'}}]}""",
+                    {$or : [{ 'make' : { $regex: '(?i)?0' } }, { 'model' : {$regex: '(?i)?0' } }]}""",
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
