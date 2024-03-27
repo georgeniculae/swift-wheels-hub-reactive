@@ -52,10 +52,34 @@ public class DatabaseCollectionCreator {
 
     public static List<Employee> getEmployees() {
         return List.of(
-                createEmployee("Claudiu", "Alexandrescu", "manager", getBranch1()),
-                createEmployee("Marius", "Ionescu", "employee", getBranch1()),
-                createEmployee("Andrei", "Stefanescu", "manager", getBranch2()),
-                createEmployee("Alexandru", "Serbanescu", "employee", getBranch2())
+                createEmployee(
+                        "66033bb2eeec155394c8311d",
+                        "Claudiu",
+                        "Alexandrescu",
+                        "manager",
+                        getBranch1()
+                ),
+                createEmployee(
+                        "66033bb2eeec155394c8311e",
+                        "Marius",
+                        "Ionescu",
+                        "employee",
+                        getBranch1()
+                ),
+                createEmployee(
+                        "66033bb2eeec155394c8311f",
+                        "Andrei",
+                        "Stefanescu",
+                        "manager",
+                        getBranch2()
+                ),
+                createEmployee(
+                        "66033bb2eeec155394c83120",
+                        "Alexandru",
+                        "Serbanescu",
+                        "employee",
+                        getBranch2()
+                )
         );
     }
 
@@ -113,8 +137,10 @@ public class DatabaseCollectionCreator {
                 .build();
     }
 
-    private static Employee createEmployee(String firstName, String lastName, String jobPosition, Branch branch) {
+    private static Employee createEmployee(String id, String firstName, String lastName, String jobPosition,
+                                           Branch branch) {
         return Employee.builder()
+                .id(new ObjectId(id))
                 .firstName(firstName)
                 .lastName(lastName)
                 .jobPosition(jobPosition)
