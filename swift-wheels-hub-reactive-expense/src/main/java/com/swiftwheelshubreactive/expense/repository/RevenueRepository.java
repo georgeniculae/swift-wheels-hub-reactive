@@ -8,7 +8,8 @@ import reactor.core.publisher.Mono;
 
 public interface RevenueRepository extends ReactiveMongoRepository<Revenue, ObjectId> {
 
-    @Aggregation(pipeline = {"{$group: { _id: '', totalAmount: {$sum: $amountFromBooking}}}"})
+    @Aggregation(pipeline = """
+            {$group: { _id: '', totalAmount: {$sum: $amountFromBooking}}}""")
     Mono<Double> getTotalAmount();
 
 }

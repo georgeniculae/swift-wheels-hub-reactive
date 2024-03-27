@@ -9,10 +9,15 @@ import reactor.core.publisher.Mono;
 
 public interface BookingRepository extends ReactiveMongoRepository<Booking, ObjectId> {
 
-    @Query("{ 'customerUsername': ?0 }")
+    @Query("""
+            { 'customerUsername': ?0 }""")
     Flux<Booking> findByCustomerUsername(String customerUsername);
 
-    @Query(value = "{ 'customerUsername': ?0 }", count = true)
+    @Query(
+            value = """
+                    { 'customerUsername': ?0 }""",
+            count = true
+    )
     Mono<Long> countByCustomerUsername(String customerUsername);
 
 }
