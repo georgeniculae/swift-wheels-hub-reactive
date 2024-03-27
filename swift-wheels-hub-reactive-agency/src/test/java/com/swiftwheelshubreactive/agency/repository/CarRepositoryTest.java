@@ -1,0 +1,65 @@
+package com.swiftwheelshubreactive.agency.repository;
+
+import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
+import com.swiftwheelshubreactive.model.Car;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import reactor.test.StepVerifier;
+
+import java.util.List;
+
+import static com.mongodb.assertions.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ActiveProfiles("test")
+@Testcontainers
+@DataMongoTest
+class CarRepositoryTest {
+
+    @Container
+    @ServiceConnection
+    static MongoDBContainer mongoDbContainer =
+            new MongoDBContainer("mongo:latest")
+                    .withExposedPorts(27017)
+                    .withReuse(true);
+
+    @Autowired
+    private CarRepository carRepository;
+
+    private final Car car1 = DatabaseCollectionCreator.getCars().getFirst();
+
+    private final Car car2 = DatabaseCollectionCreator.getCars().getLast();
+
+    @BeforeAll
+    public static void start() {
+        mongoDbContainer.start();
+    }
+
+    @BeforeEach
+    public void initDb() {
+        carRepository.save(car1).subscribe();
+        carRepository.save(car2).subscribe();
+    }
+
+    @Test
+    void checkIfConnectionEstablished() {
+        assertTrue(mongoDbContainer.isCreated());
+    }
+
+    @Test
+    void findAllCarsTest_success() {
+        carRepository.findAll()
+                .as(StepVerifier::create)
+                .expectNextCount(2)
+                .verifyComplete();
+    }
+
+}
