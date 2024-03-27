@@ -98,32 +98,32 @@ class RentalOfficeHandlerTest {
     }
 
     @Test
-    void findRentalOfficeByNameTest_success() {
+    void findRentalOfficesByFilterInsensitiveCaseTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
-                .pathVariable("name", "Test")
+                .pathVariable("filter", "Test")
                 .build();
 
-        when(rentalOfficeService.findRentalOfficesByNameInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOfficeResponse));
+        when(rentalOfficeService.findRentalOfficesByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOfficeResponse));
 
-        StepVerifier.create(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(serverRequest))
+        StepVerifier.create(rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
 
     @Test
-    void findRentalOfficeByNameTest_noResultReturned() {
+    void findRentalOfficesByFilterInsensitiveCaseTest_noResultReturned() {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
-                .pathVariable("name", "Test")
+                .pathVariable("filter", "Test")
                 .build();
 
-        when(rentalOfficeService.findRentalOfficesByNameInsensitiveCase(anyString())).thenReturn(Flux.empty());
+        when(rentalOfficeService.findRentalOfficesByFilterInsensitiveCase(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(serverRequest))
+        StepVerifier.create(rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }

@@ -45,8 +45,8 @@ public class RentalOfficeService {
                 });
     }
 
-    public Flux<RentalOfficeResponse> findRentalOfficesByNameInsensitiveCase(String name) {
-        return rentalOfficeRepository.findAllByNameInsensitiveCase(name)
+    public Flux<RentalOfficeResponse> findRentalOfficesByFilterInsensitiveCase(String name) {
+        return rentalOfficeRepository.findAllByFilterInsensitiveCase(name)
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while finding rental office by name: {}", e.getMessage());

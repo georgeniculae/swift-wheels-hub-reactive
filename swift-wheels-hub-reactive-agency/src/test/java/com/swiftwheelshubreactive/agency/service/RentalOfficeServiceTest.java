@@ -191,18 +191,18 @@ class RentalOfficeServiceTest {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
 
-        when(rentalOfficeRepository.findAllByNameInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOffice));
+        when(rentalOfficeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOffice));
 
-        StepVerifier.create(rentalOfficeService.findRentalOfficesByNameInsensitiveCase("name"))
+        StepVerifier.create(rentalOfficeService.findRentalOfficesByFilterInsensitiveCase("name"))
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
 
     @Test
     void findRentalOfficeByNameTest_errorOnFindingByName() {
-        when(rentalOfficeRepository.findAllByNameInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
+        when(rentalOfficeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(rentalOfficeService.findRentalOfficesByNameInsensitiveCase("name"))
+        StepVerifier.create(rentalOfficeService.findRentalOfficesByFilterInsensitiveCase("name"))
                 .expectError()
                 .verify();
     }

@@ -52,11 +52,11 @@ import java.util.List;
                 ),
                 @RouterOperation(
                         method = RequestMethod.GET,
-                        path = "/rental-offices/office/{name}",
+                        path = "/rental-offices/filter/{filter}",
                         beanClass = RentalOfficeHandler.class,
-                        beanMethod = "findRentalOfficesByNameInsensitiveCase",
+                        beanMethod = "findRentalOfficesByFilterInsensitiveCase",
                         operation = @Operation(
-                                operationId = "findRentalOfficesByNameInsensitiveCase",
+                                operationId = "findRentalOfficesByFilterInsensitiveCase",
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -76,7 +76,7 @@ import java.util.List;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
-                                        name = "name",
+                                        name = "filter",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )

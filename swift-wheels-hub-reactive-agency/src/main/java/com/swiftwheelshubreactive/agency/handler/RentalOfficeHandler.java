@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 public class RentalOfficeHandler {
 
     private static final String ID = "id";
-    private static final String NAME = "name";
+    private static final String FILTER = "filter";
     private final RentalOfficeService rentalOfficeService;
     private final RentalOfficeRequestValidator rentalOfficeRequestValidator;
 
@@ -38,8 +38,8 @@ public class RentalOfficeHandler {
     }
 
     @PreAuthorize("hasAuthority('admin')")
-    public Mono<ServerResponse> findRentalOfficesByNameInsensitiveCase(ServerRequest serverRequest) {
-        return rentalOfficeService.findRentalOfficesByNameInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, NAME))
+    public Mono<ServerResponse> findRentalOfficesByFilterInsensitiveCase(ServerRequest serverRequest) {
+        return rentalOfficeService.findRentalOfficesByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(rentalOfficeResponses -> ServerResponse.ok().bodyValue(rentalOfficeResponses))

@@ -20,7 +20,7 @@ public class RentalOfficeRouter {
     public RouterFunction<ServerResponse> routeRentalOffice(RentalOfficeHandler rentalOfficeHandler) {
         return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), rentalOfficeHandler::findAllRentalOffices)
-                        .andRoute(RequestPredicates.GET("/office/{name}"), rentalOfficeHandler::findRentalOfficesByNameInsensitiveCase)
+                        .andRoute(RequestPredicates.GET("/filter/{filter}"), rentalOfficeHandler::findRentalOfficesByFilterInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/count"), rentalOfficeHandler::countRentalOffices)
                         .andRoute(RequestPredicates.GET("/{id}"), rentalOfficeHandler::findRentalOfficeById)
                         .andRoute(RequestPredicates.POST(""), rentalOfficeHandler::saveRentalOffice)

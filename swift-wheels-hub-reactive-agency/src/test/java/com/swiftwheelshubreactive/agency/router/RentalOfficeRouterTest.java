@@ -130,17 +130,17 @@ class RentalOfficeRouterTest {
 
     @Test
     @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
-    void findRentalOfficeByNameTest_success() {
+    void findRentalOfficeByFilterTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
-        when(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<RentalOfficeResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
-                .uri(PATH + "/office/{name}", "Test")
+                .uri(PATH + "/filter/{filter}", "Test")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -155,13 +155,13 @@ class RentalOfficeRouterTest {
 
     @Test
     @WithAnonymousUser
-    void findRentalOfficeByNameTest_unauthorized() {
+    void findRentalOfficeByFilterTest_unauthorized() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(rentalOfficeResponse);
 
-        when(rentalOfficeHandler.findRentalOfficesByNameInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()

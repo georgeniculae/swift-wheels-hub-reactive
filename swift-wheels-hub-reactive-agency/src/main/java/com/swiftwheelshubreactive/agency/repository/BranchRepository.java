@@ -9,10 +9,15 @@ import reactor.core.publisher.Mono;
 
 public interface BranchRepository extends ReactiveMongoRepository<Branch, ObjectId> {
 
-    @Query("{$or : [{'name': {$regex: '(?i)?0'}}, {'rentalOffice.name': {$regex: '(?i)?0'}}]}")
+    @Query("""
+            {$or : [{'name': {$regex: '(?i)?0'}}, {'rentalOffice.name': {$regex: '(?i)?0'}}]}""")
     Flux<Branch> findAllByFilterInsensitiveCase(String filter);
 
-    @Query(value = "{'rentalOffice.id' : $0}", delete = true)
+    @Query(
+            value = """
+                    {'rentalOffice.id' : $0}""",
+            delete = true
+    )
     Mono<Void> deleteByRentalOfficeId(String id);
 
 }
