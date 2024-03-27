@@ -25,10 +25,7 @@ class CarRepositoryTest {
 
     @Container
     @ServiceConnection
-    static MongoDBContainer mongoDbContainer =
-            new MongoDBContainer("mongo:latest")
-                    .withExposedPorts(27017)
-                    .withReuse(true);
+    static MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:latest");
 
     @Autowired
     private CarRepository carRepository;
