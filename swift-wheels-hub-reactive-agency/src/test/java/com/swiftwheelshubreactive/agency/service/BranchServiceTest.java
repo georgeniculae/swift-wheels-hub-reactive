@@ -219,7 +219,7 @@ class BranchServiceTest {
     @Test
     void deleteBranchByIdTest_success() {
         when(branchRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
-        when(employeeRepository.deleteByBranchId(anyString())).thenReturn(Mono.empty());
+        when(employeeRepository.deleteByBranchId(any(ObjectId.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(branchService.deleteBranchById("64f361caf291ae086e179547"))
                 .expectComplete()

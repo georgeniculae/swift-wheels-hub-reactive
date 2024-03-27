@@ -101,7 +101,7 @@ public class RentalOfficeService {
 
     public Mono<Void> deleteRentalOfficeById(String id) {
         return rentalOfficeRepository.deleteById(MongoUtil.getObjectId(id))
-                .then(Mono.defer(() -> branchRepository.deleteByRentalOfficeId(id)))
+                .then(Mono.defer(() -> branchRepository.deleteByRentalOfficeId(MongoUtil.getObjectId(id))))
                 .onErrorMap(e -> {
                     log.error("Error while deleting rental office: {}", e.getMessage());
 

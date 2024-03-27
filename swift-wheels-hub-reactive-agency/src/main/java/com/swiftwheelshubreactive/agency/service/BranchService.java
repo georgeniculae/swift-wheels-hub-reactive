@@ -112,7 +112,7 @@ public class BranchService {
 
     public Mono<Void> deleteBranchById(String id) {
         return branchRepository.deleteById(MongoUtil.getObjectId(id))
-                .then(Mono.defer(() -> employeeRepository.deleteByBranchId(id)))
+                .then(Mono.defer(() -> employeeRepository.deleteByBranchId(MongoUtil.getObjectId(id))))
                 .onErrorMap(e -> {
                     log.error("Error while deleting branch: {}", e.getMessage());
 

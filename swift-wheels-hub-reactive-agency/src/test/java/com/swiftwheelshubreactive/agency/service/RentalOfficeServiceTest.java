@@ -210,7 +210,7 @@ class RentalOfficeServiceTest {
     @Test
     void deleteRentalOfficeByIdTest_success() {
         when(rentalOfficeRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
-        when(branchRepository.deleteByRentalOfficeId(anyString())).thenReturn(Mono.empty());
+        when(branchRepository.deleteByRentalOfficeId(any(ObjectId.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(rentalOfficeService.deleteRentalOfficeById("64f361caf291ae086e179547"))
                 .expectComplete()
