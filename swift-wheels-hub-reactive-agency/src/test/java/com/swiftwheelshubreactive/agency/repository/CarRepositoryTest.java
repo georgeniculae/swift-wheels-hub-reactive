@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.agency.repository;
 
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
 import com.swiftwheelshubreactive.model.Car;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +14,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.test.StepVerifier;
-
-import java.util.List;
 
 import static com.mongodb.assertions.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +51,22 @@ class CarRepositoryTest {
     @Test
     void checkIfConnectionEstablished() {
         assertTrue(mongoDbContainer.isCreated());
+    }
+
+    @Test
+    void findByIdTest_success() {
+        carRepository.findById(new ObjectId("65072052d5d4531e66a0c00c"))
+                .as(StepVerifier::create)
+                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car1))
+                .verifyComplete();
+    }
+
+    @Test
+    void findImageByCarIdTest_success() {
+        carRepository.findImageByCarId(new ObjectId("65072052d5d4531e66a0c00c"))
+                .as(StepVerifier::create)
+                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car1))
+                .verifyComplete();
     }
 
     @Test

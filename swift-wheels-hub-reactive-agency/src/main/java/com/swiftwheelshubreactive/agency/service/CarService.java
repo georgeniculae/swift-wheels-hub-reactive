@@ -113,7 +113,7 @@ public class CarService {
     }
 
     public Mono<byte[]> getCarImage(String id) {
-        return carRepository.findCarImageById(MongoUtil.getObjectId(id))
+        return carRepository.findImageByCarId(MongoUtil.getObjectId(id))
                 .map(Car::getImage)
                 .map(Binary::getData)
                 .onErrorMap(e -> {

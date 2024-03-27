@@ -29,7 +29,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
                     { 'image' : 1 }"""
     )
     @NonNull
-    Mono<Car> findCarImageById(@NonNull ObjectId id);
+    Mono<Car> findImageByCarId(@NonNull ObjectId id);
 
     @Query(
             value = """
