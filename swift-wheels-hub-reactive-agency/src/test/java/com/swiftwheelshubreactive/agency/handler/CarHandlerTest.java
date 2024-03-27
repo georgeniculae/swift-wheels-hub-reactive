@@ -121,9 +121,9 @@ class CarHandlerTest {
                 .pathVariable("make", "Volkswagen")
                 .build();
 
-        when(carService.findCarsByMake(anyString())).thenReturn(Flux.fromIterable(carDtoList));
+        when(carService.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.fromIterable(carDtoList));
 
-        StepVerifier.create(carHandler.findCarsByMake(serverRequest))
+        StepVerifier.create(carHandler.findCarsByMakeInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -135,9 +135,9 @@ class CarHandlerTest {
                 .pathVariable("make", "Volkswagen")
                 .build();
 
-        when(carService.findCarsByMake(anyString())).thenReturn(Flux.empty());
+        when(carService.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(carHandler.findCarsByMake(serverRequest))
+        StepVerifier.create(carHandler.findCarsByMakeInsensitiveCase(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }

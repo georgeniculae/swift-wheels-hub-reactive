@@ -70,6 +70,14 @@ class CarRepositoryTest {
     }
 
     @Test
+    void findAllByFilterInsensitiveCaseTest_success() {
+        carRepository.findAllByFilterInsensitiveCase("Audi")
+                .as(StepVerifier::create)
+                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car2))
+                .verifyComplete();
+    }
+
+    @Test
     void findImageByCarIdTest_success() {
         carRepository.findImageByCarId(new ObjectId("65072052d5d4531e66a0c00c"))
                 .as(StepVerifier::create)

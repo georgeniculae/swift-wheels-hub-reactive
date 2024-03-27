@@ -72,8 +72,8 @@ public class CarService {
                 });
     }
 
-    public Flux<CarResponse> findCarsByMake(String make) {
-        return carRepository.findCarsByMake(make)
+    public Flux<CarResponse> findCarsByMakeInsensitiveCase(String make) {
+        return carRepository.findCarsByMakeInsensitiveCase(make)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while finding cars by make: {}", e.getMessage());

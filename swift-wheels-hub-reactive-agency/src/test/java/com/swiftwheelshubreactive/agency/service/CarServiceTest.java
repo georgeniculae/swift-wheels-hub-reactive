@@ -128,18 +128,18 @@ class CarServiceTest {
         List<Car> cars = List.of(car);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        when(carRepository.findCarsByMake(anyString())).thenReturn(Flux.fromIterable(cars));
+        when(carRepository.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.fromIterable(cars));
 
-        StepVerifier.create(carService.findCarsByMake("Volkswagen"))
+        StepVerifier.create(carService.findCarsByMakeInsensitiveCase("Volkswagen"))
                 .expectNext(carResponse)
                 .verifyComplete();
     }
 
     @Test
     void findCarsByMakeTest_errorOnFindingByMake() {
-        when(carRepository.findCarsByMake(anyString())).thenReturn(Flux.error(new Throwable()));
+        when(carRepository.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(carService.findCarsByMake("Volkswagen"))
+        StepVerifier.create(carService.findCarsByMakeInsensitiveCase("Volkswagen"))
                 .expectError()
                 .verify();
     }

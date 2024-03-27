@@ -19,7 +19,7 @@ public class CarRouter {
     public RouterFunction<ServerResponse> routeCar(CarHandler carHandler) {
         return RouterFunctions.nest(RequestPredicates.path(REQUEST_MAPPING),
                 RouterFunctions.route(RequestPredicates.GET(""), carHandler::findAllCars)
-                        .andRoute(RequestPredicates.GET("/make/{make}"), carHandler::findCarsByMake)
+                        .andRoute(RequestPredicates.GET("/make/{make}"), carHandler::findCarsByMakeInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/filter/{filter}"), carHandler::findCarsByFilterInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/count"), carHandler::countCars)
                         .andRoute(RequestPredicates.GET("/{id}/availability"), carHandler::getAvailableCar)

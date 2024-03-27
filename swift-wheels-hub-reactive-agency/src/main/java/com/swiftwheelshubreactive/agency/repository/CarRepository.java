@@ -55,13 +55,13 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
 
     @Query(
             value = """
-                    { 'make' : ?0 }""",
+                    { 'make' : { $regex: '(?i)?0' } }""",
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
                     'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1
                     }"""
     )
-    Flux<Car> findCarsByMake(String make);
+    Flux<Car> findCarsByMakeInsensitiveCase(String make);
 
 }

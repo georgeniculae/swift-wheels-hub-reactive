@@ -129,7 +129,7 @@ class CarRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
-        when(carHandler.findCarsByMake(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(carHandler.findCarsByMakeInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<CarResponse> responseBody = webTestClient.get()
                 .uri(PATH + "/make/{make}", "Volkswagen")
@@ -152,7 +152,7 @@ class CarRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
-        when(carHandler.findCarsByMake(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(carHandler.findCarsByMakeInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.get()
                 .uri(PATH + "/make/{make}", "Volkswagen")

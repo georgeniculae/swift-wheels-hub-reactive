@@ -49,8 +49,8 @@ public class CarHandler {
     }
 
     @PreAuthorize("hasAuthority('user')")
-    public Mono<ServerResponse> findCarsByMake(ServerRequest serverRequest) {
-        return carService.findCarsByMake(ServerRequestUtil.getPathVariable(serverRequest, MAKE))
+    public Mono<ServerResponse> findCarsByMakeInsensitiveCase(ServerRequest serverRequest) {
+        return carService.findCarsByMakeInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, MAKE))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses))

@@ -62,9 +62,9 @@ import java.lang.annotation.Target;
                         method = RequestMethod.GET,
                         path = "/cars/make/{make}",
                         beanClass = CarHandler.class,
-                        beanMethod = "findCarsByMake",
+                        beanMethod = "findCarsByMakeInsensitiveCase",
                         operation = @Operation(
-                                operationId = "findCarsByMake",
+                                operationId = "findCarsByMakeInsensitiveCase",
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
