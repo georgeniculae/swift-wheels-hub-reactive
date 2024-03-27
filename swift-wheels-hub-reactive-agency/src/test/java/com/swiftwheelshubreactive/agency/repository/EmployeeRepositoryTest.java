@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.repository;
 
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
-import com.swiftwheelshubreactive.model.Car;
+import com.swiftwheelshubreactive.model.Employee;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,29 +21,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @Testcontainers
 @DataMongoTest
-class CarRepositoryTest {
+class EmployeeRepositoryTest {
 
     @Container
     @ServiceConnection
     static MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:latest");
 
     @Autowired
-    private CarRepository carRepository;
+    private EmployeeRepository employeeRepository;
 
-    private final Car car1 = DatabaseCollectionCreator.getCars().getFirst();
+    private final Employee employee1 = DatabaseCollectionCreator.getEmployees().getFirst();
 
-    private final Car car2 = DatabaseCollectionCreator.getCars().getLast();
+    private final Employee employee2 = DatabaseCollectionCreator.getEmployees().getLast();
 
     @BeforeEach
     void initCollection() {
-        carRepository.deleteAll().block();
-        carRepository.save(car1).block();
-        carRepository.save(car2).block();
+        employeeRepository.deleteAll().block();
+        employeeRepository.save(employee1).block();
+        employeeRepository.save(employee2).block();
     }
 
     @AfterEach
     void eraseCollection() {
-        carRepository.deleteAll().block();
+        employeeRepository.deleteAll().block();
     }
 
     @Test
@@ -52,43 +52,27 @@ class CarRepositoryTest {
     }
 
     @Test
-    void findByIdTest_success() {
-        carRepository.findById(new ObjectId("65072052d5d4531e66a0c00c"))
-                .as(StepVerifier::create)
-                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car1))
-                .verifyComplete();
-    }
-
-    @Test
     void findAllByFilterInsensitiveCaseTest_success() {
-        carRepository.findAllByFilterInsensitiveCase("Audi")
-                .as(StepVerifier::create)
-                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car2))
-                .verifyComplete();
-    }
-
-    @Test
-    void findImageByCarIdTest_success() {
-        carRepository.findImageByCarId(new ObjectId("65072052d5d4531e66a0c00c"))
+        employeeRepository.findAllByFilterInsensitiveCase("manager")
                 .as(StepVerifier::create)
                 .expectNextCount(1)
                 .verifyComplete();
     }
 
     @Test
-    void findCarsByMakeInsensitiveCaseTest_success() {
-        carRepository.findCarsByMakeInsensitiveCase("Volkswagen")
+    void findAllEmployeesByBranchIdTest_success() {
+        employeeRepository.findAllEmployeesByBranchId(new ObjectId("65072051d5d4531e66a0c00a"))
                 .as(StepVerifier::create)
-                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car1))
+                .assertNext(employee -> assertThat(employee).usingRecursiveComparison().isEqualTo(employee1))
                 .verifyComplete();
     }
 
     @Test
-    void findAllCarsTest_success() {
-        carRepository.findAll()
+    void deleteByBranchIdTest_success() {
+        employeeRepository.deleteByBranchId(new ObjectId("65072051d5d4531e66a0c00a"))
                 .as(StepVerifier::create)
-                .expectNextCount(2)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
 }
