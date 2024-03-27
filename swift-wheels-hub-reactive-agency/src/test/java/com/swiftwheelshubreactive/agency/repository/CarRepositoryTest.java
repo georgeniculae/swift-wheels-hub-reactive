@@ -39,12 +39,12 @@ class CarRepositoryTest {
     private final Car car2 = DatabaseCollectionCreator.getCars().getLast();
 
     @BeforeAll
-    public static void start() {
+    static void start() {
         mongoDbContainer.start();
     }
 
     @BeforeEach
-    public void initDb() {
+    void initDb() {
         carRepository.deleteAll().subscribe();
 
         carRepository.save(car1).subscribe();
@@ -52,7 +52,7 @@ class CarRepositoryTest {
     }
 
     @AfterEach
-    public void eraseDb() {
+    void eraseDb() {
         carRepository.deleteAll().subscribe();
     }
 
