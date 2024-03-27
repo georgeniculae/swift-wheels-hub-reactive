@@ -27,6 +27,6 @@ public interface EmployeeRepository extends ReactiveMongoRepository<Employee, Ob
                     {'branch.id' : $0}""",
             delete = true
     )
-    Mono<Void> deleteByBranchId(String id);
+    Mono<Void> deleteByBranchId(ObjectId id);
 
 }
