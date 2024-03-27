@@ -8,8 +8,6 @@ import java.time.LocalDate;
 
 @Builder
 public record BookingRequest(
-        String id,
-
         @NonNull
         LocalDate dateOfBooking,
 
@@ -43,7 +41,6 @@ public record BookingRequest(
     @Override
     public String toString() {
         return "BookingRequest{" + "\n" +
-                "id=" + id + "\n" +
                 "dateOfBooking=" + dateOfBooking + "\n" +
                 "status=" + status +
                 "customerUsername='" + customerUsername + "\n" +

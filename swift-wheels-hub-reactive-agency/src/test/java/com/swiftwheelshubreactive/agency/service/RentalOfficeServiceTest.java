@@ -79,7 +79,7 @@ class RentalOfficeServiceTest {
                 TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
 
@@ -124,7 +124,7 @@ class RentalOfficeServiceTest {
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.just(rentalOffice));
 
@@ -157,7 +157,7 @@ class RentalOfficeServiceTest {
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.just(rentalOffice));
@@ -189,7 +189,7 @@ class RentalOfficeServiceTest {
                 TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
+                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOffice));
 

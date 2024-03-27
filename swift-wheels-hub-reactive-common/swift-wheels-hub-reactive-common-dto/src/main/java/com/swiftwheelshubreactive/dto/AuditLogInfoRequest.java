@@ -10,8 +10,12 @@ import java.util.List;
 public record AuditLogInfoRequest(
         @NonNull
         String methodName,
+
         String username,
+
+        @NonNull
         LocalDateTime timestamp,
+
         List<String> parametersValues
 ) {
 

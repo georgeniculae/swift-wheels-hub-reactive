@@ -16,6 +16,7 @@ public record EmployeeResponse(
         @NonNull
         String jobPosition,
 
+        @NonNull
         String workingBranchId
 ) {
 

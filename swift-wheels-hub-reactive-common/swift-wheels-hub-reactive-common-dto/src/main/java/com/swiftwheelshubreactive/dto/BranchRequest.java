@@ -5,20 +5,19 @@ import org.springframework.lang.NonNull;
 
 @Builder
 public record BranchRequest(
-        String id,
-
         @NonNull
         String name,
 
+        @NonNull
         String address,
 
+        @NonNull
         String rentalOfficeId
 ) {
 
     @Override
     public String toString() {
         return "BranchRequest{" + "\n" +
-                "id=" + id + "\n" +
                 ", name='" + name + "\n" +
                 ", address='" + address + "\n" +
                 ", rentalOfficeId=" + rentalOfficeId + "\n" +

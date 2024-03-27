@@ -13,6 +13,7 @@ public record RentalOfficeResponse(
         @NonNull
         String contactAddress,
 
+        @NonNull
         String phoneNumber
 ) {
 

@@ -1,11 +1,17 @@
 package com.swiftwheelshubreactive.dto;
 
 import lombok.Builder;
+import org.springframework.lang.NonNull;
 
 @Builder
 public record CarUpdateDetails(
+        @NonNull
         String carId,
+
+        @NonNull
         CarState carState,
+
+        @NonNull
         String receptionistEmployeeId
 ) {
 

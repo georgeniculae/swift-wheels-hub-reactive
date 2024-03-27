@@ -10,8 +10,10 @@ public record BranchResponse(
         @NonNull
         String name,
 
+        @NonNull
         String address,
 
+        @NonNull
         String rentalOfficeId
 ) {
 

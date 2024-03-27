@@ -48,7 +48,7 @@ class EmployeeServiceTest {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
+                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         List<Employee> employees = List.of(employee);
 

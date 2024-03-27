@@ -16,7 +16,7 @@ class BookingBookingAuditLogInfoMapperTest {
     @Test
     void mapEntityToDtoTest_success() {
         BookingAuditLogInfo bookingAuditLogInfo =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfo.json", BookingAuditLogInfo.class);
+                TestUtils.getResourceAsJson("/data/BookingAuditLogInfo.json", BookingAuditLogInfo.class);
 
         AuditLogInfoRequest auditLogInfoDto = bookingAuditLogInfoMapper.mapEntityToDto(bookingAuditLogInfo);
 

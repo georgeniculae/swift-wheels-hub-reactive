@@ -25,8 +25,8 @@ public class AuditService {
     private final CustomerAuditLogInfoMapper customerAuditLogInfoMapper;
     private final ExpenseAuditLogInfoMapper expenseAuditLogInfoMapper;
 
-    public Mono<AuditLogInfoRequest> saveBookingAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
-        return bookingAuditLogInfoRepository.save(bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
+    public Mono<AuditLogInfoRequest> saveBookingAuditLogInfo(AuditLogInfoRequest auditLogInfoRequest) {
+        return bookingAuditLogInfoRepository.save(bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
                 .map(bookingAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving booking audit log: {}", e.getMessage());
@@ -35,8 +35,8 @@ public class AuditService {
                 });
     }
 
-    public Mono<AuditLogInfoRequest> saveCustomerAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
-        return customerAuditLogInfoRepository.save(customerAuditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
+    public Mono<AuditLogInfoRequest> saveCustomerAuditLogInfo(AuditLogInfoRequest auditLogInfoRequest) {
+        return customerAuditLogInfoRepository.save(customerAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
                 .map(customerAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving booking audit log: {}", e.getMessage());
@@ -45,8 +45,8 @@ public class AuditService {
                 });
     }
 
-    public Mono<AuditLogInfoRequest> saveExpenseAuditLogInfo(AuditLogInfoRequest auditLogInfoDto) {
-        return expenseAuditLogInfoRepository.save(expenseAuditLogInfoMapper.mapDtoToEntity(auditLogInfoDto))
+    public Mono<AuditLogInfoRequest> saveExpenseAuditLogInfo(AuditLogInfoRequest auditLogInfoRequest) {
+        return expenseAuditLogInfoRepository.save(expenseAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
                 .map(expenseAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving booking audit log: {}", e.getMessage());
