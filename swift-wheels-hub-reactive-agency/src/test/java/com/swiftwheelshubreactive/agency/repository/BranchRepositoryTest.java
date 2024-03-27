@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.agency.repository;
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
 import com.swiftwheelshubreactive.model.Branch;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.test.StepVerifier;
 
 import static com.mongodb.assertions.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @Testcontainers
@@ -35,14 +35,9 @@ class BranchRepositoryTest {
 
     @BeforeEach
     void initCollection() {
-        branchRepository.deleteAll().block();
-        branchRepository.save(branch1).block();
-        branchRepository.save(branch2).block();
-    }
-
-    @AfterEach
-    public void eraseCollection() {
-        branchRepository.deleteAll().block();
+        branchRepository.deleteAll()
+                .thenMany(branchRepository.saveAll(DatabaseCollectionCreator.getBranches()))
+                .blockLast();
     }
 
     @Test
@@ -54,7 +49,8 @@ class BranchRepositoryTest {
     void findAllByFilterInsensitiveCaseTest_success() {
         branchRepository.findAllByFilterInsensitiveCase("Branch")
                 .as(StepVerifier::create)
-                .expectNextCount(2)
+                .assertNext(branch -> assertThat(branch).usingRecursiveComparison().isEqualTo(branch1))
+                .assertNext(branch -> assertThat(branch).usingRecursiveComparison().isEqualTo(branch2))
                 .verifyComplete();
     }
 

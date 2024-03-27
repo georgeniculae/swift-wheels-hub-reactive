@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.agency.repository;
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
 import com.swiftwheelshubreactive.model.Employee;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,8 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.test.StepVerifier;
+
+import java.util.List;
 
 import static com.mongodb.assertions.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,14 +37,9 @@ class EmployeeRepositoryTest {
 
     @BeforeEach
     void initCollection() {
-        employeeRepository.deleteAll().block();
-        employeeRepository.save(employee1).block();
-        employeeRepository.save(employee2).block();
-    }
-
-    @AfterEach
-    void eraseCollection() {
-        employeeRepository.deleteAll().block();
+        employeeRepository.deleteAll()
+                .thenMany(employeeRepository.saveAll(List.of(employee1, employee2)))
+                .blockLast();
     }
 
     @Test
@@ -61,9 +57,9 @@ class EmployeeRepositoryTest {
 
     @Test
     void findAllEmployeesByBranchIdTest_success() {
-        employeeRepository.findAllEmployeesByBranchId(new ObjectId("65072051d5d4531e66a0c00a"))
+        employeeRepository.findAllEmployeesByBranchId(new ObjectId("65072051d5d4531e66a0c00b"))
                 .as(StepVerifier::create)
-                .assertNext(employee -> assertThat(employee).usingRecursiveComparison().isEqualTo(employee1))
+                .assertNext(employee -> assertThat(employee).usingRecursiveComparison().isEqualTo(employee2))
                 .verifyComplete();
     }
 

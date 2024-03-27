@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.agency.repository;
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
 import com.swiftwheelshubreactive.model.Car;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +35,9 @@ class CarRepositoryTest {
 
     @BeforeEach
     void initCollection() {
-        carRepository.deleteAll().block();
-        carRepository.save(car1).block();
-        carRepository.save(car2).block();
-    }
-
-    @AfterEach
-    void eraseCollection() {
-        carRepository.deleteAll().block();
+        carRepository.deleteAll()
+                .thenMany(carRepository.saveAll(DatabaseCollectionCreator.getCars()))
+                .blockLast();
     }
 
     @Test

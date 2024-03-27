@@ -1,8 +1,6 @@
 package com.swiftwheelshubreactive.agency.repository;
 
 import com.swiftwheelshubreactive.agency.migration.DatabaseCollectionCreator;
-import com.swiftwheelshubreactive.model.RentalOffice;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,7 @@ import static com.mongodb.assertions.Assertions.assertTrue;
 @ActiveProfiles("test")
 @Testcontainers
 @DataMongoTest
-class RenalOfficeRepositoryTest {
+class RentalOfficeRepositoryTest {
 
     @Container
     @ServiceConnection
@@ -28,20 +26,11 @@ class RenalOfficeRepositoryTest {
     @Autowired
     private RentalOfficeRepository rentalOfficeRepository;
 
-    private final RentalOffice rentalOffice1 = DatabaseCollectionCreator.getRentalOffices().getFirst();
-
-    private final RentalOffice rentalOffice2 = DatabaseCollectionCreator.getRentalOffices().getLast();
-
     @BeforeEach
     void initCollection() {
-        rentalOfficeRepository.deleteAll().block();
-        rentalOfficeRepository.save(rentalOffice1).block();
-        rentalOfficeRepository.save(rentalOffice2).block();
-    }
-
-    @AfterEach
-    void eraseCollection() {
-        rentalOfficeRepository.deleteAll().block();
+        rentalOfficeRepository.deleteAll()
+                .thenMany(rentalOfficeRepository.saveAll(DatabaseCollectionCreator.getRentalOffices()))
+                .blockLast();
     }
 
     @Test
