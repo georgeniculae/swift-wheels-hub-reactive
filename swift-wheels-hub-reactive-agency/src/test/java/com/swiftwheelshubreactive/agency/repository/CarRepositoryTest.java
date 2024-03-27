@@ -44,6 +44,8 @@ class CarRepositoryTest {
 
     @BeforeEach
     public void initDb() {
+        carRepository.deleteAll().subscribe();
+
         carRepository.save(car1).subscribe();
         carRepository.save(car2).subscribe();
     }

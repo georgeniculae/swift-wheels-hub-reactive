@@ -10,7 +10,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - mongodb:/data/db
+      - mongodb:/data/swift_wheels_hub_agency
 
 volumes:
   mongodb:
