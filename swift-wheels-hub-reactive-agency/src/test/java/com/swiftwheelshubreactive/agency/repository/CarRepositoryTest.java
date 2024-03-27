@@ -86,6 +86,14 @@ class CarRepositoryTest {
     }
 
     @Test
+    void findCarsByMakeInsensitiveCaseTest_success() {
+        carRepository.findCarsByMakeInsensitiveCase("Volkswagen")
+                .as(StepVerifier::create)
+                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car1))
+                .verifyComplete();
+    }
+
+    @Test
     void findAllCarsTest_success() {
         carRepository.findAll()
                 .as(StepVerifier::create)
