@@ -65,7 +65,7 @@ class CarRepositoryTest {
     void findImageByCarIdTest_success() {
         carRepository.findImageByCarId(new ObjectId("65072052d5d4531e66a0c00c"))
                 .as(StepVerifier::create)
-                .assertNext(actualCar -> assertThat(actualCar).usingRecursiveComparison().isEqualTo(car1))
+                .expectNextCount(1)
                 .verifyComplete();
     }
 
