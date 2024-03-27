@@ -25,4 +25,17 @@ public record UserUpdateRequest(
         @NonNull
         LocalDate dateOfBirth
 ) {
+
+    @Override
+    public String toString() {
+        return "UserUpdateRequest{" + "\n" +
+                "username=" + username + "\n" +
+                "email=" + email + "\n" +
+                "firstName='" + firstName + "\n" +
+                "lastName=" + lastName + "\n" +
+                "address=" + address + "\n" +
+                "dateOfBirth=" + dateOfBirth + "\n" +
+                "}";
+    }
+
 }
