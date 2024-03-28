@@ -1,0 +1,33 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "make": "Volkswagen",
+  "model": "Arteon",
+  "bodyType": "SEDAN",
+  "yearOfProduction": 2022,
+  "color": "black",
+  "mileage": 100000,
+  "carStatus": "AVAILABLE",
+  "amount": 1000,
+  "originalBranch": {
+    "id": "64f361caf291ae086e179547",
+    "name": "Test Branch",
+    "address": "Ploiesti",
+    "rentalOffice": {
+      "id": "64f361caf291ae086e179547",
+      "name": "Test Rental Office",
+      "contactAddress": "Ploiesti",
+      "phoneNumber": ""
+    }
+  },
+  "actualBranch": {
+    "id": "64f361caf291ae086e179547",
+    "name": "Test Branch",
+    "address": "Ploiesti",
+    "rentalOffice": {
+      "id": "64f361caf291ae086e179547",
+      "name": "Test Rental Office",
+      "contactAddress": "Ploiesti",
+      "phoneNumber": ""
+    }
+  }
+}

@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      - 'MONGODB_DATABASE=swift_wheels_hub_agency'
+      - 'MONGODB_USERNAME=admin'
+      - 'MONGODB_PASSWORD=password'
+      - 'MONGODB_URI=mongodb://localhost:27017/swift_wheels_hub_agency'
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb:/data/swift_wheels_hub_agency
+
+volumes:
+  mongodb:
+    driver: local

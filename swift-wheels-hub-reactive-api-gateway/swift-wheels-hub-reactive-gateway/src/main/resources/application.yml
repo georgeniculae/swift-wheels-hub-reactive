@@ -1,0 +1,75 @@
+server:
+  port: ${PORT:8188}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: swift-wheels-hub-reactive-cloud-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/swift-wheels-hub
+          jwk-set-uri: http://localhost:8080/realms/swift-wheels-hub/protocol/openid-connect/certs
+  codec:
+    max-in-memory-size: 20MB
+  cloud:
+    gateway:
+      routes:
+        - id: agency
+          uri: lb://swift-wheels-hub-reactive-agency
+          predicates:
+            - Path=/agency/**
+          filters:
+            - name: LanguageHeader
+              args:
+                language: "EN"
+        - id: booking
+          uri: lb://swift-wheels-hub-reactive-booking
+          predicates:
+            - Path=/bookings/**
+          filters:
+            - name: LanguageHeader
+              args:
+                language: "EN"
+        - id: customer
+          uri: lb://swift-wheels-hub-reactive-customer
+          predicates:
+            - Path=/customers/**
+          filters:
+            - name: LanguageHeader
+              args:
+                language: "EN"
+        - id: expense
+          uri: lb://swift-wheels-hub-reactive-expense
+          predicates:
+            - Path=/expense/**
+          filters:
+            - name: LanguageHeader
+              args:
+                language: "EN"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+apikey-secret: ${API_KEY_SECRET}
+
+request-validator-url: lb://swift-wheels-hub-reactive-request-validator/validate

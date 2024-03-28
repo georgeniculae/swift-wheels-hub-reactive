@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      database: swift_wheels_hub_agency
+      username: admin
+      password: password
+      uri: mongodb://localhost:27017/swift_wheels_hub_agency

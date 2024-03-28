@@ -1,0 +1,53 @@
+server:
+  port: ${PORT:0}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: swift-wheels-hub-reactive-request-validator
+  redis:
+    host: ${REDIS_HOST}
+    password: ${REDIS_PASSWORD}
+    port: 6379
+    database: 0
+  codec:
+    max-in-memory-size: 20MB
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web:
+          csrf:
+            CsrfFilter: DEBUG
+
+apikey:
+  secret: ${API_KEY_SECRET}
+
+swagger:
+  endpoints:
+    agency: lb://swift-wheels-hub-reactive-agency/agency/definition/v3/api-docs
+    bookings: lb://swift-wheels-hub-reactive-booking/bookings/definition/v3/api-docs
+    customers: lb://swift-wheels-hub-reactive-customer/customers/definition/v3/api-docs
+    expense: lb://swift-wheels-hub-reactive-expense/expense/definition/v3/api-docs

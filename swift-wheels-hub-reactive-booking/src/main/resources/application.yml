@@ -1,0 +1,89 @@
+server:
+  port: ${PORT:0}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: swift-wheels-hub-reactive-booking
+  webflux:
+    base-path: /bookings
+  data:
+    mongodb:
+      database: swift_wheels_hub_booking
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubbooking.vegjl42.mongodb.net/
+  cloud:
+    discovery:
+      enabled: true
+    stream:
+      bindings:
+        savedBookingProducer-out-0:
+          destination: ${SAVED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+        updatedBookingProducer-out-0:
+          destination: ${UPDATED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+        deletedBookingProducer-out-0:
+          destination: ${DELETED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+        auditLogInfoProducer-out-0:
+          destination: ${BOOKING_AUDIT_LOG_INFO_REACTIVE_TOPIC}
+          contentType: application/json
+  kafka:
+    bootstrap-servers: localhost:9092
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /definition/swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /definition/v3/api-docs
+  show-actuator: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web:
+          csrf:
+            CsrfFilter: DEBUG
+
+apikey:
+  secret: ${API_KEY_SECRET}
+
+transactions:
+  enabled: true
+
+webclient:
+  url:
+    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/cars
+    swift-wheels-hub-agency-employees: lb://swift-wheels-hub-reactive-agency/agency/employees
+
+scheduled:
+  fixedDelay: 5000
+
+audit:
+  enabled: true
