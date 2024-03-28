@@ -25,7 +25,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -132,8 +131,8 @@ class RentalOfficeServiceTest {
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
 
-        verify(rentalOfficeRepository, times(1)).save(argumentCaptor.capture());
-        verify(rentalOfficeMapper, times(1)).mapEntityToDto(any(RentalOffice.class));
+        verify(rentalOfficeRepository).save(argumentCaptor.capture());
+        verify(rentalOfficeMapper).mapEntityToDto(any(RentalOffice.class));
     }
 
     @Test

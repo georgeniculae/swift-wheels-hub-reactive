@@ -24,7 +24,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -128,7 +127,7 @@ class EmployeeServiceTest {
                 .expectNext(employeeResponse)
                 .verifyComplete();
 
-        verify(employeeMapper, times(1)).mapEntityToDto(any(Employee.class));
+        verify(employeeMapper).mapEntityToDto(any(Employee.class));
     }
 
     @Test

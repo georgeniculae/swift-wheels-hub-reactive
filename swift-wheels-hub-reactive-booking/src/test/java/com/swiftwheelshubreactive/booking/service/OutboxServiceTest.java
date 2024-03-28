@@ -19,7 +19,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,7 +55,7 @@ class OutboxServiceTest {
                 .expectComplete()
                 .verify();
 
-        verify(bookingMapper, times(1)).mapEntityToDto(any(Booking.class));
+        verify(bookingMapper).mapEntityToDto(any(Booking.class));
     }
 
     @Test

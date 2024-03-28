@@ -1,9 +1,9 @@
 package com.swiftwheelshubreactive.emailnotification.consumer;
 
-import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.emailnotification.service.EmailService;
 import com.sendgrid.Response;
 import com.sendgrid.helpers.mail.Mail;
+import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.emailnotification.service.EmailService;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +44,8 @@ public class InvoiceMessageConsumer {
 
                     return emailService.sendEmail(mail);
                 })
-                .doOnNext(userDto -> {
-                    log.info("Booking saved: {}", userDto);
+                .doOnNext(response -> {
+                    log.info("Invoice processed with status: {}{}", response.getStatusCode(), response.getBody());
 
                     if (isMessageAckEnabled) {
                         this.sendMessageAcknowledgement(message.getHeaders());

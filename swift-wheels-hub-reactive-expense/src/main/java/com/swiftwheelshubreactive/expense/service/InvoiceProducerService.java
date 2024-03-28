@@ -25,13 +25,13 @@ public class InvoiceProducerService {
 
     private final StreamBridge streamBridge;
 
-    public Mono<Boolean> sendInvoice(InvoiceResponse invoiceDto) {
-        return Mono.fromCallable(() -> streamBridge.send(emailNotificationBinderName, buildMessage(invoiceDto), MimeType.valueOf(emailNotificationMimeType)))
+    public Mono<Boolean> sendInvoice(InvoiceResponse invoiceResponse) {
+        return Mono.fromCallable(() -> streamBridge.send(emailNotificationBinderName, buildMessage(invoiceResponse), MimeType.valueOf(emailNotificationMimeType)))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Message<InvoiceResponse> buildMessage(InvoiceResponse invoiceDto) {
-        return MessageBuilder.withPayload(invoiceDto)
+    private Message<InvoiceResponse> buildMessage(InvoiceResponse invoiceResponse) {
+        return MessageBuilder.withPayload(invoiceResponse)
                 .build();
     }
 

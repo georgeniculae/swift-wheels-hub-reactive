@@ -29,7 +29,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +66,7 @@ class InvoiceServiceTest {
                 .expectNext(invoiceResponse)
                 .verifyComplete();
 
-        verify(invoiceMapper, times(1)).mapEntityToDto(any(Invoice.class));
+        verify(invoiceMapper).mapEntityToDto(any(Invoice.class));
     }
 
     @Test
@@ -214,14 +213,14 @@ class InvoiceServiceTest {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        InvoiceResponse invoiceDto =
+        InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
         StepVerifier.create(invoiceService.saveInvoice(bookingResponse))
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
     }
 
@@ -245,7 +244,7 @@ class InvoiceServiceTest {
         InvoiceRequest invoiceRequest =
                 TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
-        InvoiceResponse invoiceDto =
+        InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         BookingResponse bookingResponse =
@@ -262,10 +261,10 @@ class InvoiceServiceTest {
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
-                .expectNext(invoiceDto)
+                .expectNext(invoiceResponse)
                 .verifyComplete();
 
-        verify(invoiceMapper, times(1)).mapEntityToDto(any(Invoice.class));
+        verify(invoiceMapper).mapEntityToDto(any(Invoice.class));
     }
 
     @Test

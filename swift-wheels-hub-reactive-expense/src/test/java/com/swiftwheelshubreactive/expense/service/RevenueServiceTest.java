@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +63,7 @@ class RevenueServiceTest {
                 .expectNext(revenueResponse)
                 .verifyComplete();
 
-        verify(revenueMapper, times(1)).mapEntityToDto(any(Revenue.class));
+        verify(revenueMapper).mapEntityToDto(any(Revenue.class));
     }
 
     @Test
@@ -136,7 +135,7 @@ class RevenueServiceTest {
                 .expectNext(revenueResponse)
                 .verifyComplete();
 
-        verify(revenueMapper, times(1)).mapEntityToDto(any(Revenue.class));
+        verify(revenueMapper).mapEntityToDto(any(Revenue.class));
     }
 
     @Test
