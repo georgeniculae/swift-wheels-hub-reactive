@@ -1,7 +1,6 @@
 package com.swiftwheelshubreactive.emailnotification.consumer;
 
 import com.sendgrid.Response;
-import com.sendgrid.helpers.mail.Mail;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.emailnotification.service.EmailService;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -39,11 +38,7 @@ public class InvoiceMessageConsumer {
 
     private Mono<Response> processMessage(Message<InvoiceResponse> message) {
         return Mono.just(message.getPayload())
-                .map(invoiceResponse -> {
-                    Mail mail = emailService.createMail(invoiceResponse.customerEmail(), invoiceResponse);
-
-                    return emailService.sendEmail(mail);
-                })
+                .flatMap(invoiceResponse -> emailService.sendEmail(invoiceResponse.customerEmail(), invoiceResponse))
                 .doOnNext(response -> {
                     log.info("Invoice processed with status: {}{}", response.getStatusCode(), response.getBody());
 

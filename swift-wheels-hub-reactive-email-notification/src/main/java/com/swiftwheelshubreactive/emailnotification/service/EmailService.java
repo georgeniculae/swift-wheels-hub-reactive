@@ -14,8 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
 @Service
@@ -44,7 +45,22 @@ public class EmailService {
 
     private final MustacheFactory mustacheFactory;
 
-    public Response sendEmail(Mail mail) {
+    public Mono<Response> sendEmail(String toAddressEmail, Object object) {
+        return getMailAsPublisher(toAddressEmail, object)
+                .flatMap(this::getMailResponseAsPublisher);
+    }
+
+    private Mono<Response> getMailResponseAsPublisher(Mail mail) {
+        return Mono.fromCallable(() -> sendMail(mail))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Mono<Mail> getMailAsPublisher(String toAddressEmail, Object object) {
+        return Mono.fromCallable(() -> createMail(toAddressEmail, object))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Response sendMail(Mail mail) {
         Request request = new Request();
 
         request.setMethod(Method.POST);
@@ -54,12 +70,12 @@ public class EmailService {
             request.setBody(mail.build());
 
             return sendGrid.api(request);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    public Mail createMail(String toAddressEmail, Object object) {
+    private Mail createMail(String toAddressEmail, Object object) {
         Email from = new Email(mailFrom, name);
         Email to = new Email(toAddressEmail);
 
@@ -77,7 +93,7 @@ public class EmailService {
         Mustache mustache = mustacheFactory.compile(MAIL_TEMPLATE_FOLDER + FILE_NAME + MUSTACHE_FORMAT);
         try {
             mustache.execute(stringWriter, object).flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 

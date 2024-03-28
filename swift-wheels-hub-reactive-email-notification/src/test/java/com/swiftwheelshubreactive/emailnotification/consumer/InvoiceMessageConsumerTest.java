@@ -1,7 +1,6 @@
 package com.swiftwheelshubreactive.emailnotification.consumer;
 
 import com.sendgrid.Response;
-import com.sendgrid.helpers.mail.Mail;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.emailnotification.service.EmailService;
 import com.swiftwheelshubreactive.emailnotification.util.TestUtils;
@@ -18,11 +17,13 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +53,7 @@ class InvoiceMessageConsumerTest {
         Message<InvoiceResponse> message = MessageBuilder.createMessage(invoiceResponse, messageHeaders);
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(message);
 
-        when(emailService.sendEmail(any(Mail.class))).thenReturn(response);
+        when(emailService.sendEmail(anyString(), any(Object.class))).thenReturn(Mono.just(response));
 
         StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
                 .expectComplete()
@@ -72,7 +73,7 @@ class InvoiceMessageConsumerTest {
 
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(new GenericMessage<>(invoiceResponse));
 
-        when(emailService.sendEmail(any(Mail.class))).thenReturn(response);
+        when(emailService.sendEmail(anyString(), any(Object.class))).thenReturn(Mono.just(response));
 
         StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
                 .expectComplete()
