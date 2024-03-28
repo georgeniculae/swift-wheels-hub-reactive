@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.customer.service;
 
-import com.swiftwheelshubreactive.customer.mapper.UserMapper;
+import com.swiftwheelshubreactive.customer.mapper.CustomerMapper;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
@@ -55,12 +55,12 @@ public class KeycloakUserService {
 
     private final Keycloak keycloak;
 
-    private final UserMapper userMapper;
+    private final CustomerMapper customerMapper;
 
     public UserInfo findUserByUsername(String username) {
         UserRepresentation userRepresentation = getUserRepresentation(username);
 
-        return userMapper.mapUserToUserDetails(userRepresentation);
+        return customerMapper.mapUserToUserDetails(userRepresentation);
     }
 
     public UserInfo getCurrentUser(String username) {
@@ -92,7 +92,7 @@ public class KeycloakUserService {
     public UserInfo updateUser(String id, UserUpdateRequest userUpdateRequest) {
         UserResource userResource = findById(id);
 
-        UserRepresentation userRepresentation = userMapper.mapToUserRepresentation(userUpdateRequest);
+        UserRepresentation userRepresentation = customerMapper.mapToUserRepresentation(userUpdateRequest);
         userRepresentation.singleAttribute(ADDRESS, userUpdateRequest.address());
         userRepresentation.singleAttribute(DATE_OF_BIRTH, userUpdateRequest.dateOfBirth().toString());
 
@@ -102,7 +102,7 @@ public class KeycloakUserService {
             handleRestEasyCall(e);
         }
 
-        return userMapper.mapUserToUserDetails(userRepresentation);
+        return customerMapper.mapUserToUserDetails(userRepresentation);
     }
 
     public void deleteUserByUsername(String username) {
@@ -184,7 +184,7 @@ public class KeycloakUserService {
             verifyEmail(getUserId(userRepresentation.getUsername()));
         }
 
-        return userMapper.mapToRegistrationResponse(userRepresentation);
+        return customerMapper.mapToRegistrationResponse(userRepresentation);
     }
 
     private UserRepresentation getUserRepresentation(String username) {

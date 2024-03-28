@@ -25,8 +25,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest
-@ContextConfiguration(classes = UserRouter.class)
-class UserRouterTest {
+@ContextConfiguration(classes = CustomerRouter.class)
+class CustomerRouterTest {
 
     @Autowired
     private WebTestClient webTestClient;

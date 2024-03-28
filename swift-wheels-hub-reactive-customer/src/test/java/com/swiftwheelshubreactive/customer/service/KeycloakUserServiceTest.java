@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.customer.service;
 
-import com.swiftwheelshubreactive.customer.mapper.UserMapper;
-import com.swiftwheelshubreactive.customer.mapper.UserMapperImpl;
+import com.swiftwheelshubreactive.customer.mapper.CustomerMapper;
+import com.swiftwheelshubreactive.customer.mapper.CustomerMapperImpl;
 import com.swiftwheelshubreactive.customer.util.AssertionUtils;
 import com.swiftwheelshubreactive.customer.util.TestData;
 import com.swiftwheelshubreactive.customer.util.TestUtils;
@@ -85,7 +85,7 @@ class KeycloakUserServiceTest {
     private RoleScopeResource roleScopeResource;
 
     @Spy
-    private UserMapper userMapper = new UserMapperImpl();
+    private CustomerMapper customerMapper = new CustomerMapperImpl();
 
     @Test
     void findUserByUsernameTest_success() {
@@ -130,7 +130,7 @@ class KeycloakUserServiceTest {
 
         AssertionUtils.assertUserDetails(userRepresentation, currentUser);
 
-        verify(userMapper).mapUserToUserDetails(any(UserRepresentation.class));
+        verify(customerMapper).mapUserToUserDetails(any(UserRepresentation.class));
     }
 
     @Test
@@ -191,7 +191,7 @@ class KeycloakUserServiceTest {
 
         AssertionUtils.assertRegistrationResponse(registerRequest, registrationResponse);
 
-        verify(userMapper).mapToRegistrationResponse(any(UserRepresentation.class));
+        verify(customerMapper).mapToRegistrationResponse(any(UserRepresentation.class));
     }
 
     @Test

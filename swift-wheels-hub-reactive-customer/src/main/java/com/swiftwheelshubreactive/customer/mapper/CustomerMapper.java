@@ -23,7 +23,7 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
-public interface UserMapper {
+public interface CustomerMapper {
 
     String UTC = "UTC";
     String ADDRESS = "address";

@@ -14,51 +14,51 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
-class UserMapperTest {
+class CustomerMapperTest {
 
-    private final UserMapper userMapper = new UserMapperImpl();
+    private final CustomerMapper customerMapper = new CustomerMapperImpl();
 
     @Test
     void mapToUserRepresentationTest_success() {
         UserUpdateRequest userUpdateRequest =
                 TestUtils.getResourceAsJson("/data/UserUpdateRequest.json", UserUpdateRequest.class);
 
-        UserRepresentation userRepresentation = userMapper.mapToUserRepresentation(userUpdateRequest);
+        UserRepresentation userRepresentation = customerMapper.mapToUserRepresentation(userUpdateRequest);
 
         AssertionUtils.assertUserRepresentation(userUpdateRequest, userRepresentation);
     }
 
     @Test
     void mapToUserRepresentationTest_null() {
-        assertNull(userMapper.mapToUserRepresentation(null));
+        assertNull(customerMapper.mapToUserRepresentation(null));
     }
 
     @Test
     void mapUserToUserDetailsTest_success() {
         UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
-        UserInfo userInfo = userMapper.mapUserToUserDetails(userRepresentation);
+        UserInfo userInfo = customerMapper.mapUserToUserDetails(userRepresentation);
 
         AssertionUtils.assertUserDetails(userRepresentation, userInfo);
     }
 
     @Test
     void mapUserToUserDetailsTest_null() {
-        assertNull(userMapper.mapUserToUserDetails(null));
+        assertNull(customerMapper.mapUserToUserDetails(null));
     }
 
     @Test
     void mapToRegistrationResponseTest_success() {
         UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
-        RegistrationResponse registrationResponse = userMapper.mapToRegistrationResponse(userRepresentation);
+        RegistrationResponse registrationResponse = customerMapper.mapToRegistrationResponse(userRepresentation);
 
         AssertionUtils.assertRegistrationResponse(userRepresentation, registrationResponse);
     }
 
     @Test
     void mapToRegistrationResponseTest_null() {
-        assertNull(userMapper.mapToRegistrationResponse(null));
+        assertNull(customerMapper.mapToRegistrationResponse(null));
     }
 
 }
