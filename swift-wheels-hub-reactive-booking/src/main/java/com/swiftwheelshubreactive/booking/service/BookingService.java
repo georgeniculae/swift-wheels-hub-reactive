@@ -170,7 +170,7 @@ public class BookingService {
 
     public Mono<BookingResponse> closeBooking(String apiKeySecret, List<String> roles, BookingClosingDetails bookingClosingDetails) {
         return findEntityById(bookingClosingDetails.bookingId())
-                .flatMap(existingBooking -> getUpdatedExistingEmployee(apiKeySecret, roles, bookingClosingDetails, existingBooking))
+                .flatMap(existingBooking -> updatedBookingWithEmployeeDetails(apiKeySecret, roles, bookingClosingDetails, existingBooking))
                 .flatMap(bookingRepository::save)
                 .map(bookingMapper::mapEntityToDto)
                 .delayUntil(bookingResponse -> updateCarWhenBookingIsClosed(apiKeySecret, roles, bookingResponse, bookingClosingDetails))
@@ -227,8 +227,8 @@ public class BookingService {
         });
     }
 
-    private Mono<Booking> getUpdatedExistingEmployee(String apiKeySecret, List<String> roles,
-                                                     BookingClosingDetails bookingClosingDetails, Booking existingBooking) {
+    private Mono<Booking> updatedBookingWithEmployeeDetails(String apiKeySecret, List<String> roles,
+                                                            BookingClosingDetails bookingClosingDetails, Booking existingBooking) {
         return employeeService.findEmployeeById(apiKeySecret, roles, bookingClosingDetails.receptionistEmployeeId())
                 .map(employeeResponse -> {
                     existingBooking.setStatus(BookingStatus.CLOSED);
@@ -392,7 +392,8 @@ public class BookingService {
         return Mono.error(
                 new SwiftWheelsHubResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Cannot choose car from other branch than selected one")
+                        "Cannot choose car from other branch than selected one"
+                )
         );
     }
 
