@@ -17,8 +17,6 @@
 
     <properties>
         <java.version>21</java.version>
-        <openapi-version>7.1.0</openapi-version>
-        <swagger-annotations-version>1.6.12</swagger-annotations-version>
     </properties>
 
     <dependencies>
