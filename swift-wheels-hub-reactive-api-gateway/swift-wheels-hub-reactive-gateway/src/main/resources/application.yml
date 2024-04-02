@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-reactive-cloud-gateway
+    name: swift-wheels-hub-reactive-gateway
   security:
     oauth2:
       resourceserver:
