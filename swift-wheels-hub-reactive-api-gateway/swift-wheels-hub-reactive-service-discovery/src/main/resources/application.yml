@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: swift-wheels-hub-reactive-eureka-service-discovery
+    name: swift-wheels-hub-reactive-service-discovery
   security:
     basic:
       enabled: true
