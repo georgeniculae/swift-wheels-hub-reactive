@@ -17,8 +17,7 @@ public class EurekaSecurityConfig {
     @Bean
     public SecurityFilterChain eurekaFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers("/eureka/apps/**").permitAll()
+                .authorizeHttpRequests(request -> request.requestMatchers("/eureka/apps/**").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .build();
