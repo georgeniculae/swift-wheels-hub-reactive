@@ -14,11 +14,15 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
     public Mono<Authentication> authenticate(Authentication authentication) {
         return Mono.justOrEmpty(authentication)
                 .cast(ApiKeyAuthenticationToken.class)
-                .map(apiKeyAuthenticationToken -> {
-                    apiKeyAuthenticationToken.setAuthenticated(true);
+                .map(this::getApiKeyAuthenticationToken);
+    }
 
-                    return apiKeyAuthenticationToken;
-                });
+    private ApiKeyAuthenticationToken getApiKeyAuthenticationToken(ApiKeyAuthenticationToken apiKeyAuthenticationToken) {
+        return new ApiKeyAuthenticationToken(
+                apiKeyAuthenticationToken.getAuthorities(),
+                apiKeyAuthenticationToken.getPrincipal().toString(),
+                true
+        );
     }
 
 }

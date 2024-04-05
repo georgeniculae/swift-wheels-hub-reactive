@@ -39,7 +39,7 @@ public class ApiKeySecurityConfig {
                                 "/customers/**",
                                 "/expense/**").authenticated()
                         .anyExchange().authenticated())
-                .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterBefore(authenticationWebFilter, SecurityWebFiltersOrder.ANONYMOUS_AUTHENTICATION)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }
