@@ -1,17 +1,17 @@
 package com.swiftwheelshubreactive.gateway.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@Configuration
+@Component
 @RequiredArgsConstructor
 public class LoadSecurityContextRepository extends WebSessionServerSecurityContextRepository {
 
