@@ -24,6 +24,9 @@ public class ApiKeySecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors(ServerHttpSecurity.CorsSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(request -> request
                         .pathMatchers("/agency/definition/**",
                                 "/bookings/definition/**",
@@ -37,8 +40,6 @@ public class ApiKeySecurityConfig {
                                 "/expense/**").authenticated()
                         .anyExchange().authenticated())
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .logout(ServerHttpSecurity.LogoutSpec::disable)
                 .build();
