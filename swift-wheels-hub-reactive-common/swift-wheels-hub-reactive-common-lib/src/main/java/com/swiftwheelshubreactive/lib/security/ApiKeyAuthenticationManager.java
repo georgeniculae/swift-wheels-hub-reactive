@@ -1,13 +1,13 @@
 package com.swiftwheelshubreactive.lib.security;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-@ConditionalOnBean(name = "apiKeySecurityConfig")
+@ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManager {
 
     @Override

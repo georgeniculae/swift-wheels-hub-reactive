@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusExceptio
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Component
-@ConditionalOnBean(name = "apiKeySecurityConfig")
+@ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class ApiKeyAuthenticationConverter implements ServerAuthenticationConverter {
 
     @Value(("${apikey.secret}"))
