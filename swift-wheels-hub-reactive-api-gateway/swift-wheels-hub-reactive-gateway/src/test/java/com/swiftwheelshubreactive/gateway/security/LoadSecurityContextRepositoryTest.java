@@ -31,10 +31,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LoadReactiveSecurityContextRepositoryTest {
+class LoadSecurityContextRepositoryTest {
 
     @InjectMocks
-    private LoadReactiveSecurityContextRepository loadReactiveSecurityContextRepository;
+    private LoadSecurityContextRepository loadSecurityContextRepository;
 
     @Mock
     private ReactiveAuthenticationManager reactiveAuthenticationManager;
@@ -62,7 +62,7 @@ class LoadReactiveSecurityContextRepositoryTest {
 
         when(reactiveAuthenticationManager.authenticate(any(Authentication.class))).thenReturn(Mono.just(jwtAuthenticationToken));
 
-        loadReactiveSecurityContextRepository.load(exchange)
+        loadSecurityContextRepository.load(exchange)
                 .as(StepVerifier::create)
                 .expectNext(securityContext)
                 .verifyComplete();

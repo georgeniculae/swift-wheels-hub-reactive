@@ -22,7 +22,7 @@ public class SecurityConfig {
     private String jwkUri;
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
     private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
-    private final LoadReactiveSecurityContextRepository loadReactiveSecurityContextRepository;
+    private final LoadSecurityContextRepository loadSecurityContextRepository;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 .jwtAuthenticationConverter(jwtAuthenticationTokenConverter)))
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .securityContextRepository(loadReactiveSecurityContextRepository)
+                .securityContextRepository(loadSecurityContextRepository)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }

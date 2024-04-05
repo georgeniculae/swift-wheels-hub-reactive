@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Configuration
 @RequiredArgsConstructor
-public class LoadReactiveSecurityContextRepository extends WebSessionServerSecurityContextRepository {
+public class LoadSecurityContextRepository extends WebSessionServerSecurityContextRepository {
 
     private final static String BEARER = "Bearer ";
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
