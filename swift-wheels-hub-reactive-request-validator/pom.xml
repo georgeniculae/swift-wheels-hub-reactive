@@ -15,11 +15,7 @@
     <description>Swift Wheels Hub Request Validator Reactive</description>
 
     <properties>
-        <java.version>21</java.version>
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
-        <swagger-request-validator.version>2.40.0</swagger-request-validator.version>
-        <blockhound.version>1.0.8.RELEASE</blockhound.version>
     </properties>
 
     <dependencies>
@@ -48,7 +44,6 @@
         <dependency>
             <groupId>com.atlassian.oai</groupId>
             <artifactId>swagger-request-validator-spring-web-client</artifactId>
-            <version>${swagger-request-validator.version}</version>
         </dependency>
 
         <dependency>
@@ -59,7 +54,6 @@
         <dependency>
             <groupId>io.projectreactor.tools</groupId>
             <artifactId>blockhound</artifactId>
-            <version>${blockhound.version}</version>
         </dependency>
 
         <!-- Test  -->
@@ -81,18 +75,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>

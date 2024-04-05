@@ -15,10 +15,6 @@
     <name>Swift Wheels Hub Reactive Common Dto Reactive</name>
     <description>Swift Wheels Hub Reactive Common Dto Reactive</description>
 
-    <properties>
-        <java.version>21</java.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

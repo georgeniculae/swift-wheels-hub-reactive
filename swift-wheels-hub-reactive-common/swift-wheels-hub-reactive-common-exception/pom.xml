@@ -15,10 +15,6 @@
     <name>Swift Wheels Hub Reactive Common Exception Reactive</name>
     <description>Swift Wheels Hub Reactive Common Exception Reactive</description>
 
-    <properties>
-        <java.version>21</java.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
