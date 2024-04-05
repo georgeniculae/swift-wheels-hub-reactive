@@ -40,10 +40,10 @@ public class ApiKeyAuthenticationConverter implements ServerAuthenticationConver
     }
 
     private List<SimpleGrantedAuthority> getRoles(List<String> roles) {
-        return ObjectUtils.isEmpty(roles) ? List.of() : getRolesList(roles);
+        return ObjectUtils.isEmpty(roles) ? List.of() : getRoleList(roles);
     }
 
-    private List<SimpleGrantedAuthority> getRolesList(List<String> roles) {
+    private List<SimpleGrantedAuthority> getRoleList(List<String> roles) {
         return roles.stream()
                 .filter(ObjectUtils::isNotEmpty)
                 .map(SimpleGrantedAuthority::new)
