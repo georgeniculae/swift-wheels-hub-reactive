@@ -28,6 +28,8 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http.cors(ServerHttpSecurity.CorsSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(request ->
                         request.pathMatchers("/agency/definition/**",
                                         "/bookings/definition/**",
@@ -47,8 +49,6 @@ public class SecurityConfig {
                         resourceServerSpec.jwt(jwtSpec -> jwtSpec.jwkSetUri(jwkUri)
                                 .authenticationManager(reactiveAuthenticationManager)
                                 .jwtAuthenticationConverter(jwtAuthenticationTokenConverter)))
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .securityContextRepository(loadSecurityContextRepository)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
