@@ -14,12 +14,15 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class RequestHeadersLoggerFilter implements GlobalFilter, Ordered {
 
+    private static final String X_API_KEY = "X-API-KEY";
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return Mono.just(exchange)
                 .map(webExchange -> webExchange.getRequest().getHeaders())
                 .doOnNext(this::logHeaders)
-                .flatMap(httpHeaders -> chain.filter(exchange)).onErrorMap(e -> {
+                .flatMap(httpHeaders -> chain.filter(exchange))
+                .onErrorMap(e -> {
                     log.error("Error while trying to log headers: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e);
@@ -34,8 +37,11 @@ public class RequestHeadersLoggerFilter implements GlobalFilter, Ordered {
     private void logHeaders(HttpHeaders httpHeaders) {
         log.info("Request headers: ");
 
-        httpHeaders.toSingleValueMap()
-                .forEach((header, value) -> log.info(header + ": " + value));
+        httpHeaders.forEach((header, value) -> {
+            if (!X_API_KEY.equals(header)) {
+                log.info("{}: {}", header, value);
+            }
+        });
     }
 
 }
