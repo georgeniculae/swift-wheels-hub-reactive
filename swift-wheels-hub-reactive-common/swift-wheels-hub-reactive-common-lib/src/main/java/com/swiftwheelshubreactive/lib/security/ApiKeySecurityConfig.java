@@ -41,7 +41,6 @@ public class ApiKeySecurityConfig {
                         .anyExchange().authenticated())
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
-                .logout(ServerHttpSecurity.LogoutSpec::disable)
                 .build();
     }
 
