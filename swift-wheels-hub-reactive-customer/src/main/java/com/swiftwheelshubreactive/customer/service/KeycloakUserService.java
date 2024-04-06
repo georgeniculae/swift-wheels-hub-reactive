@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponse;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -91,7 +92,7 @@ public class KeycloakUserService {
         try {
             userResource.update(userRepresentation);
         } catch (Exception e) {
-            handleRestEasyCall(e);
+            handleRestEasyCallException(e);
         }
 
         return customerMapper.mapUserToUserDetails(userRepresentation);
@@ -104,7 +105,7 @@ public class KeycloakUserService {
         try {
             userResource.remove();
         } catch (Exception e) {
-            handleRestEasyCall(e);
+            handleRestEasyCallException(e);
         }
     }
 
@@ -114,7 +115,7 @@ public class KeycloakUserService {
         try {
             findById(userRepresentation.getId()).logout();
         } catch (Exception e) {
-            handleRestEasyCall(e);
+            handleRestEasyCallException(e);
         }
     }
 
@@ -154,7 +155,7 @@ public class KeycloakUserService {
         try {
             findById(userId).sendVerifyEmail();
         } catch (Exception e) {
-            handleRestEasyCall(e);
+            handleRestEasyCallException(e);
         }
     }
 
@@ -162,14 +163,14 @@ public class KeycloakUserService {
                                                          RegisterRequest request) {
         String createdId = CreatedResponseUtil.getCreatedId(response);
         UserResource userResource = findById(createdId);
-        handleUserRole();
+        createRoleUserIfNonexistent();
 
         try {
             userResource.resetPassword(createPasswordCredentials(request.password()));
             RoleRepresentation roleRepresentation = getUserRoleRepresentation();
             userResource.roles().realmLevel().add(List.of(roleRepresentation));
         } catch (Exception e) {
-            handleRestEasyCall(e);
+            handleRestEasyCallException(e);
         }
 
         if (request.needsEmailVerification()) {
@@ -180,7 +181,7 @@ public class KeycloakUserService {
     }
 
     private UserRepresentation getUserRepresentation(String username) {
-        List<UserRepresentation> userRepresentations = getUserRepresentations(username);
+        List<UserRepresentation> userRepresentations = getUsersResource().searchByUsername(username, true);
 
         if (userRepresentations.isEmpty()) {
             throw new SwiftWheelsHubNotFoundException("User with username " + username + " doesn't exist");
@@ -189,15 +190,11 @@ public class KeycloakUserService {
         return userRepresentations.getFirst();
     }
 
-    private List<UserRepresentation> getUserRepresentations(String username) {
-        return getUsersResource().searchByUsername(username, true);
-    }
-
     private String getUserId(String username) {
         return getUserRepresentation(username).getId();
     }
 
-    private void handleUserRole() {
+    private void createRoleUserIfNonexistent() {
         boolean isRoleNonexistent = getRealmResource().roles()
                 .list()
                 .stream()
@@ -242,9 +239,16 @@ public class KeycloakUserService {
         }
     }
 
-    private void handleRestEasyCall(Exception e) {
+    private void handleRestEasyCallException(Exception e) {
         if (e instanceof NotFoundException) {
             throw new SwiftWheelsHubNotFoundException("User not found");
+        }
+
+        if (e instanceof ErrorResponse errorResponse) {
+            throw new SwiftWheelsHubResponseStatusException(
+                    HttpStatusCode.valueOf(errorResponse.getStatusCode().value()),
+                    e.getMessage()
+            );
         }
 
         throw new SwiftWheelsHubException(e);
