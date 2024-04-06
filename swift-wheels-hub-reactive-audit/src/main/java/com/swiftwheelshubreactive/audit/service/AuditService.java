@@ -39,7 +39,7 @@ public class AuditService {
         return customerAuditLogInfoRepository.save(customerAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
                 .map(customerAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
-                    log.error("Error while saving booking audit log: {}", e.getMessage());
+                    log.error("Error while saving customer audit log: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e);
                 });
@@ -49,7 +49,7 @@ public class AuditService {
         return expenseAuditLogInfoRepository.save(expenseAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
                 .map(expenseAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
-                    log.error("Error while saving booking audit log: {}", e.getMessage());
+                    log.error("Error while saving expense audit log: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e);
                 });

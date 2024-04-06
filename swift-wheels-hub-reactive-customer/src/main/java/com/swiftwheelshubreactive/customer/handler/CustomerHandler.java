@@ -26,14 +26,14 @@ public class CustomerHandler {
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> getCurrentUser(ServerRequest serverRequest) {
         return customerService.getCurrentUser(ServerRequestUtil.getUsername(serverRequest))
-                .flatMap(currentUserDto -> ServerResponse.ok().bodyValue(currentUserDto))
+                .flatMap(userInfo -> ServerResponse.ok().bodyValue(userInfo))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
     @PreAuthorize("hasAuthority('admin')")
     public Mono<ServerResponse> findUserByUsername(ServerRequest serverRequest) {
         return customerService.findUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
-                .flatMap(userDto -> ServerResponse.ok().bodyValue(userDto))
+                .flatMap(userInfo -> ServerResponse.ok().bodyValue(userInfo))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
