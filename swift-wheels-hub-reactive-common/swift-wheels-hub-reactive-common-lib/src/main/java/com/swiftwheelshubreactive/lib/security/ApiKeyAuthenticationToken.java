@@ -19,7 +19,8 @@ public final class ApiKeyAuthenticationToken extends AbstractAuthenticationToken
         this.apiKey = apiKey;
     }
 
-    public ApiKeyAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities, String apiKey, boolean isAuthenticated) {
+    public ApiKeyAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities, String apiKey,
+                                     boolean isAuthenticated) {
         super(grantedAuthorities);
         super.setAuthenticated(isAuthenticated);
         this.apiKey = apiKey;
