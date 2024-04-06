@@ -19,7 +19,8 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 @ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class ApiKeySecurityConfig {
 
-    private final AuthenticationWebFilter authenticationWebFilter;
+    private final ApiKeyAuthenticationManager apiKeyAuthenticationManager;
+    private final ApiKeyAuthenticationConverter apiKeyAuthenticationConverter;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -39,9 +40,16 @@ public class ApiKeySecurityConfig {
                                 "/customers/**",
                                 "/expense/**").authenticated()
                         .anyExchange().authenticated())
-                .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
+    }
+
+    public AuthenticationWebFilter authenticationWebFilter() {
+        AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(apiKeyAuthenticationManager);
+        authenticationWebFilter.setServerAuthenticationConverter(apiKeyAuthenticationConverter);
+
+        return authenticationWebFilter;
     }
 
 }
