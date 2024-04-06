@@ -55,7 +55,11 @@ public class CustomerHandler {
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(UserUpdateRequest.class)
                 .flatMap(userUpdateRequestValidator::validateBody)
-                .flatMap(userDto -> customerService.updateUser(ServerRequestUtil.getPathVariable(serverRequest, ID), userDto))
+                .flatMap(updatedUser -> customerService.updateUser(
+                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                updatedUser
+                        )
+                )
                 .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
 
