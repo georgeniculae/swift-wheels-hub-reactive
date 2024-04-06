@@ -30,7 +30,6 @@ public class CarHandler {
     private final CarService carService;
     private final CarUpdateDetailsValidator carUpdateDetailsValidator;
     private final UpdateCarRequestValidator updateCarRequestValidator;
-    private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {
