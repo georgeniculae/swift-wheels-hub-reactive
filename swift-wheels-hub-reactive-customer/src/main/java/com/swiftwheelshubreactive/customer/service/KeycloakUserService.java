@@ -35,26 +35,18 @@ import java.util.List;
 public class KeycloakUserService {
 
     private static final String ADDRESS = "address";
-
     private static final String DATE_OF_BIRTH = "dateOfBirth";
-
     private static final String USER = "user";
-
     private static final String OFFLINE_ACCESS = "offline_access";
-
     private static final String OPENING_BRACE = "{";
-
     private static final String CLOSE_BRACE = "}";
-
     private static final String ROLE = "role_";
-
     private static final String $ = "$";
 
     @Value("${keycloak.realm}")
     private String realm;
 
     private final Keycloak keycloak;
-
     private final CustomerMapper customerMapper;
 
     public UserInfo findUserByUsername(String username) {
