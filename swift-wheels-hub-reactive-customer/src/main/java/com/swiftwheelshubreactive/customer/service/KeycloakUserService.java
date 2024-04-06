@@ -50,7 +50,7 @@ public class KeycloakUserService {
 
     private static final String $ = "$";
 
-    @Value($ + OPENING_BRACE + "keycloak.realm}")
+    @Value("${keycloak.realm}")
     private String realm;
 
     private final Keycloak keycloak;
