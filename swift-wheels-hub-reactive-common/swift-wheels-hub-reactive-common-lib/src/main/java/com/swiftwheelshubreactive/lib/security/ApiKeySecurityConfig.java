@@ -45,7 +45,7 @@ public class ApiKeySecurityConfig {
                 .build();
     }
 
-    public AuthenticationWebFilter authenticationWebFilter() {
+    private AuthenticationWebFilter authenticationWebFilter() {
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(apiKeyAuthenticationManager);
         authenticationWebFilter.setServerAuthenticationConverter(apiKeyAuthenticationConverter);
 
