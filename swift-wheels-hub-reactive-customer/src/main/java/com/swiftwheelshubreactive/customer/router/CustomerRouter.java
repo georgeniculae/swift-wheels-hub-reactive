@@ -17,7 +17,8 @@ public class CustomerRouter {
     @SwaggerCustomerRouterOperations
     public RouterFunction<ServerResponse> customerRoute(CustomerHandler customerHandler) {
         return RouterFunctions.nest(RequestPredicates.path("").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
-                RouterFunctions.route(RequestPredicates.GET("/current"), customerHandler::getCurrentUser)
+                RouterFunctions.route(RequestPredicates.GET("/infos"), customerHandler::findAllUsers)
+                        .andRoute(RequestPredicates.GET("/current"), customerHandler::getCurrentUser)
                         .andRoute(RequestPredicates.GET("/count"), customerHandler::countUsers)
                         .andRoute(RequestPredicates.GET("/username/{username}"), customerHandler::findUserByUsername)
                         .andRoute(RequestPredicates.POST("/register"), customerHandler::registerUser)

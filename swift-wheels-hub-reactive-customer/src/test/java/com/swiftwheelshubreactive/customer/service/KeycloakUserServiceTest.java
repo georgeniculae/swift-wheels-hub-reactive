@@ -39,6 +39,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -86,6 +87,21 @@ class KeycloakUserServiceTest {
 
     @Spy
     private CustomerMapper customerMapper = new CustomerMapperImpl();
+
+    @Test
+    void findAllUsersTest_success() {
+        ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
+
+        UserRepresentation userRepresentation = TestData.getUserRepresentation();
+
+        when(keycloak.realm(anyString())).thenReturn(realmResource);
+        when(realmResource.users()).thenReturn(usersResource);
+        when(usersResource.list()).thenReturn(List.of(userRepresentation));
+
+        List<UserInfo> allCustomers = keycloakUserService.findAllUsers();
+
+        assertFalse(allCustomers.isEmpty());
+    }
 
     @Test
     void findUserByUsernameTest_success() {
@@ -159,7 +175,6 @@ class KeycloakUserServiceTest {
     }
 
     @Test
-    @SuppressWarnings("all")
     void registerCustomerTest_success() {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
@@ -170,28 +185,29 @@ class KeycloakUserServiceTest {
         headers.put("test", List.of());
         Response response = new ServerResponse(null, 201, headers);
 
-        mockStatic(CreatedResponseUtil.class);
-        when(CreatedResponseUtil.getCreatedId(any())).thenReturn("id");
-        when(keycloak.realm(anyString())).thenReturn(realmResource);
-        when(realmResource.roles()).thenReturn(rolesResource);
-        when(rolesResource.list()).thenReturn(List.of(roleRepresentation));
-        when(rolesResource.get(anyString())).thenReturn(roleResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.create(any(UserRepresentation.class))).thenReturn(response);
-        when(usersResource.get(anyString())).thenReturn(userResource);
-        when(rolesResource.get(anyString())).thenReturn(roleResource);
-        doNothing().when(roleResource).addComposites(anyList());
-        when(roleResource.toRepresentation()).thenReturn(roleRepresentation);
-        doNothing().when(userResource).resetPassword(any(CredentialRepresentation.class));
-        when(userResource.roles()).thenReturn(roleMappingResource);
-        when(roleMappingResource.realmLevel()).thenReturn(roleScopeResource);
-        doNothing().when(roleScopeResource).add(anyList());
+        try (var ignored = mockStatic(CreatedResponseUtil.class)) {
+            when(CreatedResponseUtil.getCreatedId(any())).thenReturn("id");
+            when(keycloak.realm(anyString())).thenReturn(realmResource);
+            when(realmResource.roles()).thenReturn(rolesResource);
+            when(rolesResource.list()).thenReturn(List.of(roleRepresentation));
+            when(rolesResource.get(anyString())).thenReturn(roleResource);
+            when(realmResource.users()).thenReturn(usersResource);
+            when(usersResource.create(any(UserRepresentation.class))).thenReturn(response);
+            when(usersResource.get(anyString())).thenReturn(userResource);
+            when(rolesResource.get(anyString())).thenReturn(roleResource);
+            doNothing().when(roleResource).addComposites(anyList());
+            when(roleResource.toRepresentation()).thenReturn(roleRepresentation);
+            doNothing().when(userResource).resetPassword(any(CredentialRepresentation.class));
+            when(userResource.roles()).thenReturn(roleMappingResource);
+            when(roleMappingResource.realmLevel()).thenReturn(roleScopeResource);
+            doNothing().when(roleScopeResource).add(anyList());
 
-        RegistrationResponse registrationResponse = keycloakUserService.registerCustomer(registerRequest);
+            RegistrationResponse registrationResponse = keycloakUserService.registerCustomer(registerRequest);
 
-        AssertionUtils.assertRegistrationResponse(registerRequest, registrationResponse);
+            AssertionUtils.assertRegistrationResponse(registerRequest, registrationResponse);
 
-        verify(customerMapper).mapToRegistrationResponse(any(UserRepresentation.class));
+            verify(customerMapper).mapToRegistrationResponse(any(UserRepresentation.class));
+        }
     }
 
     @Test

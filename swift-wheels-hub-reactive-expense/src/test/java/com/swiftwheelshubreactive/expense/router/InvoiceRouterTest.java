@@ -37,7 +37,7 @@ class InvoiceRouterTest {
     private InvoiceHandler invoiceHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllInvoicesTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
@@ -81,7 +81,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllActiveInvoicesTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
@@ -125,7 +125,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllInvoicesByCustomerIdTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
@@ -169,7 +169,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countInvoicesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(1);
 
@@ -207,7 +207,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser( username = "admin", password = "admin", roles = "ADMIN")
     void countAllActiveInvoicesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(1);
 
@@ -245,7 +245,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findInvoiceByIdTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
@@ -289,7 +289,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findInvoicesByCommentsTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
@@ -333,7 +333,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void closeInvoiceTest_success() {
         InvoiceResponse invoiceResponse =
                 TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);

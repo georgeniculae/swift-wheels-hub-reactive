@@ -9,6 +9,7 @@ import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -21,6 +22,17 @@ public class CustomerService {
 
     private final KeycloakUserService keycloakUserService;
     private final BookingService bookingService;
+
+    public Flux<UserInfo> findAllUsers() {
+        return Mono.fromCallable(keycloakUserService::findAllUsers)
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMapMany(Flux::fromIterable)
+                .onErrorMap(e -> {
+                    log.error("Error while getting users: {}", e.getMessage());
+
+                    return new SwiftWheelsHubException(e);
+                });
+    }
 
     public Mono<UserInfo> findUserByUsername(String username) {
         return Mono.fromCallable(() -> keycloakUserService.findUserByUsername(username))

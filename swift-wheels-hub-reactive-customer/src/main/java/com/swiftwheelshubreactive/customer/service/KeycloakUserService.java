@@ -50,6 +50,13 @@ public class KeycloakUserService {
     private final Keycloak keycloak;
     private final CustomerMapper customerMapper;
 
+    public List<UserInfo> findAllUsers() {
+        return getUsersResource().list()
+                .stream()
+                .map(customerMapper::mapUserToUserInfo)
+                .toList();
+    }
+
     public UserInfo findUserByUsername(String username) {
         UserRepresentation userRepresentation = getUserRepresentation(username);
 

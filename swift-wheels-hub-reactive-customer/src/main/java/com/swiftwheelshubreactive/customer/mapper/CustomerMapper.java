@@ -1,8 +1,9 @@
 package com.swiftwheelshubreactive.customer.mapper;
 
-import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
+import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mapstruct.InjectionStrategy;
@@ -51,7 +52,7 @@ public interface CustomerMapper {
                 .getOrDefault(DATE_OF_BIRTH, List.of(StringUtils.EMPTY))
                 .getFirst();
 
-        return LocalDate.parse(dateOfBirthAsString);
+        return ObjectUtils.isEmpty(dateOfBirthAsString) ? null : LocalDate.parse(dateOfBirthAsString);
     }
 
     default String getRegistrationDate() {

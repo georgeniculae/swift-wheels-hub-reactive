@@ -23,6 +23,13 @@ public class CustomerHandler {
     private final RegisterRequestValidator registerRequestValidator;
     private final UserUpdateRequestValidator userUpdateRequestValidator;
 
+    @PreAuthorize("hasAuthority('admin')")
+    public Mono<ServerResponse> findAllUsers(ServerRequest serverRequest) {
+        return customerService.findAllUsers()
+                .collectList()
+                .flatMap(userInfos -> ServerResponse.ok().bodyValue(userInfos));
+    }
+
     @PreAuthorize("hasAuthority('user')")
     public Mono<ServerResponse> getCurrentUser(ServerRequest serverRequest) {
         return customerService.getCurrentUser(ServerRequestUtil.getUsername(serverRequest))

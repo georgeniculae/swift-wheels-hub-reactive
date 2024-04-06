@@ -21,6 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +37,51 @@ class CustomerRouterTest {
     private CustomerHandler customerHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    void findAllUsersTest_success() {
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(userInfo));
+
+        when(customerHandler.findAllUsers(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<UserInfo> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .get()
+                .uri("/infos")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(UserInfo.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(userInfo)
+                .verifyComplete();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void findAllUsersTest_unauthorized() {
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(userInfo));
+
+        when(customerHandler.findAllUsers(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .get()
+                .uri("/infos")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getCurrentUserTest_success() {
         UserInfo userInfo =
                 TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
@@ -79,7 +125,7 @@ class CustomerRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void registerUserTest_success() {
         RegisterRequest registerRequest =
                 TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
@@ -149,7 +195,7 @@ class CustomerRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateUserTest_success() {
         UserInfo userInfo =
                 TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
@@ -214,7 +260,7 @@ class CustomerRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findUserByUsernameTest_success() {
         UserInfo userInfo =
                 TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
@@ -258,7 +304,7 @@ class CustomerRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countUsersTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(1);
 
@@ -296,7 +342,7 @@ class CustomerRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteCurrentUserTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().build();
 
@@ -334,7 +380,7 @@ class CustomerRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteUserByUsernameTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().build();
 

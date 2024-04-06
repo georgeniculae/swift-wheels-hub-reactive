@@ -37,7 +37,7 @@ class RevenueRouterTest {
     private RevenueHandler revenueHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllRevenuesTest_success() {
         RevenueResponse revenueResponse =
                 TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
@@ -81,7 +81,7 @@ class RevenueRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getTotalAmountTest_success() {
         RevenueResponse revenueResponse =
                 TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
@@ -125,7 +125,7 @@ class RevenueRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findRevenuesByDateTest_success() {
         RevenueResponse revenueResponse =
                 TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);

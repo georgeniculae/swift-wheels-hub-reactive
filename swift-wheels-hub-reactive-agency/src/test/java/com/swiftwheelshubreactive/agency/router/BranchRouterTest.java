@@ -37,7 +37,7 @@ class BranchRouterTest {
     private BranchHandler branchHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllBranchesTest_success() {
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
@@ -85,7 +85,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findBranchByIdTest_success() {
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
@@ -124,7 +124,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findBranchByFilterTest_success() {
         BranchResponse branchResponse = TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
@@ -143,7 +143,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findBranchByFilterTest_unauthorized() {
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
@@ -162,7 +162,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countBranchesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(5);
 
@@ -195,7 +195,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveBranchTest_success() {
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
@@ -258,7 +258,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateBranchTest_success() {
         BranchResponse branchResponse =
                 TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
@@ -297,7 +297,7 @@ class BranchRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteBranchByIdTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.noContent().build();
 

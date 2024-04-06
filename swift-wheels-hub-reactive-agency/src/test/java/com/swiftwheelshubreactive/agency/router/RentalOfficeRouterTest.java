@@ -37,7 +37,7 @@ class RentalOfficeRouterTest {
     private RentalOfficeHandler rentalOfficeHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllRentalOfficesTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
@@ -85,7 +85,7 @@ class RentalOfficeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findRentalOfficeByIdTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
@@ -129,7 +129,7 @@ class RentalOfficeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findRentalOfficeByFilterTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeResponse.class);
@@ -173,7 +173,7 @@ class RentalOfficeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countRentalOfficesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(5);
 
@@ -211,7 +211,7 @@ class RentalOfficeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveRentalOfficeTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
@@ -273,7 +273,7 @@ class RentalOfficeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateRentalOfficeTest_success() {
         RentalOfficeResponse rentalOfficeResponse =
                 TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
@@ -334,7 +334,7 @@ class RentalOfficeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteRentalOfficeByIdTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.noContent().build();
 

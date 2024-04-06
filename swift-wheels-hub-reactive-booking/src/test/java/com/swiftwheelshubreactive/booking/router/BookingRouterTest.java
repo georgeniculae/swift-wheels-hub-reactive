@@ -36,7 +36,7 @@ class BookingRouterTest {
     private BookingHandler bookingHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllBookingTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -80,7 +80,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findBookingByIdTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -124,7 +124,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countBookingsTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -165,7 +165,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countByLoggedInUserTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -209,7 +209,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getCurrentDateTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -248,7 +248,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveBookingTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -310,7 +310,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void closeBookingTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -372,7 +372,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateBookingTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -434,7 +434,7 @@ class BookingRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteBookingByIdTest_success() {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);

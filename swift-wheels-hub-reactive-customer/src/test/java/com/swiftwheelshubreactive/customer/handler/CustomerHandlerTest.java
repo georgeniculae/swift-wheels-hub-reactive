@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.reactive.function.server.MockServerRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -38,6 +39,23 @@ class CustomerHandlerTest {
 
     @Mock
     private UserUpdateRequestValidator userUpdateRequestValidator;
+
+    @Test
+    void findAllUsersTest_success() {
+        UserInfo userInfo =
+                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.GET)
+                .header("X-USERNAME", "user")
+                .build();
+
+        when(customerService.findAllUsers()).thenReturn(Flux.just(userInfo));
+
+        StepVerifier.create(customerHandler.findAllUsers(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
 
     @Test
     void getCurrentUserTest_success() {

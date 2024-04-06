@@ -395,6 +395,23 @@ class CarServiceTest {
     }
 
     @Test
+    void updateCarsStatusTest_errorOnSave() {
+        Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
+        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
+                .carId("64f361caf291ae086e179547")
+                .carState(CarState.AVAILABLE)
+                .build();
+        List<UpdateCarRequest> updateCarRequests = List.of(updateCarRequest);
+
+        when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
+        when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new RuntimeException()));
+
+        StepVerifier.create(carService.updateCarsStatus(updateCarRequests))
+                .expectError()
+                .verify();
+    }
+
+    @Test
     void updateCarWhenBookingIsClosedTest_success() {
         Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);

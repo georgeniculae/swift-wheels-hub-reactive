@@ -37,7 +37,7 @@ class EmployeeRouterTest {
     private EmployeeHandler employeeHandler;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllEmployeesTest_success() {
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
@@ -85,7 +85,7 @@ class EmployeeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findEmployeeByIdTest_success() {
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
@@ -129,7 +129,7 @@ class EmployeeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findEmployeesByBranchIdTest_success() {
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
@@ -173,7 +173,7 @@ class EmployeeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countEmployeesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(5);
 
@@ -211,7 +211,7 @@ class EmployeeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveEmployeeTest_success() {
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
@@ -273,7 +273,7 @@ class EmployeeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateEmployeeTest_success() {
         EmployeeResponse employeeResponse =
                 TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
@@ -335,7 +335,7 @@ class EmployeeRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteEmployeeByIdTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.noContent().build();
 
