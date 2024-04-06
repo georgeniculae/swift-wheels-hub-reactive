@@ -53,7 +53,7 @@ public class KeycloakUserService {
     public UserInfo findUserByUsername(String username) {
         UserRepresentation userRepresentation = getUserRepresentation(username);
 
-        return customerMapper.mapUserToUserDetails(userRepresentation);
+        return customerMapper.mapUserToUserInfo(userRepresentation);
     }
 
     public UserInfo getCurrentUser(String username) {
@@ -95,7 +95,7 @@ public class KeycloakUserService {
             handleRestEasyCallException(e);
         }
 
-        return customerMapper.mapUserToUserDetails(userRepresentation);
+        return customerMapper.mapUserToUserInfo(userRepresentation);
     }
 
     public void deleteUserByUsername(String username) {

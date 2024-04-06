@@ -34,17 +34,17 @@ class CustomerMapperTest {
     }
 
     @Test
-    void mapUserToUserDetailsTest_success() {
+    void mapUserToUserInfoTest_success() {
         UserRepresentation userRepresentation = TestData.getUserRepresentation();
 
-        UserInfo userInfo = customerMapper.mapUserToUserDetails(userRepresentation);
+        UserInfo userInfo = customerMapper.mapUserToUserInfo(userRepresentation);
 
         AssertionUtils.assertUserDetails(userRepresentation, userInfo);
     }
 
     @Test
-    void mapUserToUserDetailsTest_null() {
-        assertNull(customerMapper.mapUserToUserDetails(null));
+    void mapUserToUserInfoTest_null() {
+        assertNull(customerMapper.mapUserToUserInfo(null));
     }
 
     @Test

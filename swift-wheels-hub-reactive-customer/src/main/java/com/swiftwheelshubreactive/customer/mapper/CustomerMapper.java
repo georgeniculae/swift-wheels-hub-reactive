@@ -33,7 +33,7 @@ public interface CustomerMapper {
 
     @Mapping(target = "address", expression = "java(getAddress(userRepresentation))")
     @Mapping(target = "dateOfBirth", expression = "java(getDateOfBirth(userRepresentation))")
-    UserInfo mapUserToUserDetails(UserRepresentation userRepresentation);
+    UserInfo mapUserToUserInfo(UserRepresentation userRepresentation);
 
     @Mapping(target = "address", expression = "java(getAddress(userRepresentation))")
     @Mapping(target = "dateOfBirth", expression = "java(getDateOfBirth(userRepresentation))")

@@ -130,7 +130,7 @@ class KeycloakUserServiceTest {
 
         AssertionUtils.assertUserDetails(userRepresentation, currentUser);
 
-        verify(customerMapper).mapUserToUserDetails(any(UserRepresentation.class));
+        verify(customerMapper).mapUserToUserInfo(any(UserRepresentation.class));
     }
 
     @Test
