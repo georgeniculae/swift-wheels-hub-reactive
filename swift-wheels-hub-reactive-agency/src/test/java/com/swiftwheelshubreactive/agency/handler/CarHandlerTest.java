@@ -29,6 +29,7 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -331,7 +332,7 @@ class CarHandlerTest {
                 .body(Flux.just(updateCarRequest));
 
         when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
-        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
+        when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

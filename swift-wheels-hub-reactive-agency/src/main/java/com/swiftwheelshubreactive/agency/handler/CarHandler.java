@@ -122,7 +122,11 @@ public class CarHandler {
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
                 .flatMap(carUpdateDetailsValidator::validateBody)
-                .flatMap(carUpdateDetails -> carService.updateCarWhenBookingIsClosed(ServerRequestUtil.getPathVariable(serverRequest, ID), carUpdateDetails))
+                .flatMap(carUpdateDetails -> carService.updateCarWhenBookingIsClosed(
+                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                carUpdateDetails
+                        )
+                )
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
@@ -130,7 +134,8 @@ public class CarHandler {
     public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
         return serverRequest.bodyToFlux(UpdateCarRequest.class)
                 .flatMap(updateCarRequestValidator::validateBody)
-                .flatMap(updateCarRequest -> carService.updateCarStatus(updateCarRequest.carId(), updateCarRequest.carState()))
+                .collectList()
+                .flatMapMany(carService::updateCarsStatus)
                 .collectList()
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }

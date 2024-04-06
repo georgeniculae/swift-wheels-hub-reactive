@@ -10,7 +10,9 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
+import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.BodyType;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
+import org.bson.types.ObjectId;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
@@ -165,17 +168,22 @@ public class CarService {
 
     public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
-                .flatMap(car -> {
-                    car.setCarStatus(CarStatus.valueOf(carState.name()));
-
-                    return carRepository.save(car);
-                })
+                .doOnNext(car -> car.setCarStatus(CarStatus.valueOf(carState.name())))
+                .flatMap(carRepository::save)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while updating car status cars: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e.getMessage());
                 });
+    }
+
+    public Flux<CarResponse> updateCarsStatus(List<UpdateCarRequest> updateCarRequests) {
+        return carRepository.findAllById(getCarIds(updateCarRequests))
+                .doOnNext(car -> car.setCarStatus(getUpdatedCarStatus(updateCarRequests, car)))
+                .collectList()
+                .flatMapMany(carRepository::saveAll)
+                .map(carMapper::mapEntityToDto);
     }
 
     public Mono<Void> deleteCarById(String id) {
@@ -202,7 +210,7 @@ public class CarService {
                 .flatMap(carRepository::save)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
-                    log.error("Error while counting cars: {}", e.getMessage());
+                    log.error("Error while updating car: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e.getMessage());
                 });
@@ -257,6 +265,21 @@ public class CarService {
         car.setActualBranch(actualBranch);
 
         return car;
+    }
+
+    private CarStatus getUpdatedCarStatus(List<UpdateCarRequest> updateCarRequests, Car car) {
+        UpdateCarRequest matchingUpdateCarRequest = updateCarRequests.stream()
+                .filter(updateCarRequest -> car.getId().toString().equals(updateCarRequest.carId()))
+                .findAny()
+                .orElseThrow(() -> new SwiftWheelsHubNotFoundException("Car details not found"));
+
+        return CarStatus.valueOf(matchingUpdateCarRequest.carState().name());
+    }
+
+    private List<ObjectId> getCarIds(List<UpdateCarRequest> updateCarRequests) {
+        return updateCarRequests.stream()
+                .map(updateCarRequest -> MongoUtil.getObjectId(updateCarRequest.carId()))
+                .toList();
     }
 
     private Mono<Car> setupUpdatedCar(String id, Map<String, Part> carRequestPartMap, CarRequest updatedCarRequest) {
