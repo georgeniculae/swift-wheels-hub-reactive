@@ -6,7 +6,7 @@ import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -21,7 +21,7 @@ public class BranchHandler {
     private final BranchService branchService;
     private final BranchRequestValidator branchRequestValidator;
 
-    @PreAuthorize("hasAuthority('admin')")
+    @Secured("admin")
     public Mono<ServerResponse> findAllBranches(ServerRequest serverRequest) {
         return branchService.findAllBranches()
                 .collectList()
@@ -30,14 +30,14 @@ public class BranchHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('user')")
+    @Secured("user")
     public Mono<ServerResponse> findBranchById(ServerRequest serverRequest) {
         return branchService.findBranchById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('user')")
+    @Secured("user")
     public Mono<ServerResponse> findBranchesByFilterInsensitiveCase(ServerRequest serverRequest) {
         return branchService.findBranchesByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
@@ -46,13 +46,13 @@ public class BranchHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('user')")
+    @Secured("user")
     public Mono<ServerResponse> countBranches(ServerRequest serverRequest) {
         return branchService.countBranches()
                 .flatMap(numberOfBranches -> ServerResponse.ok().bodyValue(numberOfBranches));
     }
 
-    @PreAuthorize("hasAuthority('admin')")
+    @Secured("admin")
     public Mono<ServerResponse> saveBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
                 .flatMap(branchRequestValidator::validateBody)
@@ -60,7 +60,7 @@ public class BranchHandler {
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
 
-    @PreAuthorize("hasAuthority('admin')")
+    @Secured("admin")
     public Mono<ServerResponse> updateBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
                 .flatMap(branchRequestValidator::validateBody)
@@ -68,7 +68,7 @@ public class BranchHandler {
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
 
-    @PreAuthorize("hasAuthority('admin')")
+    @Secured("admin")
     public Mono<ServerResponse> deleteBranchById(ServerRequest serverRequest) {
         return branchService.deleteBranchById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.noContent().build());
