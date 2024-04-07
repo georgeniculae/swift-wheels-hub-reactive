@@ -28,13 +28,17 @@ public class GrantedAuthoritiesConverterConfig {
     }
 
     @Bean
-    @SuppressWarnings("unchecked")
     public JwtGrantedAuthorityConverter authoritiesConverter() {
         return source -> {
-            Map<String, List<String>> claims = (Map<String, List<String>>) source.getClaims().get(REALM_ACCESS);
+            Map<String, List<String>> claims = getClaims(source);
 
             return ObjectUtils.isEmpty(claims) ? Collections.emptyList() : getAuthorities(claims);
         };
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, List<String>> getClaims(Jwt source) {
+        return (Map<String, List<String>>) source.getClaims().get(REALM_ACCESS);
     }
 
     private List<GrantedAuthority> getAuthorities(Map<String, List<String>> claims) {

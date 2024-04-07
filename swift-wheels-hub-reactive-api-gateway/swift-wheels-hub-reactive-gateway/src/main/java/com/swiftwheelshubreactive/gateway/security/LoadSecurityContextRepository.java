@@ -20,11 +20,17 @@ public class LoadSecurityContextRepository extends WebSessionServerSecurityConte
 
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
-        return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
+        return Mono.justOrEmpty(getAuthorizationHeader(exchange))
                 .filter(authorization -> authorization.startsWith(BEARER))
                 .map(this::getBearerTokenAuthenticationToken)
                 .flatMap(reactiveAuthenticationManager::authenticate)
                 .map(SecurityContextImpl::new);
+    }
+
+    private String getAuthorizationHeader(ServerWebExchange exchange) {
+        return exchange.getRequest()
+                .getHeaders()
+                .getFirst(HttpHeaders.AUTHORIZATION);
     }
 
     private BearerTokenAuthenticationToken getBearerTokenAuthenticationToken(String authorizationToken) {
