@@ -41,7 +41,7 @@ public class GrantedAuthoritiesConverterConfig {
         return (Map<String, List<String>>) source.getClaims().get(REALM_ACCESS);
     }
 
-    private List<GrantedAuthority> getAuthorities(Map<String, List<String>> claims) {
+    private Collection<GrantedAuthority> getAuthorities(Map<String, List<String>> claims) {
         return claims.get(ROLES)
                 .stream()
                 .map(SimpleGrantedAuthority::new)
