@@ -13,16 +13,7 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         return Mono.justOrEmpty(authentication)
-                .cast(ApiKeyAuthenticationToken.class)
-                .map(this::getApiKeyAuthenticationToken);
-    }
-
-    private ApiKeyAuthenticationToken getApiKeyAuthenticationToken(ApiKeyAuthenticationToken apiKeyAuthenticationToken) {
-        return new ApiKeyAuthenticationToken(
-                apiKeyAuthenticationToken.getAuthorities(),
-                apiKeyAuthenticationToken.getPrincipal().toString(),
-                true
-        );
+                .doOnNext(auth -> auth.setAuthenticated(true));
     }
 
 }
