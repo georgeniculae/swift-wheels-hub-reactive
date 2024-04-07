@@ -29,8 +29,8 @@ public class GrantedAuthoritiesConverterConfig {
 
     @Bean
     public JwtGrantedAuthorityConverter authoritiesConverter() {
-        return source -> {
-            Map<String, List<String>> claims = getClaims(source);
+        return jwt -> {
+            Map<String, List<String>> claims = getClaims(jwt);
 
             return ObjectUtils.isEmpty(claims) ? Collections.emptyList() : getAuthorities(claims);
         };
