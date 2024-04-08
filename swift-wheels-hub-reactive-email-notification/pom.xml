@@ -46,10 +46,10 @@
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.projectreactor.tools</groupId>
-            <artifactId>blockhound</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.projectreactor.tools</groupId>-->
+<!--            <artifactId>blockhound</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Test  -->
         <dependency>
