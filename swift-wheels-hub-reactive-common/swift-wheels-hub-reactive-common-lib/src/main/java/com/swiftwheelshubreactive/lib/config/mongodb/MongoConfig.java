@@ -37,7 +37,7 @@ public class MongoConfig {
     }
 
     @Bean
-    public ReactiveMongoTransactionManager transactionManager(ReactiveMongoDatabaseFactory reactiveMongoDatabaseFactory) {
+    public ReactiveMongoTransactionManager reactiveMongoTransactionManager(ReactiveMongoDatabaseFactory reactiveMongoDatabaseFactory) {
         return new ReactiveMongoTransactionManager(reactiveMongoDatabaseFactory);
     }
 
