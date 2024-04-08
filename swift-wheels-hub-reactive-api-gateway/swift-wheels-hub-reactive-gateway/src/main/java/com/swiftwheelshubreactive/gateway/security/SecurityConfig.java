@@ -21,7 +21,6 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkUri;
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
-    private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
     private final LoadSecurityContextRepository loadSecurityContextRepository;
 
     @Bean
@@ -47,8 +46,7 @@ public class SecurityConfig {
                                 .accessDeniedHandler((response, error) -> getResponse(response, HttpStatus.FORBIDDEN)))
                 .oauth2ResourceServer(resourceServerSpec ->
                         resourceServerSpec.jwt(jwtSpec -> jwtSpec.jwkSetUri(jwkUri)
-                                .authenticationManager(reactiveAuthenticationManager)
-                                .jwtAuthenticationConverter(jwtAuthenticationTokenConverter)))
+                                .authenticationManager(reactiveAuthenticationManager)))
                 .securityContextRepository(loadSecurityContextRepository)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();

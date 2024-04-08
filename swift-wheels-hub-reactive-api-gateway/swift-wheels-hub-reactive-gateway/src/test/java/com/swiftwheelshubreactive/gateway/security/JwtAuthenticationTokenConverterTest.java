@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -36,27 +35,6 @@ class JwtAuthenticationTokenConverterTest {
     private Converter<Jwt, Flux<GrantedAuthority>> jwtGrantedAuthoritiesConverter;
 
     @Test
-    void convertTest_success() {
-        String token = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
-
-        Collection<? extends GrantedAuthority> roles = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-
-        Map<String, Object> headers = Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        String user = "user";
-        Map<String, Object> claims = Map.of("preferred_username", user);
-
-        Jwt jwt = new Jwt(token, Instant.now(), Instant.now().plus(30, ChronoUnit.MINUTES), headers, claims);
-        JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt, roles, user);
-
-        when(jwtGrantedAuthoritiesConverter.convert(any(Jwt.class))).thenReturn(Flux.fromIterable(roles));
-
-        Objects.requireNonNull(jwtAuthenticationTokenConverter.convert(jwt))
-                .as(StepVerifier::create)
-                .expectNext(jwtAuthenticationToken)
-                .verifyComplete();
-    }
-
-    @Test
     void extractUsernameTest_success() {
         String token = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
 
@@ -68,6 +46,27 @@ class JwtAuthenticationTokenConverterTest {
 
         String username = jwtAuthenticationTokenConverter.extractUsername(jwt);
         assertEquals(user, username);
+    }
+
+    @Test
+    void extractGrantedAuthoritiesTest_success() {
+        String token = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
+        String roleUser = "ROLE_user";
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleUser);
+        Collection<? extends GrantedAuthority> roles = List.of(simpleGrantedAuthority);
+
+        Map<String, Object> headers = Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        String user = "user";
+        Map<String, Object> claims = Map.of("realm_access", List.of(user));
+
+        Jwt jwt = new Jwt(token, Instant.now(), Instant.now().plus(30, ChronoUnit.MINUTES), headers, claims);
+
+        when(jwtGrantedAuthoritiesConverter.convert(any(Jwt.class))).thenReturn(Flux.fromIterable(roles));
+
+        Objects.requireNonNull(jwtAuthenticationTokenConverter.extractGrantedAuthorities(jwt))
+                .as(StepVerifier::create)
+                .expectNext(simpleGrantedAuthority)
+                .verifyComplete();
     }
 
 }
