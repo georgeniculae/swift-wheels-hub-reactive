@@ -14,7 +14,7 @@ spring:
       database: swift_wheels_hub_audit
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubaudit.hnpvjeh.mongodb.net/
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubaudit.hnpvjeh.mongodb.net
   cloud:
     discovery:
       enabled: true
