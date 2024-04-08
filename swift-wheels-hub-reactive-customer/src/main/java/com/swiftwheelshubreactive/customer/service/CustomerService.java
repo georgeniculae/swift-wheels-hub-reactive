@@ -46,7 +46,8 @@ public class CustomerService {
 
     public Mono<UserInfo> getCurrentUser(String username) {
         return Mono.fromCallable(() -> keycloakUserService.getCurrentUser(username))
-                .subscribeOn(Schedulers.boundedElastic()).onErrorMap(e -> {
+                .subscribeOn(Schedulers.boundedElastic())
+                .onErrorMap(e -> {
                     log.error("Error while getting current user: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e);
