@@ -56,8 +56,7 @@ class JwtAuthenticationTokenConverterTest {
         Collection<? extends GrantedAuthority> roles = List.of(simpleGrantedAuthority);
 
         Map<String, Object> headers = Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        String user = "user";
-        Map<String, Object> claims = Map.of("realm_access", List.of(user));
+        Map<String, Object> claims = Map.of("realm_access", List.of(roleUser));
 
         Jwt jwt = new Jwt(token, Instant.now(), Instant.now().plus(30, ChronoUnit.MINUTES), headers, claims);
 

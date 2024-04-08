@@ -21,6 +21,7 @@ public class GrantedAuthoritiesConverterConfig {
 
     private static final String REALM_ACCESS = "realm_access";
     private static final String ROLES = "roles";
+    private static final String ROLE = "ROLE_";
 
     @Bean
     public Converter<Jwt, Flux<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
@@ -43,7 +44,7 @@ public class GrantedAuthoritiesConverterConfig {
     private Collection<GrantedAuthority> getAuthorities(Map<String, List<String>> claims) {
         return claims.get(ROLES)
                 .stream()
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority(ROLE + role))
                 .collect(Collectors.toList());
     }
 

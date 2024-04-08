@@ -7,7 +7,7 @@ import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -23,28 +23,28 @@ public class CustomerHandler {
     private final RegisterRequestValidator registerRequestValidator;
     private final UserUpdateRequestValidator userUpdateRequestValidator;
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findAllUsers(ServerRequest serverRequest) {
         return customerService.findAllUsers()
                 .collectList()
                 .flatMap(userInfos -> ServerResponse.ok().bodyValue(userInfos));
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getCurrentUser(ServerRequest serverRequest) {
         return customerService.getCurrentUser(ServerRequestUtil.getUsername(serverRequest))
                 .flatMap(userInfo -> ServerResponse.ok().bodyValue(userInfo))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findUserByUsername(ServerRequest serverRequest) {
         return customerService.findUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
                 .flatMap(userInfo -> ServerResponse.ok().bodyValue(userInfo))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> countUsers(ServerRequest serverRequest) {
         return customerService.countUsers()
                 .flatMap(userCount -> ServerResponse.ok().bodyValue(userCount));
@@ -58,7 +58,7 @@ public class CustomerHandler {
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(UserUpdateRequest.class)
                 .flatMap(userUpdateRequestValidator::validateBody)
@@ -70,7 +70,7 @@ public class CustomerHandler {
                 .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
         return customerService.deleteUserByUsername(
                         ServerRequestUtil.getApiKeyHeader(serverRequest),
@@ -80,7 +80,7 @@ public class CustomerHandler {
                 .then(ServerResponse.noContent().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> deleteCurrentUser(ServerRequest serverRequest) {
         return customerService.deleteUserByUsername(
                         ServerRequestUtil.getApiKeyHeader(serverRequest),
@@ -90,7 +90,7 @@ public class CustomerHandler {
                 .then(ServerResponse.noContent().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> signOut(ServerRequest serverRequest) {
         return customerService.signOut(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.ok().build());

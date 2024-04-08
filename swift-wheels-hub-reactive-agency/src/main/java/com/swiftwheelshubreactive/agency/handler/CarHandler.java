@@ -11,7 +11,7 @@ import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -30,7 +30,7 @@ public class CarHandler {
     private final CarUpdateDetailsValidator carUpdateDetailsValidator;
     private final UpdateCarRequestValidator updateCarRequestValidator;
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {
         return carService.findAllCars()
                 .collectList()
@@ -39,14 +39,14 @@ public class CarHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findCarById(ServerRequest serverRequest) {
         return carService.findCarById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findCarsByMakeInsensitiveCase(ServerRequest serverRequest) {
         return carService.findCarsByMakeInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, MAKE))
                 .collectList()
@@ -55,7 +55,7 @@ public class CarHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findCarsByFilterInsensitiveCase(ServerRequest serverRequest) {
         return carService.findCarsByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
                 .collectList()
@@ -64,34 +64,34 @@ public class CarHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getAvailableCar(ServerRequest serverRequest) {
         return carService.getAvailableCar(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user'")
     public Mono<ServerResponse> getCarImage(ServerRequest serverRequest) {
         return carService.getCarImage(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> countCars(ServerRequest serverRequest) {
         return carService.countCars()
                 .flatMap(numberOfCars -> ServerResponse.ok().bodyValue(numberOfCars));
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> saveCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
                 .map(carRequestMultivalueMap -> carService.saveCar(carRequestMultivalueMap.toSingleValueMap()))
                 .flatMap(carResponse -> ServerResponse.ok().body(carResponse, CarResponse.class));
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> uploadCars(ServerRequest serverRequest) {
         return serverRequest.multipartData()
                 .map(multiValueMap -> multiValueMap.get(FILE))
@@ -102,21 +102,21 @@ public class CarHandler {
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
                 .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), updatedCarRequestMultivalueMap.toSingleValueMap()))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarState.class)
                 .flatMap(carStatus -> carService.updateCarStatus(ServerRequestUtil.getPathVariable(serverRequest, ID), carStatus))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
                 .flatMap(carUpdateDetailsValidator::validateBody)
@@ -128,7 +128,7 @@ public class CarHandler {
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @Secured("user")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
         return serverRequest.bodyToFlux(UpdateCarRequest.class)
                 .flatMap(updateCarRequestValidator::validateBody)
@@ -138,7 +138,7 @@ public class CarHandler {
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
-    @Secured("admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteCarById(ServerRequest serverRequest) {
         return carService.deleteCarById(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .then(ServerResponse.noContent().build());
