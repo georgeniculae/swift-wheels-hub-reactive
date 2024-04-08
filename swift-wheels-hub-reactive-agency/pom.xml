@@ -31,11 +31,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>io.mongock.professional</groupId>
             <artifactId>mongock-springboot</artifactId>
         </dependency>
