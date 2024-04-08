@@ -94,7 +94,7 @@ logging:
 apikey:
   secret: ${API_KEY_SECRET}
 
-transactions:
+mongo-operations:
   enabled: true
 
 webClient:
