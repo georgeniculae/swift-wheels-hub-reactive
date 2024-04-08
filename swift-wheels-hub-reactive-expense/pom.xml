@@ -23,6 +23,17 @@
             <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-reactive-common-lib</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.mongock.professional</groupId>
+                    <artifactId>mongock-springboot</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>io.mongock</groupId>
+                    <artifactId>mongodb-reactive-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
