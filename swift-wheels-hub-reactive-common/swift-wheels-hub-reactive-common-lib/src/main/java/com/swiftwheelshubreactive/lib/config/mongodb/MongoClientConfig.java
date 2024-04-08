@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory;
-import org.springframework.data.mongodb.ReactiveMongoTransactionManager;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 @ConditionalOnProperty(prefix = "mongo-operations", name = "enabled", havingValue = "true")
-public class MongoConfig {
+@Profile("!test")
+public class MongoClientConfig {
 
     @Value("${spring.data.mongodb.uri}")
     private String connectionString;
@@ -34,11 +34,6 @@ public class MongoConfig {
                 .applyConnectionString(new ConnectionString(connectionString))
                 .codecRegistry(codecRegistry)
                 .build());
-    }
-
-    @Bean
-    public ReactiveMongoTransactionManager reactiveMongoTransactionManager(ReactiveMongoDatabaseFactory reactiveMongoDatabaseFactory) {
-        return new ReactiveMongoTransactionManager(reactiveMongoDatabaseFactory);
     }
 
 }
