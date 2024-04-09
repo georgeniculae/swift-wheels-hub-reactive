@@ -1,5 +1,5 @@
 HELP.md
-target/
+swift-wheels-hub-reactive-gateway/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
