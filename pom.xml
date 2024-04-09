@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.swftwheelshub</groupId>
+        <groupId>com.swiftwheelshub</groupId>
         <artifactId>swift-wheels-hub-reactive-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
-    <groupId>com.swiftwheelshub</groupId>
     <artifactId>swift-wheels-hub-reactive</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
