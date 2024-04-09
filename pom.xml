@@ -37,7 +37,9 @@
     </repositories>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/georgeniculae/swift-wheels-hub-reactive-parent</developerConnection>
+        <developerConnection>
+            scm:git:https://github.com/georgeniculae/swift-wheels-hub-reactive-parent
+        </developerConnection>
         <tag>HEAD</tag>
     </scm>
 
