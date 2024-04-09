@@ -7,6 +7,7 @@
         <groupId>com.swftwheelshub</groupId>
         <artifactId>swift-wheels-hub-reactive-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.swiftwheelshub</groupId>
@@ -36,7 +37,7 @@
     </repositories>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/georgeniculae/swift-wheels-hub-reactive</developerConnection>
+        <developerConnection>scm:git:https://github.com/georgeniculae/swift-wheels-hub-reactive-parent</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -44,7 +45,7 @@
         <repository>
             <id>github</id>
             <name>swift-wheels-hub-reactive</name>
-            <url>https://maven.pkg.github.com/georgeniculae/swift-wheels-hub-reactive</url>
+            <url>https://maven.pkg.github.com/georgeniculae/swift-wheels-hub-reactive-parent</url>
         </repository>
     </distributionManagement>
 
