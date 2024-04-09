@@ -51,11 +51,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -85,10 +80,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.projectreactor.tools</groupId>-->
-<!--            <artifactId>blockhound</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.projectreactor.tools</groupId>
+            <artifactId>blockhound</artifactId>
+        </dependency>
 
         <!-- Test  -->
         <dependency>

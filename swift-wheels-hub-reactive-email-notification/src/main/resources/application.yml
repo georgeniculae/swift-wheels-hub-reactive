@@ -10,7 +10,7 @@ spring:
   application:
     name: swift-wheels-hub-reactive-email-notification
   cloud:
-    discovery:
+    loadbalancer:
       enabled: true
     function:
       definition: emailNotificationConsumer
@@ -36,17 +36,6 @@ spring:
   web:
     resources:
       add-mappings: false
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
-    registryFetchIntervalSeconds: 5
-  instance:
-    preferIpAddress: true
-    leaseRenewalIntervalInSeconds: 10
 
 sendgrid:
   enabled: true

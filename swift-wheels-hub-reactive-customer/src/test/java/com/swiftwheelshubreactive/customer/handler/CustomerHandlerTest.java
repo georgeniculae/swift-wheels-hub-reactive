@@ -2,12 +2,11 @@ package com.swiftwheelshubreactive.customer.handler;
 
 import com.swiftwheelshubreactive.customer.service.CustomerService;
 import com.swiftwheelshubreactive.customer.util.TestUtils;
-import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
-import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,10 +34,10 @@ class CustomerHandlerTest {
     private CustomerService customerService;
 
     @Mock
-    private RegisterRequestValidator registerRequestValidator;
+    private BodyValidator<RegisterRequest> registerRequestValidator;
 
     @Mock
-    private UserUpdateRequestValidator userUpdateRequestValidator;
+    private BodyValidator<UserUpdateRequest> userUpdateRequestValidator;
 
     @Test
     void findAllUsersTest_success() {

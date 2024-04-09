@@ -2,8 +2,8 @@ package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
-import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +20,7 @@ public class InvoiceHandler {
     private static final String ID = "id";
     private static final String COMMENTS = "comments";
     private final InvoiceService invoiceService;
-    private final InvoiceRequestValidator invoiceRequestValidator;
+    private final BodyValidator<InvoiceRequest> invoiceRequestValidator;
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findAllInvoices(ServerRequest serverRequest) {

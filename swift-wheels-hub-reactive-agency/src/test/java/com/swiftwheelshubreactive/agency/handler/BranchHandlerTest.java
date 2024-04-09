@@ -2,9 +2,9 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.BranchService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
-import com.swiftwheelshubreactive.agency.validator.BranchRequestValidator;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +33,7 @@ class BranchHandlerTest {
     private BranchService branchService;
 
     @Mock
-    private BranchRequestValidator branchRequestValidator;
+    private BodyValidator<BranchRequest> branchRequestValidator;
 
     @Test
     void findAllBranchesTest_success() {

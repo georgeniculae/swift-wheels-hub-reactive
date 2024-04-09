@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swiftwheelshubreactive.agency.mapper.CarMapper;
 import com.swiftwheelshubreactive.agency.repository.CarRepository;
-import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -15,6 +14,7 @@ import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import com.swiftwheelshubreactive.model.BodyType;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
@@ -52,7 +52,7 @@ public class CarService {
     private final EmployeeService employeeService;
     private final ExcelProcessorService excelProcessorService;
     private final CarMapper carMapper;
-    private final CarRequestValidator carRequestValidator;
+    private final BodyValidator<CarRequest> carRequestValidator;
     private final ObjectMapper objectMapper;
 
     public Flux<CarResponse> findAllCars() {

@@ -32,7 +32,10 @@ public class RedisConfig {
         redisStandaloneConfig.setPort(port);
         redisStandaloneConfig.setPassword(password);
 
-        return new LettuceConnectionFactory(redisStandaloneConfig);
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfig);
+        lettuceConnectionFactory.setEagerInitialization(true);
+
+        return lettuceConnectionFactory;
     }
 
     @Bean

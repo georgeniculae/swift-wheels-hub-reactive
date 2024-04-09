@@ -18,7 +18,7 @@ spring:
       password: ${MONGODB_PASSWORD}
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubbooking.vegjl42.mongodb.net
   cloud:
-    discovery:
+    loadbalancer:
       enabled: true
     stream:
       bindings:
@@ -41,17 +41,6 @@ spring:
   web:
     resources:
       add-mappings: false
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
-    registryFetchIntervalSeconds: 5
-  instance:
-    preferIpAddress: true
-    leaseRenewalIntervalInSeconds: 10
 
 springdoc:
   swagger-ui:

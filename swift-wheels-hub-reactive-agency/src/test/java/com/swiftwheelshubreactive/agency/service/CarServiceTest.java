@@ -7,7 +7,6 @@ import com.swiftwheelshubreactive.agency.mapper.CarMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.CarRepository;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
-import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -15,6 +14,7 @@ import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
 import com.swiftwheelshubreactive.model.CarStatus;
@@ -67,7 +67,7 @@ class CarServiceTest {
     private FilePart filePart;
 
     @Mock
-    private CarRequestValidator carRequestValidator;
+    private BodyValidator<CarRequest> carRequestValidator;
 
     @Mock
     private ExcelProcessorService excelProcessorService;

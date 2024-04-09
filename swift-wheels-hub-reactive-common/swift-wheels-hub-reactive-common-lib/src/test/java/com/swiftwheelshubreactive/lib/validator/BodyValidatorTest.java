@@ -7,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import reactor.test.StepVerifier;
@@ -17,10 +15,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
-class AbstractBodyValidatorTest {
+class BodyValidatorTest {
 
     @InjectMocks
-    private AuditLogInfoRequestValidatorTest auditLogInfoRequestValidatorTest;
+    private BodyValidator<AuditLogInfoRequest> auditLogInfoRequestValidator;
 
     @Mock
     private Validator validator;
@@ -32,19 +30,10 @@ class AbstractBodyValidatorTest {
 
         doNothing().when(validator).validate(any(Object.class), any(Errors.class));
 
-        auditLogInfoRequestValidatorTest.validateBody(auditLogInfoRequest)
+        auditLogInfoRequestValidator.validateBody(auditLogInfoRequest)
                 .as(StepVerifier::create)
                 .expectNext(auditLogInfoRequest)
                 .verifyComplete();
-    }
-
-    @Component
-    static class AuditLogInfoRequestValidatorTest extends AbstractBodyValidator<AuditLogInfoRequest, Validator> {
-
-        AuditLogInfoRequestValidatorTest(@Autowired Validator validator) {
-            super(AuditLogInfoRequest.class, validator);
-        }
-
     }
 
 }

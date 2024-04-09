@@ -65,12 +65,13 @@ public class AuditAspect {
     }
 
     private Mono<String> extractUsernameHeaderFromRequest(ServerWebExchange exchange) {
-        return Mono.fromSupplier(() -> {
-            ServerHttpRequest request = exchange.getRequest();
+        return Mono.just(exchange.getRequest())
+                .map(this::getUsernameHeader);
+    }
 
-            return Optional.ofNullable(request.getHeaders().getFirst(X_USERNAME))
-                    .orElse(StringUtils.EMPTY);
-        });
+    private String getUsernameHeader(ServerHttpRequest serverHttpRequest) {
+        return Optional.ofNullable(serverHttpRequest.getHeaders().getFirst(X_USERNAME))
+                .orElse(StringUtils.EMPTY);
     }
 
     private Mono<AuditLogInfoRequest> sendAuditLogInfoRequest(ProceedingJoinPoint joinPoint, String username) {

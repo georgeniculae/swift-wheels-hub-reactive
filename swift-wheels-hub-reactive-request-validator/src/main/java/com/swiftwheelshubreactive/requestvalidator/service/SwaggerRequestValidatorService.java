@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class SwaggerRequestValidatorService {
     private final ReactiveRedisOperations<String, SwaggerFile> redisOperations;
 
     public Mono<RequestValidationReport> validateRequest(IncomingRequestDetails request) {
-        return Mono.fromSupplier(() -> getSimpleRequest(request))
+        return Mono.just(getSimpleRequest(request))
                 .flatMap(this::getValidationReport)
                 .map(validationReport -> new RequestValidationReport(getValidationErrorMessage(validationReport)));
     }
@@ -65,7 +66,7 @@ public class SwaggerRequestValidatorService {
                 .get(getMicroserviceIdentifier(simpleRequest))
                 .filter(ObjectUtils::isNotEmpty)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Swagger does not exist"))))
-                .map(swaggerFile -> getValidationReport(simpleRequest, swaggerFile));
+                .flatMap(swaggerFile -> getValidationReport(simpleRequest, swaggerFile));
     }
 
     private String getMicroserviceIdentifier(SimpleRequest simpleRequest) {
@@ -89,13 +90,16 @@ public class SwaggerRequestValidatorService {
                 .withRule(V3_MESSAGE, WhitelistRules.messageContainsSubstring(V3));
     }
 
-    private ValidationReport getValidationReport(SimpleRequest simpleRequest, SwaggerFile swaggerFile) {
-        String swaggerContent = swaggerFile.getSwaggerContent();
-        OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerContent)
-                .withWhitelist(getWhitelist())
-                .build();
+    private Mono<ValidationReport> getValidationReport(SimpleRequest simpleRequest, SwaggerFile swaggerFile) {
+        return Mono.fromCallable(() -> {
+                    String swaggerContent = swaggerFile.getSwaggerContent();
+                    OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerContent)
+                            .withWhitelist(getWhitelist())
+                            .build();
 
-        return validator.validateRequest(simpleRequest);
+                    return validator.validateRequest(simpleRequest);
+                })
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

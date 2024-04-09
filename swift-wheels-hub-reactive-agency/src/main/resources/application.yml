@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:0}
+  port: ${random.int(8189,9090)}
   error:
     include-message: always
     include-binding-errors: never
@@ -20,10 +20,20 @@ spring:
   codec:
     max-in-memory-size: 20MB
   cloud:
-    discovery:
+    loadbalancer:
       enabled: true
-    function:
-      definition: savedUserConsumer;updatedUserConsumer
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /agency/actuator/health
+        healthCheckInterval: 5s
+        hostname: localhost
+        failFast: false
+        config:
+          enabled: false
   mvc:
     throw-exception-if-no-handler-found: true
     web:
@@ -33,17 +43,6 @@ spring:
     compose:
       enabled: false
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
-    registryFetchIntervalSeconds: 5
-  instance:
-    preferIpAddress: true
-    leaseRenewalIntervalInSeconds: 10
-
 springdoc:
   swagger-ui:
     enabled: true
@@ -51,6 +50,29 @@ springdoc:
     operationsSorter: method
   api-docs:
     path: /definition/v3/api-docs
+
+management:
+  server:
+    port: ${random.int(8189,9090)}
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 logging:
   level:

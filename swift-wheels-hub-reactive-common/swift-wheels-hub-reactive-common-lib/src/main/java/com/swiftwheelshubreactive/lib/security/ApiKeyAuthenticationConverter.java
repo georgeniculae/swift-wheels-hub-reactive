@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
@@ -25,18 +24,17 @@ public class ApiKeyAuthenticationConverter implements ServerAuthenticationConver
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
-        return Mono.fromSupplier(() -> {
-            ServerHttpRequest request = exchange.getRequest();
+        return Mono.just(exchange.getRequest())
+                .map(serverHttpRequest -> {
+                    String apiKey = ServerRequestUtil.getApiKeyHeader(serverHttpRequest);
+                    List<String> roles = ServerRequestUtil.getRolesHeader(serverHttpRequest);
 
-            String apiKey = ServerRequestUtil.getApiKeyHeader(request);
-            List<String> roles = ServerRequestUtil.getRolesHeader(request);
+                    if (apiKeySecret.equals(apiKey)) {
+                        return new ApiKeyAuthenticationToken(getRoles(roles), apiKey);
+                    }
 
-            if (apiKeySecret.equals(apiKey)) {
-                return new ApiKeyAuthenticationToken(getRoles(roles), apiKey);
-            }
-
-            throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "No matching API Key");
-        });
+                    throw new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "No matching API Key");
+                });
     }
 
     private List<SimpleGrantedAuthority> getRoles(List<String> roles) {

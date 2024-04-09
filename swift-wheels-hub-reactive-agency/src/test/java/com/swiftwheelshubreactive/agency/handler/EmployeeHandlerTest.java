@@ -2,9 +2,9 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.EmployeeService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
-import com.swiftwheelshubreactive.agency.validator.EmployeeRequestValidator;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +33,7 @@ class EmployeeHandlerTest {
     private EmployeeService employeeService;
 
     @Mock
-    private EmployeeRequestValidator employeeRequestValidator;
+    private BodyValidator<EmployeeRequest> employeeRequestValidator;
 
     @Test
     void findAllEmployees_success() {

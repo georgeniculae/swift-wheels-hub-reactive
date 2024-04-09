@@ -1,11 +1,10 @@
 package com.swiftwheelshubreactive.booking.handler;
 
 import com.swiftwheelshubreactive.booking.service.BookingService;
-import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidator;
-import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,8 +21,8 @@ public class BookingHandler {
     private static final String DATE = "date";
     private static final String USERNAME = "username";
     private final BookingService bookingService;
-    private final BookingRequestValidator bookingRequestValidator;
-    private final BookingClosingDetailsValidator bookingClosingDetailsValidator;
+    private final BodyValidator<BookingRequest> bookingRequestValidator;
+    private final BodyValidator<BookingClosingDetails> bookingClosingDetailsValidator;
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findAllBookings(ServerRequest serverRequest) {

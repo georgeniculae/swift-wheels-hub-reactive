@@ -1,13 +1,14 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.BranchService;
-import com.swiftwheelshubreactive.agency.validator.BranchRequestValidator;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -19,7 +20,7 @@ public class BranchHandler {
     private static final String ID = "id";
     private static final String FILTER = "filter";
     private final BranchService branchService;
-    private final BranchRequestValidator branchRequestValidator;
+    private final BodyValidator<BranchRequest> branchRequestValidator;
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findAllBranches(ServerRequest serverRequest) {

@@ -18,6 +18,22 @@ spring:
   codec:
     max-in-memory-size: 20MB
   cloud:
+    loadbalancer:
+      enabled: true
+    ribbon:
+      enabled: false
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /actuator/health
+        healthCheckInterval: 5s
+        hostname: localhost
+        failFast: false
+        config:
+          enabled: false
     gateway:
       routes:
         - id: agency
@@ -53,16 +69,28 @@ spring:
               args:
                 language: "EN"
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://${EUREKA_USER}:${EUREKA_PASSWORD}@localhost:8861/eureka
-    registryFetchIntervalSeconds: 5
-  instance:
-    preferIpAddress: true
-    leaseRenewalIntervalInSeconds: 10
+management:
+  server:
+    port: ${random.int(8189,9090)}
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 logging:
   level:
@@ -72,4 +100,4 @@ logging:
 
 apikey-secret: ${API_KEY_SECRET}
 
-request-validator-url: lb://swift-wheels-hub-reactive-request-validator/validate
+request-validator-url: http://swift-wheels-hub-reactive-request-validator/validate

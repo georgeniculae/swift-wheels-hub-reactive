@@ -1,13 +1,12 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
-import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
-import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.codec.multipart.FilePart;
@@ -27,8 +26,8 @@ public class CarHandler {
     private static final String FILTER = "filter";
     private static final String FILE = "file";
     private final CarService carService;
-    private final CarUpdateDetailsValidator carUpdateDetailsValidator;
-    private final UpdateCarRequestValidator updateCarRequestValidator;
+    private final BodyValidator<CarUpdateDetails> carUpdateDetailsValidator;
+    private final BodyValidator<UpdateCarRequest> updateCarRequestValidator;
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {

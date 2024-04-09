@@ -204,27 +204,28 @@ public class BookingService {
     }
 
     private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
-        return Mono.fromSupplier(() -> {
-            LocalDate dateFrom = newBookingRequest.dateFrom();
-            LocalDate dateTo = newBookingRequest.dateTo();
-            LocalDate currentDate = LocalDate.now();
+        return Mono.just(newBookingRequest)
+                .map(bookingRequest -> {
+                    LocalDate dateFrom = bookingRequest.dateFrom();
+                    LocalDate dateTo = bookingRequest.dateTo();
+                    LocalDate currentDate = LocalDate.now();
 
-            if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
-                throw new SwiftWheelsHubResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "A date of booking cannot be in the past"
-                );
-            }
+                    if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
+                        throw new SwiftWheelsHubResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "A date of booking cannot be in the past"
+                        );
+                    }
 
-            if (dateFrom.isAfter(dateTo)) {
-                throw new SwiftWheelsHubResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Date from is after date to"
-                );
-            }
+                    if (dateFrom.isAfter(dateTo)) {
+                        throw new SwiftWheelsHubResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Date from is after date to"
+                        );
+                    }
 
-            return newBookingRequest;
-        });
+                    return bookingRequest;
+                });
     }
 
     private Mono<Booking> updatedBookingWithEmployeeDetails(String apiKeySecret, List<String> roles,

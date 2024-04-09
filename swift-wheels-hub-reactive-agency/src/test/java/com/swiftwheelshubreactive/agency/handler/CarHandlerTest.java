@@ -3,12 +3,11 @@ package com.swiftwheelshubreactive.agency.handler;
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
-import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
-import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +20,8 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.mock.web.reactive.function.server.MockServerRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,6 +32,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,10 +48,13 @@ class CarHandlerTest {
     private FilePart filePart;
 
     @Mock
-    private CarUpdateDetailsValidator carUpdateDetailsValidator;
+    private Validator validator;
 
     @Mock
-    private UpdateCarRequestValidator updateCarRequestValidator;
+    private BodyValidator<CarUpdateDetails> carUpdateDetailsValidator;
+
+    @Mock
+    private BodyValidator<UpdateCarRequest> updateCarRequestValidator;
 
     @Test
     void findAllCarsTest_success() {
@@ -295,7 +300,8 @@ class CarHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(carUpdateDetails));
 
-        when(carUpdateDetailsValidator.validateBody(any())).thenReturn(Mono.just(carUpdateDetails));
+        when(carUpdateDetailsValidator.validateBody(any(CarUpdateDetails.class))).thenReturn(Mono.just(carUpdateDetails));
+        doNothing().when(validator).validate(any(Object.class), any(Errors.class));
         when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(carDto));
 
@@ -332,6 +338,7 @@ class CarHandlerTest {
                 .body(Flux.just(updateCarRequest));
 
         when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
+        doNothing().when(validator).validate(any(Object.class), any(Errors.class));
         when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
