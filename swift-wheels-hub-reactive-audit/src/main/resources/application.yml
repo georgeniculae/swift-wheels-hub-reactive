@@ -67,7 +67,7 @@ spring:
 
 management:
   server:
-    port: ${random.int(8189,9090)}
+    port: ${PORT:0}
   endpoint:
     loggers:
       enabled: true
