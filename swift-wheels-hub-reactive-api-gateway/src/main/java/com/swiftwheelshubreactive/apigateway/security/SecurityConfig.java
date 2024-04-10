@@ -35,6 +35,10 @@ public class SecurityConfig {
                                         "/customers/definition/**",
                                         "/customers/register",
                                         "/expense/definition/**",
+                                        "/agency/actuator/**",
+                                        "/bookings/actuator/**",
+                                        "/customers/actuator/**",
+                                        "/expense/actuator/**",
                                         "/actuator/**").permitAll()
                                 .pathMatchers("/agency/**",
                                         "/bookings/**",
