@@ -23,6 +23,9 @@ spring:
     loadbalancer:
       enabled: true
     consul:
+      enabled: true
+      config:
+        enabled: false
       host: localhost
       port: 8500
       discovery:
@@ -32,8 +35,6 @@ spring:
         healthCheckInterval: 5s
         hostname: localhost
         failFast: false
-        config:
-          enabled: false
   mvc:
     throw-exception-if-no-handler-found: true
     web:

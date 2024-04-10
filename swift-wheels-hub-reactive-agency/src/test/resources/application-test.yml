@@ -5,3 +5,11 @@ spring:
       username: admin
       password: password
       uri: mongodb://localhost:27017/swift_wheels_hub_agency
+  cloud:
+    bus:
+      enabled: false
+    discovery:
+      enabled: false
+    consul:
+      config:
+        enabled: false

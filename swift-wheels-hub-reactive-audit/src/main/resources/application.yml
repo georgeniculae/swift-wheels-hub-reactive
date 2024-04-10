@@ -16,11 +16,23 @@ spring:
       password: ${MONGODB_PASSWORD}
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubaudit.hnpvjeh.mongodb.net
   cloud:
-    loadbalancer:
+    consul:
       enabled: true
+      config:
+        enabled: false
+      host: localhost
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /actuator/health
+        healthCheckInterval: 5s
+        hostname: localhost
+        failFast: false
     function:
       definition: bookingAuditLogInfoConsumer;customerAuditLogInfoConsumer;expenseAuditLogInfoConsumer
     stream:
+      defaultBinder: kafka
       bindings:
         bookingAuditLogInfoConsumer-in-0:
           binder: kafka
@@ -52,6 +64,29 @@ spring:
   web:
     resources:
       add-mappings: false
+
+management:
+  server:
+    port: ${random.int(8189,9090)}
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 auditConsumer:
   isMessageAckEnabled: false

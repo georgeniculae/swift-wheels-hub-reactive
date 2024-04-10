@@ -12,8 +12,19 @@ spring:
   webflux:
     base-path: /customers
   cloud:
-    loadbalancer:
+    consul:
       enabled: true
+      config:
+        enabled: false
+      host: localhost
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /customers/actuator/health
+        healthCheckInterval: 5s
+        hostname: localhost
+        failFast: false
     stream:
       bindings:
         auditLogInfoProducer-out-0:
@@ -34,6 +45,29 @@ springdoc:
     operationsSorter: method
   api-docs:
     path: /definition/v3/api-docs
+
+management:
+  server:
+    port: ${random.int(8189,9090)}
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 logging:
   level:

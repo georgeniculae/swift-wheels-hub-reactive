@@ -10,8 +10,19 @@ spring:
   application:
     name: swift-wheels-hub-reactive-email-notification
   cloud:
-    loadbalancer:
+    consul:
       enabled: true
+      config:
+        enabled: false
+      host: localhost
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /actuator/health
+        healthCheckInterval: 5s
+        hostname: localhost
+        failFast: false
     function:
       definition: emailNotificationConsumer
     stream:
@@ -31,6 +42,8 @@ spring:
             allow.auto.create.topics: true
   kafka:
     bootstrap-servers: localhost:9092
+  sendgrid:
+    api-key: ${SENDGRID_API_KEY}
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -38,13 +51,32 @@ spring:
       add-mappings: false
 
 sendgrid:
-  enabled: true
   mail:
     mailFrom: ${SENDGRID_MAIL_FROM}
     name: Swift Wheels Hub
 
-mustache-template:
-  enabled: true
+management:
+  server:
+    port: ${random.int(8189,9090)}
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 invoiceConsumer:
   isMessageAckEnabled: false
