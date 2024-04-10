@@ -33,6 +33,11 @@
                     <groupId>org.mongodb</groupId>
                     <artifactId>mongodb-driver-reactivestreams</artifactId>
                 </exclusion>
+
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-stream</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
