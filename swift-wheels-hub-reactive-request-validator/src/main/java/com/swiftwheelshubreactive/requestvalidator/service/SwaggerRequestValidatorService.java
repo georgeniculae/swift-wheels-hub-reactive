@@ -26,19 +26,13 @@ import java.util.stream.Collectors;
 public class SwaggerRequestValidatorService {
 
     private static final String SWAGGER = "swagger";
-
-    private static final String V3 = "v3";
-
-    private static final String SWAGGER_PATH = "Swagger path";
-
-    private static final String SWAGGER_MESSAGE = "Swagger message";
-
-    private static final String V3_PATH = "v3 path";
-
-    private static final String V3_MESSAGE = "v3 message";
-
     private static final String SEPARATOR_REGEX = "/";
-
+    private static final String ACTUATOR = "actuator";
+    private static final String V3 = "v3";
+    private static final String SWAGGER_PATH = "Swagger path";
+    private static final String SWAGGER_MESSAGE = "Swagger message";
+    private static final String V3_PATH = "v3 path";
+    private static final String V3_MESSAGE = "v3 message";
     private final ReactiveRedisOperations<String, SwaggerFile> redisOperations;
 
     public Mono<RequestValidationReport> validateRequest(IncomingRequestDetails request) {
@@ -87,7 +81,8 @@ public class SwaggerRequestValidatorService {
                 .withRule(SWAGGER_PATH, WhitelistRules.pathContainsSubstring(SWAGGER))
                 .withRule(SWAGGER_MESSAGE, WhitelistRules.messageContainsSubstring(SWAGGER))
                 .withRule(V3_PATH, WhitelistRules.pathContainsSubstring(V3))
-                .withRule(V3_MESSAGE, WhitelistRules.messageContainsSubstring(V3));
+                .withRule(V3_MESSAGE, WhitelistRules.messageContainsSubstring(V3))
+                .withRule(ACTUATOR, WhitelistRules.pathContainsSubstring(ACTUATOR));
     }
 
     private Mono<ValidationReport> getValidationReport(SimpleRequest simpleRequest, SwaggerFile swaggerFile) {
