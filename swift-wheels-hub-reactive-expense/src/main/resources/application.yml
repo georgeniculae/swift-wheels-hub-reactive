@@ -33,6 +33,7 @@ spring:
     function:
       definition: savedBookingConsumer;updatedBookingConsumer;deletedBookingConsumer
     stream:
+      defaultBinder: kafka
       bindings:
         emailNotificationProducer-out-0:
           destination: ${EMAIL_NOTIFICATION_REACTIVE_TOPIC}

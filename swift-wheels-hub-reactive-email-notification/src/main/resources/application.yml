@@ -26,6 +26,7 @@ spring:
     function:
       definition: emailNotificationConsumer
     stream:
+      defaultBinder: kafka
       bindings:
         emailNotificationConsumer-in-0:
           binder: kafka

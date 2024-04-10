@@ -26,6 +26,7 @@ spring:
         hostname: localhost
         failFast: false
     stream:
+      defaultBinder: kafka
       bindings:
         auditLogInfoProducer-out-0:
           destination: ${CUSTOMER_AUDIT_LOG_INFO_REACTIVE_TOPIC}
