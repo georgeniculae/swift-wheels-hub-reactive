@@ -28,9 +28,11 @@ import java.time.Duration;
 @Slf4j
 public class RequestValidatorFilter implements GlobalFilter, Ordered {
 
-    private static final String API_KEY_HEADER = "X-API-KEY";
+    private final static String API_KEY_HEADER = "X-API-KEY";
 
     private static final String DEFINITION = "definition";
+
+    private static final String ACTUATOR = "actuator";
 
     @Value("${apikey-secret}")
     private String apikeySecret;
@@ -43,7 +45,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return Mono.just(exchange.getRequest())
-                .filter(serverHttpRequest -> !serverHttpRequest.getPath().value().contains(DEFINITION))
+                .filter(this::containsRightPath)
                 .flatMap(this::getIncomingRequestDetails)
                 .flatMap(this::getValidationReport)
                 .flatMap(requestValidationReport -> filterRequest(exchange, chain, requestValidationReport))
@@ -54,6 +56,12 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     @Override
     public int getOrder() {
         return 1;
+    }
+
+    private boolean containsRightPath(ServerHttpRequest serverHttpRequest) {
+        String path = serverHttpRequest.getPath().value();
+
+        return !path.contains(DEFINITION) && !path.contains(ACTUATOR);
     }
 
     private Mono<IncomingRequestDetails> getIncomingRequestDetails(ServerHttpRequest request) {
