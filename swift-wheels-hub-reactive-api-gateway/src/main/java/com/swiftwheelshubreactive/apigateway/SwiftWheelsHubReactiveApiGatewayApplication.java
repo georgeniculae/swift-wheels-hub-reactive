@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway;
+package com.swiftwheelshubreactive.apigateway;
 
 import com.swiftwheelshubreactive.lib.annotation.SwiftWheelsHubReactiveMicroservice;
 import org.springframework.boot.SpringApplication;

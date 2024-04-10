@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway.util;
+package com.swiftwheelshubreactive.apigateway.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,6 @@
-package com.swiftwheelshubreactive.gateway.security;
+package com.swiftwheelshubreactive.apigateway.security;
 
-import com.swiftwheelshubreactive.gateway.util.TestUtils;
+import com.swiftwheelshubreactive.apigateway.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

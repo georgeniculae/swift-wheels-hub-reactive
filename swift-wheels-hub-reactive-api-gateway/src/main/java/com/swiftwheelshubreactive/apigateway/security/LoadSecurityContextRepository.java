@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway.security;
+package com.swiftwheelshubreactive.apigateway.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

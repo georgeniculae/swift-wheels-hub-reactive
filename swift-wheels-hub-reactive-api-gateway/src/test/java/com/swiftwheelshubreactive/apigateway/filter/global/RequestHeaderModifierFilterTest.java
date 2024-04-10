@@ -1,7 +1,7 @@
-package com.swiftwheelshubreactive.gateway.filter.global;
+package com.swiftwheelshubreactive.apigateway.filter.global;
 
-import com.swiftwheelshubreactive.gateway.util.TestUtils;
-import com.swiftwheelshubreactive.gateway.security.JwtAuthenticationTokenConverter;
+import com.swiftwheelshubreactive.apigateway.util.TestUtils;
+import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

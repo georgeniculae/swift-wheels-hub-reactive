@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway.filter.global;
+package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.extern.slf4j.Slf4j;

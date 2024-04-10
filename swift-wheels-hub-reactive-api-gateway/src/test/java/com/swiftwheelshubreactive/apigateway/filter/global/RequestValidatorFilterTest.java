@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway.filter.global;
+package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import org.junit.jupiter.api.Test;

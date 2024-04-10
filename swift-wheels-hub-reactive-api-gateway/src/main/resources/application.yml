@@ -23,6 +23,8 @@ spring:
     ribbon:
       enabled: false
     consul:
+      config:
+        enabled: false
       host: localhost
       port: 8500
       discovery:
@@ -32,9 +34,10 @@ spring:
         healthCheckInterval: 5s
         hostname: localhost
         failFast: false
-        config:
-          enabled: false
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: agency
           uri: lb://swift-wheels-hub-reactive-agency

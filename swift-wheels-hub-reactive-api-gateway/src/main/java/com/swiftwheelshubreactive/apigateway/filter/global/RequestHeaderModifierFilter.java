@@ -1,8 +1,8 @@
-package com.swiftwheelshubreactive.gateway.filter.global;
+package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
-import com.swiftwheelshubreactive.gateway.security.JwtAuthenticationTokenConverter;
+import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;

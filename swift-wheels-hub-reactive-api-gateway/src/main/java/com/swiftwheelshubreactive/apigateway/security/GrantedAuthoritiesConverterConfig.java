@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway.security;
+package com.swiftwheelshubreactive.apigateway.security;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.gateway.filter.factory;
+package com.swiftwheelshubreactive.apigateway.filter.factory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
