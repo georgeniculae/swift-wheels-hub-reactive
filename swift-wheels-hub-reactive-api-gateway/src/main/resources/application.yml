@@ -1,5 +1,5 @@
 server:
-  port: ${random.int(8189,9090)}
+  port: ${PORT:8188}
   error:
     include-message: always
     include-binding-errors: never
@@ -18,20 +18,17 @@ spring:
   codec:
     max-in-memory-size: 20MB
   cloud:
-    loadbalancer:
-      enabled: true
-    ribbon:
-      enabled: false
     consul:
       config:
         enabled: false
       host: localhost
       port: 8500
       discovery:
+        prefer-ip-address: true
         instanceId: ${spring.application.name}-id
         serviceName: ${spring.application.name}
         healthCheckPath: /actuator/health
-        healthCheckInterval: 5s
+        healthCheckInterval: 10s
         hostname: localhost
         failFast: false
     gateway:

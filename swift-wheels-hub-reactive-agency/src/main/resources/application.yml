@@ -20,18 +20,16 @@ spring:
   codec:
     max-in-memory-size: 20MB
   cloud:
-    loadbalancer:
-      enabled: true
     consul:
-      enabled: true
       config:
         enabled: false
       host: localhost
       port: 8500
       discovery:
+        prefer-ip-address: true
         instanceId: ${spring.application.name}-id
         serviceName: ${spring.application.name}
-        healthCheckPath: /agency/actuator/health
+        healthCheckPath: /actuator/health
         healthCheckInterval: 5s
         hostname: localhost
         failFast: false
