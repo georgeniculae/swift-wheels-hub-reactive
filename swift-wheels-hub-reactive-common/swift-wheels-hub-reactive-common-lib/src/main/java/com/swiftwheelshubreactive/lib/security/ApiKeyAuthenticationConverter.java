@@ -19,7 +19,7 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class ApiKeyAuthenticationConverter implements ServerAuthenticationConverter {
 
-    @Value(("${apikey.secret}"))
+    @Value("${apikey.secret}")
     private String apiKeySecret;
 
     @Override
