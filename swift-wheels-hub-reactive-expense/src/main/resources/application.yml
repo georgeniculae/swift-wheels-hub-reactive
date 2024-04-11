@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:0}
+  port: ${random.int(8189,9090)}
   error:
     include-message: always
     include-binding-errors: never
@@ -84,7 +84,7 @@ springdoc:
 
 management:
   server:
-    port: ${PORT:0}
+    port: ${server.port}
   endpoint:
     loggers:
       enabled: true
@@ -122,8 +122,8 @@ mongo-operations:
 
 webClient:
   url:
-    swift-wheels-hub-bookings: lb://swift-wheels-hub-reactive-booking/bookings
-    swift-wheels-hub-agency-cars: lb://swift-wheels-hub-reactive-agency/agency/cars
+    swift-wheels-hub-bookings: http://swift-wheels-hub-reactive-booking/bookings
+    swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
 
 bookingConsumer:
   isMessageAckEnabled: false

@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:0}
+  port: ${random.int(8189,9090)}
   error:
     include-message: always
     include-binding-errors: never
@@ -54,7 +54,7 @@ springdoc:
 
 management:
   server:
-    port: ${PORT:0}
+    port: ${server.port}
   endpoint:
     loggers:
       enabled: true
