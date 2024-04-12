@@ -29,7 +29,7 @@ public class LoadSecurityContextRepository extends WebSessionServerSecurityConte
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
         return Mono.justOrEmpty(getApiKeyHeader(exchange))
                 .filter(apiKey -> apiKeySecret.equals(apiKey))
-                .map(apiKey -> new ApiKeyAuthenticationToken(getRoles(ServerRequestUtil.getRolesHeader(exchange.getRequest())), apiKey))
+                .map(apiKey -> getApiKeyAuthenticationToken(exchange, apiKey))
                 .flatMap(reactiveAuthenticationManager::authenticate)
                 .map(SecurityContextImpl::new);
     }
@@ -38,6 +38,12 @@ public class LoadSecurityContextRepository extends WebSessionServerSecurityConte
         return exchange.getRequest()
                 .getHeaders()
                 .getFirst("X-API-KY");
+    }
+
+    private ApiKeyAuthenticationToken getApiKeyAuthenticationToken(ServerWebExchange exchange, String apiKey) {
+        List<SimpleGrantedAuthority> roles = getRoles(ServerRequestUtil.getRolesHeader(exchange.getRequest()));
+
+        return new ApiKeyAuthenticationToken(roles, apiKey);
     }
 
     private List<SimpleGrantedAuthority> getRoles(List<String> roles) {
