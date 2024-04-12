@@ -27,7 +27,7 @@ spring:
         prefer-ip-address: true
         instanceId: ${spring.application.name}-id
         serviceName: ${spring.application.name}
-        healthCheckPath: /expense/actuator/health
+        healthCheckPath: /actuator/health
         healthCheckInterval: 10s
         hostname: localhost
         failFast: false
