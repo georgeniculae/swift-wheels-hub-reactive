@@ -12,9 +12,9 @@ import java.util.Map;
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
 
-    public static final String UNEXPECTED_ERROR = "Unexpected error";
-    public static final String STATUS = "status";
-    public static final String MESSAGE = "message";
+    private static final String UNEXPECTED_ERROR = "Unexpected error";
+    private static final String STATUS = "status";
+    private static final String MESSAGE = "message";
 
     @Override
     public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
