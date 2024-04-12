@@ -21,8 +21,11 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class LoadSecurityContextRepository extends WebSessionServerSecurityContextRepository {
 
+    private static final String X_API_KEY = "X-API-KEY";
+
     @Value("${apikey.secret}")
     private String apiKeySecret;
+
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
     @Override
@@ -37,7 +40,7 @@ public class LoadSecurityContextRepository extends WebSessionServerSecurityConte
     private String getApiKeyHeader(ServerWebExchange exchange) {
         return exchange.getRequest()
                 .getHeaders()
-                .getFirst("X-API-KY");
+                .getFirst(X_API_KEY);
     }
 
     private ApiKeyAuthenticationToken getApiKeyAuthenticationToken(ServerWebExchange exchange, String apiKey) {
