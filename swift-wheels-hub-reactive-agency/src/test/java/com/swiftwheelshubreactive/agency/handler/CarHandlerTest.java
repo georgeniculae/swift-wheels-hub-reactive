@@ -48,9 +48,6 @@ class CarHandlerTest {
     private FilePart filePart;
 
     @Mock
-    private Validator validator;
-
-    @Mock
     private BodyValidator<CarUpdateDetails> carUpdateDetailsValidator;
 
     @Mock
@@ -301,7 +298,6 @@ class CarHandlerTest {
                 .body(Mono.just(carUpdateDetails));
 
         when(carUpdateDetailsValidator.validateBody(any(CarUpdateDetails.class))).thenReturn(Mono.just(carUpdateDetails));
-        doNothing().when(validator).validate(any(Object.class), any(Errors.class));
         when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(carDto));
 
@@ -338,7 +334,6 @@ class CarHandlerTest {
                 .body(Flux.just(updateCarRequest));
 
         when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
-        doNothing().when(validator).validate(any(Object.class), any(Errors.class));
         when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
