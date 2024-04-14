@@ -20,8 +20,6 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.mock.web.reactive.function.server.MockServerRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,10 +27,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -333,7 +328,7 @@ class CarHandlerTest {
                 .method(HttpMethod.PUT)
                 .body(Flux.just(updateCarRequest));
 
-        when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
+        when(updateCarRequestValidator.validateBody(any(UpdateCarRequest.class))).thenReturn(Mono.just(updateCarRequest));
         when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(carResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
