@@ -292,7 +292,7 @@ class CarHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(carUpdateDetails));
 
-        when(carUpdateDetailsValidator.validateBody(any())).thenReturn(Mono.just(carUpdateDetails));
+        when(carUpdateDetailsValidator.validateBody(carUpdateDetails)).thenReturn(Mono.just(carUpdateDetails));
         when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(carDto));
 
