@@ -1,6 +1,5 @@
 package com.swiftwheelshubreactive.dto;
 
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 
@@ -9,7 +8,6 @@ import java.math.BigDecimal;
 @Builder
 public record ExcelCarRequest(
         @NonNull
-        @Size(min = 2)
         String make,
 
         @NonNull
