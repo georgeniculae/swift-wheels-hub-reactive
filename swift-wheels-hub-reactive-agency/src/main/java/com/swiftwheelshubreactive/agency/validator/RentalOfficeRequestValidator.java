@@ -17,11 +17,11 @@ public class RentalOfficeRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<RentalOfficeRequest> validateBody(RentalOfficeRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<RentalOfficeRequest> validateBody(RentalOfficeRequest rentalOfficeRequest) {
+        return Mono.just(getErrors(rentalOfficeRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return rentalOfficeRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(
@@ -31,9 +31,9 @@ public class RentalOfficeRequestValidator {
                 });
     }
 
-    private Errors getErrors(RentalOfficeRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(RentalOfficeRequest rentalOfficeRequest) {
+        Errors errors = new BeanPropertyBindingResult(rentalOfficeRequest, rentalOfficeRequest.getClass().getName());
+        validator.validate(rentalOfficeRequest, errors);
 
         return errors;
     }

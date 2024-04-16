@@ -17,11 +17,11 @@ public class UserUpdateRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<UserUpdateRequest> validateBody(UserUpdateRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<UserUpdateRequest> validateBody(UserUpdateRequest userUpdateRequest) {
+        return Mono.just(getErrors(userUpdateRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return userUpdateRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(

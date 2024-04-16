@@ -17,11 +17,11 @@ public class BranchRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<BranchRequest> validateBody(BranchRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<BranchRequest> validateBody(BranchRequest branchRequest) {
+        return Mono.just(getErrors(branchRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return branchRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(
@@ -31,9 +31,9 @@ public class BranchRequestValidator {
                 });
     }
 
-    private Errors getErrors(BranchRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(BranchRequest branchRequest) {
+        Errors errors = new BeanPropertyBindingResult(branchRequest, branchRequest.getClass().getName());
+        validator.validate(branchRequest, errors);
 
         return errors;
     }

@@ -17,11 +17,11 @@ public class InvoiceRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<InvoiceRequest> validateBody(InvoiceRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<InvoiceRequest> validateBody(InvoiceRequest invoiceRequest) {
+        return Mono.just(getErrors(invoiceRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return invoiceRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(
@@ -31,9 +31,9 @@ public class InvoiceRequestValidator {
                 });
     }
 
-    private Errors getErrors(InvoiceRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(InvoiceRequest invoiceRequest) {
+        Errors errors = new BeanPropertyBindingResult(invoiceRequest, invoiceRequest.getClass().getName());
+        validator.validate(invoiceRequest, errors);
 
         return errors;
     }

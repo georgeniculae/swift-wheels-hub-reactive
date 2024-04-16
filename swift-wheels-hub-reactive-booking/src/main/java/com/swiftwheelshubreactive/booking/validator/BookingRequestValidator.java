@@ -17,11 +17,11 @@ public class BookingRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<BookingRequest> validateBody(BookingRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<BookingRequest> validateBody(BookingRequest bookingRequest) {
+        return Mono.just(getErrors(bookingRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return bookingRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(
@@ -31,9 +31,9 @@ public class BookingRequestValidator {
                 });
     }
 
-    private Errors getErrors(BookingRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(BookingRequest bookingRequest) {
+        Errors errors = new BeanPropertyBindingResult(bookingRequest, bookingRequest.getClass().getName());
+        validator.validate(bookingRequest, errors);
 
         return errors;
     }

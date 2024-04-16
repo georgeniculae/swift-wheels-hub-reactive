@@ -17,11 +17,11 @@ public class UpdateCarRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<UpdateCarRequest> validateBody(UpdateCarRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<UpdateCarRequest> validateBody(UpdateCarRequest updateCarRequest) {
+        return Mono.just(getErrors(updateCarRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return updateCarRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(
@@ -31,9 +31,9 @@ public class UpdateCarRequestValidator {
                 });
     }
 
-    private Errors getErrors(UpdateCarRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(UpdateCarRequest updateCarRequest) {
+        Errors errors = new BeanPropertyBindingResult(updateCarRequest, updateCarRequest.getClass().getName());
+        validator.validate(updateCarRequest, errors);
 
         return errors;
     }

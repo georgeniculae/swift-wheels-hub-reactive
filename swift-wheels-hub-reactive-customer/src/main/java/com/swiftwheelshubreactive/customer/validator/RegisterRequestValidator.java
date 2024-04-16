@@ -17,11 +17,11 @@ public class RegisterRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<RegisterRequest> validateBody(RegisterRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<RegisterRequest> validateBody(RegisterRequest registerRequest) {
+        return Mono.just(getErrors(registerRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return registerRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(

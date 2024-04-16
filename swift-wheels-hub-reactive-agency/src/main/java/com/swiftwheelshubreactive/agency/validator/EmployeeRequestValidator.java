@@ -17,11 +17,11 @@ public class EmployeeRequestValidator {
 
     private final Validator validator;
 
-    public final Mono<EmployeeRequest> validateBody(EmployeeRequest body) {
-        return Mono.just(getErrors(body))
+    public final Mono<EmployeeRequest> validateBody(EmployeeRequest employeeRequest) {
+        return Mono.just(getErrors(employeeRequest))
                 .map(errors -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        return employeeRequest;
                     }
 
                     throw new SwiftWheelsHubResponseStatusException(
@@ -31,9 +31,9 @@ public class EmployeeRequestValidator {
                 });
     }
 
-    private Errors getErrors(EmployeeRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(EmployeeRequest employeeRequest) {
+        Errors errors = new BeanPropertyBindingResult(employeeRequest, employeeRequest.getClass().getName());
+        validator.validate(employeeRequest, errors);
 
         return errors;
     }
