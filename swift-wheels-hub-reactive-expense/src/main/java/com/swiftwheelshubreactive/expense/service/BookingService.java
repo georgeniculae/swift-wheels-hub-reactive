@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,11 +36,7 @@ public class BookingService {
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .onErrorMap(e -> {
-                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
-
-                    return e;
-                });
+                .onErrorMap(this::getSwiftWheelsHubException);
     }
 
     public Mono<BookingResponse> findBookingById(String apiKey, List<String> roles, String bookingId) {
@@ -49,11 +46,13 @@ public class BookingService {
                 .header(X_ROLES, roles.toArray(String[]::new))
                 .retrieve()
                 .bodyToMono(BookingResponse.class)
-                .onErrorMap(e -> {
-                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
+                .onErrorMap(this::getSwiftWheelsHubException);
+    }
 
-                    return e;
-                });
+    private SwiftWheelsHubException getSwiftWheelsHubException(Throwable e) {
+        log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
+
+        return new SwiftWheelsHubException(e);
     }
 
 }
