@@ -2,10 +2,11 @@ package com.swiftwheelshubreactive.booking.handler;
 
 import com.swiftwheelshubreactive.booking.service.BookingService;
 import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidator;
+import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,10 +36,10 @@ class BookingHandlerTest {
     private BookingService bookingService;
 
     @Mock
-    private BodyValidator<BookingRequest> bookingRequestValidator;
+    private BookingRequestValidator bookingRequestValidator;
 
     @Mock
-    private BodyValidator<BookingClosingDetails> bookingClosingDetailsValidator;
+    private BookingClosingDetailsValidator bookingClosingDetailsValidator;
 
     @Test
     void findAllBookingsTest_success() {

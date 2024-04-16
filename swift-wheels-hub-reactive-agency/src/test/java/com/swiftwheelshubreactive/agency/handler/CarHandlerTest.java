@@ -3,11 +3,12 @@ package com.swiftwheelshubreactive.agency.handler;
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
+import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,10 +46,10 @@ class CarHandlerTest {
     private FilePart filePart;
 
     @Mock
-    private BodyValidator<CarUpdateDetails> carUpdateDetailsValidator;
+    private CarUpdateDetailsValidator carUpdateDetailsValidator;
 
     @Mock
-    private BodyValidator<UpdateCarRequest> updateCarRequestValidator;
+    private UpdateCarRequestValidator updateCarRequestValidator;
 
     @Test
     void findAllCarsTest_success() {

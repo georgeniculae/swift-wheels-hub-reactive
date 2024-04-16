@@ -1,9 +1,9 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.EmployeeService;
+import com.swiftwheelshubreactive.agency.validator.EmployeeRequestValidator;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +19,7 @@ public class EmployeeHandler {
     private static final String ID = "id";
     private static final String FILTER = "filter";
     private final EmployeeService employeeService;
-    private final BodyValidator<EmployeeRequest> employeeRequestValidator;
+    private final EmployeeRequestValidator employeeRequestValidator;
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findAllEmployees(ServerRequest serverRequest) {

@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.util.TestUtils;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
+import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +32,7 @@ class InvoiceHandlerTest {
     private InvoiceService invoiceService;
 
     @Mock
-    private BodyValidator<InvoiceRequest> invoiceRequestValidator;
+    private InvoiceRequestValidator invoiceRequestValidator;
 
     @Test
     void findAllInvoicesTest_success() {

@@ -1,10 +1,11 @@
 package com.swiftwheelshubreactive.customer.handler;
 
 import com.swiftwheelshubreactive.customer.service.CustomerService;
+import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
+import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,8 @@ public class CustomerHandler {
     private static final String USERNAME = "username";
     private static final String ID = "id";
     private final CustomerService customerService;
-    private final BodyValidator<RegisterRequest> registerRequestValidator;
-    private final BodyValidator<UserUpdateRequest> userUpdateRequestValidator;
+    private final RegisterRequestValidator registerRequestValidator;
+    private final UserUpdateRequestValidator userUpdateRequestValidator;
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findAllUsers(ServerRequest serverRequest) {

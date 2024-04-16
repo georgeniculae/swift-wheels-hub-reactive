@@ -2,9 +2,9 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.RentalOfficeService;
 import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.validator.RentalOfficeRequestValidator;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +33,7 @@ class RentalOfficeHandlerTest {
     private RentalOfficeService rentalOfficeService;
 
     @Mock
-    private BodyValidator<RentalOfficeRequest> rentalOfficeRequestValidator;
+    private RentalOfficeRequestValidator rentalOfficeRequestValidator;
 
     @Test
     void findAllRentalOfficesTest_success() {

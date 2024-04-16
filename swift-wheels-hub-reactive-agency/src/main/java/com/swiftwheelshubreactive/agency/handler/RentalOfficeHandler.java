@@ -1,9 +1,9 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.RentalOfficeService;
+import com.swiftwheelshubreactive.agency.validator.RentalOfficeRequestValidator;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
-import com.swiftwheelshubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +19,7 @@ public class RentalOfficeHandler {
     private static final String ID = "id";
     private static final String FILTER = "filter";
     private final RentalOfficeService rentalOfficeService;
-    private final BodyValidator<RentalOfficeRequest> rentalOfficeRequestValidator;
+    private final RentalOfficeRequestValidator rentalOfficeRequestValidator;
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findAllRentalOffices(ServerRequest serverRequest) {
