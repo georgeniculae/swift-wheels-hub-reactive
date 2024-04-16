@@ -31,9 +31,9 @@ public class RegisterRequestValidator {
                 });
     }
 
-    private Errors getErrors(RegisterRequest body) {
-        Errors errors = new BeanPropertyBindingResult(body, body.getClass().getName());
-        validator.validate(body, errors);
+    private Errors getErrors(RegisterRequest registerRequest) {
+        Errors errors = new BeanPropertyBindingResult(registerRequest, registerRequest.getClass().getName());
+        validator.validate(registerRequest, errors);
 
         return errors;
     }
