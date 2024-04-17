@@ -17,6 +17,9 @@ spring:
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubaudit.hnpvjeh.mongodb.net
   cloud:
     loadbalancer:
+      enabled: true
+      ribbon:
+        enabled: false
       cache:
         enabled: false
     consul:
@@ -26,6 +29,7 @@ spring:
       host: localhost
       port: 8500
       discovery:
+        enabled: true
         prefer-ip-address: true
         instanceId: ${spring.application.name}-id
         serviceName: ${spring.application.name}
