@@ -18,6 +18,9 @@ spring:
   codec:
     max-in-memory-size: 20MB
   cloud:
+    loadbalancer:
+      cache:
+        enabled: false
     consul:
       config:
         enabled: false

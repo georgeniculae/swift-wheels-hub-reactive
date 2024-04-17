@@ -12,6 +12,9 @@ spring:
   webflux:
     base-path: /customers
   cloud:
+    loadbalancer:
+      cache:
+        enabled: false
     consul:
       config:
         enabled: false

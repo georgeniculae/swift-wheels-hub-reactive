@@ -10,6 +10,9 @@ spring:
   application:
     name: swift-wheels-hub-reactive-request-validator
   cloud:
+    loadbalancer:
+      cache:
+        enabled: false
     consul:
       config:
         enabled: false

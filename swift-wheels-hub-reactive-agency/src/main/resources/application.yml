@@ -21,7 +21,7 @@ spring:
     max-in-memory-size: 20MB
   cloud:
     loadbalancer:
-      ribbon:
+      cache:
         enabled: false
     consul:
       config:

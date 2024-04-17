@@ -18,6 +18,9 @@ spring:
       password: ${MONGODB_PASSWORD}
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubexpense.qfupkzh.mongodb.net
   cloud:
+    loadbalancer:
+      cache:
+        enabled: false
     consul:
       config:
         enabled: false
