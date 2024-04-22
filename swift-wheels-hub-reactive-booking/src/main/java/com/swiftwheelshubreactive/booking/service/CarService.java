@@ -12,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -39,11 +41,8 @@ public class CarService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CarResponse.class)
-                .onErrorMap(e -> {
-                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
-
-                    return new SwiftWheelsHubException(e);
-                });
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .onErrorMap(this::getSwiftWheelsHubException);
     }
 
     public Mono<Void> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
@@ -56,15 +55,12 @@ public class CarService {
                 .bodyValue(carState)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .onErrorMap(e -> {
-                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
-
-                    return e;
-                });
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .onErrorMap(this::getSwiftWheelsHubException);
     }
 
     public Mono<Void> updateCarWhenBookingIsFinished(String apiKey, List<String> roles,
-                                                            CarUpdateDetails carUpdateDetails) {
+                                                     CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
                 .header(X_API_KEY, apiKey)
@@ -74,11 +70,8 @@ public class CarService {
                 .bodyValue(carUpdateDetails)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .onErrorMap(e -> {
-                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
-
-                    return e;
-                });
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .onErrorMap(this::getSwiftWheelsHubException);
     }
 
     public Mono<Void> updateCarsStatus(String apiKey, List<String> roles,
@@ -92,12 +85,15 @@ public class CarService {
                 .bodyValue(updateCarRequests)
                 .retrieve()
                 .bodyToFlux(CarResponse.class)
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .then()
-                .onErrorMap(e -> {
-                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
+                .onErrorMap(this::getSwiftWheelsHubException);
+    }
 
-                    return e;
-                });
+    private SwiftWheelsHubException getSwiftWheelsHubException(Throwable e) {
+        log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
+
+        return new SwiftWheelsHubException(e);
     }
 
 }
