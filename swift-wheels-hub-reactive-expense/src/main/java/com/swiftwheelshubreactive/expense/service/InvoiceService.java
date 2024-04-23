@@ -5,7 +5,9 @@ import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -68,7 +70,7 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while finding invoices by customer id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -78,25 +80,18 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while finding invoice by id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
     public Flux<InvoiceResponse> findInvoicesByComments(String comments) {
         return invoiceRepository.findByComments(comments)
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Invoice with comment: " + comments + " does not exist"
-                                )
-                        )
-                )
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Invoice with comment: " + comments + " does not exist")))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while finding invoices by comments: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -156,7 +151,7 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -198,14 +193,7 @@ public class InvoiceService {
 
     private Mono<Invoice> findEntityById(String id) {
         return invoiceRepository.findById(MongoUtil.getObjectId(id))
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Invoice with id " + id + " does not exist"
-                                )
-                        )
-                );
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Invoice with id " + id + " does not exist")));
     }
 
     private Flux<Invoice> findActiveInvoices() {

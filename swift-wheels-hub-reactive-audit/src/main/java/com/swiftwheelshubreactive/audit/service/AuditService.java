@@ -26,7 +26,8 @@ public class AuditService {
     private final ExpenseAuditLogInfoMapper expenseAuditLogInfoMapper;
 
     public Mono<AuditLogInfoRequest> saveBookingAuditLogInfo(AuditLogInfoRequest auditLogInfoRequest) {
-        return bookingAuditLogInfoRepository.save(bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
+        return Mono.just(bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
+                .flatMap(bookingAuditLogInfoRepository::save)
                 .map(bookingAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving booking audit log: {}", e.getMessage());
@@ -36,7 +37,8 @@ public class AuditService {
     }
 
     public Mono<AuditLogInfoRequest> saveCustomerAuditLogInfo(AuditLogInfoRequest auditLogInfoRequest) {
-        return customerAuditLogInfoRepository.save(customerAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
+        return Mono.just(customerAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
+                .flatMap(customerAuditLogInfoRepository::save)
                 .map(customerAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving customer audit log: {}", e.getMessage());
@@ -46,7 +48,8 @@ public class AuditService {
     }
 
     public Mono<AuditLogInfoRequest> saveExpenseAuditLogInfo(AuditLogInfoRequest auditLogInfoRequest) {
-        return expenseAuditLogInfoRepository.save(expenseAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
+        return Mono.just(expenseAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest))
+                .flatMap(expenseAuditLogInfoRepository::save)
                 .map(expenseAuditLogInfoMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving expense audit log: {}", e.getMessage());

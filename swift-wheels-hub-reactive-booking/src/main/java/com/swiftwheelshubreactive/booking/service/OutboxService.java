@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.booking.model.Outbox;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.OutboxRepository;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.model.Booking;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class OutboxService {
                 .onErrorMap(e -> {
                     log.error("Error while processing/sending booking: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 

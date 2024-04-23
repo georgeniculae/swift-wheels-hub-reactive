@@ -5,13 +5,13 @@ import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Branch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,7 +42,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while finding branch by id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -52,16 +52,9 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while finding branch by filter: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 })
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Branch with filter: " + filter + " does not exist"
-                                )
-                        )
-                );
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Branch with filter: " + filter + " does not exist")));
     }
 
     public Mono<Long> countBranches() {
@@ -85,7 +78,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while saving branch: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -106,7 +99,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while updating branch: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -116,19 +109,13 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting branch: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
     public Mono<Branch> findEntityById(String id) {
         return branchRepository.findById(MongoUtil.getObjectId(id))
-                .switchIfEmpty(Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Branch with id " + id + " does not exist"
-                                )
-                        )
-                );
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Branch with id " + id + " does not exist")));
     }
 
 }

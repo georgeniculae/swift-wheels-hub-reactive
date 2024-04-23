@@ -15,6 +15,7 @@ import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.model.Branch;
 import com.swiftwheelshubreactive.model.Car;
 import com.swiftwheelshubreactive.model.CarStatus;
@@ -120,6 +121,15 @@ class CarServiceTest {
 
         StepVerifier.create(carService.findCarById("64f361caf291ae086e179547"))
                 .expectError()
+                .verify();
+    }
+
+    @Test
+    void findCarByIdTest_notFound() {
+        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(carService.findCarById("64f361caf291ae086e179547"))
+                .expectError(SwiftWheelsHubNotFoundException.class)
                 .verify();
     }
 

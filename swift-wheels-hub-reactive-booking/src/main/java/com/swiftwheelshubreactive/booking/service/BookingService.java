@@ -10,7 +10,9 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
@@ -66,25 +68,18 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while finding booking by id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
     public Flux<BookingResponse> findBookingsByDateOfBooking(String dateOfBooking) {
         return reactiveMongoTemplate.find(getQuery(dateOfBooking), Booking.class)
                 .map(bookingMapper::mapEntityToDto)
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Booking from date: " + dateOfBooking + " does not exist"
-                                )
-                        )
-                )
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Booking from date: " + dateOfBooking + " does not exist")))
                 .onErrorMap(e -> {
                     log.error("Error while finding booking by date of booking: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -94,7 +89,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while finding bookings by logged in customer: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -148,7 +143,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -164,7 +159,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -177,7 +172,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -193,7 +188,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -301,14 +296,7 @@ public class BookingService {
 
     private Mono<Booking> findEntityById(String id) {
         return bookingRepository.findById(MongoUtil.getObjectId(id))
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Booking with id " + id + " does not exist"
-                                )
-                        )
-                );
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Booking with id " + id + " does not exist")));
     }
 
     private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse) {

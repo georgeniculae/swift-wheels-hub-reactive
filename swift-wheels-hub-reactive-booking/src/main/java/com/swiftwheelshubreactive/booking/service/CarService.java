@@ -4,7 +4,8 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,29 +28,22 @@ public class CarService {
 
     private static final String SEPARATOR = "/";
 
-    private static final String X_API_KEY = "X-API-KEY";
-
-    private static final String X_ROLES = "X-ROLES";
-
     private final WebClient webClient;
 
     public Mono<CarResponse> findAvailableCarById(String apiKey, List<String> roles, String carId) {
         return webClient.get()
                 .uri(url + SEPARATOR + carId + SEPARATOR + "availability")
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CarResponse.class)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorMap(this::getSwiftWheelsHubException);
     }
 
     public Mono<Void> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carState)
@@ -63,8 +57,7 @@ public class CarService {
                                                      CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
@@ -78,8 +71,7 @@ public class CarService {
                                        List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + "update-statuses")
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(updateCarRequests)
@@ -90,10 +82,10 @@ public class CarService {
                 .onErrorMap(this::getSwiftWheelsHubException);
     }
 
-    private SwiftWheelsHubException getSwiftWheelsHubException(Throwable e) {
+    private RuntimeException getSwiftWheelsHubException(Throwable e) {
         log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
-        return new SwiftWheelsHubException(e);
+        return ExceptionUtil.getException(e);
     }
 
 }

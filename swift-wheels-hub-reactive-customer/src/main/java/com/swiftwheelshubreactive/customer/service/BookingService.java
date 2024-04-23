@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.customer.service;
 
+import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,6 @@ public class BookingService {
 
     private static final String SEPARATOR = "/";
 
-    private static final String X_API_KEY = "X-API-KEY";
-
-    private static final String X_ROLES = "X-ROLES";
-
     @Value("${booking-service.url}")
     private String url;
 
@@ -31,8 +28,7 @@ public class BookingService {
     public Mono<Void> deleteBookingsByUsername(String apiKey, List<String> roles, String username) {
         return webClient.delete()
                 .uri(url + SEPARATOR + username)
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(Void.class)

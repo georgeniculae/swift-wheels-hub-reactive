@@ -1,8 +1,9 @@
 package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.expense.mapper.RevenueMapper;
 import com.swiftwheelshubreactive.expense.model.Outbox;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -14,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -52,19 +52,12 @@ public class RevenueService {
 
     public Flux<RevenueResponse> findRevenuesByDate(String dateOfRevenue) {
         return findByDateOfRevenue(dateOfRevenue)
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Revenue from date: " + dateOfRevenue + " does not exist"
-                                )
-                        )
-                )
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Revenue from date: " + dateOfRevenue + " does not exist")))
                 .map(revenueMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while finding revenues by date: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -87,7 +80,7 @@ public class RevenueService {
                 .onErrorMap(e -> {
                     log.error("Error during transactional saving of outbox and revenue: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 

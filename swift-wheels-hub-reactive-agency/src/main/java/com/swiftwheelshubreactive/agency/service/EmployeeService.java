@@ -4,13 +4,13 @@ import com.swiftwheelshubreactive.agency.mapper.EmployeeMapper;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,7 +40,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding employee by id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
 
     }
@@ -57,7 +57,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while saving employee: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -80,7 +80,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while updating employee: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -90,26 +90,19 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding all employees ny branch id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return new SwiftWheelsHubException(e);
                 });
     }
 
     public Flux<EmployeeResponse> findEmployeeByFilterInsensitiveCase(String filter) {
         return employeeRepository.findAllByFilterInsensitiveCase(filter)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Employee with filter: " + filter + " does not exist")))
                 .map(employeeMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while finding employee by filter: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
-                })
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Employee with filter: " + filter + " does not exist"
-                                )
-                        )
-                );
+                    return ExceptionUtil.getException(e);
+                });
     }
 
     public Mono<Long> countEmployees() {
@@ -132,14 +125,7 @@ public class EmployeeService {
 
     public Mono<Employee> findEntityById(String id) {
         return employeeRepository.findById(MongoUtil.getObjectId(id))
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Employee with id " + id + " does not exist"
-                                )
-                        )
-                );
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Employee with id " + id + " does not exist")));
     }
 
 }

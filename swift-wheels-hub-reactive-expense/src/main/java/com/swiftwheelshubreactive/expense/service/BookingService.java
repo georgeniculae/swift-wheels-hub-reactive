@@ -2,16 +2,15 @@ package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -24,38 +23,31 @@ public class BookingService {
 
     private static final String SEPARATOR = "/";
 
-    private static final String X_API_KEY = "X-API-KEY";
-
-    private static final String X_ROLES = "X-ROLES";
-
     private final WebClient webClient;
 
     public Mono<Void> closeBooking(String apiKey, List<String> roles, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorMap(this::getSwiftWheelsHubException);
     }
 
     public Mono<BookingResponse> findBookingById(String apiKey, List<String> roles, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "/{id}", bookingId)
-                .header(X_API_KEY, apiKey)
-                .header(X_ROLES, roles.toArray(String[]::new))
+                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .retrieve()
                 .bodyToMono(BookingResponse.class)
                 .onErrorMap(this::getSwiftWheelsHubException);
     }
 
-    private SwiftWheelsHubException getSwiftWheelsHubException(Throwable e) {
+    private RuntimeException getSwiftWheelsHubException(Throwable e) {
         log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
-        return new SwiftWheelsHubException(e);
+        return ExceptionUtil.getException(e);
     }
 
 }

@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while getting users: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -40,7 +41,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while getting user by username: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -50,7 +51,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while getting current user: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -75,7 +76,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while registering user: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -89,7 +90,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while updating user: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -104,7 +105,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return ExceptionUtil.getException(e);
                 })
                 .then();
     }

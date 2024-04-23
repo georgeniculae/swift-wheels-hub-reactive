@@ -25,10 +25,6 @@ public class ServerRequestUtil {
         return serverRequest.headers().firstHeader(X_API_KEY);
     }
 
-    public static String getApiKeyHeader(ServerHttpRequest serverHttpRequest) {
-        return serverHttpRequest.getHeaders().getFirst(X_API_KEY);
-    }
-
     public static List<String> getRolesHeader(ServerRequest serverRequest) {
         return serverRequest.headers().header(X_ROLES);
     }

@@ -5,7 +5,8 @@ import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.RentalOffice;
@@ -31,7 +32,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding all rental offices: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -41,7 +42,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding rental office by id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -51,7 +52,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding rental office by name: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 })
                 .switchIfEmpty(
                         Mono.error(
@@ -69,7 +70,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while saving rental office: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -86,7 +87,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while updating rental office: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -95,7 +96,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while counting rental offices: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
     }
 
@@ -105,20 +106,14 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting rental office: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.getException(e);
                 });
 
     }
 
     public Mono<RentalOffice> findEntityById(String id) {
         return rentalOfficeRepository.findById(MongoUtil.getObjectId(id))
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.NOT_FOUND,
-                                        "Rental office with id " + id + " does not exist")
-                        )
-                );
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Rental office with id " + id + " does not exist")));
     }
 
 }
