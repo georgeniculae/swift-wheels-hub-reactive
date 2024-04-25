@@ -264,7 +264,7 @@ public class InvoiceService {
 
     private BookingClosingDetails getBookingClosingDetails(Invoice invoice) {
         Boolean isVehicleDamaged = Optional.ofNullable(invoice.getIsVehicleDamaged())
-                .orElseThrow(() -> new SwiftWheelsHubException("isVehicleDamaged is null"));
+                .orElseThrow(() -> new SwiftWheelsHubException("Parameter isVehicleDamaged should not be null"));
 
         return BookingClosingDetails.builder()
                 .bookingId(invoice.getBookingId().toString())
