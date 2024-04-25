@@ -38,8 +38,8 @@ public class UpdatedBookingMessageConsumer {
 
     private Mono<InvoiceResponse> processMessage(Message<BookingResponse> message) {
         return invoiceService.updateInvoiceAfterBookingUpdate(message.getPayload())
-                .doOnNext(userDto -> {
-                    log.info("Invoice updated: {}", userDto);
+                .doOnNext(invoiceResponse -> {
+                    log.info("Invoice updated: {}", invoiceResponse);
 
                     if (isMessageAckEnabled) {
                         this.sendMessageAcknowledgement(message.getHeaders());

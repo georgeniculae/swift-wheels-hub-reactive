@@ -27,7 +27,7 @@ public class InvoiceHandler {
         return invoiceService.findAllInvoices()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(invoiceDtoList -> ServerResponse.ok().bodyValue(invoiceDtoList))
+                .flatMap(invoiceResponses -> ServerResponse.ok().bodyValue(invoiceResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -36,7 +36,7 @@ public class InvoiceHandler {
         return invoiceService.findAllActiveInvoices()
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(invoiceDtoList -> ServerResponse.ok().bodyValue(invoiceDtoList))
+                .flatMap(invoiceResponses -> ServerResponse.ok().bodyValue(invoiceResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -45,14 +45,14 @@ public class InvoiceHandler {
         return invoiceService.findAllInvoicesByCustomerUsername(ServerRequestUtil.getPathVariable(serverRequest, CUSTOMER_ID))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(invoiceDtoList -> ServerResponse.ok().bodyValue(invoiceDtoList))
+                .flatMap(invoiceResponses -> ServerResponse.ok().bodyValue(invoiceResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findInvoiceById(ServerRequest serverRequest) {
         return invoiceService.findInvoiceById(ServerRequestUtil.getPathVariable(serverRequest, ID))
-                .flatMap(invoiceDto -> ServerResponse.ok().bodyValue(invoiceDto))
+                .flatMap(invoiceResponse -> ServerResponse.ok().bodyValue(invoiceResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -61,7 +61,7 @@ public class InvoiceHandler {
         return invoiceService.findInvoicesByComments(ServerRequestUtil.getPathVariable(serverRequest, COMMENTS))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
-                .flatMap(invoiceDto -> ServerResponse.ok().bodyValue(invoiceDto))
+                .flatMap(invoiceResponses -> ServerResponse.ok().bodyValue(invoiceResponses))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 

@@ -38,8 +38,8 @@ public class SavedBookingMessageConsumer {
 
     private Mono<InvoiceResponse> processMessage(Message<BookingResponse> message) {
         return invoiceService.saveInvoice(message.getPayload())
-                .doOnNext(userDto -> {
-                    log.info("Invoice saved: {}", userDto);
+                .doOnNext(invoiceResponse -> {
+                    log.info("Invoice saved: {}", invoiceResponse);
 
                     if (isMessageAckEnabled) {
                         this.sendMessageAcknowledgement(message.getHeaders());
