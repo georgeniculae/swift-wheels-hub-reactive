@@ -10,7 +10,6 @@ import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class SwaggerRequestValidatorService {
 
     private static final String SWAGGER = "swagger";

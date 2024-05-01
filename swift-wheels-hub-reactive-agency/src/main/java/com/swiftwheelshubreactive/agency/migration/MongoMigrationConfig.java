@@ -26,7 +26,6 @@ public class MongoMigrationConfig {
                 .setDriver(MongoReactiveDriver.withDefaultLock(mongoClient, databaseName))
                 .addMigrationScanPackage(packageScan)
                 .setSpringContext(context)
-                .setTransactionEnabled(true)
                 .buildInitializingBeanRunner();
     }
 

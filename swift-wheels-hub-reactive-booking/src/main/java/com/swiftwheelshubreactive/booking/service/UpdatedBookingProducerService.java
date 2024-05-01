@@ -2,7 +2,6 @@ package com.swiftwheelshubreactive.booking.service;
 
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
@@ -14,7 +13,6 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UpdatedBookingProducerService {
 
     @Value("${spring.cloud.stream.bindings.updatedBookingProducer-out-0.destination}")

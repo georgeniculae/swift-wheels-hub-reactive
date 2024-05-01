@@ -2,7 +2,6 @@ package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
@@ -14,7 +13,6 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class InvoiceProducerService {
 
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.destination}")

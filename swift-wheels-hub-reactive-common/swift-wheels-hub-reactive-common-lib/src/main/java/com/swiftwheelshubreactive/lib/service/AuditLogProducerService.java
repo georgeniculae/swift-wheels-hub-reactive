@@ -2,7 +2,6 @@ package com.swiftwheelshubreactive.lib.service;
 
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -16,7 +15,6 @@ import reactor.core.scheduler.Schedulers;
 @Service
 @RequiredArgsConstructor
 @ConditionalOnBean(name = "auditAspect")
-@Slf4j
 public class AuditLogProducerService {
 
     @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.destination}")
