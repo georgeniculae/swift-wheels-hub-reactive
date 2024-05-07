@@ -144,7 +144,8 @@ public class InvoiceService {
     )
     public Mono<InvoiceResponse> closeInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
-                .flatMap(request -> setupExistingInvoice(apiKey, roles, id, invoiceRequest, request))
+                .flatMap(request -> bookingService.findBookingById(apiKey, roles, request.bookingId()))
+                .flatMap(bookingResponse -> setupExistingInvoice(id, invoiceRequest, bookingResponse))
                 .flatMap(revenueService::saveInvoiceRevenueAndOutbox)
                 .delayUntil(invoice -> bookingService.closeBooking(apiKey, roles, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
@@ -221,34 +222,27 @@ public class InvoiceService {
         }
     }
 
-    private Mono<Invoice> setupExistingInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest,
-                                               InvoiceRequest request) {
-        return Mono.zip(
-                findEntityById(id),
-                bookingService.findBookingById(apiKey, roles, invoiceRequest.bookingId()),
-                (existingInvoice, bookingResponse) -> updateInvoiceWithBookingDetails(request, existingInvoice, bookingResponse)
-        );
+    private Mono<Invoice> setupExistingInvoice(String id, InvoiceRequest invoiceRequest, BookingResponse bookingResponse) {
+        return findEntityById(id)
+                .map(existingInvoice -> updateExistingInvoice(existingInvoice, invoiceRequest, bookingResponse));
     }
 
-    private Invoice updateInvoiceWithBookingDetails(InvoiceRequest invoiceRequest,
-                                                    Invoice existingInvoice, BookingResponse bookingResponse) {
-        String receptionistEmployeeIdAsString = invoiceRequest.receptionistEmployeeId();
-        String carId = invoiceRequest.carId();
-        ObjectId receptionistEmployeeId = MongoUtil.getObjectId(receptionistEmployeeIdAsString);
-        Invoice existingInvoiceUpdated = updateExistingInvoice(existingInvoice, invoiceRequest, carId, receptionistEmployeeId);
+    private Invoice updateExistingInvoice(Invoice existingInvoice, InvoiceRequest invoiceRequest,
+                                          BookingResponse bookingResponse) {
+        LocalDate carDateOfReturn = invoiceRequest.carDateOfReturn();
+        ObjectId receptionistEmployeeId = MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId());
+        ObjectId carId = MongoUtil.getObjectId(invoiceRequest.carId());
 
-        return updateInvoiceAmount(bookingResponse, existingInvoiceUpdated, bookingResponse.rentalCarPrice());
-    }
-
-    private Invoice updateExistingInvoice(Invoice existingInvoice, InvoiceRequest invoiceRequest, String carId,
-                                          ObjectId receptionistEmployeeId) {
-        existingInvoice.setCarDateOfReturn(invoiceRequest.carDateOfReturn());
+        existingInvoice.setCustomerUsername(bookingResponse.customerUsername());
+        existingInvoice.setCustomerEmail(bookingResponse.customerEmail());
+        existingInvoice.setCarDateOfReturn(carDateOfReturn);
         existingInvoice.setReceptionistEmployeeId(receptionistEmployeeId);
-        existingInvoice.setCarId(MongoUtil.getObjectId(carId));
+        existingInvoice.setCarId(carId);
         existingInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
         existingInvoice.setDamageCost(getDamageCost(invoiceRequest));
         existingInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
         existingInvoice.setComments(invoiceRequest.comments());
+        existingInvoice.setTotalAmount(getTotalAmount(existingInvoice, bookingResponse));
 
         return existingInvoice;
     }
@@ -273,10 +267,11 @@ public class InvoiceService {
                 .build();
     }
 
-    private BigDecimal getTotalAmount(Invoice existingInvoice, BookingResponse bookingResponse, BigDecimal rentalCarPrice) {
+    private BigDecimal getTotalAmount(Invoice existingInvoice, BookingResponse bookingResponse) {
         LocalDate carReturnDate = existingInvoice.getCarDateOfReturn();
         LocalDate bookingDateTo = bookingResponse.dateTo();
         LocalDate bookingDateFrom = bookingResponse.dateFrom();
+        BigDecimal rentalCarPrice = bookingResponse.rentalCarPrice();
 
         boolean isReturnDatePassed = carReturnDate.isAfter(bookingDateTo);
 
@@ -300,12 +295,6 @@ public class InvoiceService {
 
     private CarState getCarStatus(boolean isVehicleDamaged) {
         return Boolean.TRUE.equals(isVehicleDamaged) ? CarState.BROKEN : CarState.AVAILABLE;
-    }
-
-    private Invoice updateInvoiceAmount(BookingResponse bookingResponse, Invoice existingInvoice, BigDecimal rentalCarPrice) {
-        existingInvoice.setTotalAmount(getTotalAmount(existingInvoice, bookingResponse, rentalCarPrice));
-
-        return existingInvoice;
     }
 
 }

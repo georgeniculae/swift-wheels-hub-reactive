@@ -9,12 +9,6 @@ import java.time.LocalDate;
 @Builder
 public record InvoiceRequest(
         @NonNull
-        String customerUsername,
-
-        @NonNull
-        String customerEmail,
-
-        @NonNull
         String carId,
 
         String receptionistEmployeeId,
@@ -38,8 +32,6 @@ public record InvoiceRequest(
     @Override
     public String toString() {
         return "InvoiceRequest{" + "\n" +
-                "customerUsername='" + customerUsername + "\n" +
-                "customerEmail='" + customerEmail + "\n" +
                 "carId=" + carId + "\n" +
                 "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +

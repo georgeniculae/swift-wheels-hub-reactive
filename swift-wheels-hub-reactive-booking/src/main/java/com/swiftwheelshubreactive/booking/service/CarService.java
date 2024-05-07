@@ -32,7 +32,7 @@ public class CarService {
 
     public Mono<CarResponse> findAvailableCarById(String apiKey, List<String> roles, String carId) {
         return webClient.get()
-                .uri(url + SEPARATOR + carId + SEPARATOR + "availability")
+                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "availability", carId)
                 .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()

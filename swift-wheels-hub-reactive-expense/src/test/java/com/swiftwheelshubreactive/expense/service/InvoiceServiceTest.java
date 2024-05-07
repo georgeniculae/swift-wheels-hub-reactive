@@ -269,7 +269,8 @@ class InvoiceServiceTest {
 
     @Test
     void closeInvoiceTest_errorOnFindInvoiceById() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        BookingResponse bookingResponse =
+                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceRequest invoiceRequest =
                 TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
@@ -278,8 +279,8 @@ class InvoiceServiceTest {
                 .header("Authorization", "token")
                 .build();
 
-        when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.error(new Throwable()));
+        when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.just(bookingResponse));
+        when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
                 .expectError()

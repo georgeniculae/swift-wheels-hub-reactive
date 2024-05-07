@@ -20,7 +20,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Component
@@ -66,7 +66,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
 
     private Mono<IncomingRequestDetails> getIncomingRequestDetails(ServerHttpRequest request) {
         return request.getBody()
-                .map(dataBuffer -> dataBuffer.toString(Charset.defaultCharset()))
+                .map(dataBuffer -> dataBuffer.toString(StandardCharsets.UTF_8))
                 .reduce(StringUtils.EMPTY, (current, next) -> current + next)
                 .map(bodyAsString -> getIncomingRequestDetails(request, bodyAsString));
     }
