@@ -41,7 +41,7 @@ public class ExpenseAuditLogInfoConsumerMessage {
                     log.info("Expense audit log saved: {}", auditLogInfoRequest);
 
                     if (isMessageAckEnabled) {
-                        this.sendMessageAcknowledgement(message.getHeaders());
+                        sendMessageAcknowledgement(message.getHeaders());
                     }
                 })
                 .onErrorResume(e -> {

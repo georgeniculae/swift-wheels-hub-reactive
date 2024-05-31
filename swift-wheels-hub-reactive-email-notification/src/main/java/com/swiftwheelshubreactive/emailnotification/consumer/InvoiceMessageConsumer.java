@@ -43,7 +43,7 @@ public class InvoiceMessageConsumer {
                     log.info("Invoice processed with status: {}{}", response.getStatusCode(), response.getBody());
 
                     if (isMessageAckEnabled) {
-                        this.sendMessageAcknowledgement(message.getHeaders());
+                        sendMessageAcknowledgement(message.getHeaders());
                     }
                 })
                 .onErrorResume(e -> {

@@ -41,7 +41,7 @@ public class CustomerAuditLogInfoConsumerMessage {
                     log.info("Customer audit log saved: {}", auditLogInfoRequest);
 
                     if (isMessageAckEnabled) {
-                        this.sendMessageAcknowledgement(message.getHeaders());
+                        sendMessageAcknowledgement(message.getHeaders());
                     }
                 })
                 .onErrorResume(e -> {

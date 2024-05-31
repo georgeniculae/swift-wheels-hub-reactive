@@ -42,7 +42,7 @@ public class SavedBookingMessageConsumer {
                     log.info("Invoice saved: {}", invoiceResponse);
 
                     if (isMessageAckEnabled) {
-                        this.sendMessageAcknowledgement(message.getHeaders());
+                        sendMessageAcknowledgement(message.getHeaders());
                     }
                 })
                 .onErrorResume(e -> {

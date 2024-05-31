@@ -86,7 +86,7 @@ public class AuditAspect {
         Method method = signature.getMethod();
         LogActivity logActivity = method.getAnnotation(LogActivity.class);
 
-        log.info("Method called: " + signature);
+        log.info("Method called: {}", signature);
 
         List<String> parametersValues = getParametersValues(joinPoint, logActivity, signature);
 

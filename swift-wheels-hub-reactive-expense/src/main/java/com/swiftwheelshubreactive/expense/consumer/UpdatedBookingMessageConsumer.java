@@ -42,7 +42,7 @@ public class UpdatedBookingMessageConsumer {
                     log.info("Invoice updated: {}", invoiceResponse);
 
                     if (isMessageAckEnabled) {
-                        this.sendMessageAcknowledgement(message.getHeaders());
+                        sendMessageAcknowledgement(message.getHeaders());
                     }
                 })
                 .onErrorResume(e -> {
