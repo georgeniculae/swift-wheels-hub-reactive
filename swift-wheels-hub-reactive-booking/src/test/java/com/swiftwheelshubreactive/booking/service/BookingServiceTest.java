@@ -177,7 +177,7 @@ class BookingServiceTest {
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        String apikey = "token";
+        String apikey = "apikey";
 
         when(carService.findAvailableCarById(anyString(), anyList(), anyString())).thenReturn(Mono.just(carResponse));
         when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))

@@ -32,7 +32,7 @@ public class BookingService {
     public Mono<Void> closeBooking(String apiKey, List<String> roles, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
-                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -43,7 +43,7 @@ public class BookingService {
     public Mono<BookingResponse> findBookingById(String apiKey, List<String> roles, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", bookingId)
-                .headers(WebClientUtil.getHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(BookingResponse.class)

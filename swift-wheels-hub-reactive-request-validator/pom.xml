@@ -11,8 +11,8 @@
 
     <artifactId>swift-wheels-hub-reactive-request-validator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Swift Wheels Hub Request Validator Reactive</name>
-    <description>Swift Wheels Hub Request Validator Reactive</description>
+    <name>Swift Wheels Hub Reactive Request Validator</name>
+    <description>Swift Wheels Hub Reactive Request Validator</description>
 
     <properties>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
