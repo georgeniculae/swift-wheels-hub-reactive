@@ -1,0 +1,86 @@
+server:
+  port: ${random.int(8089,9090)}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: swift-wheels-hub-reactive-ai
+  webflux:
+    base-path: /ai
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: ${VERTEX_AI_GEMINI_PROJECT_ID}
+          location: ${VERTEX_AI_GEMINI_LOCATION}
+          chat:
+            options:
+              model: gemini-1.5-pro-001
+              functions: paymentStatus
+              transport: HTTP
+  cloud:
+    loadbalancer:
+      enabled: true
+      ribbon:
+        enabled: false
+      cache:
+        enabled: false
+    consul:
+      enabled: true
+      config:
+        enabled: false
+        acl-token: ${CONSUL_ACL_TOKEN}
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        prefer-ip-address: true
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /actuator/health
+        healthCheckInterval: 10s
+        hostname: localhost
+        failFast: false
+
+management:
+  server:
+    port: ${server.port}
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /definition/swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /definition/v3/api-docs
+  show-actuator: true
+
+apikey:
+  secret: ${API_KEY_SECRET}
+
+web-client:
+  url:
+    swift-wheels-hub-agency-cars: http://swift-wheels-hub-agency/agency/cars

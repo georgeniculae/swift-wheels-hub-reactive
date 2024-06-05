@@ -20,6 +20,7 @@
         <module>swift-wheels-hub-reactive-common</module>
         <module>swift-wheels-hub-reactive-api-gateway</module>
         <module>swift-wheels-hub-reactive-agency</module>
+        <module>swift-wheels-hub-reactive-ai</module>
         <module>swift-wheels-hub-reactive-audit</module>
         <module>swift-wheels-hub-reactive-booking</module>
         <module>swift-wheels-hub-reactive-customer</module>
