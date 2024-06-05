@@ -39,7 +39,7 @@ public class RequestBodyModifierFilter implements GlobalFilter, Ordered {
                 .setRewriteFunction(
                         byte[].class,
                         byte[].class,
-                        (webExchange, requestBody) -> Mono.justOrEmpty(requestBody)
+                        (_, requestBody) -> Mono.justOrEmpty(requestBody)
                 );
     }
 

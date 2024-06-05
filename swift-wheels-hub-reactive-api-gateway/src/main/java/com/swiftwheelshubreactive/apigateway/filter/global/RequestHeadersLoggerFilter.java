@@ -21,7 +21,7 @@ public class RequestHeadersLoggerFilter implements GlobalFilter, Ordered {
         return Mono.just(exchange)
                 .map(webExchange -> webExchange.getRequest().getHeaders())
                 .doOnNext(this::logHeaders)
-                .flatMap(httpHeaders -> chain.filter(exchange))
+                .flatMap(_ -> chain.filter(exchange))
                 .onErrorMap(e -> {
                     log.error("Error while trying to log headers: {}", e.getMessage());
 

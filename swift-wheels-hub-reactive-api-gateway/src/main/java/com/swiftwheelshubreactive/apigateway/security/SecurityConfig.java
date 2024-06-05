@@ -42,8 +42,8 @@ public class SecurityConfig {
                                         "/expense/**").authenticated()
                                 .anyExchange().authenticated())
                 .exceptionHandling(request ->
-                        request.authenticationEntryPoint((response, error) -> getResponse(response, HttpStatus.UNAUTHORIZED))
-                                .accessDeniedHandler((response, error) -> getResponse(response, HttpStatus.FORBIDDEN)))
+                        request.authenticationEntryPoint((response, _) -> getResponse(response, HttpStatus.UNAUTHORIZED))
+                                .accessDeniedHandler((response, _) -> getResponse(response, HttpStatus.FORBIDDEN)))
                 .oauth2ResourceServer(resourceServerSpec ->
                         resourceServerSpec.jwt(jwtSpec -> jwtSpec.jwkSetUri(jwkUri)
                                 .authenticationManager(reactiveAuthenticationManager)))
