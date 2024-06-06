@@ -71,6 +71,14 @@ public class CarHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasRole('user')")
+    public Mono<ServerResponse> getAllAvailableCars(ServerRequest serverRequest) {
+        return carService.getAllAvailableCars()
+                .collectList()
+                .filter(ObjectUtils::isNotEmpty)
+                .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
+    }
+
     @PreAuthorize("hasRole('user'")
     public Mono<ServerResponse> getCarImage(ServerRequest serverRequest) {
         return carService.getCarImage(ServerRequestUtil.getPathVariable(serverRequest, ID))

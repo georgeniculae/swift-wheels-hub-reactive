@@ -53,6 +53,14 @@ spring:
             - name: LanguageHeader
               args:
                 language: "EN"
+        - id: ai
+          uri: lb://swift-wheels-hub-reactive-ai
+          predicates:
+            - Path=/ai/**
+          filters:
+            - name: LanguageHeader
+              args:
+                language: "EN"
         - id: booking
           uri: lb://swift-wheels-hub-reactive-booking
           predicates:

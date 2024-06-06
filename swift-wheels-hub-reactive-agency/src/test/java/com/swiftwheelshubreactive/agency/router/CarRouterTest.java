@@ -124,6 +124,87 @@ class CarRouterTest {
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    void findAvailableCarTest_success() {
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
+
+        when(carHandler.getAvailableCar(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<CarResponse> responseBody = webTestClient.get()
+                .uri(PATH + "/{id}" + "/availability", "64f361caf291ae086e179547")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk().returnResult(CarResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(carResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void findAvailableCarTest_unauthorized() {
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
+
+        when(carHandler.getAvailableCar(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.get()
+                .uri(PATH + "/{id}" + "/availability", "64f361caf291ae086e179547")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    void getAllAvailableCarsTest_success() {
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        List<CarResponse> carResponses = List.of(carResponse);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
+
+        when(carHandler.getAllAvailableCars(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<CarResponse> responseBody = webTestClient.get()
+                .uri(PATH + "/available")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(CarResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(carResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getAllAvailableCarsTest_unauthorized() {
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        List<CarResponse> carResponses = List.of(carResponse);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
+
+        when(carHandler.getAllAvailableCars(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.get()
+                .uri(PATH + "/available")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findCarsByMakeTest_success() {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
@@ -565,41 +646,6 @@ class CarRouterTest {
         StepVerifier.create(responseBody)
                 .expectNext(carResponse)
                 .verifyComplete();
-    }
-
-    @Test
-    @WithAnonymousUser
-    void setCarStatusNotAvailableTest_unauthorized() {
-        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDto);
-
-        when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .put()
-                .uri(PATH + "/{id}/set-car-not-available", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isUnauthorized();
-    }
-
-    @Test
-    @WithAnonymousUser
-    void setCarStatusNotAvailableTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
-
-        when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        webTestClient.put()
-                .uri(PATH + "/{id}/set-car-not-available", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isForbidden();
     }
 
     @Test

@@ -189,6 +189,18 @@ class CarServiceTest {
     }
 
     @Test
+    void findAllAvailableCarsTest_success() {
+        Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        when(carRepository.findAllAvailableCars()).thenReturn(Flux.just(car));
+
+        StepVerifier.create(carService.getAllAvailableCars())
+                .expectNext(carResponse)
+                .verifyComplete();
+    }
+
+    @Test
     void findCarByFilterTest_success() {
         Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);

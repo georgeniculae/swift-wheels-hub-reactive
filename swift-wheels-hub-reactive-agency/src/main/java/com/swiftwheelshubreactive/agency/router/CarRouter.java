@@ -23,6 +23,7 @@ public class CarRouter {
                         .andRoute(RequestPredicates.GET("/filter/{filter}"), carHandler::findCarsByFilterInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/count"), carHandler::countCars)
                         .andRoute(RequestPredicates.GET("/{id}/availability"), carHandler::getAvailableCar)
+                        .andRoute(RequestPredicates.GET("/available"), carHandler::getAllAvailableCars)
                         .andRoute(RequestPredicates.GET("/{id}/image"), carHandler::getCarImage)
                         .andRoute(RequestPredicates.GET("/{id}"), carHandler::findCarById)
                         .andRoute(RequestPredicates.POST(""), carHandler::saveCar)

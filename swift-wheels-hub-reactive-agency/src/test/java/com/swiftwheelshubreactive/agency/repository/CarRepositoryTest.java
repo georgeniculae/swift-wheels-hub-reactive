@@ -85,4 +85,12 @@ class CarRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void findAllAvailableCarsTest_success() {
+        carRepository.findAllAvailableCars()
+                .as(StepVerifier::create)
+                .expectNextCount(2)
+                .verifyComplete();
+    }
+
 }

@@ -191,6 +191,21 @@ class CarHandlerTest {
     }
 
     @Test
+    void findAllAvailableCarsTest_success() {
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.GET)
+                .build();
+
+        when(carService.getAllAvailableCars()).thenReturn(Flux.just(carResponse));
+
+        StepVerifier.create(carHandler.getAllAvailableCars(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
+
+    @Test
     void getCarImageTest_noResultReturned() {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)

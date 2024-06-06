@@ -105,6 +105,16 @@ public class CarService {
                 });
     }
 
+    public Flux<CarResponse> getAllAvailableCars() {
+        return carRepository.findAllAvailableCars()
+                .map(carMapper::mapEntityToDto)
+                .onErrorMap(e -> {
+                    log.error("Error while getting all available cars: {}", e.getMessage());
+
+                    return ExceptionUtil.getException(e);
+                });
+    }
+
     public Flux<CarResponse> findCarsByFilterInsensitiveCase(String filter) {
         return carRepository.findAllByFilterInsensitiveCase(filter)
                 .map(carMapper::mapEntityToDto)
