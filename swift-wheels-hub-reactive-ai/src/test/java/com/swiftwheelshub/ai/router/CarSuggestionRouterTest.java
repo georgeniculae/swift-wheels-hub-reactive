@@ -1,6 +1,5 @@
 package com.swiftwheelshub.ai.router;
 
-import com.swiftwheelshub.ai.controller.CarSuggestionRouter;
 import com.swiftwheelshub.ai.handler.CarSuggestionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.swiftwheelshub.ai.controller;
+package com.swiftwheelshub.ai.router;
 
 import com.swiftwheelshub.ai.handler.CarSuggestionHandler;
 import com.swiftwheelshub.ai.swaggerannotation.SwaggerCarSuggestionRouterOperations;
@@ -20,7 +20,6 @@ public class CarSuggestionRouter {
     @SwaggerCarSuggestionRouterOperations
     public RouterFunction<ServerResponse> routeCarSuggestion(CarSuggestionHandler carSuggestionHandler) {
         return RouterFunctions.route(RequestPredicates.POST("/car-suggestion"), carSuggestionHandler::getChatOutput);
-
     }
 
 }
