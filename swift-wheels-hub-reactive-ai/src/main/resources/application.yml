@@ -83,4 +83,4 @@ apikey:
 
 webclient:
   url:
-    swift-wheels-hub-agency-cars: http://swift-wheels-hub-agency/agency/cars
+    swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
