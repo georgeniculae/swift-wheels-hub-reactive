@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.requestvalidator.service.RedisService;
 import com.swiftwheelshubreactive.requestvalidator.service.SwaggerRequestValidatorService;
 import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
+import com.swiftwheelshubreactive.requestvalidator.validator.IncomingRequestDetailsValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +33,9 @@ class RequestValidatorHandlerTest {
     @Mock
     private RedisService redisService;
 
+    @Mock
+    private IncomingRequestDetailsValidator incomingRequestDetailsValidator;
+
     @Test
     void validateRequestTest_success() {
         IncomingRequestDetails incomingRequestDetails =
@@ -44,6 +48,8 @@ class RequestValidatorHandlerTest {
                 .method(HttpMethod.POST)
                 .body(Mono.just(incomingRequestDetails));
 
+        when(incomingRequestDetailsValidator.validateBody(any(IncomingRequestDetails.class)))
+                .thenReturn(Mono.just(incomingRequestDetails));
         when(swaggerRequestValidatorService.validateRequest(any(IncomingRequestDetails.class)))
                 .thenReturn(Mono.just(validationReport));
 
@@ -65,6 +71,18 @@ class RequestValidatorHandlerTest {
                 .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
+    }
+
+    @Test
+    void repopulateRedisWithSwaggerFilesTest_error_emptyRequestBody() {
+        ServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.POST)
+                .body(Mono.just(""));
+
+        requestValidatorHandler.repopulateRedisWithSwaggerFiles(serverRequest)
+                .as(StepVerifier::create)
+                .expectError()
+                .verify();
     }
 
 }

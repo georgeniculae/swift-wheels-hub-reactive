@@ -41,7 +41,7 @@ class CarSuggestionHandlerTest {
                 .header("X-USERNAME", "user")
                 .body(Mono.just(tripInfo));
 
-        when(tripInfoValidator.validate(any(TripInfo.class))).thenReturn(Mono.just(tripInfo));
+        when(tripInfoValidator.validateBody(any(TripInfo.class))).thenReturn(Mono.just(tripInfo));
         when(carSuggestionService.getChatOutput(anyString(), anyList(), any(TripInfo.class)))
                 .thenReturn(Mono.just("Test"));
 

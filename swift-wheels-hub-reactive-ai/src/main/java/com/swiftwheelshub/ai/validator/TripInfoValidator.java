@@ -12,7 +12,7 @@ public class TripInfoValidator {
 
     private final BodyValidator<TripInfo> bodyValidator;
 
-    public Mono<TripInfo> validate(TripInfo tripInfo) {
+    public Mono<TripInfo> validateBody(TripInfo tripInfo) {
         return bodyValidator.validateBody(tripInfo);
     }
 
