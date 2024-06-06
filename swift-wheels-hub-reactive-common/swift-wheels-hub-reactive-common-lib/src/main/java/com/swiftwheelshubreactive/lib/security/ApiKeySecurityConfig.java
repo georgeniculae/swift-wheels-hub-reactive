@@ -27,16 +27,22 @@ public class ApiKeySecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(request -> request
-                        .pathMatchers("/agency/definition/**",
+                        .pathMatchers(
+                                "/ai/definition/**",
+                                "/agency/definition/**",
                                 "/bookings/definition/**",
                                 "/customers/definition/**",
                                 "/customers/register",
                                 "/expense/definition/**",
-                                "/actuator/**").permitAll()
-                        .pathMatchers("/agency/**",
+                                "/actuator/**"
+                        ).permitAll()
+                        .pathMatchers(
+                                "/ai/**",
+                                "/agency/**",
                                 "/bookings/**",
                                 "/customers/**",
-                                "/expense/**").authenticated()
+                                "/expense/**"
+                        ).authenticated()
                         .anyExchange().authenticated())
                 .securityContextRepository(loadSecurityContextRepository)
                 .authenticationManager(apiKeyAuthenticationManager)
