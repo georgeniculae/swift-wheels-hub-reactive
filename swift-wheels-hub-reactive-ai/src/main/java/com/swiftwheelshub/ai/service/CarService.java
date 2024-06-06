@@ -19,7 +19,7 @@ public class CarService {
 
     private static final String SEPARATOR = "/";
 
-    @Value("${web-client.url.swift-wheels-hub-agency-cars}")
+    @Value("${webclient.url.swift-wheels-hub-agency-cars}")
     private String url;
 
     private final WebClient webClient;
