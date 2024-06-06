@@ -3,7 +3,6 @@ package com.swiftwheelshub.ai.service;
 import com.swiftwheelshub.ai.util.TestUtils;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +27,7 @@ class CarSuggestionServiceTest {
     private CarService carService;
 
     @Mock
-    private ChatLanguageModel chatLanguageModel;
+    private AiAssistant aiAssistant;
 
     @Test
     void getChatOutputTest_success() {
@@ -38,7 +37,7 @@ class CarSuggestionServiceTest {
         String apikey = "apikey";
 
         when(carService.getAllAvailableCars(anyString(), anyList())).thenReturn(Flux.just(carResponse));
-        when(chatLanguageModel.generate(anyString())).thenReturn(output);
+        when(aiAssistant.chat(anyString())).thenReturn(output);
 
         carSuggestionService.getChatOutput(apikey, List.of("admin"), tripInfo)
                 .as(StepVerifier::create)

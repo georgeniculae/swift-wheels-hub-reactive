@@ -1,7 +1,9 @@
 package com.swiftwheelshub.ai.config;
 
+import com.swiftwheelshub.ai.service.AiAssistant;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.vertexai.VertexAiGeminiChatModel;
+import dev.langchain4j.service.AiServices;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,11 @@ public class ChatLanguageModelConfig {
                 .project(projectId)
                 .modelName(model)
                 .build();
+    }
+
+    @Bean
+    public AiAssistant aiAssistant(ChatLanguageModel model) {
+        return AiServices.create(AiAssistant.class, model);
     }
 
 }

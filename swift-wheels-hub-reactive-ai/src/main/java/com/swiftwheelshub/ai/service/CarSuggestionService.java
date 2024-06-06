@@ -3,12 +3,12 @@ package com.swiftwheelshub.ai.service;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -20,19 +20,24 @@ import java.util.Locale;
 @Slf4j
 public class CarSuggestionService {
 
-    private final ChatLanguageModel chatLanguageModel;
+    private final AiAssistant aiAssistant;
     private final CarService carService;
 
     public Mono<String> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
         return getAvailableCars(apikey, roles)
                 .collectList()
                 .map(cars -> createChatPrompt(tripInfo, cars))
-                .map(chatLanguageModel::generate)
+                .flatMap(this::getGeneratedOutput)
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e.getMessage());
                 });
+    }
+
+    private Mono<String> getGeneratedOutput(String prompt) {
+        return Mono.fromCallable(() -> aiAssistant.chat(prompt))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     private Flux<String> getAvailableCars(String apikey, List<String> roles) {

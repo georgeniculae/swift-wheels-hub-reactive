@@ -16,7 +16,7 @@
 
     <properties>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
-        <langchain4j-vertex-ai-gemini.version>0.31.0</langchain4j-vertex-ai-gemini.version>
+        <langchain4j.version>0.31.0</langchain4j.version>
     </properties>
 
     <dependencies>
@@ -44,8 +44,14 @@
 
         <dependency>
             <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-vertex-ai-gemini</artifactId>
-            <version>${langchain4j-vertex-ai-gemini.version}</version>
+            <version>${langchain4j.version}</version>
         </dependency>
 
         <dependency>
@@ -67,6 +73,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor.tools</groupId>
+            <artifactId>blockhound</artifactId>
         </dependency>
 
         <!-- Test  -->
