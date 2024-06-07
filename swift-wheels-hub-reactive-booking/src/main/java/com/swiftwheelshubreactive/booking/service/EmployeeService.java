@@ -29,7 +29,7 @@ public class EmployeeService {
     public Mono<EmployeeResponse> findEmployeeById(String apiKey, List<String> roles, String employeeId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", employeeId)
-                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(EmployeeResponse.class)

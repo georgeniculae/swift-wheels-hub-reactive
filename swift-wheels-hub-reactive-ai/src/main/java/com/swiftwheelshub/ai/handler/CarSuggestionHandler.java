@@ -20,12 +20,13 @@ public class CarSuggestionHandler {
     public Mono<ServerResponse> getChatOutput(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(TripInfo.class)
                 .flatMap(tripInfoValidator::validateBody)
-                .flatMap(tripInfo -> carSuggestionService.getChatOutput(
+                .flatMapMany(tripInfo -> carSuggestionService.getChatOutput(
                                 ServerRequestUtil.getApiKeyHeader(serverRequest),
                                 ServerRequestUtil.getRolesHeader(serverRequest),
                                 tripInfo
                         )
                 )
+                .collectList()
                 .flatMap(output -> ServerResponse.ok().bodyValue(output));
     }
 

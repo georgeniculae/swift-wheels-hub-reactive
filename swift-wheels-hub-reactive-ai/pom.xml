@@ -43,15 +43,13 @@
         </dependency>
 
         <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j</artifactId>
-            <version>${langchain4j.version}</version>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-vertex-ai-gemini</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-vertex-ai-gemini</artifactId>
-            <version>${langchain4j.version}</version>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-retry</artifactId>
         </dependency>
 
         <dependency>

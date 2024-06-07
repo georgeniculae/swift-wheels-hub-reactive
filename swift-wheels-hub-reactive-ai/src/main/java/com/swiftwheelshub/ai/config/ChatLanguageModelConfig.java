@@ -1,14 +1,14 @@
 package com.swiftwheelshub.ai.config;
 
-import com.swiftwheelshub.ai.service.AiAssistant;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.vertexai.VertexAiGeminiChatModel;
-import dev.langchain4j.service.AiServices;
+import com.google.cloud.vertexai.VertexAI;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
-@Configuration
+@Service
 public class ChatLanguageModelConfig {
 
     @Value("${spring.ai.vertex.ai.gemini.project-id}")
@@ -17,21 +17,19 @@ public class ChatLanguageModelConfig {
     @Value("${spring.ai.vertex.ai.gemini.location}")
     private String location;
 
-    @Value("${spring.ai.vertex.ai.gemini.chat.options.model}")
-    private String model;
-
     @Bean
-    public ChatLanguageModel chatLanguageModel() {
-        return VertexAiGeminiChatModel.builder()
-                .location(location)
-                .project(projectId)
-                .modelName(model)
-                .build();
+    public VertexAI vertexAI() {
+        return new VertexAI(projectId, location);
     }
 
     @Bean
-    public AiAssistant aiAssistant(ChatLanguageModel model) {
-        return AiServices.create(AiAssistant.class, model);
+    public ChatModel chatModel() {
+        return new VertexAiGeminiChatModel(vertexAI());
+    }
+
+    @Bean
+    public ChatClient chatClient() {
+        return ChatClient.create(chatModel());
     }
 
 }

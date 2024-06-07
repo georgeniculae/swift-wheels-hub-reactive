@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -20,24 +18,19 @@ import java.util.Locale;
 @Slf4j
 public class CarSuggestionService {
 
-    private final AiAssistant aiAssistant;
+    private final GeminiService geminiService;
     private final CarService carService;
 
-    public Mono<String> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
+    public Flux<String> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
         return getAvailableCars(apikey, roles)
                 .collectList()
                 .map(cars -> createChatPrompt(tripInfo, cars))
-                .flatMap(this::getGeneratedOutput)
+                .flatMapMany(geminiService::openChatDiscussion)
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
                     return new SwiftWheelsHubException(e.getMessage());
                 });
-    }
-
-    private Mono<String> getGeneratedOutput(String prompt) {
-        return Mono.fromCallable(() -> aiAssistant.chat(prompt))
-                .subscribeOn(Schedulers.boundedElastic());
     }
 
     private Flux<String> getAvailableCars(String apikey, List<String> roles) {

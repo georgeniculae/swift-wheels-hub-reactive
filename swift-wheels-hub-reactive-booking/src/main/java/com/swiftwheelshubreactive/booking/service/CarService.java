@@ -33,7 +33,7 @@ public class CarService {
     public Mono<CarResponse> findAvailableCarById(String apiKey, List<String> roles, String carId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "availability", carId)
-                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CarResponse.class)
@@ -43,7 +43,7 @@ public class CarService {
     public Mono<Void> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
-                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carState)
@@ -57,7 +57,7 @@ public class CarService {
                                                      CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
-                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
@@ -71,7 +71,7 @@ public class CarService {
                                        List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + "update-statuses")
-                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(updateCarRequests)

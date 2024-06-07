@@ -27,7 +27,7 @@ class CarSuggestionServiceTest {
     private CarService carService;
 
     @Mock
-    private AiAssistant aiAssistant;
+    private GeminiService geminiService;
 
     @Test
     void getChatOutputTest_success() {
@@ -37,7 +37,7 @@ class CarSuggestionServiceTest {
         String apikey = "apikey";
 
         when(carService.getAllAvailableCars(anyString(), anyList())).thenReturn(Flux.just(carResponse));
-        when(aiAssistant.chat(anyString())).thenReturn(output);
+        when(geminiService.openChatDiscussion(anyString())).thenReturn(Flux.just(output));
 
         carSuggestionService.getChatOutput(apikey, List.of("admin"), tripInfo)
                 .as(StepVerifier::create)

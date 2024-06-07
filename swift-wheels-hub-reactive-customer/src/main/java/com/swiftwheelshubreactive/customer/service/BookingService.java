@@ -28,7 +28,7 @@ public class BookingService {
     public Mono<Void> deleteBookingsByUsername(String apiKey, List<String> roles, String username) {
         return webClient.delete()
                 .uri(url + SEPARATOR + username)
-                .headers(WebClientUtil.mutateHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(Void.class)

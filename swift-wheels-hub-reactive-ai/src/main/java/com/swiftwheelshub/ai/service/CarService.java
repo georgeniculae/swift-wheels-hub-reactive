@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -27,16 +28,15 @@ public class CarService {
     public Flux<CarResponse> getAllAvailableCars(String apikey, List<String> roles) {
         return webClient.get()
                 .uri(url + SEPARATOR + "available")
-                .headers(WebClientUtil.mutateHttpHeaders(apikey, roles))
+                .headers(WebClientUtil.setHttpHeaders(apikey, roles))
                 .retrieve()
                 .bodyToFlux(CarResponse.class)
-                .onErrorMap(this::getSwiftWheelsHubException);
-    }
+                .subscribeOn(Schedulers.boundedElastic())
+                .onErrorMap(e -> {
+                    log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
-    private RuntimeException getSwiftWheelsHubException(Throwable e) {
-        log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
-
-        return ExceptionUtil.getException(e);
+                    return ExceptionUtil.getException(e);
+                });
     }
 
 }

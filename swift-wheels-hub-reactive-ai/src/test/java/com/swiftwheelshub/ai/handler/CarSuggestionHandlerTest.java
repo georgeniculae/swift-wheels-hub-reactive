@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.reactive.function.server.MockServerRequest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -43,7 +44,7 @@ class CarSuggestionHandlerTest {
 
         when(tripInfoValidator.validateBody(any(TripInfo.class))).thenReturn(Mono.just(tripInfo));
         when(carSuggestionService.getChatOutput(anyString(), anyList(), any(TripInfo.class)))
-                .thenReturn(Mono.just("Test"));
+                .thenReturn(Flux.just("Test"));
 
         StepVerifier.create(carSuggestionHandler.getChatOutput(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
