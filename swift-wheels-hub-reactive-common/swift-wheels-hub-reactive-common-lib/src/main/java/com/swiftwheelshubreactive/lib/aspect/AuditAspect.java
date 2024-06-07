@@ -35,7 +35,7 @@ public class AuditAspect {
     @Around("@annotation(LogActivity)")
     public Mono<?> logActivity(ProceedingJoinPoint joinPoint) {
         return getJoinPointProceed(joinPoint)
-                .delayUntil(jointPointProceed -> sendAuditLogInfoRequest(joinPoint))
+                .delayUntil(_ -> sendAuditLogInfoRequest(joinPoint))
                 .onErrorMap(e -> {
                     log.error("Error while logging activity: {}", e.getMessage());
 
