@@ -21,6 +21,9 @@ public class ChatLanguageModelConfig {
     @Value("${spring.ai.vertex.ai.gemini.chat.options.model}")
     private String model;
 
+    @Value("${spring.ai.vertex.ai.gemini.chat.options.temperature}")
+    private Float temperature;
+
     @Bean
     public VertexAI vertexAI() {
         return new VertexAI(projectId, location);
@@ -32,7 +35,7 @@ public class ChatLanguageModelConfig {
                 vertexAI(),
                 VertexAiGeminiChatOptions.builder()
                         .withModel(model)
-                        .withTemperature(0.8F)
+                        .withTemperature(temperature)
                         .build()
         );
     }
