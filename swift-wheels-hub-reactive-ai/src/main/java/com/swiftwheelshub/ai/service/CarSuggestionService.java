@@ -18,14 +18,14 @@ import java.util.Locale;
 @Slf4j
 public class CarSuggestionService {
 
-    private final GeminiService geminiService;
+    private final ChatService chatService;
     private final CarService carService;
 
     public Flux<String> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
         return getAvailableCars(apikey, roles)
                 .collectList()
                 .map(cars -> createChatPrompt(tripInfo, cars))
-                .flatMapMany(geminiService::openChatDiscussion)
+                .flatMapMany(chatService::getChatReply)
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 

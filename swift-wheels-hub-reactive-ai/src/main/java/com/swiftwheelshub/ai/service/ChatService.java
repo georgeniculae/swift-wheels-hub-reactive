@@ -9,11 +9,11 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-public class GeminiService {
+public class ChatService {
 
     private final ChatClient chatClient;
 
-    public Flux<String> openChatDiscussion(String prompt) {
+    public Flux<String> getChatReply(String prompt) {
         return Mono.fromCallable(() -> chatClient.prompt()
                         .user(prompt)
                         .stream())
