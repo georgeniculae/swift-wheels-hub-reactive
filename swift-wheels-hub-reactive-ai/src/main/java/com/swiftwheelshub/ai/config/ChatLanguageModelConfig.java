@@ -4,6 +4,7 @@ import com.google.cloud.vertexai.VertexAI;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
+import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,13 @@ public class ChatLanguageModelConfig {
 
     @Bean
     public ChatModel chatModel() {
-        return new VertexAiGeminiChatModel(vertexAI());
+        return new VertexAiGeminiChatModel(
+                vertexAI(),
+                VertexAiGeminiChatOptions.builder()
+                        .withModel(VertexAiGeminiChatModel.ChatModel.GEMINI_PRO)
+                        .withTemperature(0.8F)
+                        .build()
+        );
     }
 
     @Bean
