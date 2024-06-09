@@ -46,8 +46,7 @@ public class CarSuggestionService {
         return String.format(
                 """
                         Which car from the following list %s is more suitable for rental from a rental car agency
-                        for a trip for %s people to %s, Romania in %s? The car will be used for %s. Please justify
-                        your answer.""",
+                        for a trip for %s people to %s, Romania in %s? The car will be used for %s.""",
                 cars,
                 tripInfo.peopleCount(),
                 tripInfo.destination(),
