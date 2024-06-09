@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 public class ApiKeySecurityConfig {
 
     private final LoadSecurityContextRepository loadSecurityContextRepository;
+    private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -25,8 +27,7 @@ public class ApiKeySecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .authorizeExchange(request -> request
-                        .pathMatchers(
+                .authorizeExchange(request -> request.pathMatchers(
                                 "/agency/definition/**",
                                 "/ai/definition/**",
                                 "/bookings/definition/**",
@@ -34,16 +35,19 @@ public class ApiKeySecurityConfig {
                                 "/customers/register",
                                 "/expense/definition/**",
                                 "/actuator/**"
-                        ).permitAll()
+                        )
+                        .permitAll()
                         .pathMatchers(
                                 "/agency/**",
                                 "/ai/**",
                                 "/bookings/**",
                                 "/customers/**",
                                 "/expense/**"
-                        ).authenticated()
+                        )
+                        .authenticated()
                         .anyExchange().authenticated())
                 .securityContextRepository(loadSecurityContextRepository)
+                .authenticationManager(reactiveAuthenticationManager)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }
