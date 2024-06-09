@@ -17,7 +17,6 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 @ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class ApiKeySecurityConfig {
 
-    private final ApiKeyAuthenticationManager apiKeyAuthenticationManager;
     private final LoadSecurityContextRepository loadSecurityContextRepository;
 
     @Bean
@@ -28,8 +27,8 @@ public class ApiKeySecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(request -> request
                         .pathMatchers(
-                                "/ai/definition/**",
                                 "/agency/definition/**",
+                                "/ai/definition/**",
                                 "/bookings/definition/**",
                                 "/customers/definition/**",
                                 "/customers/register",
@@ -37,15 +36,14 @@ public class ApiKeySecurityConfig {
                                 "/actuator/**"
                         ).permitAll()
                         .pathMatchers(
-                                "/ai/**",
                                 "/agency/**",
+                                "/ai/**",
                                 "/bookings/**",
                                 "/customers/**",
                                 "/expense/**"
                         ).authenticated()
                         .anyExchange().authenticated())
                 .securityContextRepository(loadSecurityContextRepository)
-                .authenticationManager(apiKeyAuthenticationManager)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }
