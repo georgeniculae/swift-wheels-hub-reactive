@@ -40,7 +40,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding employee by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
 
     }
@@ -57,7 +57,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while saving employee: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -80,7 +80,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while updating employee: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -101,7 +101,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding employee by filter: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 

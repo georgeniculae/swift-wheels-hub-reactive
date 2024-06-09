@@ -70,7 +70,7 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while finding invoices by customer id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -80,7 +80,7 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while finding invoice by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -91,7 +91,7 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while finding invoices by comments: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -152,7 +152,7 @@ public class InvoiceService {
                 .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 

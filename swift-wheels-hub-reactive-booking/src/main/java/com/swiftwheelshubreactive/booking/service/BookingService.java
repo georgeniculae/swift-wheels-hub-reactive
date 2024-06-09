@@ -68,7 +68,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while finding booking by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -79,7 +79,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while finding booking by date of booking: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -89,7 +89,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while finding bookings by logged in customer: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -143,7 +143,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -159,7 +159,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -172,7 +172,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -188,7 +188,7 @@ public class BookingService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 

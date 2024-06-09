@@ -42,7 +42,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while finding branch by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -52,7 +52,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while finding branch by filter: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 })
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Branch with filter: " + filter + " does not exist")));
     }
@@ -78,7 +78,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while saving branch: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -99,7 +99,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while updating branch: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -109,7 +109,7 @@ public class BranchService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting branch: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 

@@ -72,7 +72,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while finding car by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -82,7 +82,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while finding cars by make: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -101,7 +101,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while getting available car: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -111,7 +111,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while getting all available cars: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -121,7 +121,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while searching car by criteria: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 })
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("No matching car for filter: " + filter)));
     }
@@ -133,7 +133,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while getting car image: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -146,7 +146,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -160,7 +160,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while uploading cars: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -173,7 +173,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while updating cars: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -185,7 +185,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while updating car status cars: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -202,7 +202,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting cars: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -211,7 +211,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while counting cars: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
 
     }
@@ -223,7 +223,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while updating car: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -232,7 +232,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while finding by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 })
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Car with id " + id + " does not exist")));
     }

@@ -57,7 +57,7 @@ public class RevenueService {
                 .onErrorMap(e -> {
                     log.error("Error while finding revenues by date: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -80,7 +80,7 @@ public class RevenueService {
                 .onErrorMap(e -> {
                     log.error("Error during transactional saving of outbox and revenue: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 

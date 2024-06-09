@@ -31,7 +31,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while getting users: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -41,7 +41,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while getting user by username: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -51,7 +51,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while getting current user: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -76,7 +76,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while registering user: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -90,7 +90,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while updating user: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -105,7 +105,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 })
                 .then();
     }

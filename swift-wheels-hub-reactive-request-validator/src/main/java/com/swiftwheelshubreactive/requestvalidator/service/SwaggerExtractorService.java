@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.requestvalidator.service;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,8 @@ public class SwaggerExtractorService {
                 .bodyToMono(String.class)
                 .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + microserviceName + " is empty")));
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + microserviceName + " is empty")))
+                .onErrorMap(ExceptionUtil::handleException);
     }
 
     private SwaggerFile getSwaggerFile(Map.Entry<String, String> endpoints, String swaggerContent) {

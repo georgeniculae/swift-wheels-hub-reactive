@@ -37,7 +37,7 @@ public class CarService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CarResponse.class)
-                .onErrorMap(this::getSwiftWheelsHubException);
+                .onErrorMap(this::handleException);
     }
 
     public Mono<Void> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
@@ -50,7 +50,7 @@ public class CarService {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorMap(this::getSwiftWheelsHubException);
+                .onErrorMap(this::handleException);
     }
 
     public Mono<Void> updateCarWhenBookingIsFinished(String apiKey, List<String> roles,
@@ -64,7 +64,7 @@ public class CarService {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorMap(this::getSwiftWheelsHubException);
+                .onErrorMap(this::handleException);
     }
 
     public Mono<Void> updateCarsStatus(String apiKey, List<String> roles,
@@ -79,13 +79,13 @@ public class CarService {
                 .bodyToFlux(CarResponse.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .then()
-                .onErrorMap(this::getSwiftWheelsHubException);
+                .onErrorMap(this::handleException);
     }
 
-    private RuntimeException getSwiftWheelsHubException(Throwable e) {
+    private RuntimeException handleException(Throwable e) {
         log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
-        return ExceptionUtil.getException(e);
+        return ExceptionUtil.handleException(e);
     }
 
 }

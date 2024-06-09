@@ -32,7 +32,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding all rental offices: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -42,7 +42,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding rental office by id: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -52,7 +52,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding rental office by name: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 })
                 .switchIfEmpty(
                         Mono.error(
@@ -70,7 +70,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while saving rental office: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -87,7 +87,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while updating rental office: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -96,7 +96,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while counting rental offices: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
@@ -106,7 +106,7 @@ public class RentalOfficeService {
                 .onErrorMap(e -> {
                     log.error("Error while deleting rental office: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
 
     }

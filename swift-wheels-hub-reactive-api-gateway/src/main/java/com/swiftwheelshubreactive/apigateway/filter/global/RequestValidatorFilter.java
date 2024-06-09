@@ -2,8 +2,8 @@ package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.dto.IncomingRequestDetails;
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -50,7 +50,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .flatMap(this::getValidationReport)
                 .flatMap(requestValidationReport -> filterRequest(exchange, chain, requestValidationReport))
                 .switchIfEmpty(Mono.defer(() -> chain.filter(exchange)))
-                .onErrorMap(this::handleExceptions);
+                .onErrorMap(ExceptionUtil::handleException);
     }
 
     @Override
@@ -89,7 +89,11 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)
                 .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
-                .onErrorMap(e -> new SwiftWheelsHubException(e.getMessage()));
+                .onErrorMap(e -> {
+                    log.error("Error while sending request to validator");
+
+                    return ExceptionUtil.handleException(e);
+                });
     }
 
     private Mono<Void> filterRequest(ServerWebExchange exchange, GatewayFilterChain chain, RequestValidationReport requestValidationReport) {

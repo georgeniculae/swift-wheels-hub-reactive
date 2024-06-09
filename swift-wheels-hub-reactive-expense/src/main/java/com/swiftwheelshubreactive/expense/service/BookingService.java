@@ -37,7 +37,7 @@ public class BookingService {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorMap(this::getSwiftWheelsHubException);
+                .onErrorMap(this::handleException);
     }
 
     public Mono<BookingResponse> findBookingById(String apiKey, List<String> roles, String bookingId) {
@@ -48,13 +48,13 @@ public class BookingService {
                 .retrieve()
                 .bodyToMono(BookingResponse.class)
                 .subscribeOn(Schedulers.boundedElastic())
-                .onErrorMap(this::getSwiftWheelsHubException);
+                .onErrorMap(this::handleException);
     }
 
-    private RuntimeException getSwiftWheelsHubException(Throwable e) {
+    private RuntimeException handleException(Throwable e) {
         log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 
-        return ExceptionUtil.getException(e);
+        return ExceptionUtil.handleException(e);
     }
 
 }

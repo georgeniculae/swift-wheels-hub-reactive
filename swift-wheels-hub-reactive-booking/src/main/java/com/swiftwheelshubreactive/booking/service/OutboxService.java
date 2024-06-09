@@ -37,7 +37,7 @@ public class OutboxService {
                 .onErrorMap(e -> {
                     log.error("Error while processing/sending booking: {}", e.getMessage());
 
-                    return ExceptionUtil.getException(e);
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
