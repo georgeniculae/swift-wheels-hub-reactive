@@ -24,7 +24,7 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
     }
 
     private Map<String, Object> addErrorAttributes(ServerRequest request, Map<String, Object> errorAttributes) {
-        Throwable error = getError(request);
+        Throwable error = super.getError(request);
         String message = getMessage(errorAttributes, error);
 
         errorAttributes.put(MESSAGE, message);
