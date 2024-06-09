@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.agency.mapper.EmployeeMapper;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
@@ -90,7 +90,7 @@ public class EmployeeService {
                 .onErrorMap(e -> {
                     log.error("Error while finding all employees ny branch id: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

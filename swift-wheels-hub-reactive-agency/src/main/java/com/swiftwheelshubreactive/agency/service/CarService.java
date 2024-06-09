@@ -11,7 +11,7 @@ import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -62,7 +62,7 @@ public class CarService {
                 .onErrorMap(e -> {
                     log.error("Error while finding all cars: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -244,7 +244,7 @@ public class CarService {
             try {
                 return objectMapper.readValue(carRequestFormFieldPart.value(), CarRequest.class);
             } catch (JsonProcessingException e) {
-                throw new SwiftWheelsHubException(e);
+                throw new SwiftWheelsHubException(e.getMessage());
             }
         });
     }

@@ -1,5 +1,8 @@
-package com.swiftwheelshubreactive.exception;
+package com.swiftwheelshubreactive.lib.exceptionhandling;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -14,7 +17,7 @@ public class ExceptionUtil {
             return swiftWheelsHubResponseStatusException;
         }
 
-        return new SwiftWheelsHubException(e);
+        return new SwiftWheelsHubException(e.getMessage());
     }
 
 }

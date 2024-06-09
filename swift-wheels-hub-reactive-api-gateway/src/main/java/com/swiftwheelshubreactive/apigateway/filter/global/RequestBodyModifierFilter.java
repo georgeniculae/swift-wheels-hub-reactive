@@ -25,7 +25,7 @@ public class RequestBodyModifierFilter implements GlobalFilter, Ordered {
                 .onErrorMap(e -> {
                     log.error("Error while trying to modify body: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

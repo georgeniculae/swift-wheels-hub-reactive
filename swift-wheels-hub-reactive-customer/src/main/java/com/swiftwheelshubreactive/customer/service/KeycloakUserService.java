@@ -258,7 +258,7 @@ public class KeycloakUserService {
             );
         }
 
-        throw new SwiftWheelsHubException(e);
+        throw new SwiftWheelsHubException(e.getMessage());
     }
 
 }

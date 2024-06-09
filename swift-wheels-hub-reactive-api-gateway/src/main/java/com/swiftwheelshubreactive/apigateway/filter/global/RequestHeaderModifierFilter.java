@@ -53,7 +53,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .onErrorMap(e -> {
                     log.error("Error while trying to log headers: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

@@ -5,7 +5,7 @@ import com.swiftwheelshubreactive.booking.model.Outbox;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.OutboxRepository;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.model.Booking;
 import lombok.RequiredArgsConstructor;

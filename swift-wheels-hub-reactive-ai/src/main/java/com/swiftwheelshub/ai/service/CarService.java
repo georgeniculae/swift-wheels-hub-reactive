@@ -1,7 +1,7 @@
 package com.swiftwheelshub.ai.service;
 
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

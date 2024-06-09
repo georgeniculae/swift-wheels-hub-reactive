@@ -5,7 +5,7 @@ import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;

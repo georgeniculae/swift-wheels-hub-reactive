@@ -6,8 +6,4 @@ public class SwiftWheelsHubException extends RuntimeException {
         super(message);
     }
 
-    public SwiftWheelsHubException(Throwable throwable) {
-        super(throwable);
-    }
-
 }

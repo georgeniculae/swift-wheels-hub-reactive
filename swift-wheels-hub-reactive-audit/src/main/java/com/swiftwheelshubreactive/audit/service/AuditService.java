@@ -32,7 +32,7 @@ public class AuditService {
                 .onErrorMap(e -> {
                     log.error("Error while saving booking audit log: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -43,7 +43,7 @@ public class AuditService {
                 .onErrorMap(e -> {
                     log.error("Error while saving customer audit log: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -54,7 +54,7 @@ public class AuditService {
                 .onErrorMap(e -> {
                     log.error("Error while saving expense audit log: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

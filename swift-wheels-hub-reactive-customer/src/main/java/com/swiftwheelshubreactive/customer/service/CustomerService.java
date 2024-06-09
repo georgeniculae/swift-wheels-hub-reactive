@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +62,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while counting users: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -116,7 +116,7 @@ public class CustomerService {
                 .onErrorMap(e -> {
                     log.error("Error while signing out user: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 })
                 .then();
     }

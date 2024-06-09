@@ -89,7 +89,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)
                 .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
-                .onErrorMap(SwiftWheelsHubException::new);
+                .onErrorMap(e -> new SwiftWheelsHubException(e.getMessage()));
     }
 
     private Mono<Void> filterRequest(ServerWebExchange exchange, GatewayFilterChain chain, RequestValidationReport requestValidationReport) {

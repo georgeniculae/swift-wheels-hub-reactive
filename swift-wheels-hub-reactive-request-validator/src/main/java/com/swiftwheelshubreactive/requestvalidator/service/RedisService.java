@@ -27,7 +27,7 @@ public class RedisService {
                 .onErrorMap(e -> {
                     log.error("Error while setting swagger folder in Redis: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -38,7 +38,7 @@ public class RedisService {
                 .onErrorMap(e -> {
                     log.error("Error while repopulating swagger folder in Redis: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 

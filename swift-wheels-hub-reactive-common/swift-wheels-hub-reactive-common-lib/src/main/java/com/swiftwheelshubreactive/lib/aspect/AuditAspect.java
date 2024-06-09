@@ -39,7 +39,7 @@ public class AuditAspect {
                 .onErrorMap(e -> {
                     log.error("Error while logging activity: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -47,7 +47,7 @@ public class AuditAspect {
         try {
             return (Mono<?>) joinPoint.proceed();
         } catch (Throwable e) {
-            throw new SwiftWheelsHubException(e);
+            throw new SwiftWheelsHubException(e.getMessage());
         }
     }
 

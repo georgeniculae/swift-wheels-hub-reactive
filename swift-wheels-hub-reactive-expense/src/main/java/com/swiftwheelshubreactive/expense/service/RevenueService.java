@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
-import com.swiftwheelshubreactive.exception.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.expense.mapper.RevenueMapper;

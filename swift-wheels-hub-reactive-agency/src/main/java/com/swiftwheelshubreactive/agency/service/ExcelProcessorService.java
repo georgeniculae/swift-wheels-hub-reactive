@@ -36,7 +36,7 @@ public class ExcelProcessorService {
 
             return getValuesFromSheet(sheet);
         } catch (Exception e) {
-            throw new SwiftWheelsHubException(e);
+            throw new SwiftWheelsHubException(e.getMessage());
         }
     }
 
