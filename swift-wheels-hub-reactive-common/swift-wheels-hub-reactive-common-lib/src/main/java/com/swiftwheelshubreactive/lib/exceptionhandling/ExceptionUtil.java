@@ -25,6 +25,10 @@ public class ExceptionUtil {
             return swiftWheelsHubResponseStatusException;
         }
 
+        if (e instanceof SwiftWheelsHubException swiftWheelsHubException) {
+            return swiftWheelsHubException;
+        }
+
         return new SwiftWheelsHubException(e.getMessage());
     }
 
