@@ -88,5 +88,14 @@ management:
     readinessstate:
       enabled: true
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web:
+          csrf:
+            CsrfFilter: DEBUG
+
 invoiceConsumer:
   isMessageAckEnabled: false
