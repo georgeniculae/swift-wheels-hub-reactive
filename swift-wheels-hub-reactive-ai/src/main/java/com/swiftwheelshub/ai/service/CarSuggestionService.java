@@ -3,6 +3,7 @@ package com.swiftwheelshub.ai.service;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class CarSuggestionService {
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
