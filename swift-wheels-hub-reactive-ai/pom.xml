@@ -16,7 +16,6 @@
 
     <properties>
         <swift-wheels-hub-common-reactive.version>0.0.1-SNAPSHOT</swift-wheels-hub-common-reactive.version>
-        <langchain4j.version>0.31.0</langchain4j.version>
     </properties>
 
     <dependencies>
