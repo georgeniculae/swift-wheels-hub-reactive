@@ -14,12 +14,12 @@ public class ChatService {
     private final ChatClient chatClient;
 
     public Flux<String> getChatReply(String prompt) {
-        return Mono.fromCallable(() -> getStream(prompt))
+        return Mono.fromCallable(() -> getStreamResponseSpec(prompt))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(ChatClient.ChatClientRequest.StreamResponseSpec::content);
     }
 
-    private ChatClient.ChatClientRequest.StreamResponseSpec getStream(String prompt) {
+    private ChatClient.ChatClientRequest.StreamResponseSpec getStreamResponseSpec(String prompt) {
         return chatClient.prompt()
                 .user(prompt)
                 .stream();
