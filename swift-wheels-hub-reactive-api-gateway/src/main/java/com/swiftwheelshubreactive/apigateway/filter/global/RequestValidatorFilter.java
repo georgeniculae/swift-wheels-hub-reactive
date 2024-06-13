@@ -109,20 +109,4 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
         );
     }
 
-    private SwiftWheelsHubResponseStatusException handleExceptions(Throwable e) {
-        log.error("Error while trying to validate request: {}", e.getMessage());
-
-        if (e instanceof SwiftWheelsHubResponseStatusException swiftWheelsHubResponseStatusException) {
-            return new SwiftWheelsHubResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    swiftWheelsHubResponseStatusException.getMessage()
-            );
-        }
-
-        return new SwiftWheelsHubResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                e.getMessage()
-        );
-    }
-
 }

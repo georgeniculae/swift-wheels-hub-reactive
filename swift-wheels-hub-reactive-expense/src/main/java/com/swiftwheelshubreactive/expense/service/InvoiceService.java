@@ -124,7 +124,7 @@ public class InvoiceService {
                                 )
                         )
                 )
-                .flatMap(existsByBookingId -> invoiceRepository.save(getInvoice(newBookingResponse)))
+                .flatMap(_ -> invoiceRepository.save(getInvoice(newBookingResponse)))
                 .map(invoiceMapper::mapEntityToDto);
     }
 
