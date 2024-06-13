@@ -10,11 +10,11 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingStatus;
@@ -154,7 +154,7 @@ public class BookingService {
     public Mono<BookingResponse> updateBooking(String apiKey, List<String> roles, String id,
                                                BookingRequest updatedBookingRequest) {
         return validateBookingDates(updatedBookingRequest)
-                .flatMap(bookingRequest -> findEntityById(id))
+                .flatMap(_ -> findEntityById(id))
                 .flatMap(existingBooking -> updateExistingBooking(apiKey, roles, updatedBookingRequest, existingBooking))
                 .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
@@ -266,7 +266,7 @@ public class BookingService {
     private Mono<CarResponse> getCarIfIsChanged(String apiKey, List<String> roles, BookingRequest updatedBookingRequest,
                                                 Booking existingBooking) {
         return Mono.just(updatedBookingRequest.carId())
-                .filter(id -> !existingBooking.getCarId().toString().equals(id))
+                .filter(carId -> !existingBooking.getCarId().toString().equals(carId))
                 .flatMap(newCarId -> carService.findAvailableCarById(apiKey, roles, newCarId))
                 .flatMap(carResponse -> checkIfCarIsFromRightBranch(updatedBookingRequest, carResponse))
                 .switchIfEmpty(Mono.empty());

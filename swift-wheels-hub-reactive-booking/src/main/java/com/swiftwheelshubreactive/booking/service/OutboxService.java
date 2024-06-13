@@ -85,7 +85,7 @@ public class OutboxService {
         return sendBookingToCorrespondingTopic(outbox)
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending booking failed")))
-                .map(response -> outbox);
+                .map(_ -> outbox);
     }
 
     private Mono<Boolean> sendBookingToCorrespondingTopic(Outbox outbox) {
