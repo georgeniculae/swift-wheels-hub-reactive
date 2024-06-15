@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "booking_audit_log_info")
@@ -33,6 +34,6 @@ public class BookingAuditLogInfo {
 
     private String username;
 
-    private List<String> parametersValues;
+    private List<String> parametersValues = new ArrayList<>();
 
 }
