@@ -105,6 +105,10 @@ logging:
         web:
           csrf:
             CsrfFilter: DEBUG
+        data:
+          mongodb:
+            core:
+              ReactiveMongoTemplate: DEBUG
 
 auditConsumer:
   isMessageAckEnabled: false

@@ -103,6 +103,10 @@ logging:
         web:
           csrf:
             CsrfFilter: DEBUG
+        data:
+          mongodb:
+            core:
+              ReactiveMongoTemplate: DEBUG
 
 apikey:
   secret: ${API_KEY_SECRET}
