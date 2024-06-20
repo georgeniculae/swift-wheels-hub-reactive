@@ -34,6 +34,7 @@ public class BookingAuditLogInfo {
 
     private String username;
 
+    @Builder.Default
     private List<String> parametersValues = new ArrayList<>();
 
 }
