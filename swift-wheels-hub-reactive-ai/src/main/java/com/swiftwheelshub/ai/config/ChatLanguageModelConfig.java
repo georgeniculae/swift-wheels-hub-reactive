@@ -42,7 +42,12 @@ public class ChatLanguageModelConfig {
 
     @Bean
     public ChatClient chatClient() {
-        return ChatClient.create(chatModel());
+        return ChatClient.builder(chatModel())
+                .defaultSystem("""
+                        You are a helpful assistant who can clearly and concisely answer questions about the type
+                        of vehicle that is most suitable for traveling to a certain location in Romania in a certain
+                        month of the year.""")
+                .build();
     }
 
 }
