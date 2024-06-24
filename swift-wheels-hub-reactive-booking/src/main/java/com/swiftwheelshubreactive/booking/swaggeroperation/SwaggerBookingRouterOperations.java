@@ -86,6 +86,7 @@ import java.time.LocalDate;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
+                                        required = true,
                                         name = "date",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
@@ -276,6 +277,7 @@ import java.time.LocalDate;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
+                                        required = true,
                                         name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
@@ -377,6 +379,7 @@ import java.time.LocalDate;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
+                                        required = true,
                                         name = "id",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
@@ -408,6 +411,7 @@ import java.time.LocalDate;
                                 },
                                 parameters = @Parameter(
                                         in = ParameterIn.PATH,
+                                        required = true,
                                         name = "username",
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )

@@ -26,6 +26,7 @@ public class CarHandler {
     private static final String MAKE = "make";
     private static final String FILTER = "filter";
     private static final String FILE = "file";
+    private static final String CAR_STATE = "carState";
     private final CarService carService;
     private final CarUpdateDetailsValidator carUpdateDetailsValidator;
     private final UpdateCarRequestValidator updateCarRequestValidator;
@@ -119,8 +120,10 @@ public class CarHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(CarState.class)
-                .flatMap(carStatus -> carService.updateCarStatus(ServerRequestUtil.getPathVariable(serverRequest, ID), carStatus))
+        return carService.updateCarStatus(
+                        ServerRequestUtil.getPathVariable(serverRequest, ID),
+                        CarState.valueOf(ServerRequestUtil.getQueryParam(serverRequest, CAR_STATE))
+                )
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 

@@ -108,8 +108,9 @@ import java.math.BigDecimal;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "date",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )

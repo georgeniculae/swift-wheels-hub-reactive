@@ -41,12 +41,11 @@ public class CarService {
     }
 
     public Mono<Void> changeCarStatus(String apiKey, List<String> roles, String carId, CarState carState) {
-        return webClient.put()
-                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status", carId)
+        return webClient.patch()
+                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status?carState={carState}", carId, carState)
                 .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carState)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))

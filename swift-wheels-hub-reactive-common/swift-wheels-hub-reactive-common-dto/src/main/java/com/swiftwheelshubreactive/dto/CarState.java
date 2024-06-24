@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 public enum CarState {
 
+    AVAILABLE("Available"),
     NOT_AVAILABLE("Not available"),
     BROKEN("Broken"),
     IN_REPAIR("In repair"),
-    IN_SERVICE("In service"),
-    AVAILABLE("Available");
+    IN_SERVICE("In service");
 
     private final String displayName;
 

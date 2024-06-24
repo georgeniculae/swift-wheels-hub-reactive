@@ -43,7 +43,11 @@ class CarSuggestionHandlerTest {
                 .method(HttpMethod.POST)
                 .header("X-API-KEY", "apikey")
                 .header("X-USERNAME", "user")
-                .body(Mono.just(tripInfo));
+                .queryParam("destination", "Sinaia")
+                .queryParam("peopleCount", "3")
+                .queryParam("tripKind", "city")
+                .queryParam("tripDate", "2024-06-20")
+                .build();
 
         when(tripInfoValidator.validateBody(any(TripInfo.class))).thenReturn(Mono.just(tripInfo));
         when(carSuggestionService.getChatOutput(anyString(), anyList(), any(TripInfo.class)))

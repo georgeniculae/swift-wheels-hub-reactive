@@ -16,6 +16,7 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +43,7 @@ class CarSuggestionServiceTest {
         String apikey = "apikey";
 
         when(carService.getAllAvailableCars(anyString(), anyList())).thenReturn(Flux.just(carResponse));
-        when(chatService.getChatReply(anyString())).thenReturn(Mono.just(carSuggestionResponse));
+        when(chatService.getChatReply(anyString(), anyMap())).thenReturn(Mono.just(carSuggestionResponse));
 
         carSuggestionService.getChatOutput(apikey, List.of("admin"), tripInfo)
                 .as(StepVerifier::create)

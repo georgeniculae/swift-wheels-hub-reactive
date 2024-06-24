@@ -19,7 +19,7 @@ public class CarSuggestionRouter {
     @Bean
     @SwaggerCarSuggestionRouterOperations
     public RouterFunction<ServerResponse> routeCarSuggestion(CarSuggestionHandler carSuggestionHandler) {
-        return RouterFunctions.route(RequestPredicates.POST("/car-suggestion"), carSuggestionHandler::getChatOutput);
+        return RouterFunctions.route(RequestPredicates.GET("/car-suggestion"), carSuggestionHandler::getChatOutput);
     }
 
 }

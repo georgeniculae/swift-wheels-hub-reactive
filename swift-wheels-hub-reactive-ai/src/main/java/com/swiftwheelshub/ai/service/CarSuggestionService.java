@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +27,19 @@ public class CarSuggestionService {
     public Mono<CarSuggestionResponse> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
         return getAvailableCars(apikey, roles)
                 .collectList()
-                .map(cars -> createChatPrompt(tripInfo, cars))
-                .flatMap(chatService::getChatReply)
+                .flatMap(cars -> getCarSuggestionResponse(tripInfo, cars))
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
                 });
+    }
+
+    private Mono<CarSuggestionResponse> getCarSuggestionResponse(TripInfo tripInfo, List<String> cars) {
+        String text = getText();
+        Map<String, Object> params = getParams(tripInfo, cars);
+
+        return chatService.getChatReply(text, params);
     }
 
     private Flux<String> getAvailableCars(String apikey, List<String> roles) {
@@ -44,16 +51,20 @@ public class CarSuggestionService {
         return carResponse.make() + " " + carResponse.model() + " from " + carResponse.yearOfProduction();
     }
 
-    private String createChatPrompt(TripInfo tripInfo, List<String> cars) {
-        return String.format(
-                """
-                        Which car from the following list %s is more suitable for rental from a rental car agency
-                        for a trip for %s people to %s, Romania in %s? The car will be used for %s.""",
-                cars,
-                tripInfo.peopleCount(),
-                tripInfo.destination(),
-                getMonth(tripInfo.tripDate()),
-                tripInfo.tripKind()
+    private String getText() {
+        return """
+                Which car from the following list {cars} is more suitable for rental from a rental car
+                agency for a trip for {peopleCount} people to {destination}, Romania in {month}?
+                The car will be used for {tripKind}.""";
+    }
+
+    private Map<String, Object> getParams(TripInfo tripInfo, List<String> cars) {
+        return Map.of(
+                "cars", cars,
+                "destination", tripInfo.destination(),
+                "peopleCount", tripInfo.peopleCount(),
+                "month", getMonth(tripInfo.tripDate()),
+                "tripKind", tripInfo.tripKind()
         );
     }
 

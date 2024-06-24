@@ -39,7 +39,7 @@ class CarSuggestionRouterTest {
         when(carSuggestionHandler.getChatOutput(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<String> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .post()
+                .get()
                 .uri("/car-suggestion")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -62,7 +62,7 @@ class CarSuggestionRouterTest {
         when(carSuggestionHandler.getChatOutput(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .post()
+                .get()
                 .uri("/car-suggestion")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

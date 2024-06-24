@@ -83,8 +83,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "make",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -114,8 +115,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "filter",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -171,8 +173,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -231,8 +234,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -265,8 +269,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -386,17 +391,12 @@ import java.lang.annotation.Target;
                         )
                 ),
                 @RouterOperation(
-                        method = RequestMethod.PUT,
+                        method = RequestMethod.PATCH,
                         path = "/cars/{id}/change-status",
                         beanClass = CarHandler.class,
                         beanMethod = "updateCarStatus",
                         operation = @Operation(
                                 operationId = "updateCarStatus",
-                                requestBody = @RequestBody(
-                                        description = "Update car status",
-                                        required = true,
-                                        content = @Content(schema = @Schema(implementation = CarState.class))
-                                ),
                                 responses = {
                                         @ApiResponse(
                                                 responseCode = "200",
@@ -417,11 +417,19 @@ import java.lang.annotation.Target;
                                                 content = @Content(schema = @Schema())
                                         )
                                 },
-                                parameters = @Parameter(
-                                        in = ParameterIn.PATH,
-                                        name = "id",
-                                        content = @Content(schema = @Schema(implementation = String.class))
-                                )
+                                parameters = {
+                                        @Parameter(
+                                                in = ParameterIn.PATH,
+                                                name = "id",
+                                                content = @Content(schema = @Schema(implementation = String.class))
+                                        ),
+                                        @Parameter(
+                                                name = "carState",
+                                                in = ParameterIn.QUERY,
+                                                required = true,
+                                                content = @Content(schema = @Schema(implementation = CarState.class))
+                                        )
+                                }
                         )
                 ),
                 @RouterOperation(
@@ -454,8 +462,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -485,8 +494,8 @@ import java.lang.annotation.Target;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(
-                                                        implementation = CarResponse.class),
+                                                content = @Content(
+                                                        schema = @Schema(implementation = CarResponse.class),
                                                         mediaType = MediaType.APPLICATION_JSON_VALUE
                                                 )
                                         ),
@@ -502,8 +511,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -533,8 +543,9 @@ import java.lang.annotation.Target;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )

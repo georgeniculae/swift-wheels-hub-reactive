@@ -324,8 +324,9 @@ class CarHandlerTest {
         CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.PUT)
+                .method(HttpMethod.PATCH)
                 .pathVariable("id", "64f361caf291ae086e179547")
+                .queryParam("carState", "AVAILABLE")
                 .body(Mono.just(CarState.AVAILABLE));
 
         when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));

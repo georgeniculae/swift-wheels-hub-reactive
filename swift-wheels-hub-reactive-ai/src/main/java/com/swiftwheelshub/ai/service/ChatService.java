@@ -7,15 +7,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class ChatService {
 
     private final ChatClient chatClient;
 
-    public Mono<CarSuggestionResponse> getChatReply(String prompt) {
+    public Mono<CarSuggestionResponse> getChatReply(String text, Map<String, Object> params) {
         return Mono.fromCallable(() -> chatClient.prompt()
-                        .user(prompt)
+                        .user(userSpec -> userSpec.text(text).params(params))
                         .call()
                         .entity(CarSuggestionResponse.class))
                 .subscribeOn(Schedulers.boundedElastic());

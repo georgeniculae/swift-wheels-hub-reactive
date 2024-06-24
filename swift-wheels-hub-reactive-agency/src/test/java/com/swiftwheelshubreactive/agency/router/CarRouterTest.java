@@ -516,8 +516,8 @@ class CarRouterTest {
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .put()
-                .uri(PATH + "/{id}/change-status", "64f361caf291ae086e179547")
+                .patch()
+                .uri(PATH + "/{id}/change-status?carState={carState}", "64f361caf291ae086e179547", "AVAILABLE")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -634,8 +634,8 @@ class CarRouterTest {
         when(carHandler.updateCarStatus(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .put()
-                .uri(PATH + "/{id}/change-status", "64f361caf291ae086e179547")
+                .patch()
+                .uri(PATH + "/{id}/change-status?carState={carState}", "64f361caf291ae086e179547", "AVAILABLE")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()

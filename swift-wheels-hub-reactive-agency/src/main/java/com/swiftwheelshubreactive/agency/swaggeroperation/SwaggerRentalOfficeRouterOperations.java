@@ -75,8 +75,9 @@ import java.util.List;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "filter",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -132,8 +133,9 @@ import java.util.List;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -199,8 +201,9 @@ import java.util.List;
                                         )
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
@@ -230,8 +233,9 @@ import java.util.List;
                                         ),
                                 },
                                 parameters = @Parameter(
-                                        in = ParameterIn.PATH,
                                         name = "id",
+                                        in = ParameterIn.PATH,
+                                        required = true,
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
