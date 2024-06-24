@@ -1,12 +1,14 @@
 package com.swiftwheelshub.ai.service;
 
 import com.swiftwheelshubreactive.dto.CarResponse;
+import com.swiftwheelshubreactive.dto.CarSuggestionResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -21,11 +23,11 @@ public class CarSuggestionService {
     private final ChatService chatService;
     private final CarService carService;
 
-    public Flux<String> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
+    public Mono<CarSuggestionResponse> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
         return getAvailableCars(apikey, roles)
                 .collectList()
                 .map(cars -> createChatPrompt(tripInfo, cars))
-                .flatMapMany(chatService::getChatReply)
+                .flatMap(chatService::getChatReply)
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 

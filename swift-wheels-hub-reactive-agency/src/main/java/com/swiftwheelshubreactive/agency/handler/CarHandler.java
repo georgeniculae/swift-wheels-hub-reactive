@@ -79,7 +79,7 @@ public class CarHandler {
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses));
     }
 
-    @PreAuthorize("hasRole('user'")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getCarImage(ServerRequest serverRequest) {
         return carService.getCarImage(ServerRequestUtil.getPathVariable(serverRequest, ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))

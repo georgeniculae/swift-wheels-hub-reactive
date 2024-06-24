@@ -1,9 +1,9 @@
 package com.swiftwheelshub.ai.service;
 
+import com.swiftwheelshubreactive.dto.CarSuggestionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -13,16 +13,12 @@ public class ChatService {
 
     private final ChatClient chatClient;
 
-    public Flux<String> getChatReply(String prompt) {
-        return Mono.fromCallable(() -> getStreamResponseSpec(prompt))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMapMany(ChatClient.ChatClientRequest.StreamResponseSpec::content);
-    }
-
-    private ChatClient.ChatClientRequest.StreamResponseSpec getStreamResponseSpec(String prompt) {
-        return chatClient.prompt()
-                .user(prompt)
-                .stream();
+    public Mono<CarSuggestionResponse> getChatReply(String prompt) {
+        return Mono.fromCallable(() -> chatClient.prompt()
+                        .user(prompt)
+                        .call()
+                        .entity(CarSuggestionResponse.class))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

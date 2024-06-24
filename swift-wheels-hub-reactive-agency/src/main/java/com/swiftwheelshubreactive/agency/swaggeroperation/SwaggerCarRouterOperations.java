@@ -324,7 +324,10 @@ import java.lang.annotation.Target;
                                 requestBody = @RequestBody(
                                         description = "Upload cars",
                                         required = true,
-                                        content = @Content(schema = @Schema(implementation = FilePart.class))
+                                        content = @Content(
+                                                schema = @Schema(implementation = FilePart.class),
+                                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                        )
                                 ),
                                 responses = {
                                         @ApiResponse(

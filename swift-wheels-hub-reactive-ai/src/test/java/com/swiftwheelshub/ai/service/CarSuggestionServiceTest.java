@@ -2,6 +2,7 @@ package com.swiftwheelshub.ai.service;
 
 import com.swiftwheelshub.ai.util.TestUtils;
 import com.swiftwheelshubreactive.dto.CarResponse;
+import com.swiftwheelshubreactive.dto.CarSuggestionResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -31,17 +33,20 @@ class CarSuggestionServiceTest {
 
     @Test
     void getChatOutputTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-        String output = "Test";
-        TripInfo tripInfo = TestUtils.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
+        CarResponse carResponse =
+                TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        TripInfo tripInfo =
+                TestUtils.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
+        CarSuggestionResponse carSuggestionResponse =
+                TestUtils.getResourceAsJson("/data/CarSuggestionResponse.json", CarSuggestionResponse.class);
         String apikey = "apikey";
 
         when(carService.getAllAvailableCars(anyString(), anyList())).thenReturn(Flux.just(carResponse));
-        when(chatService.getChatReply(anyString())).thenReturn(Flux.just(output));
+        when(chatService.getChatReply(anyString())).thenReturn(Mono.just(carSuggestionResponse));
 
         carSuggestionService.getChatOutput(apikey, List.of("admin"), tripInfo)
                 .as(StepVerifier::create)
-                .expectNext(output)
+                .expectNext(carSuggestionResponse)
                 .verifyComplete();
     }
 

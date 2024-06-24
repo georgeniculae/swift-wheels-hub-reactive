@@ -46,7 +46,7 @@ public class ChatLanguageModelConfig {
                 .defaultSystem("""
                         You are a helpful assistant who can clearly and concisely answer questions about the type
                         of vehicle that is most suitable for traveling to a certain location in Romania in a certain
-                        month of the year.""")
+                        month of the year. You must provide one suggestion only.""")
                 .build();
     }
 
