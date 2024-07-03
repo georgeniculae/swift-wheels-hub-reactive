@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.agency.handler;
 import com.swiftwheelshubreactive.agency.service.EmployeeService;
 import com.swiftwheelshubreactive.agency.validator.EmployeeRequestValidator;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
-import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,14 +31,14 @@ public class EmployeeHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findEmployeeById(ServerRequest serverRequest) {
-        return employeeService.findEmployeeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return employeeService.findEmployeeById(serverRequest.pathVariable(ID))
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findEmployeesByBranchId(ServerRequest serverRequest) {
-        return employeeService.findEmployeesByBranchId(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return employeeService.findEmployeesByBranchId(serverRequest.pathVariable(ID))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(employeeResponses -> ServerResponse.ok().bodyValue(employeeResponses))
@@ -48,7 +47,7 @@ public class EmployeeHandler {
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findEmployeeByFilterInsensitiveCase(ServerRequest serverRequest) {
-        return employeeService.findEmployeeByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
+        return employeeService.findEmployeeByFilterInsensitiveCase(serverRequest.pathVariable(FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(employeeResponses -> ServerResponse.ok().bodyValue(employeeResponses))
@@ -73,13 +72,17 @@ public class EmployeeHandler {
     public Mono<ServerResponse> updateEmployee(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(EmployeeRequest.class)
                 .flatMap(employeeRequestValidator::validateBody)
-                .flatMap(employeeRequest -> employeeService.updateEmployee(ServerRequestUtil.getPathVariable(serverRequest, ID), employeeRequest))
+                .flatMap(employeeRequest -> employeeService.updateEmployee(
+                                serverRequest.pathVariable(ID),
+                                employeeRequest
+                        )
+                )
                 .flatMap(employeeResponse -> ServerResponse.ok().bodyValue(employeeResponse));
     }
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteEmployeeById(ServerRequest serverRequest) {
-        return employeeService.deleteEmployeeById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return employeeService.deleteEmployeeById(serverRequest.pathVariable(ID))
                 .then(ServerResponse.noContent().build());
     }
 

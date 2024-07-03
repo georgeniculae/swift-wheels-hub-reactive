@@ -2,19 +2,18 @@ package com.swiftwheelshubreactive.customer.service;
 
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -98,10 +97,10 @@ public class CustomerService {
             sentParameters = "username",
             activityDescription = "User deletion"
     )
-    public Mono<Void> deleteUserByUsername(String apiKey, List<String> roles, String username) {
+    public Mono<Void> deleteUserByUsername(RequestDetails requestDetails, String username) {
         return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
                 .subscribeOn(Schedulers.boundedElastic())
-                .then(Mono.defer(() -> bookingService.deleteBookingsByUsername(apiKey, roles, username)))
+                .then(Mono.defer(() -> bookingService.deleteBookingsByUsername(requestDetails, username)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 

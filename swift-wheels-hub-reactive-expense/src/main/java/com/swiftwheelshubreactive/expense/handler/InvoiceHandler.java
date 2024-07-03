@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
@@ -42,7 +43,7 @@ public class InvoiceHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findAllInvoicesByCustomerUsername(ServerRequest serverRequest) {
-        return invoiceService.findAllInvoicesByCustomerUsername(ServerRequestUtil.getPathVariable(serverRequest, CUSTOMER_ID))
+        return invoiceService.findAllInvoicesByCustomerUsername(serverRequest.pathVariable(CUSTOMER_ID))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(invoiceResponses -> ServerResponse.ok().bodyValue(invoiceResponses))
@@ -51,14 +52,14 @@ public class InvoiceHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findInvoiceById(ServerRequest serverRequest) {
-        return invoiceService.findInvoiceById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return invoiceService.findInvoiceById(serverRequest.pathVariable(ID))
                 .flatMap(invoiceResponse -> ServerResponse.ok().bodyValue(invoiceResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findInvoicesByComments(ServerRequest serverRequest) {
-        return invoiceService.findInvoicesByComments(ServerRequestUtil.getPathVariable(serverRequest, COMMENTS))
+        return invoiceService.findInvoicesByComments(serverRequest.pathVariable(COMMENTS))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(invoiceResponses -> ServerResponse.ok().bodyValue(invoiceResponses))
@@ -84,9 +85,11 @@ public class InvoiceHandler {
         return serverRequest.bodyToMono(InvoiceRequest.class)
                 .flatMap(invoiceRequestValidator::validateBody)
                 .flatMap(invoiceRequest -> invoiceService.closeInvoice(
-                                ServerRequestUtil.getApiKeyHeader(serverRequest),
-                                ServerRequestUtil.getRolesHeader(serverRequest),
-                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                RequestDetails.builder()
+                                        .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                        .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                        .build(),
+                                serverRequest.pathVariable(ID),
                                 invoiceRequest
                         )
                 )

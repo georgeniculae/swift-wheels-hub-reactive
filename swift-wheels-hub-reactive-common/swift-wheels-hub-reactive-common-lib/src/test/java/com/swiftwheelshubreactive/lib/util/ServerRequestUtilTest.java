@@ -17,18 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ServerRequestUtilTest {
 
     @Test
-    void getPathVariableTest_success() {
-        ServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.GET)
-                .pathVariable("test", "test")
-                .build();
-
-        String pathVariable = ServerRequestUtil.getPathVariable(serverRequest, "test");
-
-        assertEquals("test", pathVariable);
-    }
-
-    @Test
     void getQueryParamTest_success() {
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)

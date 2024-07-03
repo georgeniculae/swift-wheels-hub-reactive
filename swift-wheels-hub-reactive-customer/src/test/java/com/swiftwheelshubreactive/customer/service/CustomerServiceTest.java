@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.customer.service;
 import com.swiftwheelshubreactive.customer.util.TestUtils;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
@@ -17,7 +18,6 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -161,10 +161,15 @@ class CustomerServiceTest {
 
     @Test
     void deleteUserByUsernameTest_success() {
-        doNothing().when(keycloakUserService).deleteUserByUsername(anyString());
-        when(bookingService.deleteBookingsByUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
+        RequestDetails requestDetails = RequestDetails.builder()
+                .apikey("apikey")
+                .roles(List.of("admin"))
+                .build();
 
-        customerService.deleteUserByUsername("apiKey", List.of("USER"), "user")
+        doNothing().when(keycloakUserService).deleteUserByUsername(anyString());
+        when(bookingService.deleteBookingsByUsername(any(RequestDetails.class), anyString())).thenReturn(Mono.empty());
+
+        customerService.deleteUserByUsername(requestDetails, "user")
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
@@ -172,9 +177,14 @@ class CustomerServiceTest {
 
     @Test
     void deleteUserByUsernameTest_errorOnDeleting() {
+        RequestDetails requestDetails = RequestDetails.builder()
+                .apikey("apikey")
+                .roles(List.of("admin"))
+                .build();
+
         doThrow(new SwiftWheelsHubException("error")).when(keycloakUserService).deleteUserByUsername(anyString());
 
-        customerService.deleteUserByUsername("apiKey", List.of("USER"), "user")
+        customerService.deleteUserByUsername(requestDetails, "user")
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();

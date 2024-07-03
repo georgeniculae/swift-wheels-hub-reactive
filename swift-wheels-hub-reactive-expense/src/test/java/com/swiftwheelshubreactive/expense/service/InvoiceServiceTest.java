@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapperImpl;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -26,7 +27,6 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -250,17 +250,22 @@ class InvoiceServiceTest {
         BookingResponse bookingResponse =
                 TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
+        RequestDetails requestDetails = RequestDetails.builder()
+                .apikey("apikey")
+                .roles(List.of("admin"))
+                .build();
+
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.findBookingById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(bookingResponse));
         when(revenueService.saveInvoiceRevenueAndOutbox(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class)))
+        when(bookingService.closeBooking(any(RequestDetails.class), any(BookingClosingDetails.class)))
                 .thenReturn(Mono.empty());
 
-        StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
+        StepVerifier.create(invoiceService.closeInvoice(requestDetails, "64f361caf291ae086e179547", invoiceRequest))
                 .expectNext(invoiceResponse)
                 .verifyComplete();
 
@@ -275,14 +280,19 @@ class InvoiceServiceTest {
         InvoiceRequest invoiceRequest =
                 TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
+        RequestDetails requestDetails = RequestDetails.builder()
+                .apikey("apikey")
+                .roles(List.of("admin"))
+                .build();
+
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
                 .build();
 
-        when(bookingService.findBookingById(anyString(), anyList(), anyString())).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.findBookingById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(bookingResponse));
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.closeInvoice("token", List.of("admin"), "64f361caf291ae086e179547", invoiceRequest))
+        StepVerifier.create(invoiceService.closeInvoice(requestDetails, "64f361caf291ae086e179547", invoiceRequest))
                 .expectError()
                 .verify();
     }

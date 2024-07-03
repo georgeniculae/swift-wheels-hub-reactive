@@ -42,14 +42,14 @@ public class CarHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findCarById(ServerRequest serverRequest) {
-        return carService.findCarById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return carService.findCarById(serverRequest.pathVariable(ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findCarsByMakeInsensitiveCase(ServerRequest serverRequest) {
-        return carService.findCarsByMakeInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, MAKE))
+        return carService.findCarsByMakeInsensitiveCase(serverRequest.pathVariable(MAKE))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses))
@@ -58,7 +58,7 @@ public class CarHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findCarsByFilterInsensitiveCase(ServerRequest serverRequest) {
-        return carService.findCarsByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
+        return carService.findCarsByFilterInsensitiveCase(serverRequest.pathVariable(FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(carResponses -> ServerResponse.ok().bodyValue(carResponses))
@@ -67,7 +67,7 @@ public class CarHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getAvailableCar(ServerRequest serverRequest) {
-        return carService.getAvailableCar(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return carService.getAvailableCar(serverRequest.pathVariable(ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
@@ -82,7 +82,7 @@ public class CarHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getCarImage(ServerRequest serverRequest) {
-        return carService.getCarImage(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return carService.getCarImage(serverRequest.pathVariable(ID))
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
@@ -114,14 +114,18 @@ public class CarHandler {
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> updateCar(ServerRequest serverRequest) {
         return serverRequest.multipartData()
-                .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(ServerRequestUtil.getPathVariable(serverRequest, ID), updatedCarRequestMultivalueMap.toSingleValueMap()))
+                .flatMap(updatedCarRequestMultivalueMap -> carService.updateCar(
+                                serverRequest.pathVariable(ID),
+                                updatedCarRequestMultivalueMap.toSingleValueMap()
+                        )
+                )
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {
         return carService.updateCarStatus(
-                        ServerRequestUtil.getPathVariable(serverRequest, ID),
+                        serverRequest.pathVariable(ID),
                         CarState.valueOf(ServerRequestUtil.getQueryParam(serverRequest, CAR_STATE))
                 )
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
@@ -132,7 +136,7 @@ public class CarHandler {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
                 .flatMap(carUpdateDetailsValidator::validateBody)
                 .flatMap(carUpdateDetails -> carService.updateCarWhenBookingIsClosed(
-                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                serverRequest.pathVariable(ID),
                                 carUpdateDetails
                         )
                 )
@@ -151,7 +155,7 @@ public class CarHandler {
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteCarById(ServerRequest serverRequest) {
-        return carService.deleteCarById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return carService.deleteCarById(serverRequest.pathVariable(ID))
                 .then(ServerResponse.noContent().build());
     }
 

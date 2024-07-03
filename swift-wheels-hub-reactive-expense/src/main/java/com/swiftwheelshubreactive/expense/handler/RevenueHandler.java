@@ -1,7 +1,6 @@
 package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.expense.service.RevenueService;
-import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +27,7 @@ public class RevenueHandler {
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findRevenuesByDate(ServerRequest serverRequest) {
-        return revenueService.findRevenuesByDate(ServerRequestUtil.getPathVariable(serverRequest, DATE_OF_REVENUE))
+        return revenueService.findRevenuesByDate(serverRequest.pathVariable(DATE_OF_REVENUE))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(revenueDtoList -> ServerResponse.ok().bodyValue(revenueDtoList))

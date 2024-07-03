@@ -7,6 +7,7 @@ import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -245,7 +245,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingRequest));
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
-        when(bookingService.saveBooking(anyString(), anyList(), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.saveBooking(any(RequestDetails.class), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -267,7 +267,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingClosingDetails));
 
         when(bookingClosingDetailsValidator.validateBody(any())).thenReturn(Mono.just(bookingClosingDetails));
-        when(bookingService.closeBooking(anyString(), anyList(), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.closeBooking(any(RequestDetails.class), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.closeBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -290,7 +290,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingRequest));
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
-        when(bookingService.updateBooking(anyString(), anyList(), anyString(), any(BookingRequest.class)))
+        when(bookingService.updateBooking(any(RequestDetails.class), anyString(), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
@@ -306,11 +306,11 @@ class BookingHandlerTest {
                 .pathVariable("username", "user")
                 .build();
 
-        when(bookingService.deleteBookingByCustomerUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
+        when(bookingService.deleteBookingByCustomerUsername(any(RequestDetails.class), anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(bookingHandler.deleteBookingByCustomerUsername(serverRequest))
-                .expectComplete()
-                .verify();
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
     }
 
 }

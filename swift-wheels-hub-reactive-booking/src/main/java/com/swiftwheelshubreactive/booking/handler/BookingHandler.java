@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidat
 import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -36,14 +37,14 @@ public class BookingHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findBookingById(ServerRequest serverRequest) {
-        return bookingService.findBookingById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return bookingService.findBookingById(serverRequest.pathVariable(ID))
                 .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findBookingsByDateOfBooking(ServerRequest serverRequest) {
-        return bookingService.findBookingsByDateOfBooking(ServerRequestUtil.getPathVariable(serverRequest, DATE))
+        return bookingService.findBookingsByDateOfBooking(serverRequest.pathVariable(DATE))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(bookingResponses -> ServerResponse.ok().bodyValue(bookingResponses))
@@ -94,8 +95,10 @@ public class BookingHandler {
         return serverRequest.bodyToMono(BookingRequest.class)
                 .flatMap(bookingRequestValidator::validateBody)
                 .flatMap(bookingRequest -> bookingService.saveBooking(
-                        ServerRequestUtil.getApiKeyHeader(serverRequest),
-                        ServerRequestUtil.getRolesHeader(serverRequest),
+                        RequestDetails.builder()
+                                .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                .build(),
                         bookingRequest)
                 )
                 .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
@@ -107,8 +110,10 @@ public class BookingHandler {
                 .flatMap(bookingClosingDetailsValidator::validateBody)
                 .flatMap(bookingClosingDetails ->
                         bookingService.closeBooking(
-                                ServerRequestUtil.getApiKeyHeader(serverRequest),
-                                ServerRequestUtil.getRolesHeader(serverRequest),
+                                RequestDetails.builder()
+                                        .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                        .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                        .build(),
                                 bookingClosingDetails
                         )
                 )
@@ -121,9 +126,11 @@ public class BookingHandler {
                 .flatMap(bookingRequestValidator::validateBody)
                 .flatMap(bookingRequest ->
                         bookingService.updateBooking(
-                                ServerRequestUtil.getApiKeyHeader(serverRequest),
-                                ServerRequestUtil.getRolesHeader(serverRequest),
-                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                RequestDetails.builder()
+                                        .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                        .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                        .build(),
+                                serverRequest.pathVariable(ID),
                                 bookingRequest
                         )
                 )
@@ -133,11 +140,13 @@ public class BookingHandler {
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> deleteBookingByCustomerUsername(ServerRequest serverRequest) {
         return bookingService.deleteBookingByCustomerUsername(
-                        ServerRequestUtil.getApiKeyHeader(serverRequest),
-                        ServerRequestUtil.getRolesHeader(serverRequest),
-                        ServerRequestUtil.getPathVariable(serverRequest, USERNAME)
+                        RequestDetails.builder()
+                                .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                .build(),
+                        serverRequest.pathVariable(USERNAME)
                 )
-                .flatMap(bookingResponse -> ServerResponse.noContent().build());
+                .then(ServerResponse.noContent().build());
     }
 
 }

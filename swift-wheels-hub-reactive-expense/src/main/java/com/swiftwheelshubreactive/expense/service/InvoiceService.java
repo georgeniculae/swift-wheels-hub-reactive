@@ -5,13 +5,14 @@ import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Invoice;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,6 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -142,12 +142,12 @@ public class InvoiceService {
             sentParameters = {"id", "invoiceRequest"},
             activityDescription = "Invoice closing"
     )
-    public Mono<InvoiceResponse> closeInvoice(String apiKey, List<String> roles, String id, InvoiceRequest invoiceRequest) {
+    public Mono<InvoiceResponse> closeInvoice(RequestDetails requestDetails, String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
-                .flatMap(request -> bookingService.findBookingById(apiKey, roles, request.bookingId()))
+                .flatMap(request -> bookingService.findBookingById(requestDetails, request.bookingId()))
                 .flatMap(bookingResponse -> setupExistingInvoice(id, invoiceRequest, bookingResponse))
                 .flatMap(revenueService::saveInvoiceRevenueAndOutbox)
-                .delayUntil(invoice -> bookingService.closeBooking(apiKey, roles, getBookingClosingDetails(invoice)))
+                .delayUntil(invoice -> bookingService.closeBooking(requestDetails, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());

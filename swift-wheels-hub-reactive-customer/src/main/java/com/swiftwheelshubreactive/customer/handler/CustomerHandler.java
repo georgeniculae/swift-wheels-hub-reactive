@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.customer.service.CustomerService;
 import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
 import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class CustomerHandler {
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> findUserByUsername(ServerRequest serverRequest) {
-        return customerService.findUserByUsername(ServerRequestUtil.getPathVariable(serverRequest, USERNAME))
+        return customerService.findUserByUsername(serverRequest.pathVariable(USERNAME))
                 .flatMap(userInfo -> ServerResponse.ok().bodyValue(userInfo))
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
@@ -63,7 +64,7 @@ public class CustomerHandler {
         return serverRequest.bodyToMono(UserUpdateRequest.class)
                 .flatMap(userUpdateRequestValidator::validateBody)
                 .flatMap(updatedUser -> customerService.updateUser(
-                                ServerRequestUtil.getPathVariable(serverRequest, ID),
+                                serverRequest.pathVariable(ID),
                                 updatedUser
                         )
                 )
@@ -73,9 +74,11 @@ public class CustomerHandler {
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
         return customerService.deleteUserByUsername(
-                        ServerRequestUtil.getApiKeyHeader(serverRequest),
-                        ServerRequestUtil.getRolesHeader(serverRequest),
-                        ServerRequestUtil.getPathVariable(serverRequest, USERNAME)
+                        RequestDetails.builder()
+                                .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                .build(),
+                        serverRequest.pathVariable(USERNAME)
                 )
                 .then(ServerResponse.noContent().build());
     }
@@ -83,8 +86,10 @@ public class CustomerHandler {
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> deleteCurrentUser(ServerRequest serverRequest) {
         return customerService.deleteUserByUsername(
-                        ServerRequestUtil.getApiKeyHeader(serverRequest),
-                        ServerRequestUtil.getRolesHeader(serverRequest),
+                        RequestDetails.builder()
+                                .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                .roles(ServerRequestUtil.getRolesHeader(serverRequest))
+                                .build(),
                         ServerRequestUtil.getUsername(serverRequest)
                 )
                 .then(ServerResponse.noContent().build());
@@ -92,7 +97,7 @@ public class CustomerHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> signOut(ServerRequest serverRequest) {
-        return customerService.signOut(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return customerService.signOut(serverRequest.pathVariable(ID))
                 .then(ServerResponse.ok().build());
     }
 

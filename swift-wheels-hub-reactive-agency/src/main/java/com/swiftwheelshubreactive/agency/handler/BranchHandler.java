@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.agency.handler;
 import com.swiftwheelshubreactive.agency.service.BranchService;
 import com.swiftwheelshubreactive.agency.validator.BranchRequestValidator;
 import com.swiftwheelshubreactive.dto.BranchRequest;
-import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,14 +31,14 @@ public class BranchHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findBranchById(ServerRequest serverRequest) {
-        return branchService.findBranchById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return branchService.findBranchById(serverRequest.pathVariable(ID))
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findBranchesByFilterInsensitiveCase(ServerRequest serverRequest) {
-        return branchService.findBranchesByFilterInsensitiveCase(ServerRequestUtil.getPathVariable(serverRequest, FILTER))
+        return branchService.findBranchesByFilterInsensitiveCase(serverRequest.pathVariable(FILTER))
                 .collectList()
                 .filter(ObjectUtils::isNotEmpty)
                 .flatMap(branchResponses -> ServerResponse.ok().bodyValue(branchResponses))
@@ -64,13 +63,13 @@ public class BranchHandler {
     public Mono<ServerResponse> updateBranch(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BranchRequest.class)
                 .flatMap(branchRequestValidator::validateBody)
-                .flatMap(branchRequest -> branchService.updateBranch(ServerRequestUtil.getPathVariable(serverRequest, ID), branchRequest))
+                .flatMap(branchRequest -> branchService.updateBranch(serverRequest.pathVariable(ID), branchRequest))
                 .flatMap(branchResponse -> ServerResponse.ok().bodyValue(branchResponse));
     }
 
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteBranchById(ServerRequest serverRequest) {
-        return branchService.deleteBranchById(ServerRequestUtil.getPathVariable(serverRequest, ID))
+        return branchService.deleteBranchById(serverRequest.pathVariable(ID))
                 .then(ServerResponse.noContent().build());
     }
 

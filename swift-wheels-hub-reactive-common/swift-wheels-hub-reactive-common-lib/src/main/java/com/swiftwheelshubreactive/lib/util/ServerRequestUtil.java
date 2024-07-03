@@ -13,10 +13,6 @@ public class ServerRequestUtil {
     private static final String X_USERNAME = "X-USERNAME";
     private static final String X_ROLES = "X-ROLES";
 
-    public static String getPathVariable(ServerRequest serverRequest, String name) {
-        return serverRequest.pathVariable(name);
-    }
-
     public static String getQueryParam(ServerRequest serverRequest, String name) {
         return serverRequest.queryParams().getFirst(name);
     }

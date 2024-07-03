@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.customer.service;
 
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +25,10 @@ public class BookingService {
 
     private final WebClient webClient;
 
-    public Mono<Void> deleteBookingsByUsername(String apiKey, List<String> roles, String username) {
+    public Mono<Void> deleteBookingsByUsername(RequestDetails requestDetails, String username) {
         return webClient.delete()
                 .uri(url + SEPARATOR + username)
-                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(Void.class)

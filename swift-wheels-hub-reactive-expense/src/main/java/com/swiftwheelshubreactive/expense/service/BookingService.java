@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import reactor.core.scheduler.Schedulers;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +29,10 @@ public class BookingService {
 
     private final WebClient webClient;
 
-    public Mono<Void> closeBooking(String apiKey, List<String> roles, BookingClosingDetails bookingClosingDetails) {
+    public Mono<Void> closeBooking(RequestDetails requestDetails, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
-                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -40,10 +40,10 @@ public class BookingService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<BookingResponse> findBookingById(String apiKey, List<String> roles, String bookingId) {
+    public Mono<BookingResponse> findBookingById(RequestDetails requestDetails, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", bookingId)
-                .headers(WebClientUtil.setHttpHeaders(apiKey, roles))
+                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(BookingResponse.class)

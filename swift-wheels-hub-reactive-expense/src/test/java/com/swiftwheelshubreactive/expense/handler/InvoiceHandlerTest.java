@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.util.TestUtils;
 import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
@@ -18,7 +19,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -226,7 +226,7 @@ class InvoiceHandlerTest {
                 .body(Mono.just(invoiceRequest));
 
         when(invoiceRequestValidator.validateBody(any())).thenReturn(Mono.just(invoiceRequest));
-        when(invoiceService.closeInvoice(anyString(), anyList(), anyString(), any(InvoiceRequest.class)))
+        when(invoiceService.closeInvoice(any(RequestDetails.class), anyString(), any(InvoiceRequest.class)))
                 .thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.closeInvoice(serverRequest))

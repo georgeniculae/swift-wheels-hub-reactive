@@ -6,6 +6,7 @@ import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
 import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
+import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -199,7 +199,7 @@ class CustomerHandlerTest {
                 .header("X-API-KEY", "apikey")
                 .build();
 
-        when(customerService.deleteUserByUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
+        when(customerService.deleteUserByUsername(any(RequestDetails.class), anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.deleteCurrentUser(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -214,7 +214,7 @@ class CustomerHandlerTest {
                 .header("X-API-KEY", "apikey")
                 .build();
 
-        when(customerService.deleteUserByUsername(anyString(), anyList(), anyString())).thenReturn(Mono.empty());
+        when(customerService.deleteUserByUsername(any(RequestDetails.class), anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(customerHandler.deleteUserByUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
