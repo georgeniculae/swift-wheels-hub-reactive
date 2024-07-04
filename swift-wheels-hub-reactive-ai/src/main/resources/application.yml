@@ -82,10 +82,10 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        security: ERROR
         web:
           csrf:
-            CsrfFilter: DEBUG
+            CsrfFilter: ERROR
 
 apikey:
   secret: ${API_KEY_SECRET}

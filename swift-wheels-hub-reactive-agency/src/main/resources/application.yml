@@ -86,14 +86,14 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        security: ERROR
         web:
           csrf:
-            CsrfFilter: DEBUG
+            CsrfFilter: ERROR
         data:
           mongodb:
             core:
-              ReactiveMongoTemplate: DEBUG
+              ReactiveMongoTemplate: ERROR
 
 apikey:
   secret: ${API_KEY_SECRET}

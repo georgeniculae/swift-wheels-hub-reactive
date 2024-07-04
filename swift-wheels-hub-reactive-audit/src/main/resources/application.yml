@@ -101,14 +101,14 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        security: ERROR
         web:
           csrf:
-            CsrfFilter: DEBUG
+            CsrfFilter: ERROR
         data:
           mongodb:
             core:
-              ReactiveMongoTemplate: DEBUG
+              ReactiveMongoTemplate: ERROR
 
 auditConsumer:
   isMessageAckEnabled: false
