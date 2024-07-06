@@ -71,7 +71,7 @@ class CarServiceTest {
     private CarRequestValidator carRequestValidator;
 
     @Mock
-    private ExcelProcessorService excelProcessorService;
+    private ExcelParserService excelParserService;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -310,7 +310,7 @@ class CarServiceTest {
 
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
-        when(excelProcessorService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
+        when(excelParserService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
 
         StepVerifier.create(carService.uploadCars(filePart))
@@ -328,7 +328,7 @@ class CarServiceTest {
 
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
-        when(excelProcessorService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
+        when(excelParserService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new SwiftWheelsHubException("error")));
 
         StepVerifier.create(carService.uploadCars(filePart))

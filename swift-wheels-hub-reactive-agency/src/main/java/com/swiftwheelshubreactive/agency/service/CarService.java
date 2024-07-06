@@ -51,7 +51,7 @@ public class CarService {
     private final CarRepository carRepository;
     private final BranchService branchService;
     private final EmployeeService employeeService;
-    private final ExcelProcessorService excelProcessorService;
+    private final ExcelParserService excelParserService;
     private final CarMapper carMapper;
     private final CarRequestValidator carRequestValidator;
     private final ObjectMapper objectMapper;
@@ -368,7 +368,7 @@ public class CarService {
     }
 
     private Flux<ExcelCarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
-        return Mono.fromCallable(() -> excelProcessorService.extractDataFromExcel(dataBuffer.asInputStream()))
+        return Mono.fromCallable(() -> excelParserService.extractDataFromExcel(dataBuffer.asInputStream()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);
     }

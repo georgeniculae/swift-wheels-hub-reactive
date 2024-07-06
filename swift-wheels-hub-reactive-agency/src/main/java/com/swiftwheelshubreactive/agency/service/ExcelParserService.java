@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class ExcelProcessorService {
+public class ExcelParserService {
 
     public List<ExcelCarRequest> extractDataFromExcel(InputStream inputStream) {
         try (Workbook workbook = new XSSFWorkbook(inputStream)) {
@@ -54,8 +53,6 @@ public class ExcelProcessorService {
     }
 
     private List<Object> getCellValues(Row currentRow, List<Picture> sheetPictures, DataFormatter dataFormatter) {
-        Optional<Picture> optionalCarPicture = getCarPicture(sheetPictures, currentRow);
-
         Iterator<Cell> cellIterator = currentRow.cellIterator();
         List<Object> values = new ArrayList<>();
 
@@ -67,17 +64,11 @@ public class ExcelProcessorService {
                 case NUMERIC -> values.add(dataFormatter.formatCellValue(cell));
                 default -> throw new SwiftWheelsHubException("Unknown Excel cell type");
             }
-
-            Optional<Picture> optionalPictureFiltered =
-                    optionalCarPicture.filter(picture -> cell.getColumnIndex() + 1 == picture.getClientAnchor().getCol1());
-
-            if (optionalPictureFiltered.isPresent()) {
-                Picture picture = optionalPictureFiltered.get();
-                values.add(picture.getPictureData());
-            }
         }
 
-        return values;
+        values.add(getCarPictureData(sheetPictures, currentRow));
+
+        return Collections.unmodifiableList(values);
     }
 
     private List<Picture> getSheetPictures(Sheet sheet) {
@@ -89,10 +80,17 @@ public class ExcelProcessorService {
                 .toList();
     }
 
-    private Optional<Picture> getCarPicture(List<Picture> sheetPictures, Row currentRow) {
+    private PictureData getCarPictureData(List<Picture> sheetPictures, Row currentRow) {
         return sheetPictures.stream()
-                .filter(picture -> currentRow.getRowNum() == picture.getClientAnchor().getRow1())
-                .findFirst();
+                .filter(picture -> hasCorrespondingRowAndColumn(currentRow, picture))
+                .findFirst()
+                .map(Picture::getPictureData)
+                .orElse(null);
+    }
+
+    private boolean hasCorrespondingRowAndColumn(Row currentRow, Picture picture) {
+        return currentRow.getRowNum() == picture.getClientAnchor().getRow1() &&
+                currentRow.getLastCellNum() == picture.getClientAnchor().getCol1();
     }
 
     private ExcelCarRequest generateExcelCarRequest(List<Object> values) {

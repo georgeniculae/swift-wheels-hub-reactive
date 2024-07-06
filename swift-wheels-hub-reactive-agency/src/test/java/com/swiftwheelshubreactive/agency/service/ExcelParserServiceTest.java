@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.agency.service;
 
+import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,20 +12,26 @@ import reactor.core.publisher.Flux;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 
+import static com.mongodb.assertions.Assertions.assertFalse;
+
 @ExtendWith(MockitoExtension.class)
-class ExcelProcessorServiceTest {
+class ExcelParserServiceTest {
 
     @InjectMocks
-    private ExcelProcessorService excelProcessorService;
+    private ExcelParserService excelParserService;
 
     @Test
     void extractDataFromExcelTest_success() {
         Path path = Paths.get("src/test/resources/file/Cars.xlsx");
         Flux<DataBuffer> dataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
 
-        excelProcessorService.extractDataFromExcel(Objects.requireNonNull(dataBuffer.blockFirst()).asInputStream());
+        List<ExcelCarRequest> excelCarRequests =
+                excelParserService.extractDataFromExcel(Objects.requireNonNull(dataBuffer.blockFirst()).asInputStream());
+
+        assertFalse(excelCarRequests.isEmpty());
     }
 
 }
