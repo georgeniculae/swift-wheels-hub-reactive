@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.lib.aspect;
 
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.service.AuditLogProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class AuditAspect {
                 .onErrorMap(e -> {
                     log.error("Error while logging activity: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
