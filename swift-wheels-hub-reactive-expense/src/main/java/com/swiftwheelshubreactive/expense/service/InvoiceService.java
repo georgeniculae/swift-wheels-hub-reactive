@@ -285,7 +285,7 @@ public class InvoiceService {
         }
 
         return rentalCarPrice.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
-                .add((ObjectUtils.isEmpty(invoiceRequest.damageCost()) ? BigDecimal.ZERO : invoiceRequest.damageCost()));
+                .add(getDamageCost(invoiceRequest));
     }
 
     private int getDaysPeriod(LocalDate bookingDateFrom, LocalDate bookingDateTo) {
