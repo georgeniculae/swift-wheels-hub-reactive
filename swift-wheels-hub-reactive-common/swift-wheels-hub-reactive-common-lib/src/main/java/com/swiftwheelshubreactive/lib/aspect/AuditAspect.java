@@ -1,7 +1,6 @@
 package com.swiftwheelshubreactive.lib.aspect;
 
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.service.AuditLogProducerService;
 import lombok.RequiredArgsConstructor;
@@ -36,25 +35,21 @@ public class AuditAspect {
     @Around("@annotation(LogActivity)")
     public Mono<?> logActivity(ProceedingJoinPoint joinPoint) {
         return getJoinPointProceed(joinPoint)
-                .delayUntil(_ -> sendAuditLogInfoRequest(joinPoint))
-                .onErrorMap(e -> {
-                    log.error("Error in audit process: {}", e.getMessage());
-
-                    return ExceptionUtil.handleException(e);
-                });
+                .delayUntil(_ -> sendAuditLogInfoRequest(joinPoint));
     }
 
     private Mono<?> getJoinPointProceed(ProceedingJoinPoint joinPoint) {
         try {
             return (Mono<?>) joinPoint.proceed();
         } catch (Throwable e) {
-            throw new SwiftWheelsHubException(e.getMessage());
+            throw ExceptionUtil.handleException(e);
         }
     }
 
     private Mono<AuditLogInfoRequest> sendAuditLogInfoRequest(ProceedingJoinPoint joinPoint) {
         return extractUsernameHeaderFromWebFluxContext()
-                .flatMap(username -> sendAuditLogInfoRequest(joinPoint, username));
+                .flatMap(username -> sendAuditLogInfoRequest(joinPoint, username))
+                .onErrorMap(ExceptionUtil::handleException);
     }
 
     private Mono<String> extractUsernameHeaderFromWebFluxContext() {
