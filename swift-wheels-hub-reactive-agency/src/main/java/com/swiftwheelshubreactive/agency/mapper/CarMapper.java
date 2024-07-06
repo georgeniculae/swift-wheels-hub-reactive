@@ -43,7 +43,7 @@ public interface CarMapper {
     Car getNewCarInstance(Car existingCar);
 
     default Binary mapByteArrayToBinary(byte[] bytes) {
-        return new Binary(BsonBinarySubType.BINARY, bytes);
+        return ObjectUtils.isEmpty(bytes) ? null : new Binary(BsonBinarySubType.BINARY, bytes);
     }
 
     default String mapObjectIdToString(ObjectId id) {
