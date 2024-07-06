@@ -24,7 +24,7 @@ public record InvoiceResponse(
         @NonNull
         String bookingId,
 
-        LocalDate carDateOfReturn,
+        LocalDate carReturnDate,
 
         Boolean isVehicleDamaged,
 
@@ -46,7 +46,7 @@ public record InvoiceResponse(
                 "carId=" + carId + "\n" +
                 "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +
-                "carDateOfReturn=" + carDateOfReturn + "\n" +
+                "carReturnDate=" + carReturnDate + "\n" +
                 "isVehicleDamaged=" + isVehicleDamaged + "\n" +
                 "damageCost=" + damageCost + "\n" +
                 "additionalPayment=" + additionalPayment + "\n" +

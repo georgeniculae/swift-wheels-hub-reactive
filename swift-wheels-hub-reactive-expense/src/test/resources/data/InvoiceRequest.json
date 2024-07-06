@@ -2,7 +2,7 @@
   "carId": "64f361caf291ae086e179547",
   "receptionistEmployeeId": "64f361caf291ae086e179547",
   "bookingId": "64f361caf291ae086e179547",
-  "carDateOfReturn": "2050-02-22",
+  "carReturnDate": "2050-02-22",
   "isVehicleDamaged": true,
   "damageCost": 50,
   "additionalPayment": 0,

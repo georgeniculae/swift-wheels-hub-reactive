@@ -35,7 +35,7 @@ public class Invoice {
 
     private ObjectId bookingId;
 
-    private LocalDate carDateOfReturn;
+    private LocalDate carReturnDate;
 
     private Boolean isVehicleDamaged;
 
