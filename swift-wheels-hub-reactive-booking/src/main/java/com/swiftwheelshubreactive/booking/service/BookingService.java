@@ -166,8 +166,7 @@ public class BookingService {
     }
 
     public Mono<BookingResponse> closeBooking(RequestDetails requestDetails, BookingClosingDetails bookingClosingDetails) {
-        return findEntityById(bookingClosingDetails.bookingId())
-                .flatMap(existingBooking -> updatedBookingWithEmployeeDetails(requestDetails, bookingClosingDetails, existingBooking))
+        return updatedBookingWithEmployeeDetails(requestDetails, bookingClosingDetails)
                 .flatMap(bookingRepository::save)
                 .map(bookingMapper::mapEntityToDto)
                 .delayUntil(bookingResponse -> updateCarWhenBookingIsClosed(requestDetails, bookingResponse, bookingClosingDetails))
@@ -226,10 +225,11 @@ public class BookingService {
     }
 
     private Mono<Booking> updatedBookingWithEmployeeDetails(RequestDetails requestDetails,
-                                                            BookingClosingDetails bookingClosingDetails,
-                                                            Booking existingBooking) {
-        return employeeService.findEmployeeById(requestDetails, bookingClosingDetails.receptionistEmployeeId())
-                .map(employeeResponse -> {
+                                                            BookingClosingDetails bookingClosingDetails) {
+        return Mono.zip(
+                findEntityById(bookingClosingDetails.bookingId()),
+                employeeService.findEmployeeById(requestDetails, bookingClosingDetails.receptionistEmployeeId()),
+                (existingBooking, employeeResponse) -> {
                     Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
