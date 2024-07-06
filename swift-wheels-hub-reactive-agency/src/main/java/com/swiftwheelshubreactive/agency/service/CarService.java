@@ -313,24 +313,24 @@ public class CarService {
         Branch actualBranch = (Branch) carDetails[2];
         byte[] imageContent = (byte[]) carDetails[3];
 
-        Car updateCar = carMapper.getNewCarInstance(existingCar);
+        Car updatedCar = carMapper.getNewCarInstance(existingCar);
 
-        updateCar.setMake(updatedCarRequest.make());
-        updateCar.setModel(updatedCarRequest.model());
-        updateCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
-        updateCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
-        updateCar.setColor(updatedCarRequest.color());
-        updateCar.setMileage(updatedCarRequest.mileage());
-        updateCar.setAmount(updatedCarRequest.amount());
-        updateCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
-        updateCar.setOriginalBranch(originalBranch);
-        updateCar.setActualBranch(actualBranch);
+        updatedCar.setMake(updatedCarRequest.make());
+        updatedCar.setModel(updatedCarRequest.model());
+        updatedCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
+        updatedCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
+        updatedCar.setColor(updatedCarRequest.color());
+        updatedCar.setMileage(updatedCarRequest.mileage());
+        updatedCar.setAmount(updatedCarRequest.amount());
+        updatedCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
+        updatedCar.setOriginalBranch(originalBranch);
+        updatedCar.setActualBranch(actualBranch);
 
         if (imageContent.length != 0) {
-            updateCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
+            updatedCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
         }
 
-        return updateCar;
+        return updatedCar;
     }
 
     private Mono<Car> setupFinalCarDetails(String id, CarUpdateDetails carUpdateDetails) {
