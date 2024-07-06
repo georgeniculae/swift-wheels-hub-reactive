@@ -20,6 +20,8 @@ public interface InvoiceMapper {
 
     Invoice mapDtoToEntity(InvoiceRequest invoiceRequest);
 
+    Invoice getNewInvoiceInstance(Invoice existingInvoice);
+
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
     }

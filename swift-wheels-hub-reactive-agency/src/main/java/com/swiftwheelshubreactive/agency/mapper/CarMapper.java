@@ -40,6 +40,8 @@ public interface CarMapper {
     @Mapping(target = "image", expression = "java(mapByteArrayToBinary(excelCarRequest.image()))")
     Car mapExcelCarRequestToEntity(ExcelCarRequest excelCarRequest);
 
+    Car getNewCarInstance(Car existingCar);
+
     default Binary mapByteArrayToBinary(byte[] bytes) {
         return new Binary(BsonBinarySubType.BINARY, bytes);
     }

@@ -5,9 +5,9 @@ import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Branch;
 import lombok.RequiredArgsConstructor;
@@ -87,11 +87,13 @@ public class BranchService {
                         findEntityById(id),
                         rentalOfficeService.findEntityById(branchRequest.rentalOfficeId()),
                         (existingBranch, rentalOffice) -> {
-                            existingBranch.setName(branchRequest.name());
-                            existingBranch.setAddress(branchRequest.address());
-                            existingBranch.setRentalOffice(rentalOffice);
+                            Branch updatedBranch = branchMapper.getNewBranchInstance(existingBranch);
 
-                            return existingBranch;
+                            updatedBranch.setName(branchRequest.name());
+                            updatedBranch.setAddress(branchRequest.address());
+                            updatedBranch.setRentalOffice(rentalOffice);
+
+                            return updatedBranch;
                         }
                 )
                 .flatMap(branchRepository::save)

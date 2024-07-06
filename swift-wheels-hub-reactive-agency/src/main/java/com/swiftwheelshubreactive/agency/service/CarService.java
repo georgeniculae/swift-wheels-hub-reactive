@@ -11,10 +11,10 @@ import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.BodyType;
 import com.swiftwheelshubreactive.model.Branch;
@@ -179,7 +179,12 @@ public class CarService {
 
     public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
-                .doOnNext(car -> car.setCarStatus(CarStatus.valueOf(carState.name())))
+                .map(existingCar -> {
+                    Car car = carMapper.getNewCarInstance(existingCar);
+                    car.setCarStatus(CarStatus.valueOf(carState.name()));
+
+                    return car;
+                })
                 .flatMap(carRepository::save)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
@@ -191,7 +196,12 @@ public class CarService {
 
     public Flux<CarResponse> updateCarsStatus(List<UpdateCarRequest> updateCarRequests) {
         return carRepository.findAllById(getCarIds(updateCarRequests))
-                .doOnNext(car -> car.setCarStatus(getUpdatedCarStatus(updateCarRequests, car)))
+                .map(existingCar -> {
+                    Car car = carMapper.getNewCarInstance(existingCar);
+                    car.setCarStatus(getUpdatedCarStatus(updateCarRequests, existingCar));
+
+                    return car;
+                })
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
                 .map(carMapper::mapEntityToDto);
@@ -255,14 +265,14 @@ public class CarService {
                         branchService.findEntityById(carRequest.originalBranchId()),
                         branchService.findEntityById(carRequest.actualBranchId()),
                         getImageContent(carRequestPartMap.get(IMAGE))),
-                values -> getNewCarInstance(carRequest, values)
+                carDetails -> getNewCarInstance(carRequest, carDetails)
         );
     }
 
-    private Car getNewCarInstance(CarRequest carRequest, Object[] values) {
-        Branch originalBranch = (Branch) values[0];
-        Branch actualBranch = (Branch) values[1];
-        byte[] imageContent = (byte[]) values[2];
+    private Car getNewCarInstance(CarRequest carRequest, Object[] carDetails) {
+        Branch originalBranch = (Branch) carDetails[0];
+        Branch actualBranch = (Branch) carDetails[1];
+        byte[] imageContent = (byte[]) carDetails[2];
 
         Car car = carMapper.mapDtoToEntity(carRequest, imageContent);
         car.setOriginalBranch(originalBranch);
@@ -271,9 +281,9 @@ public class CarService {
         return car;
     }
 
-    private CarStatus getUpdatedCarStatus(List<UpdateCarRequest> updateCarRequests, Car car) {
+    private CarStatus getUpdatedCarStatus(List<UpdateCarRequest> updateCarRequests, Car existingCar) {
         UpdateCarRequest matchingUpdateCarRequest = updateCarRequests.stream()
-                .filter(updateCarRequest -> car.getId().toString().equals(updateCarRequest.carId()))
+                .filter(updateCarRequest -> existingCar.getId().toString().equals(updateCarRequest.carId()))
                 .findAny()
                 .orElseThrow(() -> new SwiftWheelsHubNotFoundException("Car details not found"));
 
@@ -293,35 +303,34 @@ public class CarService {
                         branchService.findEntityById(updatedCarRequest.originalBranchId()),
                         branchService.findEntityById(updatedCarRequest.actualBranchId()),
                         getImageContent(carRequestPartMap.get(IMAGE))),
-                values -> {
-                    Car existingCar = (Car) values[0];
-                    Branch originalBranch = (Branch) values[1];
-                    Branch actualBranch = (Branch) values[2];
-                    byte[] imageContent = (byte[]) values[3];
-
-                    return updateExistingCar(updatedCarRequest, existingCar, originalBranch, actualBranch, imageContent);
-                }
+                carDetails -> getUpdatedCar(updatedCarRequest, carDetails)
         );
     }
 
-    private Car updateExistingCar(CarRequest updatedCarRequest, Car existingCar, Branch originalBranch,
-                                  Branch actualBranch, byte[] imageContent) {
-        existingCar.setMake(updatedCarRequest.make());
-        existingCar.setModel(updatedCarRequest.model());
-        existingCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
-        existingCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
-        existingCar.setColor(updatedCarRequest.color());
-        existingCar.setMileage(updatedCarRequest.mileage());
-        existingCar.setAmount(updatedCarRequest.amount());
-        existingCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
-        existingCar.setOriginalBranch(originalBranch);
-        existingCar.setActualBranch(actualBranch);
+    private Car getUpdatedCar(CarRequest updatedCarRequest, Object[] carDetails) {
+        Car existingCar = (Car) carDetails[0];
+        Branch originalBranch = (Branch) carDetails[1];
+        Branch actualBranch = (Branch) carDetails[2];
+        byte[] imageContent = (byte[]) carDetails[3];
+
+        Car updateCar = carMapper.getNewCarInstance(existingCar);
+
+        updateCar.setMake(updatedCarRequest.make());
+        updateCar.setModel(updatedCarRequest.model());
+        updateCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
+        updateCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
+        updateCar.setColor(updatedCarRequest.color());
+        updateCar.setMileage(updatedCarRequest.mileage());
+        updateCar.setAmount(updatedCarRequest.amount());
+        updateCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
+        updateCar.setOriginalBranch(originalBranch);
+        updateCar.setActualBranch(actualBranch);
 
         if (imageContent.length != 0) {
-            existingCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
+            updateCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
         }
 
-        return existingCar;
+        return updateCar;
     }
 
     private Mono<Car> setupFinalCarDetails(String id, CarUpdateDetails carUpdateDetails) {
@@ -335,10 +344,11 @@ public class CarService {
     private Car updateCarDetails(CarUpdateDetails carUpdateDetails, Car car, Employee employee) {
         CarState carState = carUpdateDetails.carState();
 
-        car.setActualBranch(employee.getWorkingBranch());
-        car.setCarStatus(CarStatus.valueOf(carState.name()));
+        Car updatedCar = carMapper.getNewCarInstance(car);
+        updatedCar.setActualBranch(employee.getWorkingBranch());
+        updatedCar.setCarStatus(CarStatus.valueOf(carState.name()));
 
-        return car;
+        return updatedCar;
     }
 
     private Mono<byte[]> getImageContent(Part part) {

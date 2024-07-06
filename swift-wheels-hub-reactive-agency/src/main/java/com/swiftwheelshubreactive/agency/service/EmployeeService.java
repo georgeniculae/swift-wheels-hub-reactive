@@ -4,9 +4,9 @@ import com.swiftwheelshubreactive.agency.mapper.EmployeeMapper;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Employee;
 import lombok.RequiredArgsConstructor;
@@ -62,20 +62,21 @@ public class EmployeeService {
     }
 
     public Mono<EmployeeResponse> updateEmployee(String id, EmployeeRequest updatedEmployeeRequest) {
-        return findEntityById(id)
-                .flatMap(existingEmployee -> {
-                    String workingBranchId = updatedEmployeeRequest.workingBranchId();
+        return Mono.zip(
+                        findEntityById(id),
+                        branchService.findEntityById(updatedEmployeeRequest.workingBranchId()),
+                        (existingEmployee, workingBranch) -> {
+                            Employee updatedEmployee = employeeMapper.getNewEmployeeInstance(existingEmployee);
 
-                    return branchService.findEntityById(workingBranchId)
-                            .flatMap(workingBranch -> {
-                                existingEmployee.setFirstName(updatedEmployeeRequest.firstName());
-                                existingEmployee.setLastName(updatedEmployeeRequest.lastName());
-                                existingEmployee.setJobPosition(updatedEmployeeRequest.jobPosition());
-                                existingEmployee.setWorkingBranch(workingBranch);
+                            updatedEmployee.setFirstName(updatedEmployeeRequest.firstName());
+                            updatedEmployee.setLastName(updatedEmployeeRequest.lastName());
+                            updatedEmployee.setJobPosition(updatedEmployeeRequest.jobPosition());
+                            updatedEmployee.setWorkingBranch(workingBranch);
 
-                                return employeeRepository.save(existingEmployee);
-                            });
-                })
+                            return updatedEmployee;
+                        }
+                )
+                .flatMap(employeeRepository::save)
                 .map(employeeMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while updating employee: {}", e.getMessage());

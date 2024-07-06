@@ -22,6 +22,8 @@ public interface EmployeeMapper {
 
     Employee mapDtoToEntity(EmployeeRequest employeeRequest);
 
+    Employee getNewEmployeeInstance(Employee existingEmployee);
+
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
     }

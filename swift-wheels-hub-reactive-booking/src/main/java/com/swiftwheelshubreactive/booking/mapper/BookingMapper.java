@@ -20,7 +20,7 @@ public interface BookingMapper {
 
     Booking mapDtoToEntity(BookingRequest bookingRequest);
 
-    Booking getNewBooking(Booking booking);
+    Booking getNewBookingInstance(Booking booking);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

@@ -230,10 +230,12 @@ public class BookingService {
                                                             Booking existingBooking) {
         return employeeService.findEmployeeById(requestDetails, bookingClosingDetails.receptionistEmployeeId())
                 .map(employeeResponse -> {
-                    existingBooking.setStatus(BookingStatus.CLOSED);
-                    existingBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
+                    Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
 
-                    return existingBooking;
+                    updatedBooking.setStatus(BookingStatus.CLOSED);
+                    updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
+
+                    return updatedBooking;
                 });
     }
 
@@ -327,29 +329,32 @@ public class BookingService {
         LocalDate dateFrom = updatedBookingRequest.dateFrom();
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
-        existingBooking.setDateFrom(dateFrom);
-        existingBooking.setDateTo(dateTo);
-        existingBooking.setAmount(getAmount(dateFrom, dateTo, existingBooking.getRentalCarPrice()));
+        Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
 
-        return existingBooking;
+        updatedBooking.setDateFrom(dateFrom);
+        updatedBooking.setDateTo(dateTo);
+        updatedBooking.setAmount(getAmount(dateFrom, dateTo, existingBooking.getRentalCarPrice()));
+
+        return updatedBooking;
     }
 
-    private Booking updateExistingBookingWithNewCarDetails(BookingRequest updatedBookingRequest, Booking existingBooking,
+    private Booking updateExistingBookingWithNewCarDetails(BookingRequest updatedBookingRequest,
+                                                           Booking existingBooking,
                                                            CarResponse carResponse) {
         LocalDate dateFrom = updatedBookingRequest.dateFrom();
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
-        Booking updatedExistingBooking = bookingMapper.getNewBooking(existingBooking);
+        Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
         BigDecimal amount = carResponse.amount();
 
-        updatedExistingBooking.setDateFrom(dateFrom);
-        updatedExistingBooking.setDateTo(dateTo);
-        updatedExistingBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
-        updatedExistingBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
-        updatedExistingBooking.setAmount(getAmount(dateFrom, dateTo, amount));
-        updatedExistingBooking.setRentalCarPrice(amount);
+        updatedBooking.setDateFrom(dateFrom);
+        updatedBooking.setDateTo(dateTo);
+        updatedBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
+        updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
+        updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
+        updatedBooking.setRentalCarPrice(amount);
 
-        return updatedExistingBooking;
+        return updatedBooking;
     }
 
     private Mono<Void> changeCarsStatusIfNeeded(RequestDetails requestDetails,

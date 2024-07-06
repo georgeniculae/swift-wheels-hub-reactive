@@ -20,6 +20,8 @@ public interface RentalOfficeMapper {
 
     RentalOffice mapDtoToEntity(RentalOfficeRequest rentalOfficeRequest);
 
+    RentalOffice getNewRentalOfficeInstance(RentalOffice existingRentalOffice);
+
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
     }

@@ -218,6 +218,8 @@ class BookingServiceTest {
     @Test
     void closeBookingTest_success() {
         Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking updatedClosedBooking =
+                TestUtils.getResourceAsJson("/data/UpdatedClosedBooking.json", Booking.class);
         BookingResponse closedBookingResponse =
                 TestUtils.getResourceAsJson("/data/ClosedBookingResponse.json", BookingResponse.class);
         BookingClosingDetails bookingClosingDetails =
@@ -231,8 +233,9 @@ class BookingServiceTest {
                 .build();
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(employeeResponse));
+        when(employeeService.findEmployeeById(any(RequestDetails.class), anyString()))
+                .thenReturn(Mono.just(employeeResponse));
+        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(updatedClosedBooking));
         when(carService.updateCarWhenBookingIsFinished(any(RequestDetails.class), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.empty());
 

@@ -190,7 +190,7 @@ class BranchServiceTest {
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
-        when(branchRepository.save(branch)).thenReturn(Mono.just(branch));
+        when(branchRepository.save(any(Branch.class))).thenReturn(Mono.just(branch));
 
         StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchRequest))
                 .expectNext(branchResponse)

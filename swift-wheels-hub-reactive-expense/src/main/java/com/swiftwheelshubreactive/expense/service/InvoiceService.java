@@ -131,9 +131,10 @@ public class InvoiceService {
     public Mono<InvoiceResponse> updateInvoiceAfterBookingUpdate(BookingResponse newBookingResponse) {
         return invoiceRepository.findByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .flatMap(invoice -> {
-                    invoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
+                    Invoice updatedInvoice = invoiceMapper.getNewInvoiceInstance(invoice);
+                    updatedInvoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
 
-                    return invoiceRepository.save(invoice);
+                    return invoiceRepository.save(updatedInvoice);
                 })
                 .map(invoiceMapper::mapEntityToDto);
     }
@@ -233,18 +234,20 @@ public class InvoiceService {
         ObjectId receptionistEmployeeId = MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId());
         ObjectId carId = MongoUtil.getObjectId(invoiceRequest.carId());
 
-        existingInvoice.setCustomerUsername(bookingResponse.customerUsername());
-        existingInvoice.setCustomerEmail(bookingResponse.customerEmail());
-        existingInvoice.setCarDateOfReturn(carDateOfReturn);
-        existingInvoice.setReceptionistEmployeeId(receptionistEmployeeId);
-        existingInvoice.setCarId(carId);
-        existingInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
-        existingInvoice.setDamageCost(getDamageCost(invoiceRequest));
-        existingInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
-        existingInvoice.setComments(invoiceRequest.comments());
-        existingInvoice.setTotalAmount(getTotalAmount(existingInvoice, bookingResponse));
+        Invoice updatedInvoice = invoiceMapper.getNewInvoiceInstance(existingInvoice);
 
-        return existingInvoice;
+        updatedInvoice.setCustomerUsername(bookingResponse.customerUsername());
+        updatedInvoice.setCustomerEmail(bookingResponse.customerEmail());
+        updatedInvoice.setCarDateOfReturn(carDateOfReturn);
+        updatedInvoice.setReceptionistEmployeeId(receptionistEmployeeId);
+        updatedInvoice.setCarId(carId);
+        updatedInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
+        updatedInvoice.setDamageCost(getDamageCost(invoiceRequest));
+        updatedInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
+        updatedInvoice.setComments(invoiceRequest.comments());
+        updatedInvoice.setTotalAmount(getTotalAmount(existingInvoice, bookingResponse));
+
+        return updatedInvoice;
     }
 
     private BigDecimal getDamageCost(InvoiceRequest invoiceRequest) {

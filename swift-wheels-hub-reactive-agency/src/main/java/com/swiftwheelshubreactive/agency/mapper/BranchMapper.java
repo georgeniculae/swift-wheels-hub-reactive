@@ -22,6 +22,8 @@ public interface BranchMapper {
 
     Branch mapDtoToEntity(BranchRequest branchRequest);
 
+    Branch getNewBranchInstance(Branch existingBranch);
+
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();
     }

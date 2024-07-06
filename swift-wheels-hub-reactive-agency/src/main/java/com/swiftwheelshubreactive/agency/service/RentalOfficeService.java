@@ -5,9 +5,9 @@ import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.RentalOfficeRepository;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
-import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.RentalOffice;
 import lombok.RequiredArgsConstructor;
@@ -77,11 +77,13 @@ public class RentalOfficeService {
     public Mono<RentalOfficeResponse> updateRentalOffice(String id, RentalOfficeRequest updatedRentalOfficeRequest) {
         return findEntityById(id)
                 .flatMap(existingRentalOffice -> {
-                    existingRentalOffice.setName(updatedRentalOfficeRequest.name());
-                    existingRentalOffice.setContactAddress(updatedRentalOfficeRequest.contactAddress());
-                    existingRentalOffice.setPhoneNumber(updatedRentalOfficeRequest.phoneNumber());
+                    RentalOffice updatedRentalOffice = rentalOfficeMapper.getNewRentalOfficeInstance(existingRentalOffice);
 
-                    return rentalOfficeRepository.save(existingRentalOffice);
+                    updatedRentalOffice.setName(updatedRentalOfficeRequest.name());
+                    updatedRentalOffice.setContactAddress(updatedRentalOfficeRequest.contactAddress());
+                    updatedRentalOffice.setPhoneNumber(updatedRentalOfficeRequest.phoneNumber());
+
+                    return rentalOfficeRepository.save(updatedRentalOffice);
                 })
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorMap(e -> {
