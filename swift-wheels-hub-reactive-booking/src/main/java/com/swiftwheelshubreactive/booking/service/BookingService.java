@@ -157,7 +157,7 @@ public class BookingService {
                                                BookingRequest updatedBookingRequest) {
         return validateBookingDates(updatedBookingRequest)
                 .flatMap(_ -> findEntityById(id))
-                .flatMap(existingBooking -> updateExistingBooking(requestDetails, updatedBookingRequest, existingBooking))
+                .flatMap(existingBooking -> getUpdatedBooking(requestDetails, updatedBookingRequest, existingBooking))
                 .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
@@ -239,19 +239,19 @@ public class BookingService {
                 });
     }
 
-    private Mono<BookingResponse> updateExistingBooking(RequestDetails requestDetails,
-                                                        BookingRequest updatedBookingRequest,
-                                                        Booking existingBooking) {
+    private Mono<BookingResponse> getUpdatedBooking(RequestDetails requestDetails,
+                                                    BookingRequest updatedBookingRequest,
+                                                    Booking existingBooking) {
         return getCarIfIsChanged(requestDetails, updatedBookingRequest, existingBooking)
-                .map(carResponse -> updateExistingBookingWithNewCarDetails(updatedBookingRequest, existingBooking, carResponse))
-                .switchIfEmpty(Mono.defer(() -> Mono.just(updateExistingBooking(updatedBookingRequest, existingBooking))))
-                .flatMap(updatedExistingBooking -> processBooking(requestDetails, existingBooking, updatedExistingBooking));
+                .map(carResponse -> updateBookingWithNewCarDetails(updatedBookingRequest, existingBooking, carResponse))
+                .switchIfEmpty(Mono.defer(() -> Mono.just(getSetupBooking(updatedBookingRequest, existingBooking))))
+                .flatMap(updatedBooking -> processBooking(requestDetails, existingBooking, updatedBooking));
     }
 
     private Mono<BookingResponse> processBooking(RequestDetails requestDetails,
                                                  Booking existingBooking,
-                                                 Booking updatedExistingBooking) {
-        return outboxService.saveBookingAndOutbox(updatedExistingBooking, Outbox.Operation.UPDATE)
+                                                 Booking updatedBooking) {
+        return outboxService.saveBookingAndOutbox(updatedBooking, Outbox.Operation.UPDATE)
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
                 .delayUntil(savedBookingResponse -> changeCarsStatusIfNeeded(requestDetails, savedBookingResponse, existingBooking));
     }
@@ -325,7 +325,7 @@ public class BookingService {
         return newBooking;
     }
 
-    private Booking updateExistingBooking(BookingRequest updatedBookingRequest, Booking existingBooking) {
+    private Booking getSetupBooking(BookingRequest updatedBookingRequest, Booking existingBooking) {
         LocalDate dateFrom = updatedBookingRequest.dateFrom();
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
@@ -338,9 +338,9 @@ public class BookingService {
         return updatedBooking;
     }
 
-    private Booking updateExistingBookingWithNewCarDetails(BookingRequest updatedBookingRequest,
-                                                           Booking existingBooking,
-                                                           CarResponse carResponse) {
+    private Booking updateBookingWithNewCarDetails(BookingRequest updatedBookingRequest,
+                                                   Booking existingBooking,
+                                                   CarResponse carResponse) {
         LocalDate dateFrom = updatedBookingRequest.dateFrom();
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
