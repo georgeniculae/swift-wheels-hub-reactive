@@ -87,7 +87,7 @@ public class RevenueService {
     private Revenue getRevenue(Invoice invoice) {
         Revenue revenue = new Revenue();
 
-        revenue.setDateOfRevenue(invoice.getCarDateOfReturn());
+        revenue.setDateOfRevenue(invoice.getCarReturnDate());
         revenue.setAmountFromBooking(invoice.getTotalAmount());
 
         return revenue;
