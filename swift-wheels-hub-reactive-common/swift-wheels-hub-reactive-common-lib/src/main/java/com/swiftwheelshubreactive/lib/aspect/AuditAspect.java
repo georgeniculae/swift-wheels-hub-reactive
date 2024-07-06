@@ -38,7 +38,7 @@ public class AuditAspect {
         return getJoinPointProceed(joinPoint)
                 .delayUntil(_ -> sendAuditLogInfoRequest(joinPoint))
                 .onErrorMap(e -> {
-                    log.error("Error while logging activity: {}", e.getMessage());
+                    log.error("Error in audit process: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
                 });
