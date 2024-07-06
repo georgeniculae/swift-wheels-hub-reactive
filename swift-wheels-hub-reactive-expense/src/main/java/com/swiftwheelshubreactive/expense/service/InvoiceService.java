@@ -232,7 +232,7 @@ public class InvoiceService {
 
     private Invoice getUpdatedInvoice(Invoice existingInvoice, InvoiceRequest invoiceRequest,
                                       BookingResponse bookingResponse) {
-        LocalDate carDateOfReturn = invoiceRequest.carReturnDate();
+        LocalDate carReturnDate = invoiceRequest.carReturnDate();
         ObjectId receptionistEmployeeId = MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId());
         ObjectId carId = MongoUtil.getObjectId(invoiceRequest.carId());
 
@@ -240,7 +240,7 @@ public class InvoiceService {
 
         updatedInvoice.setCustomerUsername(bookingResponse.customerUsername());
         updatedInvoice.setCustomerEmail(bookingResponse.customerEmail());
-        updatedInvoice.setCarReturnDate(carDateOfReturn);
+        updatedInvoice.setCarReturnDate(carReturnDate);
         updatedInvoice.setReceptionistEmployeeId(receptionistEmployeeId);
         updatedInvoice.setCarId(carId);
         updatedInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
