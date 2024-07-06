@@ -366,7 +366,7 @@ class BookingServiceTest {
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.just(booking));
 
-        StepVerifier.create(bookingService.findBookingsByDateOfBooking("2050-02-20"))
+        StepVerifier.create(bookingService.findBookingsByDateOfBooking("2099-02-20"))
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -375,7 +375,7 @@ class BookingServiceTest {
     void findBookingByDateOfBookingTest_errorOnFindingByDateOfBooking() {
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(bookingService.findBookingsByDateOfBooking("2050-02-20"))
+        StepVerifier.create(bookingService.findBookingsByDateOfBooking("2099-02-20"))
                 .expectError()
                 .verify();
     }
