@@ -15,7 +15,7 @@ import reactor.test.StepVerifier;
 import static com.mongodb.assertions.Assertions.assertTrue;
 
 @ActiveProfiles("test")
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @DataMongoTest
 class RentalOfficeRepositoryTest {
 
