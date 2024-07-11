@@ -279,6 +279,25 @@ class CarServiceTest {
     }
 
     @Test
+    void saveCarTest_noCarImage_success() throws JsonProcessingException {
+        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
+        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestWithoutCarImageMultivalueMap();
+
+        when(objectMapper.readValue(anyString(), eq(CarRequest.class))).thenReturn(carRequest);
+        when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
+        when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
+        when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+
+        StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
+                .expectNext(carResponse)
+                .verifyComplete();
+    }
+
+    @Test
     void saveCarTest_errorOnSaving() throws JsonProcessingException {
         Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
         CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);

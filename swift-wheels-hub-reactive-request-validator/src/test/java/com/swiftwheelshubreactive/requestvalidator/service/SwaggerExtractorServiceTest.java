@@ -47,7 +47,7 @@ class SwaggerExtractorServiceTest {
 
     @Test
     @SuppressWarnings("all")
-    void getSwaggerIdentifierAndContentTest_success() {
+    void getSwaggerFilesTest_success() {
         String agencyContent =
                 TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
@@ -102,6 +102,120 @@ class SwaggerExtractorServiceTest {
                 .assertNext(swaggerFile -> AssertionUtils.assertSwaggerFile(customerSwagger, swaggerFile))
                 .assertNext(swaggerFile -> AssertionUtils.assertSwaggerFile(expenseSwagger, swaggerFile))
                 .verifyComplete();
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    void getSwaggerFileForMicroservice_success() {
+        String agencyContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+
+        String bookingsContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
+
+        String customersContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
+
+        String expenseContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
+
+        Map<String, String> endpoints = new LinkedHashMap<>();
+        endpoints.put("agency", agencyContent);
+        endpoints.put("bookings", bookingsContent);
+        endpoints.put("customers", customersContent);
+        endpoints.put("expense", expenseContent);
+
+        SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
+        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
+        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
+        SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
+
+        when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
+        when(webClient.get()).thenReturn(requestHeadersUriSpec);
+        when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.header(anyString(), any(String[].class))).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+
+        when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                count++;
+
+                if (count == 1) {
+                    return Mono.just(agencyContent);
+                } else if (count == 2) {
+                    return Mono.just(bookingsContent);
+                } else if (count == 3) {
+                    return Mono.just(customersContent);
+                } else {
+                    return Mono.just(expenseContent);
+                }
+            }
+        });
+
+        swaggerExtractorService.getSwaggerFileForMicroservice("expense")
+                .as(StepVerifier::create)
+                .expectNextMatches(actualAgencySwagger ->
+                        expenseSwagger.getIdentifier().equals(actualAgencySwagger.getIdentifier()) &&
+                                expenseSwagger.getSwaggerContent().equals(actualAgencySwagger.getSwaggerContent()))
+                .verifyComplete();
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    void getSwaggerFileForMicroservice_nonexistentMicroservice_error() {
+        String agencyContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+
+        String bookingsContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
+
+        String customersContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
+
+        String expenseContent =
+                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
+
+        Map<String, String> endpoints = new LinkedHashMap<>();
+        endpoints.put("agency", agencyContent);
+        endpoints.put("bookings", bookingsContent);
+        endpoints.put("customers", customersContent);
+        endpoints.put("expense", expenseContent);
+
+        SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
+        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
+        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
+        SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
+
+        when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
+        when(webClient.get()).thenReturn(requestHeadersUriSpec);
+        when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.header(anyString(), any(String[].class))).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+
+        when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                count++;
+
+                if (count == 1) {
+                    return Mono.just(agencyContent);
+                } else if (count == 2) {
+                    return Mono.just(bookingsContent);
+                } else if (count == 3) {
+                    return Mono.just(customersContent);
+                } else {
+                    return Mono.just(expenseContent);
+                }
+            }
+        });
+
+        swaggerExtractorService.getSwaggerFileForMicroservice("test")
+                .as(StepVerifier::create)
+                .expectError()
+                .verify();
     }
 
 }

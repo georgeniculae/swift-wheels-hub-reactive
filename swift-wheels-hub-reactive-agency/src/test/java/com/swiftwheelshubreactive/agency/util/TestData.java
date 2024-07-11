@@ -54,6 +54,25 @@ public class TestData {
         return multiValueMap;
     }
 
+    public static MultiValueMap<String, Part> getCarRequestWithoutCarImageMultivalueMap() {
+        MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.put("carRequest", List.of(
+                        getFormFieldPart("make", "Volkswagen", stringToDataBuffer("Volkswagen")),
+                        getFormFieldPart("model", "Golf", stringToDataBuffer("Golf")),
+                        getFormFieldPart("bodyCategory", "HATCHBACK", stringToDataBuffer("HATCHBACK")),
+                        getFormFieldPart("yearOfProduction", "2010", stringToDataBuffer("2010")),
+                        getFormFieldPart("color", "black", stringToDataBuffer("black")),
+                        getFormFieldPart("mileage", "270000", stringToDataBuffer("270000")),
+                        getFormFieldPart("carState", "AVAILABLE", stringToDataBuffer("AVAILABLE")),
+                        getFormFieldPart("amount", "500", stringToDataBuffer("500")),
+                        getFormFieldPart("originalBranchId", "64f361caf291ae086e179547", stringToDataBuffer("64f361caf291ae086e179547")),
+                        getFormFieldPart("actualBranchId", "64f361caf291ae086e179547", stringToDataBuffer("64f361caf291ae086e179547"))
+                )
+        );
+
+        return multiValueMap;
+    }
+
     public static ExcelCarRequest getExcelCarRequest() {
         Path path = Paths.get("src/test/resources/image/car.jpg");
         Flux<DataBuffer> imageDataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);

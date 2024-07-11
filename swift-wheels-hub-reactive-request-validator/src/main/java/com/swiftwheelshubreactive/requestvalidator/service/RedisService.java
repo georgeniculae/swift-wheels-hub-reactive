@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.requestvalidator.service;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,17 +24,17 @@ public class RedisService {
                 .collectMap(SwaggerFile::getIdentifier)
                 .flatMap(this::addSwaggersToRedis)
                 .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Redis add failed"))))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Redis add failed")))
                 .onErrorMap(e -> {
                     log.error("Error while setting swagger folder in Redis: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    return ExceptionUtil.handleException(e);
                 });
     }
 
     public Mono<Boolean> repopulateRedisWithSwaggerFiles(String microserviceName) {
         return reactiveRedisOperations.delete(microserviceName)
-                .then(Mono.defer(() -> swaggerExtractorService.getSwaggerFileForMicroservice(microserviceName)))
+                .flatMap(_ -> swaggerExtractorService.getSwaggerFileForMicroservice(microserviceName))
                 .flatMap(this::addSwaggerToRedis)
                 .onErrorMap(e -> {
                     log.error("Error while repopulating swagger folder in Redis: {}", e.getMessage());

@@ -85,7 +85,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .flatMapMany(jwtAuthenticationTokenConverter::extractGrantedAuthorities)
                 .map(GrantedAuthority::getAuthority)
                 .collectList()
-                .switchIfEmpty(Mono.defer(() -> Mono.just(List.of())));
+                .switchIfEmpty(Mono.just(List.of()));
     }
 
     private boolean doesPathContainPattern(ServerHttpRequest serverHttpRequest) {

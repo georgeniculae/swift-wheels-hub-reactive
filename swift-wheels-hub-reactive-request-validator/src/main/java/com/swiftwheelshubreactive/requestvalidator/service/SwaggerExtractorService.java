@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -37,17 +36,9 @@ public class SwaggerExtractorService {
 
     public Mono<SwaggerFile> getSwaggerFileForMicroservice(String microserviceName) {
         return getSwaggerFiles()
-                .map(swaggerFile -> {
-                    String identifier = swaggerFile.getIdentifier();
-
-                    if (microserviceName.contains(identifier)) {
-                        return swaggerFile;
-                    }
-
-                    throw new SwiftWheelsHubException("Microservice " + microserviceName + " not existent");
-                })
-                .collectList()
-                .map(List::getFirst);
+                .filter(swaggerFile -> microserviceName.contains(swaggerFile.getIdentifier()))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Microservice " + microserviceName + " not existent")))
+                .next();
     }
 
     private Mono<SwaggerFile> createSwaggerFile(Map.Entry<String, String> endpoints) {

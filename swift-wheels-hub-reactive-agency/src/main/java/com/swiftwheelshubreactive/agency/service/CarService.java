@@ -360,7 +360,7 @@ public class CarService {
 
                     return bytes;
                 })
-                .switchIfEmpty(Mono.defer(() -> Mono.just(new byte[]{})));
+                .switchIfEmpty(Mono.just(new byte[]{}));
     }
 
     private Flux<DataBuffer> getPartContent(Part part) {
