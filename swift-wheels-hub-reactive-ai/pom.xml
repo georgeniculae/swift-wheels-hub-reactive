@@ -73,11 +73,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glowroot</groupId>
-            <artifactId>glowroot-agent-api</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>io.projectreactor.tools</groupId>
             <artifactId>blockhound</artifactId>
         </dependency>
