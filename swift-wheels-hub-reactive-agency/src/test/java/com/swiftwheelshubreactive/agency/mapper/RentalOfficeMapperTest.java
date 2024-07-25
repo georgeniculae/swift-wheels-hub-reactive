@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
 import com.swiftwheelshubreactive.agency.util.AssertionUtils;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
 import com.swiftwheelshubreactive.model.RentalOffice;
@@ -19,7 +19,7 @@ class RentalOfficeMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+        RentalOffice rentalOffice = TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeResponse rentalOfficeDto = rentalOfficeMapper.mapEntityToDto(rentalOffice);
 
@@ -35,7 +35,7 @@ class RentalOfficeMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         RentalOfficeRequest rentalOfficeDto =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         RentalOffice rentalOffice = rentalOfficeMapper.mapDtoToEntity(rentalOfficeDto);
 

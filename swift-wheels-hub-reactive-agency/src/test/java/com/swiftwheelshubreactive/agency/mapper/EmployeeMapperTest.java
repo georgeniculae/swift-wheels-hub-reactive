@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
 import com.swiftwheelshubreactive.agency.util.AssertionUtils;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import com.swiftwheelshubreactive.model.Employee;
@@ -20,7 +20,7 @@ class EmployeeMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeResponse employeeResponse = employeeMapper.mapEntityToDto(employee);
 
@@ -36,7 +36,7 @@ class EmployeeMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
         Employee employee = Assertions.assertDoesNotThrow(() -> employeeMapper.mapDtoToEntity(employeeRequest));
 

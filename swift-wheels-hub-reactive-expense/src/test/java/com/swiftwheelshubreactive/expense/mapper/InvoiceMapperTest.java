@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.expense.mapper;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.util.AssertionUtils;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Invoice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ class InvoiceMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceResponse invoiceResponse = invoiceMapper.mapEntityToDto(invoice);
 
@@ -29,7 +29,7 @@ class InvoiceMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         InvoiceRequest invoiceRequest =
-                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+                TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         Invoice invoice = invoiceMapper.mapDtoToEntity(invoiceRequest);
 

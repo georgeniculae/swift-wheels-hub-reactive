@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.customer.mapper.CustomerMapper;
 import com.swiftwheelshubreactive.customer.mapper.CustomerMapperImpl;
 import com.swiftwheelshubreactive.customer.util.AssertionUtils;
 import com.swiftwheelshubreactive.customer.util.TestData;
-import com.swiftwheelshubreactive.customer.util.TestUtils;
+import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
@@ -179,7 +179,7 @@ class KeycloakUserServiceTest {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
         Headers<Object> headers = new Headers<>();
         headers.put("test", List.of());
@@ -213,7 +213,7 @@ class KeycloakUserServiceTest {
     @Test
     void registerCustomerTest_customerUnderAge() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequestAgeBelow18.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequestAgeBelow18.json", RegisterRequest.class);
 
         SwiftWheelsHubResponseStatusException swiftWheelsHubResponseStatusException =
                 assertThrows(SwiftWheelsHubResponseStatusException.class, () -> keycloakUserService.registerCustomer(registerRequest));
@@ -225,7 +225,7 @@ class KeycloakUserServiceTest {
     @Test
     void registerCustomerTest_passwordTooShort() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
 
         SwiftWheelsHubResponseStatusException swiftWheelsHubResponseStatusException =
                 assertThrows(SwiftWheelsHubResponseStatusException.class, () -> keycloakUserService.registerCustomer(registerRequest));
@@ -239,7 +239,7 @@ class KeycloakUserServiceTest {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
         UserUpdateRequest userUpdateRequest =
-                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
+                TestUtil.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
         when(keycloak.realm(anyString())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(usersResource);
@@ -256,7 +256,7 @@ class KeycloakUserServiceTest {
         ReflectionTestUtils.setField(keycloakUserService, "realm", "realm");
 
         UserUpdateRequest userUpdateRequest =
-                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
+                TestUtil.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
         when(keycloak.realm(anyString())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(usersResource);

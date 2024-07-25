@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.booking.service;
 
-import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ class UpdatedBookingProducerServiceTest {
         ReflectionTestUtils.setField(updatedBookingProducerService, "mimeType", "application/json");
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
 

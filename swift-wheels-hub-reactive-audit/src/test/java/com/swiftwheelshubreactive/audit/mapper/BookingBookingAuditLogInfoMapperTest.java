@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.audit.mapper;
 
 import com.swiftwheelshubreactive.audit.util.AssertionUtils;
-import com.swiftwheelshubreactive.audit.util.TestUtils;
+import com.swiftwheelshubreactive.audit.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import com.swiftwheelshubreactive.model.BookingAuditLogInfo;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class BookingBookingAuditLogInfoMapperTest {
     @Test
     void mapEntityToDtoTest_success() {
         BookingAuditLogInfo bookingAuditLogInfo =
-                TestUtils.getResourceAsJson("/data/BookingAuditLogInfo.json", BookingAuditLogInfo.class);
+                TestUtil.getResourceAsJson("/data/BookingAuditLogInfo.json", BookingAuditLogInfo.class);
 
         AuditLogInfoRequest auditLogInfoDto = bookingAuditLogInfoMapper.mapEntityToDto(bookingAuditLogInfo);
 
@@ -26,7 +26,7 @@ class BookingBookingAuditLogInfoMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         BookingAuditLogInfo bookingAuditLogInfo = bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest);
 

@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.handler;
 
 import com.swiftwheelshubreactive.booking.service.BookingService;
-import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidator;
 import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
@@ -44,7 +44,7 @@ class BookingHandlerTest {
     @Test
     void findAllBookingsTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -73,7 +73,7 @@ class BookingHandlerTest {
     @Test
     void findBookingByIdTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -104,7 +104,7 @@ class BookingHandlerTest {
     @Test
     void findBookingsByDateOfBookingTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -135,7 +135,7 @@ class BookingHandlerTest {
     @Test
     void findBookingsByLoggedInUserTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -233,10 +233,10 @@ class BookingHandlerTest {
     @Test
     void saveBookingTest_success() {
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -255,10 +255,10 @@ class BookingHandlerTest {
     @Test
     void closeBookingTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         BookingClosingDetails bookingClosingDetails =
-                TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
+                TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -277,10 +277,10 @@ class BookingHandlerTest {
     @Test
     void updateBookingTest_success() {
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)

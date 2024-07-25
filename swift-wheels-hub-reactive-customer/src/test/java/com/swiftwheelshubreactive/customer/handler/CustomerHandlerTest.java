@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.customer.handler;
 
 import com.swiftwheelshubreactive.customer.service.CustomerService;
-import com.swiftwheelshubreactive.customer.util.TestUtils;
+import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
 import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
@@ -43,7 +43,7 @@ class CustomerHandlerTest {
     @Test
     void findAllUsersTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -60,7 +60,7 @@ class CustomerHandlerTest {
     @Test
     void getCurrentUserTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -91,7 +91,7 @@ class CustomerHandlerTest {
     @Test
     void findUserByUsernameTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -136,10 +136,10 @@ class CustomerHandlerTest {
     @Test
     void registerUserTest_success() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
         RegistrationResponse registrationResponse =
-                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+                TestUtil.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -156,7 +156,7 @@ class CustomerHandlerTest {
     @Test
     void registerUserTest_noResultReturned() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -173,10 +173,10 @@ class CustomerHandlerTest {
     @Test
     void updateUserTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         UserUpdateRequest userUpdateRequest =
-                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
+                TestUtil.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)

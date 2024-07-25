@@ -6,7 +6,7 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.emailnotification.util.TestUtils;
+import com.swiftwheelshubreactive.emailnotification.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +43,7 @@ class EmailServiceTest {
     @Test
     void sendEmailTest_success() throws IOException {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Response response = new Response();
 
@@ -60,7 +60,7 @@ class EmailServiceTest {
     @Test
     void sendEmailTest_errorOnSendingRequest() throws IOException {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(mustacheFactory.compile(anyString())).thenReturn(mustache);
         when(mustache.execute(any(StringWriter.class), any(Object.class))).thenReturn(writer);

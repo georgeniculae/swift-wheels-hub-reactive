@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.mapper;
 
 import com.swiftwheelshubreactive.booking.util.AssertionUtils;
-import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.model.Booking;
@@ -18,7 +18,7 @@ class BookingMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
 
         BookingResponse bookingResponse = bookingMapper.mapEntityToDto(booking);
 
@@ -33,7 +33,7 @@ class BookingMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
         Booking actualBooking = bookingMapper.mapDtoToEntity(bookingRequest);
 

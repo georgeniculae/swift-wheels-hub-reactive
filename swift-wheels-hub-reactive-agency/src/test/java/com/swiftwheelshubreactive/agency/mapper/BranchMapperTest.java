@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
 import com.swiftwheelshubreactive.agency.util.AssertionUtils;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
 import com.swiftwheelshubreactive.model.Branch;
@@ -20,7 +20,7 @@ class BranchMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchResponse branchResponse = Assertions.assertDoesNotThrow(() -> branchMapper.mapEntityToDto(branch));
 
@@ -36,7 +36,7 @@ class BranchMapperTest {
     @Test
     void mapDtoToEntityTest_success() {
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
         Branch branch = Assertions.assertDoesNotThrow(() -> branchMapper.mapDtoToEntity(branchRequest));
 

@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ class InvoiceHandlerTest {
     @Test
     void findAllInvoicesTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -66,7 +66,7 @@ class InvoiceHandlerTest {
     @Test
     void findAllActiveInvoices_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -95,7 +95,7 @@ class InvoiceHandlerTest {
     @Test
     void findAllInvoicesByCustomerUsername_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -126,7 +126,7 @@ class InvoiceHandlerTest {
     @Test
     void findInvoiceById_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -157,7 +157,7 @@ class InvoiceHandlerTest {
     @Test
     void findInvoiceByComments_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -214,10 +214,10 @@ class InvoiceHandlerTest {
     @Test
     void updateInvoiceTest_success() {
         InvoiceRequest invoiceRequest =
-                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+                TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)

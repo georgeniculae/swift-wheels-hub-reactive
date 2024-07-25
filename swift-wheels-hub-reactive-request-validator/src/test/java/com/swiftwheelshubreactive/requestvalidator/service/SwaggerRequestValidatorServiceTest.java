@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.requestvalidator.service;
 import com.swiftwheelshubreactive.dto.IncomingRequestDetails;
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
-import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
+import com.swiftwheelshubreactive.requestvalidator.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,13 +32,13 @@ class SwaggerRequestValidatorServiceTest {
     @Test
     void validateRequestTest_success() {
         IncomingRequestDetails incomingRequestDetails =
-                TestUtils.getResourceAsJson("/data/IncomingRequestDetails.json", IncomingRequestDetails.class);
+                TestUtil.getResourceAsJson("/data/IncomingRequestDetails.json", IncomingRequestDetails.class);
 
         RequestValidationReport validationReport =
-                TestUtils.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
+                TestUtil.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
 
         String agencyContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
         SwaggerFile swaggerFile = SwaggerFile.builder()
                 .identifier("agency")

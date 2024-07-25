@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.agency.router;
 
 import com.swiftwheelshubreactive.agency.handler.CarHandler;
 import com.swiftwheelshubreactive.agency.util.TestData;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllCarsTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carResponses = List.of(carResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
@@ -67,7 +67,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void findAllCarsTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carDtoList = List.of(carResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carDtoList);
@@ -85,7 +85,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findCarByIdTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -108,7 +108,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void findCarByIdTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -125,7 +125,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAvailableCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -147,7 +147,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void findAvailableCarTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -164,7 +164,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getAllAvailableCarsTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carResponses = List.of(carResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
@@ -188,7 +188,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void getAllAvailableCarsTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carResponses = List.of(carResponse);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
@@ -206,7 +206,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findCarsByMakeTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -229,7 +229,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void findCarsByMakeTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -318,7 +318,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -343,7 +343,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void saveCarTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -361,7 +361,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void saveCarTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -378,7 +378,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void uploadCarsTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
@@ -406,7 +406,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void uploadCarsTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
@@ -428,7 +428,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void uploadCarsTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new ClassPathResource("src/test/resources/file/Cars.xlsx"));
@@ -449,7 +449,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -474,7 +474,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -492,7 +492,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -509,7 +509,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateCarStatusTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -533,7 +533,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarStatusTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -551,7 +551,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarStatusTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -568,7 +568,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateCarsStatusTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -592,7 +592,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarsStatusTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -610,7 +610,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarsStatusTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -627,7 +627,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateCarStatus_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -651,7 +651,7 @@ class CarRouterTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateCarStatusAfterClosedBookingTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -675,7 +675,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarStatusAfterClosedBookingTest_unauthorized() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
@@ -693,7 +693,7 @@ class CarRouterTest {
     @Test
     @WithAnonymousUser
     void updateCarStatusAfterClosedBookingTest_forbidden() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 

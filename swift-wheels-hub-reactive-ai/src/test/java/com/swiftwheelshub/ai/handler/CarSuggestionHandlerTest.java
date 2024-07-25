@@ -1,7 +1,7 @@
 package com.swiftwheelshub.ai.handler;
 
 import com.swiftwheelshub.ai.service.CarSuggestionService;
-import com.swiftwheelshub.ai.util.TestUtils;
+import com.swiftwheelshub.ai.util.TestUtil;
 import com.swiftwheelshub.ai.validator.TripInfoValidator;
 import com.swiftwheelshubreactive.dto.CarSuggestionResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
@@ -35,9 +35,9 @@ class CarSuggestionHandlerTest {
     @Test
     void getChatOutputTest_success() {
         TripInfo tripInfo =
-                TestUtils.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
+                TestUtil.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
         CarSuggestionResponse carSuggestionResponse =
-                TestUtils.getResourceAsJson("/data/CarSuggestionResponse.json", CarSuggestionResponse.class);
+                TestUtil.getResourceAsJson("/data/CarSuggestionResponse.json", CarSuggestionResponse.class);
 
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)

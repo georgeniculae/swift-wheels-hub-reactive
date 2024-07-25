@@ -1,6 +1,6 @@
 package com.swiftwheelshub.ai.service;
 
-import com.swiftwheelshub.ai.util.TestUtils;
+import com.swiftwheelshub.ai.util.TestUtil;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarSuggestionResponse;
 import com.swiftwheelshubreactive.dto.TripInfo;
@@ -35,11 +35,11 @@ class CarSuggestionServiceTest {
     @Test
     void getChatOutputTest_success() {
         CarResponse carResponse =
-                TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         TripInfo tripInfo =
-                TestUtils.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
+                TestUtil.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
         CarSuggestionResponse carSuggestionResponse =
-                TestUtils.getResourceAsJson("/data/CarSuggestionResponse.json", CarSuggestionResponse.class);
+                TestUtil.getResourceAsJson("/data/CarSuggestionResponse.json", CarSuggestionResponse.class);
         String apikey = "apikey";
 
         when(carService.getAllAvailableCars(anyString(), anyList())).thenReturn(Flux.just(carResponse));
@@ -53,7 +53,7 @@ class CarSuggestionServiceTest {
 
     @Test
     void getChatOutputTest_errorOnFindingAvailableCars() {
-        TripInfo tripInfo = TestUtils.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
+        TripInfo tripInfo = TestUtil.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
         String apikey = "apikey";
 
         when(carService.getAllAvailableCars(anyString(), anyList())).thenReturn(Flux.error(new Throwable()));

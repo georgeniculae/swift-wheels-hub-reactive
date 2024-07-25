@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.router;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
 import com.swiftwheelshubreactive.expense.handler.RevenueHandler;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -40,7 +40,7 @@ class RevenueRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllRevenuesTest_success() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
@@ -65,7 +65,7 @@ class RevenueRouterTest {
     @WithAnonymousUser
     void findAllRevenuesTest_unauthorized() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
@@ -84,7 +84,7 @@ class RevenueRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getTotalAmountTest_success() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
@@ -109,7 +109,7 @@ class RevenueRouterTest {
     @WithAnonymousUser
     void getTotalAmountTest_unauthorized() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
@@ -128,7 +128,7 @@ class RevenueRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findRevenuesByDateTest_success() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 
@@ -153,7 +153,7 @@ class RevenueRouterTest {
     @WithAnonymousUser
     void findRevenuesByDateTest_unauthorized() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(revenueResponse));
 

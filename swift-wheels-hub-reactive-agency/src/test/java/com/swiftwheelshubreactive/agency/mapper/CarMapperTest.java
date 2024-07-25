@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
 import com.swiftwheelshubreactive.agency.util.AssertionUtils;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.model.Car;
@@ -19,7 +19,7 @@ class CarMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        Car car = TestUtils.getResourceAsJson("/data/Car.json", Car.class);
+        Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
 
         CarResponse carResponse = carMapper.mapEntityToDto(car);
 
@@ -34,7 +34,7 @@ class CarMapperTest {
 
     @Test
     void mapDtoToEntityTest_success() {
-        CarRequest carRequest = TestUtils.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        CarRequest carRequest = TestUtil.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
 
         Car car = carMapper.mapDtoToEntity(carRequest, new byte[]{});
 

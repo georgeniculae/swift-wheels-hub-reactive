@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.router;
 
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.handler.InvoiceHandler;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -40,7 +40,7 @@ class InvoiceRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllInvoicesTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -65,7 +65,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void findAllInvoicesTest_unauthorized() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -84,7 +84,7 @@ class InvoiceRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllActiveInvoicesTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -109,7 +109,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void findAllActiveInvoicesTest_unauthorized() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -128,7 +128,7 @@ class InvoiceRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllInvoicesByCustomerIdTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -153,7 +153,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void findAllInvoicesByCustomerIdTest_unauthorized() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -248,7 +248,7 @@ class InvoiceRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findInvoiceByIdTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -273,7 +273,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void findInvoiceByIdTest_unauthorized() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -292,7 +292,7 @@ class InvoiceRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findInvoicesByCommentsTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -317,7 +317,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void findInvoiceByCommentsTest_unauthorized() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -336,7 +336,7 @@ class InvoiceRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void closeInvoiceTest_success() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -361,7 +361,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void closeInvoiceTest_unauthorized() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 
@@ -380,7 +380,7 @@ class InvoiceRouterTest {
     @WithAnonymousUser
     void closeInvoiceTest_forbidden() {
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(invoiceResponse));
 

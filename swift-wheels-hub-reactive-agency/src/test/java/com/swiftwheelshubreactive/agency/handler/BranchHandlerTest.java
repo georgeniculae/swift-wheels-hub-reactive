@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.BranchService;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.BranchRequestValidator;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
@@ -38,7 +38,7 @@ class BranchHandlerTest {
     @Test
     void findAllBranchesTest_success() {
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         List<BranchResponse> branchResponses = List.of(branchResponse);
 
@@ -69,7 +69,7 @@ class BranchHandlerTest {
     @Test
     void findBranchByIdTest_success() {
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -100,7 +100,7 @@ class BranchHandlerTest {
     @Test
     void findBranchByFilterTest_success() {
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -130,10 +130,10 @@ class BranchHandlerTest {
     @Test
     void saveBranchTest_success() {
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -150,10 +150,10 @@ class BranchHandlerTest {
     @Test
     void updateBranchTest_success() {
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)

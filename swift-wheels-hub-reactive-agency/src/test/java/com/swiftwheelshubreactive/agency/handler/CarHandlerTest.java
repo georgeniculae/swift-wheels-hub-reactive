@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestData;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
@@ -54,7 +54,7 @@ class CarHandlerTest {
     @Test
     void findAllCarsTest_success() {
         CarResponse carResponse =
-                TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         List<CarResponse> carDtoList = List.of(carResponse);
 
@@ -84,7 +84,7 @@ class CarHandlerTest {
 
     @Test
     void findCarByIdTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -114,7 +114,7 @@ class CarHandlerTest {
 
     @Test
     void findCarByMakeTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carDtoList = List.of(carResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
@@ -145,7 +145,7 @@ class CarHandlerTest {
 
     @Test
     void findCarsByFilterTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carDtoList = List.of(carResponse);
 
         ServerRequest serverRequest = MockServerRequest.builder()
@@ -176,7 +176,7 @@ class CarHandlerTest {
 
     @Test
     void getAvailableCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -192,7 +192,7 @@ class CarHandlerTest {
 
     @Test
     void findAllAvailableCarsTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -248,7 +248,7 @@ class CarHandlerTest {
 
     @Test
     void saveCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         MultiValueMap<String, Part> multivalueMap = TestData.getCarRequestMultivalueMap();
 
         ServerRequest serverRequest = MockServerRequest.builder()
@@ -264,7 +264,7 @@ class CarHandlerTest {
 
     @Test
     void uploadCarsTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.put("file", List.of(filePart));
@@ -283,7 +283,7 @@ class CarHandlerTest {
 
     @Test
     void updateCarTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         MultiValueMap<String, Part> multiValueMap = new LinkedMultiValueMap<>();
 
         ServerRequest serverRequest = MockServerRequest.builder()
@@ -300,10 +300,10 @@ class CarHandlerTest {
 
     @Test
     void updateCarWhenBookingIsClosedTest_success() {
-        CarResponse carDto = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carDto = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         CarUpdateDetails carUpdateDetails =
-                TestUtils.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
+                TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
@@ -321,7 +321,7 @@ class CarHandlerTest {
 
     @Test
     void updateCarStatusTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PATCH)
@@ -338,10 +338,10 @@ class CarHandlerTest {
 
     @Test
     void updateCarsStatusTest_success() {
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
         UpdateCarRequest updateCarRequest =
-                TestUtils.getResourceAsJson("/data/UpdateCarRequest.json", UpdateCarRequest.class);
+                TestUtil.getResourceAsJson("/data/UpdateCarRequest.json", UpdateCarRequest.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)

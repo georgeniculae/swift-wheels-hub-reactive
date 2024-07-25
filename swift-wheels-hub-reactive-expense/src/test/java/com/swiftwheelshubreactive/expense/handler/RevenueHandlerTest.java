@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
 import com.swiftwheelshubreactive.expense.service.RevenueService;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +32,7 @@ class RevenueHandlerTest {
     @Test
     void findAllRevenuesTest_success() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -61,7 +61,7 @@ class RevenueHandlerTest {
     @Test
     void findRevenuesByDateTest_success() {
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)

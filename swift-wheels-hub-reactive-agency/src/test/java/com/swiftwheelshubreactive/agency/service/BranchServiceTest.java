@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.agency.mapper.BranchMapper;
 import com.swiftwheelshubreactive.agency.mapper.BranchMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BranchRequest;
 import com.swiftwheelshubreactive.dto.BranchResponse;
 import com.swiftwheelshubreactive.model.Branch;
@@ -48,10 +48,10 @@ class BranchServiceTest {
 
     @Test
     void findAllBranchesTest_success() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         List<Branch> branches = List.of(branch);
 
@@ -74,10 +74,10 @@ class BranchServiceTest {
 
     @Test
     void findBranchByIdTest_success() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
 
@@ -101,10 +101,10 @@ class BranchServiceTest {
 
     @Test
     void findBranchByFilterTest_success() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
         when(branchRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branch));
 
@@ -142,15 +142,15 @@ class BranchServiceTest {
 
     @Test
     void saveBranchTest_success() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+        RentalOffice rentalOffice = TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.just(branch));
@@ -163,10 +163,10 @@ class BranchServiceTest {
     @Test
     void saveBranchTest_errorOnSave() {
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.error(new Throwable()));
@@ -178,15 +178,15 @@ class BranchServiceTest {
 
     @Test
     void updateBranchTest_success() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
         BranchResponse branchResponse =
-                TestUtils.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
+                TestUtil.getResourceAsJson("/data/BranchResponse.json", BranchResponse.class);
 
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+        RentalOffice rentalOffice = TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
@@ -199,12 +199,12 @@ class BranchServiceTest {
 
     @Test
     void updateBranchTest_errorOnSaving() {
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         BranchRequest branchRequest =
-                TestUtils.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
+                TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
-        RentalOffice rentalOffice = TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+        RentalOffice rentalOffice = TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));

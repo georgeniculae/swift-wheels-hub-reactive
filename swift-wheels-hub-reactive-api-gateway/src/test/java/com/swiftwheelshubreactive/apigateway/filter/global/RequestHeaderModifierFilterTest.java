@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.apigateway.filter.global;
 
-import com.swiftwheelshubreactive.apigateway.util.TestUtils;
+import com.swiftwheelshubreactive.apigateway.util.TestUtil;
 import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +45,7 @@ class RequestHeaderModifierFilterTest {
 
     @Test
     void filterTest_success() {
-        String tokenValue = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
+        String tokenValue = TestUtil.getResourceAsJson("/data/JwtToken.json", String.class);
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/agency/rental-offices/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ class RequestHeaderModifierFilterTest {
 
     @Test
     void filterTest_notCorrespondingPath() {
-        String tokenValue = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
+        String tokenValue = TestUtil.getResourceAsJson("/data/JwtToken.json", String.class);
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/agency/swagger-ui.html")
                 .accept(MediaType.APPLICATION_JSON)

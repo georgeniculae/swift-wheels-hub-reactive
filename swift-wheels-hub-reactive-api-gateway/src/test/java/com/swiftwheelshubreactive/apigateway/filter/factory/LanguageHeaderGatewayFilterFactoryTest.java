@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.apigateway.filter.factory;
 
-import com.swiftwheelshubreactive.apigateway.util.TestUtils;
+import com.swiftwheelshubreactive.apigateway.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ class LanguageHeaderGatewayFilterFactoryTest {
 
     @Test
     void applyTest_success() {
-        String tokenValue = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
+        String tokenValue = TestUtil.getResourceAsJson("/data/JwtToken.json", String.class);
 
         MockServerHttpRequest request = MockServerHttpRequest.get("/agency/rental-offices/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON)

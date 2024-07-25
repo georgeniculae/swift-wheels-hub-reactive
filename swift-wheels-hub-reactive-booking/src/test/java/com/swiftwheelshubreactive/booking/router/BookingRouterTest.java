@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.router;
 
 import com.swiftwheelshubreactive.booking.handler.BookingHandler;
-import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllBookingTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(bookingResponse));
 
@@ -64,7 +64,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void findAllBookingTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(bookingResponse));
 
@@ -83,7 +83,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findBookingByIdTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -108,7 +108,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void findBookingByIdTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -127,7 +127,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countBookingsTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -168,7 +168,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countByLoggedInUserTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -193,7 +193,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void countByLoggedInUserTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -212,7 +212,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getCurrentDateTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -232,7 +232,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void getCurrentDateTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -251,7 +251,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveBookingTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -276,7 +276,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void saveBookingTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -295,7 +295,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void saveBookingTest_forbidden() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -313,7 +313,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void closeBookingTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -338,7 +338,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void closeBookingTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -357,7 +357,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void closeBookingTest_forbidden() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -375,7 +375,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateBookingTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -400,7 +400,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void updateBookingTest_unauthorized() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -419,7 +419,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void updateBookingTest_forbidden() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -437,7 +437,7 @@ class BookingRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteBookingByIdTest_success() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 
@@ -462,7 +462,7 @@ class BookingRouterTest {
     @WithAnonymousUser
     void deleteBookingByIdTest_forbidden() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
 

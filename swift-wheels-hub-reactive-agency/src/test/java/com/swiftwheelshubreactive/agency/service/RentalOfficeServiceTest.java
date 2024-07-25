@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.agency.mapper.RentalOfficeMapper;
 import com.swiftwheelshubreactive.agency.mapper.RentalOfficeMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.BranchRepository;
 import com.swiftwheelshubreactive.agency.repository.RentalOfficeRepository;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
 import com.swiftwheelshubreactive.model.RentalOffice;
@@ -49,12 +49,12 @@ class RentalOfficeServiceTest {
     @Test
     void findAllRentalOfficesTest_success() {
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         List<RentalOffice> rentalOffices = List.of(rentalOffice);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findAll()).thenReturn(Flux.fromIterable(rentalOffices));
 
@@ -75,10 +75,10 @@ class RentalOfficeServiceTest {
     @Test
     void findRentalOfficeByIdTest_success() {
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
 
@@ -117,13 +117,13 @@ class RentalOfficeServiceTest {
     @Test
     void saveRentalOfficeTest_success() {
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeRequest rentalOfficeRequest =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.just(rentalOffice));
 
@@ -138,7 +138,7 @@ class RentalOfficeServiceTest {
     @Test
     void saveRentalOfficeTest_errorOnSaving() {
         RentalOfficeRequest rentalOfficeRequest =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.error(new Throwable()));
 
@@ -150,13 +150,13 @@ class RentalOfficeServiceTest {
     @Test
     void updateRentalOfficeTest_success() {
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeRequest rentalOfficeRequest =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.just(rentalOffice));
@@ -169,10 +169,10 @@ class RentalOfficeServiceTest {
     @Test
     void updateRentalOfficeTest_errorOnSaving() {
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeRequest rentalOfficeRequest =
-                TestUtils.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
         when(rentalOfficeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(rentalOffice));
         when(rentalOfficeRepository.save(any(RentalOffice.class))).thenReturn(Mono.error(new Throwable()));
@@ -185,10 +185,10 @@ class RentalOfficeServiceTest {
     @Test
     void findRentalOfficeByNameTest_success() {
         RentalOffice rentalOffice =
-                TestUtils.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
 
         RentalOfficeResponse rentalOfficeResponse =
-                TestUtils.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
+                TestUtil.getResourceAsJson("/data/RentalOfficeResponse.json", RentalOfficeResponse.class);
 
         when(rentalOfficeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOffice));
 

@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.customer.service;
 
-import com.swiftwheelshubreactive.customer.util.TestUtils;
+import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.RequestDetails;
@@ -38,7 +38,7 @@ class CustomerServiceTest {
     @Test
     void findUserByUsernameTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         when(keycloakUserService.findUserByUsername(anyString())).thenReturn(userInfo);
 
@@ -61,7 +61,7 @@ class CustomerServiceTest {
     @Test
     void getCurrentUserTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         when(keycloakUserService.getCurrentUser(anyString())).thenReturn(userInfo);
 
@@ -104,10 +104,10 @@ class CustomerServiceTest {
     @Test
     void registerUserTest_success() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
 
         RegistrationResponse registrationResponse =
-                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+                TestUtil.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         when(keycloakUserService.registerCustomer(any(RegisterRequest.class))).thenReturn(registrationResponse);
 
@@ -120,7 +120,7 @@ class CustomerServiceTest {
     @Test
     void registerUserTest_errorOnRegisteringCustomer() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequestPasswordTooShort.json", RegisterRequest.class);
 
         when(keycloakUserService.registerCustomer(any(RegisterRequest.class))).thenThrow(new SwiftWheelsHubException(""));
 
@@ -133,10 +133,10 @@ class CustomerServiceTest {
     @Test
     void updateUserTest_success() {
         UserUpdateRequest userUpdateRequest =
-                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
+                TestUtil.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         when(keycloakUserService.updateUser(anyString(), any(UserUpdateRequest.class))).thenReturn(userInfo);
 
@@ -149,7 +149,7 @@ class CustomerServiceTest {
     @Test
     void updateUserTest_errorOnUpdatingUser() {
         UserUpdateRequest userUpdateRequest =
-                TestUtils.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
+                TestUtil.getResourceAsJson("/data/UserUpdateRepresentation.json", UserUpdateRequest.class);
 
         when(keycloakUserService.updateUser(anyString(), any(UserUpdateRequest.class))).thenThrow(new SwiftWheelsHubException(""));
 

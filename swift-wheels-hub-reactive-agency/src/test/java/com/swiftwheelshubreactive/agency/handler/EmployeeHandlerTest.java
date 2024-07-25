@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.EmployeeService;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.EmployeeRequestValidator;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
@@ -38,7 +38,7 @@ class EmployeeHandlerTest {
     @Test
     void findAllEmployees_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
@@ -69,7 +69,7 @@ class EmployeeHandlerTest {
     @Test
     void findEmployeeById_success() {
         EmployeeResponse employeeDto =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -86,7 +86,7 @@ class EmployeeHandlerTest {
     @Test
     void findEmployeeByFilter_success() {
         EmployeeResponse employeeDto =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -117,7 +117,7 @@ class EmployeeHandlerTest {
     @Test
     void findEmployeesByBranchId_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
@@ -163,10 +163,10 @@ class EmployeeHandlerTest {
     @Test
     void saveEmployee_success() {
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
@@ -183,10 +183,10 @@ class EmployeeHandlerTest {
     @Test
     void updateEmployee_success() {
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)

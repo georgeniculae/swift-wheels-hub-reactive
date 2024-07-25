@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.mapper;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
 import com.swiftwheelshubreactive.expense.util.AssertionUtils;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Revenue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,7 @@ class RevenueMapperTest {
 
     @Test
     void mapEntityToDtoTest_success() {
-        Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
+        Revenue revenue = TestUtil.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
         RevenueResponse revenueResponse = rentalOfficeMapper.mapEntityToDto(revenue);
 

@@ -5,7 +5,7 @@ import com.swiftwheelshubreactive.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshubreactive.booking.model.Outbox;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.OutboxRepository;
-import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.model.Booking;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class OutboxServiceTest {
 
     @Test
     void handleOutboxesTest_successCreateOperation() {
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
         when(savedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
@@ -69,7 +69,7 @@ class OutboxServiceTest {
 
     @Test
     void handleOutboxesTest_successUpdateOperation() {
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
@@ -83,8 +83,8 @@ class OutboxServiceTest {
 
     @Test
     void handleOutboxesTest_errorOnSendingSavedBooking() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxRepository.save(any(Outbox.class))).thenReturn(Mono.just(outbox));
@@ -96,7 +96,7 @@ class OutboxServiceTest {
 
     @Test
     void handleOutboxesTest_errorOnSendingUpdatedBooking() {
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
@@ -109,7 +109,7 @@ class OutboxServiceTest {
 
     @Test
     void saveBookingAndOutboxTransactionalTest_successUpdateOperation() {
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));

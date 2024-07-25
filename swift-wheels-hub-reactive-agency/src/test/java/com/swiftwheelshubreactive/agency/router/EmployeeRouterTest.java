@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.router;
 
 import com.swiftwheelshubreactive.agency.handler.EmployeeHandler;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ class EmployeeRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllEmployeesTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
@@ -67,7 +67,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void findAllEmployeesTest_forbidden() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         List<EmployeeResponse> employeeDtoList = List.of(employeeResponse);
 
@@ -88,7 +88,7 @@ class EmployeeRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findEmployeeByIdTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -113,7 +113,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void findEmployeeByIdTest_unauthorized() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -132,7 +132,7 @@ class EmployeeRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findEmployeesByBranchIdTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -157,7 +157,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void findEmployeesByBranchIdTest_unauthorized() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -214,7 +214,7 @@ class EmployeeRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void saveEmployeeTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -239,7 +239,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void saveEmployeeTest_unauthorized() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -258,7 +258,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void saveEmployeeTest_forbidden() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -276,7 +276,7 @@ class EmployeeRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateEmployeeTest_success() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -301,7 +301,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void updateEmployeeTest_unauthorized() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 
@@ -320,7 +320,7 @@ class EmployeeRouterTest {
     @WithAnonymousUser
     void updateEmployeeTest_forbidden() {
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(employeeResponse);
 

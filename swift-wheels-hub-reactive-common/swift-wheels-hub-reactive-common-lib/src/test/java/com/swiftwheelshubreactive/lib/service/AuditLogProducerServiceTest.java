@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.lib.service;
 
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
-import com.swiftwheelshubreactive.lib.util.TestUtils;
+import com.swiftwheelshubreactive.lib.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +32,7 @@ class AuditLogProducerServiceTest {
         ReflectionTestUtils.setField(auditLogProducerService, "auditLogMimeType", "application/json");
 
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/AuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/AuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
 

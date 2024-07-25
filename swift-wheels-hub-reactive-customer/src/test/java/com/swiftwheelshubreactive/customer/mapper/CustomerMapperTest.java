@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.customer.mapper;
 
 import com.swiftwheelshubreactive.customer.util.AssertionUtils;
 import com.swiftwheelshubreactive.customer.util.TestData;
-import com.swiftwheelshubreactive.customer.util.TestUtils;
+import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
@@ -21,7 +21,7 @@ class CustomerMapperTest {
     @Test
     void mapToUserRepresentationTest_success() {
         UserUpdateRequest userUpdateRequest =
-                TestUtils.getResourceAsJson("/data/UserUpdateRequest.json", UserUpdateRequest.class);
+                TestUtil.getResourceAsJson("/data/UserUpdateRequest.json", UserUpdateRequest.class);
 
         UserRepresentation userRepresentation = customerMapper.mapToUserRepresentation(userUpdateRequest);
 

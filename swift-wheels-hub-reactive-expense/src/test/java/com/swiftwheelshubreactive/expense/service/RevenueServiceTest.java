@@ -6,7 +6,7 @@ import com.swiftwheelshubreactive.expense.mapper.RevenueMapperImpl;
 import com.swiftwheelshubreactive.expense.model.Outbox;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
 import com.swiftwheelshubreactive.expense.repository.RevenueRepository;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Invoice;
 import com.swiftwheelshubreactive.model.Revenue;
 import org.junit.jupiter.api.Test;
@@ -52,10 +52,10 @@ class RevenueServiceTest {
 
     @Test
     void findAllRevenuesTest_success() {
-        Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
+        Revenue revenue = TestUtil.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         when(revenueRepository.findAll()).thenReturn(Flux.just(revenue));
 
@@ -95,9 +95,9 @@ class RevenueServiceTest {
 
     @Test
     void saveInvoiceAndRevenueTransactionalTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Revenue revenue = TestUtil.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
         when(outboxService.saveOutbox(any(Invoice.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
@@ -110,8 +110,8 @@ class RevenueServiceTest {
 
     @Test
     void saveInvoiceAndRevenueTransactionalTest_errorOnSavingRevenue() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
         when(outboxService.saveOutbox(any(Invoice.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
@@ -124,10 +124,10 @@ class RevenueServiceTest {
 
     @Test
     void findRevenueByDateTest_success() {
-        Revenue revenue = TestUtils.getResourceAsJson("/data/Revenue.json", Revenue.class);
+        Revenue revenue = TestUtil.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
         RevenueResponse revenueResponse =
-                TestUtils.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
+                TestUtil.getResourceAsJson("/data/RevenueResponse.json", RevenueResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Revenue.class))).thenReturn(Flux.just(revenue));
 

@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.requestvalidator.service;
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import com.swiftwheelshubreactive.requestvalidator.util.AssertionUtils;
-import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
+import com.swiftwheelshubreactive.requestvalidator.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,16 +49,16 @@ class SwaggerExtractorServiceTest {
     @SuppressWarnings("all")
     void getSwaggerFilesTest_success() {
         String agencyContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
         String bookingsContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
 
         String customersContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
 
         String expenseContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
         Map<String, String> endpoints = new LinkedHashMap<>();
         endpoints.put("agency", agencyContent);
@@ -108,16 +108,16 @@ class SwaggerExtractorServiceTest {
     @SuppressWarnings("all")
     void getSwaggerFileForMicroservice_success() {
         String agencyContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
         String bookingsContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
 
         String customersContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
 
         String expenseContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
         Map<String, String> endpoints = new LinkedHashMap<>();
         endpoints.put("agency", agencyContent);
@@ -166,16 +166,16 @@ class SwaggerExtractorServiceTest {
     @SuppressWarnings("all")
     void getSwaggerFileForMicroservice_nonexistentMicroservice_error() {
         String agencyContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
 
         String bookingsContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
 
         String customersContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
 
         String expenseContent =
-                TestUtils.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
         Map<String, String> endpoints = new LinkedHashMap<>();
         endpoints.put("agency", agencyContent);

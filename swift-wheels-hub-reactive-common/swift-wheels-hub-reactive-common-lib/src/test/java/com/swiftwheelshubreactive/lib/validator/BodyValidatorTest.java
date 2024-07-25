@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.lib.validator;
 
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
-import com.swiftwheelshubreactive.lib.util.TestUtils;
+import com.swiftwheelshubreactive.lib.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ class BodyValidatorTest {
     @Test
     void validateBodyTest_success() {
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/AuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/AuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         doNothing().when(validator).validate(any(Object.class), any(Errors.class));
 

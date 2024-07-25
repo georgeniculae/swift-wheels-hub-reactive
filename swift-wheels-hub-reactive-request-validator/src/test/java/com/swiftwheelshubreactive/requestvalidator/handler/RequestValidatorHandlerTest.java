@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.dto.IncomingRequestDetails;
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.requestvalidator.service.RedisService;
 import com.swiftwheelshubreactive.requestvalidator.service.SwaggerRequestValidatorService;
-import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
+import com.swiftwheelshubreactive.requestvalidator.util.TestUtil;
 import com.swiftwheelshubreactive.requestvalidator.validator.IncomingRequestDetailsValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,10 +39,10 @@ class RequestValidatorHandlerTest {
     @Test
     void validateRequestTest_success() {
         IncomingRequestDetails incomingRequestDetails =
-                TestUtils.getResourceAsJson("/data/IncomingRequestDetails.json", IncomingRequestDetails.class);
+                TestUtil.getResourceAsJson("/data/IncomingRequestDetails.json", IncomingRequestDetails.class);
 
         RequestValidationReport validationReport =
-                TestUtils.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
+                TestUtil.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)

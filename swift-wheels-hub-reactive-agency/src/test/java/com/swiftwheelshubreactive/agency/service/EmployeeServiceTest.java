@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.agency.service;
 import com.swiftwheelshubreactive.agency.mapper.EmployeeMapper;
 import com.swiftwheelshubreactive.agency.mapper.EmployeeMapperImpl;
 import com.swiftwheelshubreactive.agency.repository.EmployeeRepository;
-import com.swiftwheelshubreactive.agency.util.TestUtils;
+import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.EmployeeRequest;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import com.swiftwheelshubreactive.model.Branch;
@@ -44,10 +44,10 @@ class EmployeeServiceTest {
 
     @Test
     void findAllEmployeesTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         List<Employee> employees = List.of(employee);
 
@@ -69,10 +69,10 @@ class EmployeeServiceTest {
 
     @Test
     void findEmployeeByIdTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
 
@@ -110,15 +110,15 @@ class EmployeeServiceTest {
 
     @Test
     void saveEmployeeTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.just(employee));
@@ -133,9 +133,9 @@ class EmployeeServiceTest {
     @Test
     void saveEmployeeTest_errorOnSave() {
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.error(new Throwable()));
@@ -149,15 +149,15 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployeeTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
@@ -170,12 +170,12 @@ class EmployeeServiceTest {
 
     @Test
     void updateEmployeeTest_errorOnSave() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeRequest employeeRequest =
-                TestUtils.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
+                TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
-        Branch branch = TestUtils.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch branch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
@@ -188,12 +188,12 @@ class EmployeeServiceTest {
 
     @Test
     void findEmployeesByBranchIdTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         List<Employee> employees = List.of(employee);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         when(employeeRepository.findAllEmployeesByBranchId(any(ObjectId.class))).thenReturn(Flux.fromIterable(employees));
 
@@ -213,10 +213,10 @@ class EmployeeServiceTest {
 
     @Test
     void findEmployeeByFilterTest_success() {
-        Employee employee = TestUtils.getResourceAsJson("/data/Employee.json", Employee.class);
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
 
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
 
         when(employeeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(employee));
 

@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.audit.consumer;
 
 import com.swiftwheelshubreactive.audit.service.AuditService;
-import com.swiftwheelshubreactive.audit.util.TestUtils;
+import com.swiftwheelshubreactive.audit.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ class BookingBookingAuditLogInfoConsumerMessageTest {
         ReflectionTestUtils.setField(bookingAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
 
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
         Message<AuditLogInfoRequest> message = MessageBuilder.createMessage(auditLogInfoRequest, messageHeaders);
@@ -59,7 +59,7 @@ class BookingBookingAuditLogInfoConsumerMessageTest {
         ReflectionTestUtils.setField(bookingAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
 
         AuditLogInfoRequest auditLogInfoDto =
-                TestUtils.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         Message<AuditLogInfoRequest> message = new GenericMessage<>(auditLogInfoDto);
         Flux<Message<AuditLogInfoRequest>> messageFlux = Flux.just(message);

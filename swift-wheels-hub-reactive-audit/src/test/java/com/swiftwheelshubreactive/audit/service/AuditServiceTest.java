@@ -9,7 +9,7 @@ import com.swiftwheelshubreactive.audit.mapper.ExpenseAuditLogInfoMapperImpl;
 import com.swiftwheelshubreactive.audit.repository.BookingAuditLogInfoRepository;
 import com.swiftwheelshubreactive.audit.repository.CustomerAuditLogInfoRepository;
 import com.swiftwheelshubreactive.audit.repository.ExpenseAuditLogInfoRepository;
-import com.swiftwheelshubreactive.audit.util.TestUtils;
+import com.swiftwheelshubreactive.audit.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import com.swiftwheelshubreactive.model.BookingAuditLogInfo;
 import com.swiftwheelshubreactive.model.CustomerAuditLogInfo;
@@ -54,9 +54,9 @@ class AuditServiceTest {
     @Test
     void saveBookingAuditLogInfoTest_success() {
         BookingAuditLogInfo bookingAuditLogInfo =
-                TestUtils.getResourceAsJson("/data/BookingAuditLogInfo.json", BookingAuditLogInfo.class);
+                TestUtil.getResourceAsJson("/data/BookingAuditLogInfo.json", BookingAuditLogInfo.class);
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(bookingAuditLogInfoRepository.save(any(BookingAuditLogInfo.class))).thenReturn(Mono.just(bookingAuditLogInfo));
 
@@ -70,7 +70,7 @@ class AuditServiceTest {
     @Test
     void saveBookingAuditLogInfoTest_errorOnSave() {
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(bookingAuditLogInfoRepository.save(any(BookingAuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 
@@ -82,9 +82,9 @@ class AuditServiceTest {
     @Test
     void saveCustomerAuditLogInfoTest_success() {
         CustomerAuditLogInfo customerAuditLogInfo =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfo.json", CustomerAuditLogInfo.class);
+                TestUtil.getResourceAsJson("/data/CustomerAuditLogInfo.json", CustomerAuditLogInfo.class);
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(customerAuditLogInfoRepository.save(any(CustomerAuditLogInfo.class))).thenReturn(Mono.just(customerAuditLogInfo));
 
@@ -98,7 +98,7 @@ class AuditServiceTest {
     @Test
     void saveCustomerAuditLogInfoTest_errorOnSave() {
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/CustomerAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(customerAuditLogInfoRepository.save(any(CustomerAuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 
@@ -110,9 +110,9 @@ class AuditServiceTest {
     @Test
     void saveExpenseAuditLogInfoTest_success() {
         ExpenseAuditLogInfo expenseAuditLogInfo =
-                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfo.json", ExpenseAuditLogInfo.class);
+                TestUtil.getResourceAsJson("/data/ExpenseAuditLogInfo.json", ExpenseAuditLogInfo.class);
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/ExpenseAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(expenseAuditLogInfoRepository.save(any(ExpenseAuditLogInfo.class))).thenReturn(Mono.just(expenseAuditLogInfo));
 
@@ -126,7 +126,7 @@ class AuditServiceTest {
     @Test
     void saveExpenseAuditLogInfoTest_errorOnSave() {
         AuditLogInfoRequest auditLogInfoRequest =
-                TestUtils.getResourceAsJson("/data/ExpenseAuditLogInfoRequest.json", AuditLogInfoRequest.class);
+                TestUtil.getResourceAsJson("/data/ExpenseAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
         when(expenseAuditLogInfoRepository.save(any(ExpenseAuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 

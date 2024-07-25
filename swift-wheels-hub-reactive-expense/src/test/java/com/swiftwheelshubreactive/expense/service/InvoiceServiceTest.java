@@ -8,7 +8,7 @@ import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapperImpl;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Invoice;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -55,10 +55,10 @@ class InvoiceServiceTest {
 
     @Test
     void findAllInvoicesTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findAll()).thenReturn(Flux.just(invoice));
 
@@ -80,10 +80,10 @@ class InvoiceServiceTest {
 
     @Test
     void findAllActiveInvoicesTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Invoice.class))).thenReturn(Flux.just(invoice));
 
@@ -103,10 +103,10 @@ class InvoiceServiceTest {
 
     @Test
     void findAllInvoicesByCustomerIdTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(invoice));
 
@@ -126,10 +126,10 @@ class InvoiceServiceTest {
 
     @Test
     void findInvoiceByIdTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
 
@@ -149,10 +149,10 @@ class InvoiceServiceTest {
 
     @Test
     void findInvoiceByFilterTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findByComments(anyString())).thenReturn(Flux.just(invoice));
 
@@ -208,13 +208,13 @@ class InvoiceServiceTest {
 
     @Test
     void saveInvoiceTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
@@ -227,7 +227,7 @@ class InvoiceServiceTest {
     @Test
     void saveInvoiceTest_error_existingInvoice() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.error(new Throwable()));
@@ -239,16 +239,16 @@ class InvoiceServiceTest {
 
     @Test
     void closeInvoiceTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         InvoiceRequest invoiceRequest =
-                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+                TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey("apikey")
@@ -275,10 +275,10 @@ class InvoiceServiceTest {
     @Test
     void closeInvoiceTest_errorOnFindInvoiceById() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceRequest invoiceRequest =
-                TestUtils.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+                TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey("apikey")
@@ -299,13 +299,13 @@ class InvoiceServiceTest {
 
     @Test
     void updateInvoiceAfterBookingUpdateTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
@@ -318,7 +318,7 @@ class InvoiceServiceTest {
     @Test
     void updateInvoiceAfterBookingUpdateTest_errorOnFindingByBookingId() {
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
@@ -329,7 +329,7 @@ class InvoiceServiceTest {
 
     @Test
     void deleteInvoiceByBookingIdTest_success() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/InProgressInvoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/InProgressInvoice.json", Invoice.class);
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(invoiceRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
@@ -341,7 +341,7 @@ class InvoiceServiceTest {
 
     @Test
     void deleteInvoiceByBookingIdTest_error_bookingInProgress() {
-        Invoice invoice = TestUtils.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
 

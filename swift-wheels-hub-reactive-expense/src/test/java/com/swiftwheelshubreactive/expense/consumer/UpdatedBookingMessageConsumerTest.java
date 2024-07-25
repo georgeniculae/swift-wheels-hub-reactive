@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.expense.consumer;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
-import com.swiftwheelshubreactive.expense.util.TestUtils;
+import com.swiftwheelshubreactive.expense.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,10 +42,10 @@ class UpdatedBookingMessageConsumerTest {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
         Message<BookingResponse> message = MessageBuilder.createMessage(bookingResponse, messageHeaders);
@@ -62,10 +62,10 @@ class UpdatedBookingMessageConsumerTest {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", false);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Message<BookingResponse> message = new GenericMessage<>(bookingResponse);
 
@@ -81,10 +81,10 @@ class UpdatedBookingMessageConsumerTest {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtils.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         Message<BookingResponse> message = new GenericMessage<>(bookingResponse);
 
@@ -100,7 +100,7 @@ class UpdatedBookingMessageConsumerTest {
         ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
 
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
         Message<BookingResponse> message = MessageBuilder.createMessage(bookingResponse, messageHeaders);

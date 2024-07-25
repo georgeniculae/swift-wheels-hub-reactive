@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshubreactive.booking.model.Outbox;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
-import com.swiftwheelshubreactive.booking.util.TestUtils;
+import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
@@ -64,9 +64,9 @@ class BookingServiceTest {
 
     @Test
     void findAllBookingTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(bookingRepository.findAll()).thenReturn(Flux.just(booking));
 
@@ -86,9 +86,9 @@ class BookingServiceTest {
 
     @Test
     void findBookingByIdTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
 
         StepVerifier.create(bookingService.findBookingById("64f361caf291ae086e179547"))
@@ -98,9 +98,9 @@ class BookingServiceTest {
 
     @Test
     void findBookingsByLoggedInUserTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
 
@@ -173,11 +173,11 @@ class BookingServiceTest {
     @Test
     void saveBookingTest_success() {
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-        CarResponse carResponse = TestUtils.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey(apikey)
@@ -199,7 +199,7 @@ class BookingServiceTest {
     @Test
     void saveBookingTest_errorOnFindingAvailableCarById() {
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
         String apikey = "apikey";
 
@@ -217,15 +217,15 @@ class BookingServiceTest {
 
     @Test
     void closeBookingTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         Booking updatedClosedBooking =
-                TestUtils.getResourceAsJson("/data/UpdatedClosedBooking.json", Booking.class);
+                TestUtil.getResourceAsJson("/data/UpdatedClosedBooking.json", Booking.class);
         BookingResponse closedBookingResponse =
-                TestUtils.getResourceAsJson("/data/ClosedBookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/ClosedBookingResponse.json", BookingResponse.class);
         BookingClosingDetails bookingClosingDetails =
-                TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
+                TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey(apikey)
@@ -246,11 +246,11 @@ class BookingServiceTest {
 
     @Test
     void closeBookingTest_errorOnUpdatingCarWhenBookingIsFinished() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingClosingDetails bookingClosingDetails =
-                TestUtils.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
+                TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
         EmployeeResponse employeeResponse =
-                TestUtils.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
+                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey(apikey)
@@ -270,12 +270,12 @@ class BookingServiceTest {
 
     @Test
     void updateBookingTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey(apikey)
@@ -294,7 +294,7 @@ class BookingServiceTest {
     @Test
     void updateBookingTest_errorOnFindingBookingById() {
         BookingRequest bookingRequest =
-                TestUtils.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey(apikey)
@@ -310,14 +310,14 @@ class BookingServiceTest {
 
     @Test
     void updateBookingTest_updatedCar_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingRequest updatedBookingRequest =
-                TestUtils.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
+                TestUtil.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
         BookingResponse updatedBookingResponse =
-                TestUtils.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
         CarResponse carResponse =
-                TestUtils.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
-        Outbox outbox = TestUtils.getResourceAsJson("/data/Outbox.json", Outbox.class);
+                TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.getContent().setCarId(new ObjectId("64f361caf291ae086e179222"));
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
@@ -338,7 +338,7 @@ class BookingServiceTest {
 
     @Test
     void getAmountSpentByUserTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
 
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
 
@@ -349,7 +349,7 @@ class BookingServiceTest {
 
     @Test
     void getSumOfAllBookingAmountTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
 
         when(bookingRepository.findAll()).thenReturn(Flux.just(booking));
 
@@ -360,9 +360,9 @@ class BookingServiceTest {
 
     @Test
     void findBookingByDateOfBookingTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         BookingResponse bookingResponse =
-                TestUtils.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.just(booking));
 
@@ -382,7 +382,7 @@ class BookingServiceTest {
 
     @Test
     void deleteBookingByCustomerUsernameTest_success() {
-        Booking booking = TestUtils.getResourceAsJson("/data/Booking.json", Booking.class);
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         RequestDetails requestDetails = RequestDetails.builder()
                 .apikey("apikey")
                 .roles(List.of("admin"))

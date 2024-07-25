@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.apigateway.security;
 
-import com.swiftwheelshubreactive.apigateway.util.TestUtils;
+import com.swiftwheelshubreactive.apigateway.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,7 +41,7 @@ class LoadSecurityContextRepositoryTest {
 
     @Test
     void loadTest_success() {
-        String token = TestUtils.getResourceAsJson("/data/JwtToken.json", String.class);
+        String token = TestUtil.getResourceAsJson("/data/JwtToken.json", String.class);
 
         String username = "user";
         Collection<? extends GrantedAuthority> roles = List.of(new SimpleGrantedAuthority("ROLE_USER"));

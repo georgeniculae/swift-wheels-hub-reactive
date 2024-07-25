@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.customer.router;
 
 import com.swiftwheelshubreactive.customer.handler.CustomerHandler;
-import com.swiftwheelshubreactive.customer.util.TestUtils;
+import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
@@ -40,7 +40,7 @@ class CustomerRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findAllUsersTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(userInfo));
 
@@ -65,7 +65,7 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void findAllUsersTest_unauthorized() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(List.of(userInfo));
 
@@ -84,7 +84,7 @@ class CustomerRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void getCurrentUserTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
@@ -109,7 +109,7 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void getCurrentUserTest_unauthorized() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
@@ -128,10 +128,10 @@ class CustomerRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void registerUserTest_success() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
         RegistrationResponse registrationResponse =
-                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+                TestUtil.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         Mono<ServerResponse> token = ServerResponse.ok().bodyValue(registrationResponse);
 
@@ -152,10 +152,10 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void registerUserTest_forbidden() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
         RegistrationResponse registrationResponse =
-                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+                TestUtil.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         Mono<ServerResponse> token = ServerResponse.ok().bodyValue(registrationResponse);
         when(customerHandler.registerUser(any(ServerRequest.class))).thenReturn(token);
@@ -175,10 +175,10 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void registerUserTest_unauthorized() {
         RegisterRequest registerRequest =
-                TestUtils.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
+                TestUtil.getResourceAsJson("/data/RegisterRequest.json", RegisterRequest.class);
 
         RegistrationResponse registrationResponse =
-                TestUtils.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
+                TestUtil.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         Mono<ServerResponse> token = ServerResponse.ok().bodyValue(registrationResponse);
 
@@ -198,7 +198,7 @@ class CustomerRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void updateUserTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
@@ -224,7 +224,7 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void updateUserTest_forbidden() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
@@ -243,7 +243,7 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void updateUserTest_unauthorized() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
@@ -263,7 +263,7 @@ class CustomerRouterTest {
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void findUserByUsernameTest_success() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 
@@ -288,7 +288,7 @@ class CustomerRouterTest {
     @WithAnonymousUser
     void findUserByUsernameTest_unauthorized() {
         UserInfo userInfo =
-                TestUtils.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(userInfo);
 

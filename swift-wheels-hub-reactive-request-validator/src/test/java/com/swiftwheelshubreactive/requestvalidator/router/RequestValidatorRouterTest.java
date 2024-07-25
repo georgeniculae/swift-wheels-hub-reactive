@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.requestvalidator.router;
 
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.requestvalidator.handler.RequestValidatorHandler;
-import com.swiftwheelshubreactive.requestvalidator.util.TestUtils;
+import com.swiftwheelshubreactive.requestvalidator.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -34,7 +34,7 @@ class RequestValidatorRouterTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void routeRequestTest_success() {
         RequestValidationReport validationReport =
-                TestUtils.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
+                TestUtil.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(validationReport);
 
@@ -54,7 +54,7 @@ class RequestValidatorRouterTest {
     @WithAnonymousUser
     void routeRequestTest_unauthorized() {
         RequestValidationReport validationReport =
-                TestUtils.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
+                TestUtil.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(validationReport);
 
