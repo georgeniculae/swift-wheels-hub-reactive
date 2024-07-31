@@ -38,7 +38,7 @@ public class CustomerHandler {
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findUserByUsername(ServerRequest serverRequest) {
         return customerService.findUserByUsername(serverRequest.pathVariable(USERNAME))
                 .flatMap(userInfo -> ServerResponse.ok().bodyValue(userInfo))

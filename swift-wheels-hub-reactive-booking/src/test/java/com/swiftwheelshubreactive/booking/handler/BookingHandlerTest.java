@@ -245,7 +245,8 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingRequest));
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
-        when(bookingService.saveBooking(any(RequestDetails.class), any(BookingRequest.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.saveBooking(any(RequestDetails.class), any(BookingRequest.class)))
+                .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

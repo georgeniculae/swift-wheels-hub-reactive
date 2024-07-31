@@ -13,6 +13,7 @@ import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.model.Booking;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,9 @@ class BookingServiceTest {
 
     @Mock
     private EmployeeService employeeService;
+
+    @Mock
+    private CustomerService customerService;
 
     @Spy
     private BookingMapper bookingMapper = new BookingMapperImpl();
@@ -176,7 +180,10 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        CarResponse carResponse =
+                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        UserInfo userInfo =
+                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         String apikey = "apikey";
         RequestDetails requestDetails = RequestDetails.builder()
@@ -185,6 +192,7 @@ class BookingServiceTest {
                 .build();
 
         when(carService.findAvailableCarById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(customerService.getUserByUsername(any(RequestDetails.class))).thenReturn(Mono.just(userInfo));
         when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
         when(carService.changeCarStatus(any(RequestDetails.class), anyString(), any(CarState.class))).thenReturn(Mono.empty());

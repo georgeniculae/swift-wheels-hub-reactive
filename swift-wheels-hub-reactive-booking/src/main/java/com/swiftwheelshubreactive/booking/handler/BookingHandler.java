@@ -97,6 +97,7 @@ public class BookingHandler {
                 .flatMap(bookingRequest -> bookingService.saveBooking(
                         RequestDetails.builder()
                                 .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
+                                .username(ServerRequestUtil.getUsername(serverRequest))
                                 .roles(ServerRequestUtil.getRolesHeader(serverRequest))
                                 .build(),
                         bookingRequest)

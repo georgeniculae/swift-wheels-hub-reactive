@@ -11,6 +11,7 @@ import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.RequestDetails;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -49,6 +50,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final CarService carService;
+    private final CustomerService customerService;
     private final EmployeeService employeeService;
     private final OutboxService outboxService;
     private final BookingMapper bookingMapper;
@@ -134,10 +136,10 @@ public class BookingService {
             activityDescription = "Booking creation",
             sentParameters = "newBookingRequest"
     )
-    public Mono<BookingResponse> saveBooking(RequestDetails requestDetails, BookingRequest newBookingRequest) {
+    public Mono<BookingResponse> saveBooking(RequestDetails requestDetails,
+                                             BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
-                .flatMap(bookingRequest -> carService.findAvailableCarById(requestDetails, bookingRequest.carId()))
-                .map(carResponse -> setupNewBooking(newBookingRequest, carResponse))
+                .flatMap(bookingRequest -> createNewBooking(requestDetails, newBookingRequest, bookingRequest))
                 .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
                 .delayUntil(bookingResponse -> setCarForNewBooking(requestDetails, bookingResponse))
@@ -191,6 +193,14 @@ public class BookingService {
 
                     return ExceptionUtil.handleException(e);
                 });
+    }
+
+    private Mono<Booking> createNewBooking(RequestDetails requestDetails, BookingRequest newBookingRequest, BookingRequest bookingRequest) {
+        return Mono.zip(
+                carService.findAvailableCarById(requestDetails, bookingRequest.carId()),
+                customerService.getUserByUsername(requestDetails),
+                (carResponse, userInfo) -> setupNewBooking(newBookingRequest, carResponse, userInfo)
+        );
     }
 
     private List<UpdateCarRequest> getUpdateCarRequest(List<String> bookingsIds) {
@@ -309,12 +319,12 @@ public class BookingService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Booking with id " + id + " does not exist")));
     }
 
-    private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse) {
+    private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse, UserInfo userInfo) {
         Booking newBooking = bookingMapper.mapDtoToEntity(newBookingRequest);
         BigDecimal amount = carResponse.amount();
 
-        newBooking.setCustomerUsername(newBooking.getCustomerUsername());
-        newBooking.setCustomerEmail(newBookingRequest.customerEmail());
+        newBooking.setCustomerUsername(userInfo.username());
+        newBooking.setCustomerEmail(userInfo.email());
         newBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
         newBooking.setDateOfBooking(LocalDate.now());
         newBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
