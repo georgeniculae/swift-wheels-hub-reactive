@@ -25,7 +25,7 @@ public class CustomerService {
 
     private final WebClient webClient;
 
-    public Mono<UserInfo> getUserByUsername(RequestDetails requestDetails) {
+    public Mono<UserInfo> findUserByUsername(RequestDetails requestDetails) {
         return webClient.get()
                 .uri(url + SEPARATOR + "username" + SEPARATOR + "{username}", requestDetails.username())
                 .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))

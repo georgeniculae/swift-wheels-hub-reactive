@@ -192,7 +192,7 @@ class BookingServiceTest {
                 .build();
 
         when(carService.findAvailableCarById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(carResponse));
-        when(customerService.getUserByUsername(any(RequestDetails.class))).thenReturn(Mono.just(userInfo));
+        when(customerService.findUserByUsername(any(RequestDetails.class))).thenReturn(Mono.just(userInfo));
         when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox));
         when(carService.changeCarStatus(any(RequestDetails.class), anyString(), any(CarState.class))).thenReturn(Mono.empty());

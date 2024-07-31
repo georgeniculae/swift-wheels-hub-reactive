@@ -136,8 +136,7 @@ public class BookingService {
             activityDescription = "Booking creation",
             sentParameters = "newBookingRequest"
     )
-    public Mono<BookingResponse> saveBooking(RequestDetails requestDetails,
-                                             BookingRequest newBookingRequest) {
+    public Mono<BookingResponse> saveBooking(RequestDetails requestDetails, BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
                 .flatMap(bookingRequest -> createNewBooking(requestDetails, newBookingRequest, bookingRequest))
                 .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
@@ -198,7 +197,7 @@ public class BookingService {
     private Mono<Booking> createNewBooking(RequestDetails requestDetails, BookingRequest newBookingRequest, BookingRequest bookingRequest) {
         return Mono.zip(
                 carService.findAvailableCarById(requestDetails, bookingRequest.carId()),
-                customerService.getUserByUsername(requestDetails),
+                customerService.findUserByUsername(requestDetails),
                 (carResponse, userInfo) -> setupNewBooking(newBookingRequest, carResponse, userInfo)
         );
     }
