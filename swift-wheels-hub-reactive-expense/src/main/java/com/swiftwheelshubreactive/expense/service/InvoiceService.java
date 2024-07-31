@@ -230,7 +230,8 @@ public class InvoiceService {
         );
     }
 
-    private Invoice getUpdatedInvoice(Invoice existingInvoice, InvoiceRequest invoiceRequest,
+    private Invoice getUpdatedInvoice(Invoice existingInvoice,
+                                      InvoiceRequest invoiceRequest,
                                       BookingResponse bookingResponse) {
         LocalDate carReturnDate = invoiceRequest.carReturnDate();
         ObjectId receptionistEmployeeId = MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId());
