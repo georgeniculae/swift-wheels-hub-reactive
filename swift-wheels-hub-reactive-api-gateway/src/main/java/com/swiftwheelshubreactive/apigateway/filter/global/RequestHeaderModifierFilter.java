@@ -1,8 +1,9 @@
 package com.swiftwheelshubreactive.apigateway.filter.global;
 
+import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
-import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -48,7 +50,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return modifyHeaders(exchange)
+        return createMutatedHeaders(exchange)
                 .flatMap(chain::filter)
                 .onErrorMap(e -> {
                     log.error("Error while trying to log headers: {}", e.getMessage());
@@ -62,36 +64,38 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
         return 0;
     }
 
-    private Mono<ServerWebExchange> modifyHeaders(ServerWebExchange exchange) {
-        return Mono.zip(
-                getUsername(exchange.getRequest()),
-                getRoles(exchange.getRequest()),
-                (username, authorities) -> mutateServerWebExchange(exchange, username, authorities)
-        );
-    }
-
-    private Mono<String> getUsername(ServerHttpRequest request) {
-        return Mono.just(request)
+    private Mono<ServerWebExchange> createMutatedHeaders(ServerWebExchange exchange) {
+        return Mono.just(exchange.getRequest())
                 .filter(this::doesPathContainPattern)
                 .flatMap(serverHttpRequest -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(serverHttpRequest)))
-                .map(jwtAuthenticationTokenConverter::extractUsername)
-                .switchIfEmpty(Mono.defer(() -> Mono.just(StringUtils.EMPTY)));
-    }
-
-    private Mono<List<String>> getRoles(ServerHttpRequest request) {
-        return Mono.just(request)
-                .filter(this::doesPathContainPattern)
-                .flatMap(serverHttpRequest -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(serverHttpRequest)))
-                .flatMapMany(jwtAuthenticationTokenConverter::extractGrantedAuthorities)
-                .map(GrantedAuthority::getAuthority)
-                .collectList()
-                .switchIfEmpty(Mono.just(List.of()));
+                .flatMap(this::getAuthenticationInfo)
+                .map(authenticationInfo -> createMutatedServerWebExchange(exchange, authenticationInfo));
     }
 
     private boolean doesPathContainPattern(ServerHttpRequest serverHttpRequest) {
         String path = serverHttpRequest.getPath().value();
 
         return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH);
+    }
+
+    private Mono<AuthenticationInfo> getAuthenticationInfo(Jwt jwt) {
+        return Mono.zip(
+                getUsername(jwt),
+                getRoles(jwt),
+                AuthenticationInfo::new
+        );
+    }
+
+    private Mono<String> getUsername(Jwt jwt) {
+        return Mono.just(jwtAuthenticationTokenConverter.extractUsername(jwt))
+                .switchIfEmpty(Mono.defer(() -> Mono.just(StringUtils.EMPTY)));
+    }
+
+    private Mono<List<String>> getRoles(Jwt jwt) {
+        return jwtAuthenticationTokenConverter.extractGrantedAuthorities(jwt)
+                .map(GrantedAuthority::getAuthority)
+                .collectList()
+                .switchIfEmpty(Mono.just(List.of()));
     }
 
     private String getAuthorizationToken(ServerHttpRequest request) {
@@ -104,10 +108,10 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .substring(7);
     }
 
-    private ServerWebExchange mutateServerWebExchange(ServerWebExchange exchange,
-                                                      String username, List<String> authorities) {
+    private ServerWebExchange createMutatedServerWebExchange(ServerWebExchange exchange,
+                                                             AuthenticationInfo authenticationInfo) {
         return exchange.mutate()
-                .request(mutateHeaders(username, authorities))
+                .request(mutateHeaders(authenticationInfo.username, authenticationInfo.roles))
                 .build();
     }
 
@@ -125,6 +129,10 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
             requestBuilder.headers(headers -> headers.remove(HttpHeaders.AUTHORIZATION));
         };
+    }
+
+    @Builder
+    private record AuthenticationInfo(String username, List<String> roles) {
     }
 
 }
