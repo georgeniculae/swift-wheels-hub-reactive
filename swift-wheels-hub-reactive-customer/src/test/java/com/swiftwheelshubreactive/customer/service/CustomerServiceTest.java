@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.customer.service;
 import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
@@ -161,15 +161,15 @@ class CustomerServiceTest {
 
     @Test
     void deleteUserByUsernameTest_success() {
-        RequestDetails requestDetails = RequestDetails.builder()
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey("apikey")
                 .roles(List.of("admin"))
                 .build();
 
         doNothing().when(keycloakUserService).deleteUserByUsername(anyString());
-        when(bookingService.deleteBookingsByUsername(any(RequestDetails.class), anyString())).thenReturn(Mono.empty());
+        when(bookingService.deleteBookingsByUsername(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.empty());
 
-        customerService.deleteUserByUsername(requestDetails, "user")
+        customerService.deleteUserByUsername(authenticationInfo, "user")
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
@@ -177,14 +177,14 @@ class CustomerServiceTest {
 
     @Test
     void deleteUserByUsernameTest_errorOnDeleting() {
-        RequestDetails requestDetails = RequestDetails.builder()
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey("apikey")
                 .roles(List.of("admin"))
                 .build();
 
         doThrow(new SwiftWheelsHubException("error")).when(keycloakUserService).deleteUserByUsername(anyString());
 
-        customerService.deleteUserByUsername(requestDetails, "user")
+        customerService.deleteUserByUsername(authenticationInfo, "user")
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();

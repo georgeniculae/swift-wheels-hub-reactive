@@ -7,7 +7,7 @@ import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -245,7 +245,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingRequest));
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
-        when(bookingService.saveBooking(any(RequestDetails.class), any(BookingRequest.class)))
+        when(bookingService.saveBooking(any(AuthenticationInfo.class), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
@@ -268,7 +268,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingClosingDetails));
 
         when(bookingClosingDetailsValidator.validateBody(any())).thenReturn(Mono.just(bookingClosingDetails));
-        when(bookingService.closeBooking(any(RequestDetails.class), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.closeBooking(any(AuthenticationInfo.class), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.closeBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -291,7 +291,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingRequest));
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
-        when(bookingService.updateBooking(any(RequestDetails.class), anyString(), any(BookingRequest.class)))
+        when(bookingService.updateBooking(any(AuthenticationInfo.class), anyString(), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
@@ -307,7 +307,7 @@ class BookingHandlerTest {
                 .pathVariable("username", "user")
                 .build();
 
-        when(bookingService.deleteBookingByCustomerUsername(any(RequestDetails.class), anyString())).thenReturn(Mono.empty());
+        when(bookingService.deleteBookingByCustomerUsername(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(bookingHandler.deleteBookingByCustomerUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

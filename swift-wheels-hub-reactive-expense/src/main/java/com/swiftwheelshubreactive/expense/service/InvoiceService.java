@@ -5,7 +5,7 @@ import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -143,11 +143,11 @@ public class InvoiceService {
             sentParameters = {"id", "invoiceRequest"},
             activityDescription = "Invoice closing"
     )
-    public Mono<InvoiceResponse> closeInvoice(RequestDetails requestDetails, String id, InvoiceRequest invoiceRequest) {
+    public Mono<InvoiceResponse> closeInvoice(AuthenticationInfo authenticationInfo, String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
-                .flatMap(request -> setupExistingInvoice(requestDetails, id, request))
+                .flatMap(request -> setupExistingInvoice(authenticationInfo, id, request))
                 .flatMap(revenueService::saveInvoiceRevenueAndOutbox)
-                .delayUntil(invoice -> bookingService.closeBooking(requestDetails, getBookingClosingDetails(invoice)))
+                .delayUntil(invoice -> bookingService.closeBooking(authenticationInfo, getBookingClosingDetails(invoice)))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
@@ -222,10 +222,10 @@ public class InvoiceService {
         }
     }
 
-    private Mono<Invoice> setupExistingInvoice(RequestDetails requestDetails, String id, InvoiceRequest invoiceRequest) {
+    private Mono<Invoice> setupExistingInvoice(AuthenticationInfo authenticationInfo, String id, InvoiceRequest invoiceRequest) {
         return Mono.zip(
                 findEntityById(id),
-                bookingService.findBookingById(requestDetails, invoiceRequest.bookingId()),
+                bookingService.findBookingById(authenticationInfo, invoiceRequest.bookingId()),
                 (existingInvoice, bookingResponse) -> getUpdatedInvoice(existingInvoice, invoiceRequest, bookingResponse)
         );
     }

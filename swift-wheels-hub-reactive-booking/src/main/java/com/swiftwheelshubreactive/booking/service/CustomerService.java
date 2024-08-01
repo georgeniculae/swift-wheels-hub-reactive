@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.booking.service;
 
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
@@ -25,10 +25,10 @@ public class CustomerService {
 
     private final WebClient webClient;
 
-    public Mono<UserInfo> findUserByUsername(RequestDetails requestDetails) {
+    public Mono<UserInfo> findUserByUsername(AuthenticationInfo authenticationInfo) {
         return webClient.get()
-                .uri(url + SEPARATOR + "username" + SEPARATOR + "{username}", requestDetails.username())
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .uri(url + SEPARATOR + "username" + SEPARATOR + "{username}", authenticationInfo.username())
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(UserInfo.class)

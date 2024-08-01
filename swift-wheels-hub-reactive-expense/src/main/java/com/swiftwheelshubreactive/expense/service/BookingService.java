@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +29,10 @@ public class BookingService {
 
     private final WebClient webClient;
 
-    public Mono<Void> closeBooking(RequestDetails requestDetails, BookingClosingDetails bookingClosingDetails) {
+    public Mono<Void> closeBooking(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()
                 .uri(url + SEPARATOR + "close-booking")
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .bodyValue(bookingClosingDetails)
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -40,10 +40,10 @@ public class BookingService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<BookingResponse> findBookingById(RequestDetails requestDetails, String bookingId) {
+    public Mono<BookingResponse> findBookingById(AuthenticationInfo authenticationInfo, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", bookingId)
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(BookingResponse.class)

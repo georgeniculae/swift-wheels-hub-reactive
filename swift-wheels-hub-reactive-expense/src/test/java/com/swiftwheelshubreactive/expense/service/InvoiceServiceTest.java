@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapperImpl;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -250,7 +250,7 @@ class InvoiceServiceTest {
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        RequestDetails requestDetails = RequestDetails.builder()
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey("apikey")
                 .roles(List.of("admin"))
                 .build();
@@ -260,12 +260,12 @@ class InvoiceServiceTest {
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.findBookingById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(bookingResponse));
         when(revenueService.saveInvoiceRevenueAndOutbox(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.closeBooking(any(RequestDetails.class), any(BookingClosingDetails.class)))
+        when(bookingService.closeBooking(any(AuthenticationInfo.class), any(BookingClosingDetails.class)))
                 .thenReturn(Mono.empty());
 
-        StepVerifier.create(invoiceService.closeInvoice(requestDetails, "64f361caf291ae086e179547", invoiceRequest))
+        StepVerifier.create(invoiceService.closeInvoice(authenticationInfo, "64f361caf291ae086e179547", invoiceRequest))
                 .expectNext(invoiceResponse)
                 .verifyComplete();
 
@@ -280,7 +280,7 @@ class InvoiceServiceTest {
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
-        RequestDetails requestDetails = RequestDetails.builder()
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey("apikey")
                 .roles(List.of("admin"))
                 .build();
@@ -289,10 +289,10 @@ class InvoiceServiceTest {
                 .header("Authorization", "token")
                 .build();
 
-        when(bookingService.findBookingById(any(RequestDetails.class), anyString())).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.findBookingById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(bookingResponse));
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.closeInvoice(requestDetails, "64f361caf291ae086e179547", invoiceRequest))
+        StepVerifier.create(invoiceService.closeInvoice(authenticationInfo, "64f361caf291ae086e179547", invoiceRequest))
                 .expectError()
                 .verify();
     }

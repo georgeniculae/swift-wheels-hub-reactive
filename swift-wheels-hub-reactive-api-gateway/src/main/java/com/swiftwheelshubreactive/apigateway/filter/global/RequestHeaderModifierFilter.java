@@ -1,9 +1,9 @@
 package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -82,7 +82,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
         return Mono.zip(
                 getUsername(jwt),
                 getRoles(jwt),
-                AuthenticationInfo::new
+                (username, roles) -> AuthenticationInfo.builder().username(username).roles(roles).build()
         );
     }
 
@@ -111,7 +111,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private ServerWebExchange createMutatedServerWebExchange(ServerWebExchange exchange,
                                                              AuthenticationInfo authenticationInfo) {
         return exchange.mutate()
-                .request(mutateHeaders(authenticationInfo.username, authenticationInfo.roles))
+                .request(mutateHeaders(authenticationInfo.username(), authenticationInfo.roles()))
                 .build();
     }
 
@@ -129,10 +129,6 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
             requestBuilder.headers(headers -> headers.remove(HttpHeaders.AUTHORIZATION));
         };
-    }
-
-    @Builder
-    private record AuthenticationInfo(String username, List<String> roles) {
     }
 
 }

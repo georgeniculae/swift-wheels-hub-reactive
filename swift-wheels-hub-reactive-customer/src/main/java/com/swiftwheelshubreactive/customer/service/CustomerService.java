@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.customer.service;
 
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
@@ -97,10 +97,10 @@ public class CustomerService {
             sentParameters = "username",
             activityDescription = "User deletion"
     )
-    public Mono<Void> deleteUserByUsername(RequestDetails requestDetails, String username) {
+    public Mono<Void> deleteUserByUsername(AuthenticationInfo authenticationInfo, String username) {
         return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
                 .subscribeOn(Schedulers.boundedElastic())
-                .then(Mono.defer(() -> bookingService.deleteBookingsByUsername(requestDetails, username)))
+                .then(Mono.defer(() -> bookingService.deleteBookingsByUsername(authenticationInfo, username)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 

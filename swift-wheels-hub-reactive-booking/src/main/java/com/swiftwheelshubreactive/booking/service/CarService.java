@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.booking.service;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
@@ -32,10 +32,10 @@ public class CarService {
 
     private final WebClient webClient;
 
-    public Mono<CarResponse> findAvailableCarById(RequestDetails requestDetails, String carId) {
+    public Mono<CarResponse> findAvailableCarById(AuthenticationInfo authenticationInfo, String carId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "availability", carId)
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CarResponse.class)
@@ -43,10 +43,10 @@ public class CarService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<Void> changeCarStatus(RequestDetails requestDetails, String carId, CarState carState) {
+    public Mono<Void> changeCarStatus(AuthenticationInfo authenticationInfo, String carId, CarState carState) {
         return webClient.patch()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status?carState={carState}", carId, carState)
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -55,10 +55,10 @@ public class CarService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<Void> updateCarWhenBookingIsFinished(RequestDetails requestDetails, CarUpdateDetails carUpdateDetails) {
+    public Mono<Void> updateCarWhenBookingIsFinished(AuthenticationInfo authenticationInfo, CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
@@ -68,10 +68,10 @@ public class CarService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<Void> updateCarsStatus(RequestDetails requestDetails, List<UpdateCarRequest> updateCarRequests) {
+    public Mono<Void> updateCarsStatus(AuthenticationInfo authenticationInfo, List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + "update-statuses")
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(updateCarRequests)

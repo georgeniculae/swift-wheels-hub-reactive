@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record RequestDetails(
+public record AuthenticationInfo(
         String apikey,
         String username,
         List<String> roles

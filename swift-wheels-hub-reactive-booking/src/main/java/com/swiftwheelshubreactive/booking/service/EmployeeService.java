@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.service;
 
 import com.swiftwheelshubreactive.dto.EmployeeResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +27,10 @@ public class EmployeeService {
 
     private final WebClient webClient;
 
-    public Mono<EmployeeResponse> findEmployeeById(RequestDetails requestDetails, String employeeId) {
+    public Mono<EmployeeResponse> findEmployeeById(AuthenticationInfo authenticationInfo, String employeeId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", employeeId)
-                .headers(WebClientUtil.setHttpHeaders(requestDetails.apikey(), requestDetails.roles()))
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(EmployeeResponse.class)

@@ -9,7 +9,7 @@ import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
@@ -136,12 +136,12 @@ public class BookingService {
             activityDescription = "Booking creation",
             sentParameters = "newBookingRequest"
     )
-    public Mono<BookingResponse> saveBooking(RequestDetails requestDetails, BookingRequest newBookingRequest) {
+    public Mono<BookingResponse> saveBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
-                .flatMap(bookingRequest -> createNewBooking(requestDetails, newBookingRequest, bookingRequest))
+                .flatMap(bookingRequest -> createNewBooking(authenticationInfo, newBookingRequest, bookingRequest))
                 .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
-                .delayUntil(bookingResponse -> setCarForNewBooking(requestDetails, bookingResponse))
+                .delayUntil(bookingResponse -> setCarForNewBooking(authenticationInfo, bookingResponse))
                 .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
@@ -153,12 +153,12 @@ public class BookingService {
             activityDescription = "Booking update",
             sentParameters = "id"
     )
-    public Mono<BookingResponse> updateBooking(RequestDetails requestDetails,
+    public Mono<BookingResponse> updateBooking(AuthenticationInfo authenticationInfo,
                                                String id,
                                                BookingRequest updatedBookingRequest) {
         return validateBookingDates(updatedBookingRequest)
                 .flatMap(_ -> findEntityById(id))
-                .flatMap(existingBooking -> getUpdatedBooking(requestDetails, updatedBookingRequest, existingBooking))
+                .flatMap(existingBooking -> getUpdatedBooking(authenticationInfo, updatedBookingRequest, existingBooking))
                 .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
@@ -166,11 +166,11 @@ public class BookingService {
                 });
     }
 
-    public Mono<BookingResponse> closeBooking(RequestDetails requestDetails, BookingClosingDetails bookingClosingDetails) {
-        return updatedBookingWithEmployeeDetails(requestDetails, bookingClosingDetails)
+    public Mono<BookingResponse> closeBooking(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails) {
+        return updatedBookingWithEmployeeDetails(authenticationInfo, bookingClosingDetails)
                 .flatMap(bookingRepository::save)
                 .map(bookingMapper::mapEntityToDto)
-                .delayUntil(bookingResponse -> updateCarWhenBookingIsClosed(requestDetails, bookingResponse, bookingClosingDetails))
+                .delayUntil(bookingResponse -> updateCarWhenBookingIsClosed(authenticationInfo, bookingResponse, bookingClosingDetails))
                 .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
@@ -182,11 +182,11 @@ public class BookingService {
             activityDescription = "Booking deletion",
             sentParameters = "id"
     )
-    public Mono<Void> deleteBookingByCustomerUsername(RequestDetails requestDetails, String username) {
+    public Mono<Void> deleteBookingByCustomerUsername(AuthenticationInfo authenticationInfo, String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .collectList()
                 .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
-                .flatMap(carsIds -> carService.updateCarsStatus(requestDetails, getUpdateCarRequest(carsIds)))
+                .flatMap(carsIds -> carService.updateCarsStatus(authenticationInfo, getUpdateCarRequest(carsIds)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
 
@@ -194,10 +194,10 @@ public class BookingService {
                 });
     }
 
-    private Mono<Booking> createNewBooking(RequestDetails requestDetails, BookingRequest newBookingRequest, BookingRequest bookingRequest) {
+    private Mono<Booking> createNewBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest, BookingRequest bookingRequest) {
         return Mono.zip(
-                carService.findAvailableCarById(requestDetails, bookingRequest.carId()),
-                customerService.findUserByUsername(requestDetails),
+                carService.findAvailableCarById(authenticationInfo, bookingRequest.carId()),
+                customerService.findUserByUsername(authenticationInfo),
                 (carResponse, userInfo) -> setupNewBooking(newBookingRequest, carResponse, userInfo)
         );
     }
@@ -233,11 +233,11 @@ public class BookingService {
                 });
     }
 
-    private Mono<Booking> updatedBookingWithEmployeeDetails(RequestDetails requestDetails,
+    private Mono<Booking> updatedBookingWithEmployeeDetails(AuthenticationInfo authenticationInfo,
                                                             BookingClosingDetails bookingClosingDetails) {
         return Mono.zip(
                 findEntityById(bookingClosingDetails.bookingId()),
-                employeeService.findEmployeeById(requestDetails, bookingClosingDetails.receptionistEmployeeId()),
+                employeeService.findEmployeeById(authenticationInfo, bookingClosingDetails.receptionistEmployeeId()),
                 (existingBooking, employeeResponse) -> {
                     Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
 
@@ -248,24 +248,24 @@ public class BookingService {
                 });
     }
 
-    private Mono<BookingResponse> getUpdatedBooking(RequestDetails requestDetails,
+    private Mono<BookingResponse> getUpdatedBooking(AuthenticationInfo authenticationInfo,
                                                     BookingRequest updatedBookingRequest,
                                                     Booking existingBooking) {
-        return getCarIfIsChanged(requestDetails, updatedBookingRequest, existingBooking)
+        return getCarIfIsChanged(authenticationInfo, updatedBookingRequest, existingBooking)
                 .map(carResponse -> updateBookingWithNewCarDetails(updatedBookingRequest, existingBooking, carResponse))
                 .switchIfEmpty(Mono.defer(() -> Mono.just(getSetupBooking(updatedBookingRequest, existingBooking))))
-                .flatMap(updatedBooking -> processBooking(requestDetails, existingBooking, updatedBooking));
+                .flatMap(updatedBooking -> processBooking(authenticationInfo, existingBooking, updatedBooking));
     }
 
-    private Mono<BookingResponse> processBooking(RequestDetails requestDetails,
+    private Mono<BookingResponse> processBooking(AuthenticationInfo authenticationInfo,
                                                  Booking existingBooking,
                                                  Booking updatedBooking) {
         return outboxService.saveBookingAndOutbox(updatedBooking, Outbox.Operation.UPDATE)
                 .map(outbox -> bookingMapper.mapEntityToDto(outbox.getContent()))
-                .delayUntil(savedBookingResponse -> changeCarsStatusIfNeeded(requestDetails, savedBookingResponse, existingBooking));
+                .delayUntil(savedBookingResponse -> changeCarsStatusIfNeeded(authenticationInfo, savedBookingResponse, existingBooking));
     }
 
-    private Mono<Void> updateCarWhenBookingIsClosed(RequestDetails requestDetails,
+    private Mono<Void> updateCarWhenBookingIsClosed(AuthenticationInfo authenticationInfo,
                                                     BookingResponse bookingResponse,
                                                     BookingClosingDetails bookingClosingDetails) {
         CarUpdateDetails carUpdateDetails = CarUpdateDetails.builder()
@@ -274,19 +274,19 @@ public class BookingService {
                 .carState(bookingClosingDetails.carState())
                 .build();
 
-        return carService.updateCarWhenBookingIsFinished(requestDetails, carUpdateDetails);
+        return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails);
     }
 
-    private Mono<Void> setCarForNewBooking(RequestDetails requestDetails, BookingResponse bookingResponse) {
-        return carService.changeCarStatus(requestDetails, bookingResponse.carId(), CarState.NOT_AVAILABLE);
+    private Mono<Void> setCarForNewBooking(AuthenticationInfo authenticationInfo, BookingResponse bookingResponse) {
+        return carService.changeCarStatus(authenticationInfo, bookingResponse.carId(), CarState.NOT_AVAILABLE);
     }
 
-    private Mono<CarResponse> getCarIfIsChanged(RequestDetails requestDetails,
+    private Mono<CarResponse> getCarIfIsChanged(AuthenticationInfo authenticationInfo,
                                                 BookingRequest updatedBookingRequest,
                                                 Booking existingBooking) {
         return Mono.just(updatedBookingRequest.carId())
                 .filter(carId -> !existingBooking.getCarId().toString().equals(carId))
-                .flatMap(newCarId -> carService.findAvailableCarById(requestDetails, newCarId))
+                .flatMap(newCarId -> carService.findAvailableCarById(authenticationInfo, newCarId))
                 .flatMap(carResponse -> checkIfCarIsFromRightBranch(updatedBookingRequest, carResponse))
                 .switchIfEmpty(Mono.empty());
     }
@@ -366,7 +366,7 @@ public class BookingService {
         return updatedBooking;
     }
 
-    private Mono<Void> changeCarsStatusIfNeeded(RequestDetails requestDetails,
+    private Mono<Void> changeCarsStatusIfNeeded(AuthenticationInfo authenticationInfo,
                                                 BookingResponse updatedBookingResponse,
                                                 Booking existingBooking) {
         return Mono.just(existingBooking.getCarId().toString())
@@ -375,7 +375,7 @@ public class BookingService {
                     List<UpdateCarRequest> updateCarRequests =
                             getUpdateCarRequest(existingBookingCarId, updatedBookingResponse.carId());
 
-                    return carService.updateCarsStatus(requestDetails, updateCarRequests);
+                    return carService.updateCarsStatus(authenticationInfo, updateCarRequests);
                 });
     }
 

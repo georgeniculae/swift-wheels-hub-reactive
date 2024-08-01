@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.customer.service.CustomerService;
 import com.swiftwheelshubreactive.customer.validator.RegisterRequestValidator;
 import com.swiftwheelshubreactive.customer.validator.UserUpdateRequestValidator;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class CustomerHandler {
     @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> deleteUserByUsername(ServerRequest serverRequest) {
         return customerService.deleteUserByUsername(
-                        RequestDetails.builder()
+                        AuthenticationInfo.builder()
                                 .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
                                 .roles(ServerRequestUtil.getRolesHeader(serverRequest))
                                 .build(),
@@ -86,7 +86,7 @@ public class CustomerHandler {
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> deleteCurrentUser(ServerRequest serverRequest) {
         return customerService.deleteUserByUsername(
-                        RequestDetails.builder()
+                        AuthenticationInfo.builder()
                                 .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
                                 .roles(ServerRequestUtil.getRolesHeader(serverRequest))
                                 .build(),

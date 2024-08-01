@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
 import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
@@ -85,7 +85,7 @@ public class InvoiceHandler {
         return serverRequest.bodyToMono(InvoiceRequest.class)
                 .flatMap(invoiceRequestValidator::validateBody)
                 .flatMap(invoiceRequest -> invoiceService.closeInvoice(
-                                RequestDetails.builder()
+                                AuthenticationInfo.builder()
                                         .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
                                         .roles(ServerRequestUtil.getRolesHeader(serverRequest))
                                         .build(),

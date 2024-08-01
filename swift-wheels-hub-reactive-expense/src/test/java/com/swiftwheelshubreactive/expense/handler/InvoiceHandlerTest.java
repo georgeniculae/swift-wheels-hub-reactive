@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.handler;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.dto.RequestDetails;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
@@ -226,7 +226,7 @@ class InvoiceHandlerTest {
                 .body(Mono.just(invoiceRequest));
 
         when(invoiceRequestValidator.validateBody(any())).thenReturn(Mono.just(invoiceRequest));
-        when(invoiceService.closeInvoice(any(RequestDetails.class), anyString(), any(InvoiceRequest.class)))
+        when(invoiceService.closeInvoice(any(AuthenticationInfo.class), anyString(), any(InvoiceRequest.class)))
                 .thenReturn(Mono.just(invoiceResponse));
 
         StepVerifier.create(invoiceHandler.closeInvoice(serverRequest))
