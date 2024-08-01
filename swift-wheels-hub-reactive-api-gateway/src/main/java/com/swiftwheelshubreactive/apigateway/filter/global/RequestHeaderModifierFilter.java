@@ -69,6 +69,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .filter(this::doesPathContainPattern)
                 .flatMap(serverHttpRequest -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(serverHttpRequest)))
                 .flatMap(this::getAuthenticationInfo)
+                .switchIfEmpty(Mono.just(AuthenticationInfo.builder().build()))
                 .map(authenticationInfo -> createMutatedServerWebExchange(exchange, authenticationInfo));
     }
 
