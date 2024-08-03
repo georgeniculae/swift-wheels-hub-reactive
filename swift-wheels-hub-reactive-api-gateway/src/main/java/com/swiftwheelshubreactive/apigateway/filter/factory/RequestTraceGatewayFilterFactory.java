@@ -21,12 +21,12 @@ public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFacto
 
     @Override
     public GatewayFilter apply(ServiceIdConfig serviceIdConfig) {
-        return (exchange, chain) -> Mono.just(getExchangeWithUpdatedHeaders(serviceIdConfig, exchange))
+        return (exchange, chain) -> Mono.just(createMutatedServerWebExchange(serviceIdConfig, exchange))
                 .flatMap(chain::filter);
     }
 
-    private ServerWebExchange getExchangeWithUpdatedHeaders(ServiceIdConfig serviceIdConfig,
-                                                            ServerWebExchange exchange) {
+    private ServerWebExchange createMutatedServerWebExchange(ServiceIdConfig serviceIdConfig,
+                                                             ServerWebExchange exchange) {
         return exchange.mutate()
                 .request(requestBuilder -> {
                     requestBuilder.header(X_SERVICE_ID, serviceIdConfig.getServiceId());
