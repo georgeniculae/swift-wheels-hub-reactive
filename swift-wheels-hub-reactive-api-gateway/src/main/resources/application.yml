@@ -50,41 +50,41 @@ spring:
           predicates:
             - Path=/agency/**
           filters:
-            - name: LanguageHeader
+            - name: ServiceIdHeader
               args:
-                language: "EN"
+                serviceId: "swift-wheels-hub-reactive-agency"
         - id: ai
           uri: lb://swift-wheels-hub-reactive-ai
           predicates:
             - Path=/ai/**
           filters:
-            - name: LanguageHeader
+            - name: ServiceIdHeader
               args:
-                language: "EN"
+                serviceId: "swift-wheels-hub-reactive-ai"
         - id: booking
           uri: lb://swift-wheels-hub-reactive-booking
           predicates:
             - Path=/bookings/**
           filters:
-            - name: LanguageHeader
+            - name: ServiceIdHeader
               args:
-                language: "EN"
+                serviceId: "swift-wheels-hub-reactive-booking"
         - id: customer
           uri: lb://swift-wheels-hub-reactive-customer
           predicates:
             - Path=/customers/**
           filters:
-            - name: LanguageHeader
+            - name: ServiceIdHeader
               args:
-                language: "EN"
+                serviceId: "swift-wheels-hub-reactive-booking"
         - id: expense
           uri: lb://swift-wheels-hub-reactive-expense
           predicates:
             - Path=/expense/**
           filters:
-            - name: LanguageHeader
+            - name: ServiceIdHeader
               args:
-                language: "EN"
+                serviceId: "swift-wheels-hub-reactive-expense"
 
 management:
   server:
