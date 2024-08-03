@@ -50,7 +50,7 @@ spring:
           predicates:
             - Path=/agency/**
           filters:
-            - name: ServiceIdHeader
+            - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-agency"
         - id: ai
@@ -58,7 +58,7 @@ spring:
           predicates:
             - Path=/ai/**
           filters:
-            - name: ServiceIdHeader
+            - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-ai"
         - id: booking
@@ -66,7 +66,7 @@ spring:
           predicates:
             - Path=/bookings/**
           filters:
-            - name: ServiceIdHeader
+            - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-booking"
         - id: customer
@@ -74,7 +74,7 @@ spring:
           predicates:
             - Path=/customers/**
           filters:
-            - name: ServiceIdHeader
+            - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-booking"
         - id: expense
@@ -82,7 +82,7 @@ spring:
           predicates:
             - Path=/expense/**
           filters:
-            - name: ServiceIdHeader
+            - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-expense"
 
