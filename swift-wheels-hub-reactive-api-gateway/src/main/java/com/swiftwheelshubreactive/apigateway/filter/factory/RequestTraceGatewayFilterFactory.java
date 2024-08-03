@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTraceGatewayFilterFactory.ServiceIdConfig> {
 
-    private static final String SERVICE_ID = "X_SERVICE_ID";
+    private static final String X_SERVICE_ID = "X_SERVICE_ID";
     private static final String X_PATH = "X-PATH";
 
     public RequestTraceGatewayFilterFactory() {
@@ -29,7 +29,7 @@ public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFacto
                                                             ServerWebExchange exchange) {
         return exchange.mutate()
                 .request(requestBuilder -> {
-                    requestBuilder.header(SERVICE_ID, serviceIdConfig.getServiceId());
+                    requestBuilder.header(X_SERVICE_ID, serviceIdConfig.getServiceId());
                     requestBuilder.header(X_PATH, exchange.getRequest().getURI().getPath());
                 })
                 .build();
