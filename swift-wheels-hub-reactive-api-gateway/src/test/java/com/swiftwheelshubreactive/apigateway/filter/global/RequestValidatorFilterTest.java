@@ -92,7 +92,7 @@ class RequestValidatorFilterTest {
 
         requestValidatorFilter.filter(exchange, chain)
                 .as(StepVerifier::create)
-                .expectError()
+                .expectComplete()
                 .verify();
     }
 

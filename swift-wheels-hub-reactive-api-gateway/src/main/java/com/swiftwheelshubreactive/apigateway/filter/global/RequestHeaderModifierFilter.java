@@ -2,8 +2,8 @@ package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.apigateway.security.JwtAuthenticationTokenConverter;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -14,6 +14,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -52,10 +53,13 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return createMutatedHeaders(exchange)
                 .flatMap(chain::filter)
-                .onErrorMap(e -> {
-                    log.error("Error while trying to log headers: {}", e.getMessage());
+                .onErrorResume(e -> {
+                    log.error("Error while trying to mutate headers: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
+                    exchange.getResponse().setStatusCode(statusCode);
+
+                    return exchange.getResponse().setComplete();
                 });
     }
 

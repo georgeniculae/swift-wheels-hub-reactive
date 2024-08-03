@@ -1,15 +1,19 @@
 package com.swiftwheelshubreactive.apigateway.filter.factory;
 
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTraceGatewayFilterFactory.ServiceIdConfig> {
 
     private static final String X_SERVICE_ID = "X_SERVICE_ID";
@@ -22,7 +26,15 @@ public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFacto
     @Override
     public GatewayFilter apply(ServiceIdConfig serviceIdConfig) {
         return (exchange, chain) -> Mono.just(createMutatedServerWebExchange(serviceIdConfig, exchange))
-                .flatMap(chain::filter);
+                .flatMap(chain::filter)
+                .onErrorResume(e -> {
+                    log.error("Error while trying to add request tracing information: {}", e.getMessage());
+
+                    HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
+                    exchange.getResponse().setStatusCode(statusCode);
+
+                    return exchange.getResponse().setComplete();
+                });
     }
 
     private ServerWebExchange createMutatedServerWebExchange(ServiceIdConfig serviceIdConfig,

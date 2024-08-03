@@ -1,18 +1,19 @@
 package com.swiftwheelshubreactive.apigateway.filter.global;
 
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class RequestHeadersLoggerFilter implements GlobalFilter, Ordered {
+public class RequestHeaderLoggerFilter implements GlobalFilter, Ordered {
 
     private static final String X_API_KEY = "X-API-KEY";
 
@@ -22,10 +23,13 @@ public class RequestHeadersLoggerFilter implements GlobalFilter, Ordered {
                 .map(webExchange -> webExchange.getRequest().getHeaders())
                 .doOnNext(this::logHeaders)
                 .flatMap(_ -> chain.filter(exchange))
-                .onErrorMap(e -> {
+                .onErrorResume(e -> {
                     log.error("Error while trying to log headers: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
+                    exchange.getResponse().setStatusCode(statusCode);
+
+                    return exchange.getResponse().setComplete();
                 });
     }
 

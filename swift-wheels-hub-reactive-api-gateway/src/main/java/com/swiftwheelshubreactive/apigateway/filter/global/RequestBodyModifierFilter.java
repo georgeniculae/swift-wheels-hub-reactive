@@ -1,12 +1,13 @@
 package com.swiftwheelshubreactive.apigateway.filter.global;
 
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyRequestBodyGatewayFilterFactory;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -22,11 +23,15 @@ public class RequestBodyModifierFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return modifyRequestBodyGatewayFilterFactory.apply(getRewriteFunction())
                 .filter(exchange, chain)
-                .onErrorMap(e -> {
+                .onErrorResume(e -> {
                     log.error("Error while trying to modify body: {}", e.getMessage());
 
-                    return new SwiftWheelsHubException(e.getMessage());
+                    HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
+                    exchange.getResponse().setStatusCode(statusCode);
+
+                    return exchange.getResponse().setComplete();
                 });
+
     }
 
     @Override
