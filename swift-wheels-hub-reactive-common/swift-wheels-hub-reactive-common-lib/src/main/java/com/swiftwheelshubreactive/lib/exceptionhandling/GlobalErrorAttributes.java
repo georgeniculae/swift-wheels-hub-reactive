@@ -20,10 +20,6 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
     public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
         Map<String, Object> errorAttributes = super.getErrorAttributes(request, options);
 
-        return addErrorAttributes(request, errorAttributes);
-    }
-
-    private Map<String, Object> addErrorAttributes(ServerRequest request, Map<String, Object> errorAttributes) {
         Throwable error = super.getError(request);
         String message = getMessage(errorAttributes, error);
 
