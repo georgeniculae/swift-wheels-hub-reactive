@@ -94,14 +94,19 @@ class BranchRouterTest {
 
         when(branchHandler.findBranchById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/{id}", "64f48612b92a3b7dfcebae07")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBody();
+                .returnResult(BranchResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(branchResponse)
+                .verifyComplete();
     }
 
     @Test
@@ -132,14 +137,19 @@ class BranchRouterTest {
 
         when(branchHandler.findBranchesByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/filter/{filter}", "Test")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBody();
+                .returnResult(BranchResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(branchResponse)
+                .verifyComplete();
     }
 
     @Test
@@ -152,30 +162,41 @@ class BranchRouterTest {
 
         when(branchHandler.findBranchesByFilterInsensitiveCase(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/filter/{filter}", "Test")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .returnResult(BranchResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(branchResponse)
+                .verifyComplete();
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countBranchesTest_success() {
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(5);
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(5L);
 
         when(branchHandler.countBranches(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<Long> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .get()
                 .uri(PATH + "/count")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(Long.class);
+                .returnResult(Long.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(5L)
+                .verifyComplete();
     }
 
     @Test
@@ -267,14 +288,19 @@ class BranchRouterTest {
 
         when(branchHandler.updateBranch(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
                 .uri(PATH + "/{id}", "64f48612b92a3b7dfcebae07")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(BranchResponse.class);
+                .returnResult(BranchResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(branchResponse)
+                .verifyComplete();
     }
 
     @Test
@@ -303,13 +329,18 @@ class BranchRouterTest {
 
         when(branchHandler.deleteBranchById(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<BranchResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .delete()
                 .uri(PATH + "/{id}", "64f48612b92a3b7dfcebae07")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
-                .isNoContent();
+                .isNoContent().returnResult(BranchResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectComplete()
+                .verify();
     }
 
     @Test

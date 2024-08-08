@@ -137,7 +137,7 @@ class CustomerRouterTest {
 
         when(customerHandler.registerUser(any(ServerRequest.class))).thenReturn(token);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+        Flux<RegistrationResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .post()
                 .uri("/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +145,13 @@ class CustomerRouterTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .returnResult(RegistrationResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(registrationResponse)
+                .verifyComplete();
     }
 
     @Test
