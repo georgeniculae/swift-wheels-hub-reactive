@@ -10,20 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakConfig {
 
-    @Value("${keycloak.serverUrl}")
-    private String serverUrl;
-
-    @Value("${keycloak.realm}")
-    private String realm;
-
-    @Value("${keycloak.clientId}")
-    private String clientId;
-
-    @Value("${keycloak.clientSecret}")
-    private String clientSecret;
-
     @Bean
-    public Keycloak keycloak() {
+    public Keycloak keycloak(@Value("${keycloak.serverUrl}") String serverUrl,
+                             @Value("${keycloak.realm}") String realm,
+                             @Value("${keycloak.clientId}") String clientId,
+                             @Value("${keycloak.clientSecret}") String clientSecret) {
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)

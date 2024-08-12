@@ -18,11 +18,8 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class MongoClientConfig {
 
-    @Value("${spring.data.mongodb.uri}")
-    private String connectionString;
-
     @Bean
-    public MongoClient mongoClient() {
+    public MongoClient mongoClient(@Value("${spring.data.mongodb.uri}") String connectionString) {
         CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
                 CodecRegistries.fromProviders(PojoCodecProvider.builder()

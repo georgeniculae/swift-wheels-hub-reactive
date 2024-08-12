@@ -8,11 +8,8 @@ import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 @Configuration
 public class NimbusReactiveJwtDecoderConfig {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
-    private String jwkUri;
-
     @Bean
-    public NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder() {
+    public NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwkUri) {
         return NimbusReactiveJwtDecoder.withJwkSetUri(jwkUri).build();
     }
 

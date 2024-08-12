@@ -11,10 +11,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtRea
 @RequiredArgsConstructor
 public class ReactiveAuthenticationManagerConfig {
 
-    private final NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder;
-
     @Bean
-    public ReactiveAuthenticationManager reactiveAuthenticationManager() {
+    public ReactiveAuthenticationManager reactiveAuthenticationManager(NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder) {
         return new JwtReactiveAuthenticationManager(nimbusReactiveJwtDecoder);
     }
 

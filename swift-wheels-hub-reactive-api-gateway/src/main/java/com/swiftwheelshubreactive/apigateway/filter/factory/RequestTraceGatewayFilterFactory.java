@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestTraceGatewayFilterFactory.ServiceIdConfig> {
 
-    private static final String X_SERVICE_ID = "X_SERVICE_ID";
+    private static final String X_SERVICE_ID = "X-SERVICE-ID";
     private static final String X_PATH = "X-PATH";
 
     public RequestTraceGatewayFilterFactory() {

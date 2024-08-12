@@ -24,11 +24,12 @@ public class GrantedAuthoritiesConverterConfig {
     private static final String ROLE = "ROLE_";
 
     @Bean
-    public Converter<Jwt, Flux<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
-        return new ReactiveJwtGrantedAuthoritiesConverterAdapter(getJwtGrantedAuthorityConverter());
+    public Converter<Jwt, Flux<GrantedAuthority>> jwtGrantedAuthoritiesConverter(JwtGrantedAuthorityConverter jwtGrantedAuthorityConverter) {
+        return new ReactiveJwtGrantedAuthoritiesConverterAdapter(jwtGrantedAuthorityConverter);
     }
 
-    private JwtGrantedAuthorityConverter getJwtGrantedAuthorityConverter() {
+    @Bean
+    public JwtGrantedAuthorityConverter getJwtGrantedAuthorityConverter() {
         return jwt -> {
             Map<String, List<String>> claims = getClaims(jwt);
 
