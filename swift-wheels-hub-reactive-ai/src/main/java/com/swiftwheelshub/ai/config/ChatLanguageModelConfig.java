@@ -12,27 +12,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatLanguageModelConfig {
 
-    @Value("${spring.ai.vertex.ai.gemini.project-id}")
-    private String projectId;
-
-    @Value("${spring.ai.vertex.ai.gemini.location}")
-    private String location;
-
-    @Value("${spring.ai.vertex.ai.gemini.chat.options.model}")
-    private String model;
-
-    @Value("${spring.ai.vertex.ai.gemini.chat.options.temperature}")
-    private Float temperature;
-
     @Bean
-    public VertexAI vertexAI() {
+    public VertexAI vertexAI(@Value("${spring.ai.vertex.ai.gemini.project-id}") String projectId,
+                             @Value("${spring.ai.vertex.ai.gemini.location}") String location) {
         return new VertexAI(projectId, location);
     }
 
     @Bean
-    public ChatModel chatModel() {
+    public ChatModel chatModel(@Value("${spring.ai.vertex.ai.gemini.chat.options.model}") String model,
+                               @Value("${spring.ai.vertex.ai.gemini.chat.options.temperature}") Float temperature,
+                               VertexAI vertexAi) {
         return new VertexAiGeminiChatModel(
-                vertexAI(),
+                vertexAi,
                 VertexAiGeminiChatOptions.builder()
                         .withModel(model)
                         .withTemperature(temperature)
@@ -41,8 +32,8 @@ public class ChatLanguageModelConfig {
     }
 
     @Bean
-    public ChatClient chatClient() {
-        return ChatClient.builder(chatModel())
+    public ChatClient chatClient(ChatModel chatModel) {
+        return ChatClient.builder(chatModel)
                 .defaultSystem("""
                         You are a helpful assistant who can clearly and concisely answer questions about the type
                         of vehicle that is most suitable for traveling to a certain location in Romania in a certain

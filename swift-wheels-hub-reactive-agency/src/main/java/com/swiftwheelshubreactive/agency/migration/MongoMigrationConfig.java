@@ -14,14 +14,11 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class MongoMigrationConfig {
 
-    @Value("${migration.packageScan}")
-    private String packageScan;
-
-    @Value("${spring.data.mongodb.database}")
-    private String databaseName;
-
     @Bean
-    public MongockInitializingBeanRunner getBuilder(MongoClient mongoClient, ApplicationContext context) {
+    public MongockInitializingBeanRunner getBuilder(@Value("${migration.packageScan}") String packageScan,
+                                                    @Value("${spring.data.mongodb.database}") String databaseName,
+                                                    MongoClient mongoClient,
+                                                    ApplicationContext context) {
         return MongockSpringboot.builder()
                 .setDriver(MongoReactiveDriver.withDefaultLock(mongoClient, databaseName))
                 .addMigrationScanPackage(packageScan)
