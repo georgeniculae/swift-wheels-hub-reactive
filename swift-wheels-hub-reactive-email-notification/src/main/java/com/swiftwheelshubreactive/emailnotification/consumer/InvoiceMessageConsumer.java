@@ -40,7 +40,7 @@ public class InvoiceMessageConsumer {
         return Mono.just(message.getPayload())
                 .flatMap(invoiceResponse -> emailService.sendEmail(invoiceResponse.customerEmail(), invoiceResponse))
                 .doOnNext(response -> {
-                    log.info("Invoice processed with status: {}{}", response.getStatusCode(), response.getBody());
+                    log.info("Invoice processing status: {}{}", response.getStatusCode(), response.getBody());
 
                     if (isMessageAckEnabled) {
                         sendMessageAcknowledgement(message.getHeaders());
