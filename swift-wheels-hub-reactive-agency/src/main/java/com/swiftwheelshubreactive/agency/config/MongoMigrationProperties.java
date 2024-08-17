@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("!test")
 @Getter
-public class MongoProperties {
+public class MongoMigrationProperties {
 
     @Value("${migration.packageScan}")
     private String packageScan;
