@@ -25,7 +25,7 @@ spring:
       ribbon:
         enabled: false
       cache:
-        enabled: false
+        enabled: true
     consul:
       enabled: true
       config:
