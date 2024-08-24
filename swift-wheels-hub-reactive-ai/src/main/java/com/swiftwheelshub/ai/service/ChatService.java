@@ -16,11 +16,15 @@ public class ChatService {
     private final ChatClient chatClient;
 
     public Mono<CarSuggestionResponse> getChatReply(String text, Map<String, Object> params) {
-        return Mono.fromCallable(() -> chatClient.prompt()
-                        .user(userSpec -> userSpec.text(text).params(params))
-                        .call()
-                        .entity(CarSuggestionResponse.class))
+        return Mono.fromCallable(() -> getCarSuggestionResponse(text, params))
                 .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private CarSuggestionResponse getCarSuggestionResponse(String text, Map<String, Object> params) {
+        return chatClient.prompt()
+                .user(userSpec -> userSpec.text(text).params(params))
+                .call()
+                .entity(CarSuggestionResponse.class);
     }
 
 }
