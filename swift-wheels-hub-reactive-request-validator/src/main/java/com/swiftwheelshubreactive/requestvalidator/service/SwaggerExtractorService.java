@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class SwaggerExtractorService {
     private final RegisteredEndpoints registeredEndpoints;
 
     public Flux<SwaggerFile> getSwaggerFiles() {
-        return Flux.fromIterable(registeredEndpoints.getEndpoints().entrySet())
+        return Flux.fromIterable(registeredEndpoints.getEndpoints())
                 .flatMap(this::createSwaggerFile);
     }
 
@@ -41,12 +40,12 @@ public class SwaggerExtractorService {
                 .next();
     }
 
-    private Mono<SwaggerFile> createSwaggerFile(Map.Entry<String, String> endpoints) {
-        return getSwaggerContent(endpoints.getKey(), endpoints.getValue())
-                .map(swaggerContent -> getSwaggerFile(endpoints, swaggerContent));
+    private Mono<SwaggerFile> createSwaggerFile(RegisteredEndpoints.RegisteredEndpoint endpoint) {
+        return getSwaggerContent(endpoint.getIdentifier(), endpoint.getUrl())
+                .map(swaggerContent -> getSwaggerFile(endpoint, swaggerContent));
     }
 
-    private Mono<String> getSwaggerContent(String microserviceName, String url) {
+    private Mono<String> getSwaggerContent(String identifier, String url) {
         return webClient.get()
                 .uri(url)
                 .header(X_API_KEY, apikey)
@@ -54,13 +53,13 @@ public class SwaggerExtractorService {
                 .bodyToMono(String.class)
                 .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + microserviceName + " is empty")))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + identifier + " is empty")))
                 .onErrorMap(ExceptionUtil::handleException);
     }
 
-    private SwaggerFile getSwaggerFile(Map.Entry<String, String> endpoints, String swaggerContent) {
+    private SwaggerFile getSwaggerFile(RegisteredEndpoints.RegisteredEndpoint endpoint, String swaggerContent) {
         return SwaggerFile.builder()
-                .identifier(endpoints.getKey())
+                .identifier(endpoint.getIdentifier())
                 .swaggerContent(swaggerContent)
                 .build();
     }

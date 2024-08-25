@@ -15,8 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,11 +59,12 @@ class SwaggerExtractorServiceTest {
         String expenseContent =
                 TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
-        Map<String, String> endpoints = new LinkedHashMap<>();
-        endpoints.put("agency", agencyContent);
-        endpoints.put("bookings", bookingsContent);
-        endpoints.put("customers", customersContent);
-        endpoints.put("expense", expenseContent);
+        List<RegisteredEndpoints.RegisteredEndpoint> endpoints = List.of(
+                new RegisteredEndpoints.RegisteredEndpoint("agency", agencyContent),
+                new RegisteredEndpoints.RegisteredEndpoint("bookings", bookingsContent),
+                new RegisteredEndpoints.RegisteredEndpoint("customers", customersContent),
+                new RegisteredEndpoints.RegisteredEndpoint("expense", expenseContent)
+        );
 
         SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
         SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
@@ -119,11 +119,12 @@ class SwaggerExtractorServiceTest {
         String expenseContent =
                 TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
-        Map<String, String> endpoints = new LinkedHashMap<>();
-        endpoints.put("agency", agencyContent);
-        endpoints.put("bookings", bookingsContent);
-        endpoints.put("customers", customersContent);
-        endpoints.put("expense", expenseContent);
+        List<RegisteredEndpoints.RegisteredEndpoint> endpoints = List.of(
+                new RegisteredEndpoints.RegisteredEndpoint("agency", agencyContent),
+                new RegisteredEndpoints.RegisteredEndpoint("bookings", bookingsContent),
+                new RegisteredEndpoints.RegisteredEndpoint("customers", customersContent),
+                new RegisteredEndpoints.RegisteredEndpoint("expense", expenseContent)
+        );
 
         SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
         SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
@@ -177,11 +178,12 @@ class SwaggerExtractorServiceTest {
         String expenseContent =
                 TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
 
-        Map<String, String> endpoints = new LinkedHashMap<>();
-        endpoints.put("agency", agencyContent);
-        endpoints.put("bookings", bookingsContent);
-        endpoints.put("customers", customersContent);
-        endpoints.put("expense", expenseContent);
+        List<RegisteredEndpoints.RegisteredEndpoint> endpoints = List.of(
+                new RegisteredEndpoints.RegisteredEndpoint("agency", agencyContent),
+                new RegisteredEndpoints.RegisteredEndpoint("bookings", bookingsContent),
+                new RegisteredEndpoints.RegisteredEndpoint("customers", customersContent),
+                new RegisteredEndpoints.RegisteredEndpoint("expense", expenseContent)
+        );
 
         SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
         SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
