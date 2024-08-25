@@ -97,6 +97,13 @@ keycloak:
 apikey:
   secret: ${API_KEY_SECRET}
 
+cors:
+  mapping: '/**'
+  allowedOrigins: '*'
+  allowedMethods: '*'
+  allowedHeaders: '*'
+  codecMaxInMemorySizeInMb: 20
+
 audit:
   enabled: true
 

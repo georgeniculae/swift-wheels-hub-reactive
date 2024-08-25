@@ -116,6 +116,13 @@ logging:
           csrf:
             CsrfFilter: ERROR
 
+cors:
+  mapping: '/**'
+  allowedOrigins: '*'
+  allowedMethods: '*'
+  allowedHeaders: '*'
+  codecMaxInMemorySizeInMb: 20
+
 apikey-secret: ${API_KEY_SECRET}
 
 request-validator-url: http://swift-wheels-hub-reactive-request-validator/validate

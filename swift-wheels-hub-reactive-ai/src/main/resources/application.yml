@@ -93,3 +93,10 @@ apikey:
 webclient:
   url:
     swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
+
+cors:
+  mapping: '/**'
+  allowedOrigins: '*'
+  allowedMethods: '*'
+  allowedHeaders: '*'
+  codecMaxInMemorySizeInMb: 20
