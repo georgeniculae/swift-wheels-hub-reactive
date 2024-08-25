@@ -37,8 +37,6 @@ spring:
     password: ${REDIS_PASSWORD}
     port: 6379
     database: 0
-  codec:
-    max-in-memory-size: 20MB
   mvc:
     throw-exception-if-no-handler-found: true
   web:

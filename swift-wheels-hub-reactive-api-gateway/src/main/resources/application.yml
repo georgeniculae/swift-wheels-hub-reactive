@@ -15,8 +15,6 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/swift-wheels-hub
           jwk-set-uri: http://localhost:8080/realms/swift-wheels-hub/protocol/openid-connect/certs
-  codec:
-    max-in-memory-size: 20MB
   cloud:
     loadbalancer:
       enabled: true
