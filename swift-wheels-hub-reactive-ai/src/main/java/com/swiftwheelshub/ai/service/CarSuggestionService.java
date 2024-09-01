@@ -21,6 +21,11 @@ import java.util.Map;
 @Slf4j
 public class CarSuggestionService {
 
+    private static final String CARS = "cars";
+    private static final String DESTINATION = "destination";
+    private static final String PEOPLE_COUNT = "peopleCount";
+    private static final String MONTH = "month";
+    private static final String TRIP_KIND = "tripKind";
     private final ChatService chatService;
     private final CarService carService;
 
@@ -60,11 +65,11 @@ public class CarSuggestionService {
 
     private Map<String, Object> getParams(TripInfo tripInfo, List<String> cars) {
         return Map.of(
-                "cars", cars,
-                "destination", tripInfo.destination(),
-                "peopleCount", tripInfo.peopleCount(),
-                "month", getMonth(tripInfo.tripDate()),
-                "tripKind", tripInfo.tripKind()
+                CARS, cars,
+                DESTINATION, tripInfo.destination(),
+                PEOPLE_COUNT, tripInfo.peopleCount(),
+                MONTH, getMonth(tripInfo.tripDate()),
+                TRIP_KIND, tripInfo.tripKind()
         );
     }
 
