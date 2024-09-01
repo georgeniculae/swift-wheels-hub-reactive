@@ -51,7 +51,7 @@ public class SwaggerExtractorService {
                 .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + identifier + " is empty")))
                 .onErrorMap(ExceptionUtil::handleException);

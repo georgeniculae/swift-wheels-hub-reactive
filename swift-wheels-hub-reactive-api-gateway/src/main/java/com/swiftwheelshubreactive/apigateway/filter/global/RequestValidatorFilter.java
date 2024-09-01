@@ -96,7 +96,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .bodyValue(incomingRequestDetails)
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)
-                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorMap(e -> {
                     log.error("Error while sending request to validator: {}", e.getMessage());
 
