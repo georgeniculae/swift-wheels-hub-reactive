@@ -14,8 +14,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @RequiredArgsConstructor
 public class CarSuggestionRouter {
 
-    private final CarSuggestionHandler carSuggestionHandler;
-
     @Bean
     @SwaggerCarSuggestionRouterOperations
     public RouterFunction<ServerResponse> routeCarSuggestion(CarSuggestionHandler carSuggestionHandler) {
