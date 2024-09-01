@@ -71,7 +71,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private Mono<ServerWebExchange> createMutatedHeaders(ServerWebExchange exchange) {
         return Mono.just(exchange.getRequest())
                 .filter(this::doesPathContainPattern)
-                .flatMap(serverHttpRequest -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(serverHttpRequest)))
+                .flatMap(request -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(request)))
                 .flatMap(this::getAuthenticationInfo)
                 .switchIfEmpty(Mono.just(AuthenticationInfo.builder().build()))
                 .map(authenticationInfo -> createMutatedServerWebExchange(exchange, authenticationInfo));
