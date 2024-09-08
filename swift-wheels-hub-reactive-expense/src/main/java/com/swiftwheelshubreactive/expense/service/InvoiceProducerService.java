@@ -15,13 +15,13 @@ import reactor.core.scheduler.Schedulers;
 @RequiredArgsConstructor
 public class InvoiceProducerService {
 
+    private final StreamBridge streamBridge;
+
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.destination}")
     private String emailNotificationBinderName;
 
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.contentType}")
     private String emailNotificationMimeType;
-
-    private final StreamBridge streamBridge;
 
     public Mono<Boolean> sendInvoice(InvoiceResponse invoiceResponse) {
         return Mono.fromCallable(() -> streamBridge.send(emailNotificationBinderName, buildMessage(invoiceResponse), MimeType.valueOf(emailNotificationMimeType)))

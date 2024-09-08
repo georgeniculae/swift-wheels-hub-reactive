@@ -25,10 +25,10 @@ import java.util.function.Function;
 @Slf4j
 public class SavedBookingMessageConsumer {
 
+    private final InvoiceService invoiceService;
+
     @Value("${bookingConsumer.isMessageAckEnabled:false}")
     private boolean isMessageAckEnabled;
-
-    private final InvoiceService invoiceService;
 
     @Bean
     public Function<Flux<Message<BookingResponse>>, Mono<Void>> savedBookingConsumer() {

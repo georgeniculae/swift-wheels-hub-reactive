@@ -24,10 +24,10 @@ import java.util.function.Function;
 @Slf4j
 public class BookingAuditLogInfoConsumerMessage {
 
+    private final AuditService auditService;
+
     @Value("${auditConsumer.isMessageAckEnabled:false}")
     private boolean isMessageAckEnabled;
-
-    private final AuditService auditService;
 
     @Bean
     public Function<Flux<Message<AuditLogInfoRequest>>, Mono<Void>> bookingAuditLogInfoConsumer() {

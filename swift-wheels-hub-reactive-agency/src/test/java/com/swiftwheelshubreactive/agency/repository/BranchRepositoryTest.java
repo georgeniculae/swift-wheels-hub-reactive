@@ -26,12 +26,12 @@ class BranchRepositoryTest {
     @ServiceConnection
     static MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:latest");
 
-    @Autowired
-    private BranchRepository branchRepository;
-
     private final Branch branch1 = DatabaseCollectionCreator.getBranches().getFirst();
 
     private final Branch branch2 = DatabaseCollectionCreator.getBranches().getLast();
+
+    @Autowired
+    private BranchRepository branchRepository;
 
     @BeforeEach
     void initCollection() {

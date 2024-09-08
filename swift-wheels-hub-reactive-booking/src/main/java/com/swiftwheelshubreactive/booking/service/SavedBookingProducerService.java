@@ -15,13 +15,13 @@ import reactor.core.scheduler.Schedulers;
 @RequiredArgsConstructor
 public class SavedBookingProducerService {
 
+    private final StreamBridge streamBridge;
+
     @Value("${spring.cloud.stream.bindings.savedBookingProducer-out-0.destination}")
     private String binderName;
 
     @Value("${spring.cloud.stream.bindings.savedBookingProducer-out-0.contentType}")
     private String mimeType;
-
-    private final StreamBridge streamBridge;
 
     public Mono<Boolean> sendMessage(BookingResponse bookingResponse) {
         return Mono.fromCallable(() -> streamBridge.send(binderName, buildMessage(bookingResponse), MimeType.valueOf(mimeType)))

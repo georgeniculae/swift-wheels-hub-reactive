@@ -207,7 +207,7 @@ class InvoiceRouterTest {
     }
 
     @Test
-    @WithMockUser( username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void countAllActiveInvoicesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(1);
 

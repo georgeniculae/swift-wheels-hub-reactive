@@ -20,13 +20,11 @@ import java.time.Duration;
 public class SwaggerExtractorService {
 
     private static final String X_API_KEY = "X-API-KEY";
+    private final WebClient webClient;
+    private final RegisteredEndpoints registeredEndpoints;
 
     @Value("${apikey.secret}")
     private String apikey;
-
-    private final WebClient webClient;
-
-    private final RegisteredEndpoints registeredEndpoints;
 
     public Flux<SwaggerFile> getSwaggerFiles() {
         return Flux.fromIterable(registeredEndpoints.getEndpoints())

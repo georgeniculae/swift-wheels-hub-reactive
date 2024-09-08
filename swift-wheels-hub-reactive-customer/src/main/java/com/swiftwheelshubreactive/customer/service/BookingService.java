@@ -19,11 +19,10 @@ import java.time.Duration;
 public class BookingService {
 
     private static final String SEPARATOR = "/";
+    private final WebClient webClient;
 
     @Value("${booking-service.url}")
     private String url;
-
-    private final WebClient webClient;
 
     public Mono<Void> deleteBookingsByUsername(AuthenticationInfo authenticationInfo, String username) {
         return webClient.delete()

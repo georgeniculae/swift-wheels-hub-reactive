@@ -28,12 +28,12 @@ class EmployeeRepositoryTest {
     @ServiceConnection
     static MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:latest");
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
     private final Employee employee1 = DatabaseCollectionCreator.getEmployees().getFirst();
 
     private final Employee employee2 = DatabaseCollectionCreator.getEmployees().getLast();
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @BeforeEach
     void initCollection() {

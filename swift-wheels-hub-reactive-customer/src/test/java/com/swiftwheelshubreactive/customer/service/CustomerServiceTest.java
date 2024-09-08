@@ -1,9 +1,9 @@
 package com.swiftwheelshubreactive.customer.service;
 
 import com.swiftwheelshubreactive.customer.util.TestUtil;
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
-import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;

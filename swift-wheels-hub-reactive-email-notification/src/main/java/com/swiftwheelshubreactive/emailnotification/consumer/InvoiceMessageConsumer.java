@@ -25,10 +25,10 @@ import java.util.function.Function;
 @Slf4j
 public class InvoiceMessageConsumer {
 
+    private final EmailService emailService;
+
     @Value("${invoiceProducer.isMessageAckEnabled:false}")
     private boolean isMessageAckEnabled;
-
-    private final EmailService emailService;
 
     @Bean
     public Function<Flux<Message<InvoiceResponse>>, Mono<Void>> emailNotificationConsumer() {

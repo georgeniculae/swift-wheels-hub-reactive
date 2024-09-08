@@ -26,12 +26,12 @@ class CarRepositoryTest {
     @ServiceConnection
     static MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:latest");
 
-    @Autowired
-    private CarRepository carRepository;
-
     private final Car car1 = DatabaseCollectionCreator.getCars().getFirst();
 
     private final Car car2 = DatabaseCollectionCreator.getCars().getLast();
+
+    @Autowired
+    private CarRepository carRepository;
 
     @BeforeEach
     void initCollection() {

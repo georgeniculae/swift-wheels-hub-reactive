@@ -43,12 +43,11 @@ public class KeycloakUserService {
     private static final String CLOSE_BRACE = "}";
     private static final String ROLE = "role_";
     private static final String $ = "$";
+    private final Keycloak keycloak;
+    private final CustomerMapper customerMapper;
 
     @Value("${keycloak.realm}")
     private String realm;
-
-    private final Keycloak keycloak;
-    private final CustomerMapper customerMapper;
 
     public List<UserInfo> findAllUsers() {
         return getUsersResource().list()

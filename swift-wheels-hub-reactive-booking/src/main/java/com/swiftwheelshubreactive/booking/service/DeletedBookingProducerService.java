@@ -14,13 +14,13 @@ import reactor.core.scheduler.Schedulers;
 @RequiredArgsConstructor
 public class DeletedBookingProducerService {
 
+    private final StreamBridge streamBridge;
+
     @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.destination}")
     private String binderName;
 
     @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.contentType}")
     private String mimeType;
-
-    private final StreamBridge streamBridge;
 
     public Mono<Boolean> sendMessage(String bookingId) {
         return Mono.fromCallable(() -> streamBridge.send(binderName, buildMessage(bookingId), MimeType.valueOf(mimeType)))

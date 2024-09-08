@@ -19,11 +19,10 @@ import java.util.List;
 public class CarService {
 
     private static final String SEPARATOR = "/";
+    private final WebClient webClient;
 
     @Value("${webclient.url.swift-wheels-hub-agency-cars}")
     private String url;
-
-    private final WebClient webClient;
 
     public Flux<CarResponse> getAllAvailableCars(String apikey, List<String> roles) {
         return webClient.get()

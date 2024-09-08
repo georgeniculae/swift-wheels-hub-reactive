@@ -24,26 +24,19 @@ import java.io.StringWriter;
 public class EmailService {
 
     private static final String CONTENT_TYPE = "text/plain";
-
     private static final String SUBJECT = "Invoice Notice";
-
     private static final String ENDPOINT = "mail/send";
-
     private static final String MAIL_TEMPLATE_FOLDER = "mail-template/";
-
     private static final String FILE_NAME = "invoice-notice";
-
     private static final String MUSTACHE_FORMAT = ".mustache";
+    private final SendGrid sendGrid;
+    private final MustacheFactory mustacheFactory;
 
     @Value("${sendgrid.mail.from}")
     private String mailFrom;
 
     @Value("${sendgrid.mail.name}")
     private String name;
-
-    private final SendGrid sendGrid;
-
-    private final MustacheFactory mustacheFactory;
 
     public Mono<Response> sendEmail(String toAddressEmail, Object object) {
         return getMailAsPublisher(toAddressEmail, object)

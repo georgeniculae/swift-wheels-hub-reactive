@@ -1,10 +1,10 @@
 package com.swiftwheelshubreactive.agency.migration;
 
-import com.swiftwheelshubreactive.model.Branch;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.reactivestreams.client.ClientSession;
 import com.mongodb.reactivestreams.client.MongoDatabase;
+import com.swiftwheelshubreactive.model.Branch;
 import io.mongock.api.annotations.BeforeExecution;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;

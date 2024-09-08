@@ -1,8 +1,8 @@
 package com.swiftwheelshubreactive.expense.service;
 
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +22,11 @@ import java.time.Duration;
 @Slf4j
 public class BookingService {
 
+    private static final String SEPARATOR = "/";
+    private final WebClient webClient;
+
     @Value("${webClient.url.swift-wheels-hub-bookings}")
     private String url;
-
-    private static final String SEPARATOR = "/";
-
-    private final WebClient webClient;
 
     public Mono<Void> closeBooking(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails) {
         return webClient.post()

@@ -1,9 +1,9 @@
 package com.swiftwheelshubreactive.booking.service;
 
+import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
@@ -25,12 +25,11 @@ import java.util.List;
 @Slf4j
 public class CarService {
 
+    private static final String SEPARATOR = "/";
+    private final WebClient webClient;
+
     @Value("${webclient.url.swift-wheels-hub-agency-cars}")
     private String url;
-
-    private static final String SEPARATOR = "/";
-
-    private final WebClient webClient;
 
     public Mono<CarResponse> findAvailableCarById(AuthenticationInfo authenticationInfo, String carId) {
         return webClient.get()

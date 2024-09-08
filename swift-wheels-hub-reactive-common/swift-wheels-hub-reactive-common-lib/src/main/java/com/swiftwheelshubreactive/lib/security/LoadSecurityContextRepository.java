@@ -22,11 +22,10 @@ import java.util.List;
 public class LoadSecurityContextRepository extends WebSessionServerSecurityContextRepository {
 
     private static final String X_API_KEY = "X-API-KEY";
+    private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
     @Value("${apikey.secret}")
     private String apiKeySecret;
-
-    private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {

@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.service;
 
-import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
+import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +20,11 @@ import java.time.Duration;
 @Slf4j
 public class EmployeeService {
 
+    private static final String SEPARATOR = "/";
+    private final WebClient webClient;
+
     @Value("${webclient.url.swift-wheels-hub-agency-employees}")
     private String url;
-
-    private static final String SEPARATOR = "/";
-
-    private final WebClient webClient;
 
     public Mono<EmployeeResponse> findEmployeeById(AuthenticationInfo authenticationInfo, String employeeId) {
         return webClient.get()

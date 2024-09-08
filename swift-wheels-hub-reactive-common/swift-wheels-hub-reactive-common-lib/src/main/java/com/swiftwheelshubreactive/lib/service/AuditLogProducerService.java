@@ -17,13 +17,13 @@ import reactor.core.scheduler.Schedulers;
 @ConditionalOnBean(name = "auditAspect")
 public class AuditLogProducerService {
 
+    private final StreamBridge streamBridge;
+
     @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.destination}")
     private String auditLogBinderName;
 
     @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.contentType}")
     private String auditLogMimeType;
-
-    private final StreamBridge streamBridge;
 
     public Mono<Void> sendAuditLog(AuditLogInfoRequest auditLogInfoRequest) {
         return Mono.fromRunnable(() -> streamBridge.send(auditLogBinderName, buildMessage(auditLogInfoRequest), MimeType.valueOf(auditLogMimeType)))

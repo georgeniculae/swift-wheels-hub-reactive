@@ -18,12 +18,11 @@ import reactor.core.scheduler.Schedulers;
 @Slf4j
 public class CustomerService {
 
+    private static final String SEPARATOR = "/";
+    private final WebClient webClient;
+
     @Value("${webclient.url.swift-wheels-hub-customers}")
     private String url;
-
-    private static final String SEPARATOR = "/";
-
-    private final WebClient webClient;
 
     public Mono<UserInfo> findUserByUsername(AuthenticationInfo authenticationInfo) {
         return webClient.get()
