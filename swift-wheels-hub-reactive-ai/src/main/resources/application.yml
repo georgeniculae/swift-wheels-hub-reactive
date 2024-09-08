@@ -11,6 +11,8 @@ spring:
     name: swift-wheels-hub-reactive-ai
   webflux:
     base-path: /ai
+  codec:
+    max-in-memory-size: 20MB
   ai:
     vertex:
       ai:

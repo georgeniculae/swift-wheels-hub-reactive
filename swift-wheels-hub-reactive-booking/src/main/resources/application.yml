@@ -11,6 +11,8 @@ spring:
     name: swift-wheels-hub-reactive-booking
   webflux:
     base-path: /bookings
+  codec:
+    max-in-memory-size: 20MB
   data:
     mongodb:
       database: swift_wheels_hub_booking

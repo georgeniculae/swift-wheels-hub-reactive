@@ -9,6 +9,8 @@ server:
 spring:
   application:
     name: swift-wheels-hub-reactive-email-notification
+  codec:
+    max-in-memory-size: 20MB
   cloud:
     loadbalancer:
       enabled: true

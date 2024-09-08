@@ -11,6 +11,8 @@ spring:
     name: swift-wheels-hub-reactive-customer
   webflux:
     base-path: /customers
+  codec:
+    max-in-memory-size: 20MB
   cloud:
     loadbalancer:
       enabled: true
