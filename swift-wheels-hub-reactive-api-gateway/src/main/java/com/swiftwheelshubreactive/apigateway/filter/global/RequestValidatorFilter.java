@@ -32,6 +32,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     private final static String API_KEY_HEADER = "X-API-KEY";
     private static final String DEFINITION = "definition";
     private static final String ACTUATOR = "actuator";
+    private static final String FALLBACK = "/fallback";
     private final WebClient webClient;
 
     @Value("${apikey-secret}")
@@ -66,7 +67,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     private boolean containsRightPath(ServerHttpRequest serverHttpRequest) {
         String path = serverHttpRequest.getPath().value();
 
-        return !path.contains(DEFINITION) && !path.contains(ACTUATOR);
+        return !path.contains(DEFINITION) && !path.contains(ACTUATOR) && !path.contains(FALLBACK);
     }
 
     private Mono<IncomingRequestDetails> getIncomingRequestDetails(ServerHttpRequest request) {

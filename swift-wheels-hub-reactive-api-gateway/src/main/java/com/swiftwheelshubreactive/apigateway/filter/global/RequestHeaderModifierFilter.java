@@ -37,6 +37,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private static final String X_ROLES = "X-ROLES";
     private static final String REGISTER_PATH = "/register";
     private static final String DEFINITION_PATH = "/definition";
+    private static final String FALLBACK = "/fallback";
     private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
     private final NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder;
 
@@ -74,7 +75,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private boolean doesPathContainPattern(ServerHttpRequest serverHttpRequest) {
         String path = serverHttpRequest.getPath().value();
 
-        return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH);
+        return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH) && !path.contains(FALLBACK);
     }
 
     private Mono<AuthenticationInfo> getAuthenticationInfo(Jwt jwt) {

@@ -15,6 +15,8 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/swift-wheels-hub
           jwk-set-uri: http://localhost:8080/realms/swift-wheels-hub/protocol/openid-connect/certs
+  codec:
+    max-in-memory-size: 20MB
   cloud:
     loadbalancer:
       enabled: true
@@ -51,6 +53,10 @@ spring:
             - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-agency"
+            - name: CircuitBreaker
+              args:
+                name: fallbackHandler
+                fallbackUri: forward:/fallback
         - id: ai
           uri: lb://swift-wheels-hub-reactive-ai
           predicates:
@@ -59,6 +65,10 @@ spring:
             - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-ai"
+            - name: CircuitBreaker
+              args:
+                name: fallbackHandler
+                fallbackUri: forward:/fallback
         - id: booking
           uri: lb://swift-wheels-hub-reactive-booking
           predicates:
@@ -67,6 +77,10 @@ spring:
             - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-booking"
+            - name: CircuitBreaker
+              args:
+                name: fallbackHandler
+                fallbackUri: forward:/fallback
         - id: customer
           uri: lb://swift-wheels-hub-reactive-customer
           predicates:
@@ -75,6 +89,10 @@ spring:
             - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-booking"
+            - name: CircuitBreaker
+              args:
+                name: fallbackHandler
+                fallbackUri: forward:/fallback
         - id: expense
           uri: lb://swift-wheels-hub-reactive-expense
           predicates:
@@ -83,6 +101,32 @@ spring:
             - name: RequestTrace
               args:
                 serviceId: "swift-wheels-hub-reactive-expense"
+            - name: CircuitBreaker
+              args:
+                name: fallbackHandler
+                fallbackUri: forward:/fallback
+    circuitbreaker:
+      resilience4j:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      fallbackHandler:
+        registerHealthIndicator: true
+        ringBufferSizeInClosedState: 10
+        ringBufferSizeInHalfOpenState: 5
+        waitDurationInOpenState: 10000
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  timelimiter:
+    instances:
+      fallbackHandler:
+        timeoutDuration: 10s
 
 management:
   server:

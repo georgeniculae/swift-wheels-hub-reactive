@@ -1,10 +1,11 @@
 package com.swiftwheelshub.ai.config;
 
-import com.google.cloud.vertexai.VertexAI;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
+import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.ollama.api.OllamaApi;
+import org.springframework.ai.ollama.api.OllamaOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,15 +13,15 @@ import org.springframework.context.annotation.Configuration;
 public class ChatLanguageModelConfig {
 
     @Bean
-    public VertexAI vertexAI(VertexProperties vertexProperties) {
-        return new VertexAI(vertexProperties.getProjectId(), vertexProperties.getLocation());
+    public OllamaApi ollamaApi(@Value("${spring.ai.ollama.base-url}") String baseUrl) {
+        return new OllamaApi(baseUrl);
     }
 
     @Bean
-    public ChatModel chatModel(ChatProperties chatProperties, VertexAI vertexAi) {
-        return new VertexAiGeminiChatModel(
-                vertexAi,
-                VertexAiGeminiChatOptions.builder()
+    public ChatModel chatModel(OllamaApi ollamaApi, ChatProperties chatProperties) {
+        return new OllamaChatModel(
+                ollamaApi,
+                OllamaOptions.builder()
                         .withModel(chatProperties.getModel())
                         .withTemperature(chatProperties.getTemperature())
                         .build()

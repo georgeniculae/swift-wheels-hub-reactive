@@ -14,16 +14,12 @@ spring:
   codec:
     max-in-memory-size: 20MB
   ai:
-    vertex:
-      ai:
-        gemini:
-          project-id: ${VERTEX_AI_GEMINI_PROJECT_ID}
-          location: ${VERTEX_AI_GEMINI_LOCATION}
-          chat:
-            options:
-              model: gemini-1.5-pro-001
-              transport: HTTP
-              temperature: 0.0F
+    ollama:
+      base-url: http://localhost:11434/
+      chat:
+        options:
+          model: mistral
+          temperature: 0.0F
   cloud:
     loadbalancer:
       enabled: true
