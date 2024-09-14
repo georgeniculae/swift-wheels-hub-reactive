@@ -1,24 +1,25 @@
-package com.swiftwheelshubreactive.lib.security;
+package com.swiftwheelshubreactive.expense.security;
 
+import com.swiftwheelshubreactive.lib.security.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "apikey", name = "secret")
-public class ApiKeySecurityConfig {
+public class SecurityConfig {
 
-    private final LoadSecurityContextRepository loadSecurityContextRepository;
+    private final AuthenticationFilter authenticationFilter;
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
     @Bean
@@ -27,20 +28,16 @@ public class ApiKeySecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/expense"))
                 .authorizeExchange(request -> request.pathMatchers(
-                                "/agency/definition/**",
-                                "/ai/definition/**",
-                                "/bookings/definition/**",
-                                "/customers/definition/**",
-                                "/customers/register",
                                 "/expense/definition/**",
                                 "/actuator/**"
                         )
                         .permitAll()
                         .anyExchange()
                         .authenticated())
-                .securityContextRepository(loadSecurityContextRepository)
                 .authenticationManager(reactiveAuthenticationManager)
+                .addFilterBefore(authenticationFilter, SecurityWebFiltersOrder.ANONYMOUS_AUTHENTICATION)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }

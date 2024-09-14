@@ -54,9 +54,6 @@ logging:
           csrf:
             CsrfFilter: ERROR
 
-apikey:
-  secret: ${API_KEY_SECRET}
-
 cors:
   mapping: '/**'
   allowedOrigins: '*'

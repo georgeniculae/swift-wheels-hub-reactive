@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -33,7 +30,6 @@ class RequestValidatorRouterTest {
     private RequestValidatorHandler requestValidatorHandler;
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
     void routeRequestTest_success() {
         RequestValidationReport validationReport =
                 TestUtil.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
@@ -42,8 +38,7 @@ class RequestValidatorRouterTest {
 
         when(requestValidatorHandler.validateRequest(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<RequestValidationReport> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .post()
+        Flux<RequestValidationReport> responseBody = webTestClient.post()
                 .uri("/validate")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -58,33 +53,26 @@ class RequestValidatorRouterTest {
     }
 
     @Test
-    @WithAnonymousUser
-    void routeRequestTest_unauthorized() {
-        RequestValidationReport validationReport =
-                TestUtil.getResourceAsJson("/data/RequestValidationReport.json", RequestValidationReport.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(validationReport);
+    void routeRequestTest_missingRequestBody_badRequest() {
+        Mono<ServerResponse> serverResponse = ServerResponse.badRequest().build();
 
         when(requestValidatorHandler.validateRequest(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .post()
+        webTestClient.post()
                 .uri("/validate")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
-                .isUnauthorized();
+                .isBadRequest();
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
     void repopulateRedisWithSwaggerFilesTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(true);
 
         when(requestValidatorHandler.repopulateRedisWithSwaggerFiles(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<Boolean> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .post()
+        Flux<Boolean> responseBody = webTestClient.delete()
                 .uri("/invalidate/{microserviceName}", "expense")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -99,19 +87,17 @@ class RequestValidatorRouterTest {
     }
 
     @Test
-    @WithAnonymousUser
-    void repopulateRedisWithSwaggerFilesTest_unauthorized() {
+    void repopulateRedisWithSwaggerFilesTest_notFound_emptyPathVariable() {
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(true);
 
         when(requestValidatorHandler.repopulateRedisWithSwaggerFiles(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .post()
-                .uri("/invalidate/{microserviceName}", "expense")
+        webTestClient.delete()
+                .uri("/invalidate/{microserviceName}", "")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
-                .isUnauthorized();
+                .isNotFound();
     }
 
 }

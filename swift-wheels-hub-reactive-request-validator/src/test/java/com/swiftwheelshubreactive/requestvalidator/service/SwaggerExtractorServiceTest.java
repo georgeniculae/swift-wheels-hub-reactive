@@ -17,7 +17,6 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +73,6 @@ class SwaggerExtractorServiceTest {
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.header(anyString(), any(String[].class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
 
         when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
@@ -134,7 +132,6 @@ class SwaggerExtractorServiceTest {
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.header(anyString(), any(String[].class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
 
         when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
@@ -193,7 +190,6 @@ class SwaggerExtractorServiceTest {
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.header(anyString(), any(String[].class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
 
         when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {

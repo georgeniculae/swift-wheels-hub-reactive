@@ -29,14 +29,10 @@ import java.time.Duration;
 @Slf4j
 public class RequestValidatorFilter implements GlobalFilter, Ordered {
 
-    private final static String API_KEY_HEADER = "X-API-KEY";
     private static final String DEFINITION = "definition";
     private static final String ACTUATOR = "actuator";
     private static final String FALLBACK = "fallback";
     private final WebClient webClient;
-
-    @Value("${apikey-secret}")
-    private String apikeySecret;
 
     @Value("${request-validator-url}")
     private String requestValidatorUrl;
@@ -90,7 +86,6 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     private Mono<RequestValidationReport> getValidationReport(IncomingRequestDetails incomingRequestDetails) {
         return webClient.post()
                 .uri(requestValidatorUrl)
-                .header(API_KEY_HEADER, apikeySecret)
                 .bodyValue(incomingRequestDetails)
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)

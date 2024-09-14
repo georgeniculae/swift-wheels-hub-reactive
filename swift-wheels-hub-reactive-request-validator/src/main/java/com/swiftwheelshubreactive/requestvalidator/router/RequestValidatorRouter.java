@@ -18,7 +18,7 @@ public class RequestValidatorRouter {
 
     @Bean
     public RouterFunction<ServerResponse> repopulateRedisWithSwaggerFiles(RequestValidatorHandler requestValidatorHandler) {
-        return RouterFunctions.route(RequestPredicates.POST("/invalidate/{microserviceName}"), requestValidatorHandler::repopulateRedisWithSwaggerFiles);
+        return RouterFunctions.route(RequestPredicates.DELETE("/invalidate/{microserviceName}"), requestValidatorHandler::repopulateRedisWithSwaggerFiles);
     }
 
 }

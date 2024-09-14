@@ -5,13 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "apikey", name = "secret")
-public class LoadSecurityContextRepository extends WebSessionServerSecurityContextRepository {
+public class AuthenticationFilter implements WebFilter {
 
     private static final String X_API_KEY = "X-API-KEY";
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
@@ -28,12 +29,14 @@ public class LoadSecurityContextRepository extends WebSessionServerSecurityConte
     private String apiKeySecret;
 
     @Override
-    public Mono<SecurityContext> load(ServerWebExchange exchange) {
+    @NonNull
+    public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         return Mono.justOrEmpty(getApiKeyHeader(exchange))
-                .filter(apiKey -> apiKeySecret.equals(apiKey))
                 .map(apiKey -> getApiKeyAuthenticationToken(exchange, apiKey))
                 .flatMap(reactiveAuthenticationManager::authenticate)
-                .map(SecurityContextImpl::new);
+                .map(SecurityContextImpl::new)
+                .flatMap(_ -> chain.filter(exchange))
+                .switchIfEmpty(chain.filter(exchange));
     }
 
     private String getApiKeyHeader(ServerWebExchange exchange) {

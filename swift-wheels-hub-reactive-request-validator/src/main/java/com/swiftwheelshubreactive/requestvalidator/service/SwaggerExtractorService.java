@@ -6,7 +6,6 @@ import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -19,12 +18,8 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class SwaggerExtractorService {
 
-    private static final String X_API_KEY = "X-API-KEY";
     private final WebClient webClient;
     private final RegisteredEndpoints registeredEndpoints;
-
-    @Value("${apikey.secret}")
-    private String apikey;
 
     public Flux<SwaggerFile> getSwaggerFiles() {
         return Flux.fromIterable(registeredEndpoints.getEndpoints())
@@ -46,7 +41,6 @@ public class SwaggerExtractorService {
     private Mono<String> getSwaggerContent(String identifier, String url) {
         return webClient.get()
                 .uri(url)
-                .header(X_API_KEY, apikey)
                 .retrieve()
                 .bodyToMono(String.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
