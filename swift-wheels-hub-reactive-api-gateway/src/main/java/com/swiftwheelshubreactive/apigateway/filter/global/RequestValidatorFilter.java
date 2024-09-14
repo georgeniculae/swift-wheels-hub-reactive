@@ -32,7 +32,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     private final static String API_KEY_HEADER = "X-API-KEY";
     private static final String DEFINITION = "definition";
     private static final String ACTUATOR = "actuator";
-    private static final String FALLBACK = "/fallback";
+    private static final String FALLBACK = "fallback";
     private final WebClient webClient;
 
     @Value("${apikey-secret}")
