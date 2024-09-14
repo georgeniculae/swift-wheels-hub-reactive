@@ -37,15 +37,8 @@ public class ApiKeySecurityConfig {
                                 "/actuator/**"
                         )
                         .permitAll()
-                        .pathMatchers(
-                                "/agency/**",
-                                "/ai/**",
-                                "/bookings/**",
-                                "/customers/**",
-                                "/expense/**"
-                        )
-                        .authenticated()
-                        .anyExchange().authenticated())
+                        .anyExchange()
+                        .authenticated())
                 .securityContextRepository(loadSecurityContextRepository)
                 .authenticationManager(reactiveAuthenticationManager)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
