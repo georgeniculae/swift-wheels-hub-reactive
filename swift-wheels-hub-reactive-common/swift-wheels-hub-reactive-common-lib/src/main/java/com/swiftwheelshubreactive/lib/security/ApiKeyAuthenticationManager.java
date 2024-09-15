@@ -1,7 +1,9 @@
 package com.swiftwheelshubreactive.lib.security;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,7 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
     public Mono<Authentication> authenticate(Authentication authentication) {
         return Mono.justOrEmpty(authentication)
                 .filter(auth -> auth instanceof ApiKeyAuthenticationToken && apiKeySecret.equals(auth.getPrincipal().toString()))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid API key")))
                 .map(auth -> {
                     ApiKeyAuthenticationToken apiKeyAuthenticationToken = (ApiKeyAuthenticationToken) auth;
                     apiKeyAuthenticationToken.setAuthenticated(true);
