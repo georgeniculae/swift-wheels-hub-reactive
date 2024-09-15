@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/customers"))
                 .authorizeExchange(request -> request.pathMatchers(
                                 "/customers/definition/**",
+                                "/customers/register",
                                 "/actuator/**"
                         )
                         .permitAll()
