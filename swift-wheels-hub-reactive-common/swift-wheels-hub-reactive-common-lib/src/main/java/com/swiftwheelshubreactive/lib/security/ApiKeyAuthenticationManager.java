@@ -21,12 +21,7 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
         return Mono.justOrEmpty(authentication)
                 .filter(auth -> auth instanceof ApiKeyAuthenticationToken && apiKeySecret.equals(auth.getPrincipal().toString()))
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid API key")))
-                .map(auth -> {
-                    ApiKeyAuthenticationToken apiKeyAuthenticationToken = (ApiKeyAuthenticationToken) auth;
-                    apiKeyAuthenticationToken.setAuthenticated(true);
-
-                    return apiKeyAuthenticationToken;
-                });
+                .doOnNext(auth -> auth.setAuthenticated(true));
     }
 
 }

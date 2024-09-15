@@ -59,6 +59,7 @@ class RequestValidatorFilterTest {
 
         when(webClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
+        when(requestBodySpec.header(anyString(), any(String[].class))).thenReturn(requestBodySpec);
         when(requestBodySpec.bodyValue(any())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(RequestValidationReport.class)).thenReturn(Mono.just(requestValidationReport));
@@ -84,6 +85,7 @@ class RequestValidatorFilterTest {
 
         when(webClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
+        when(requestBodySpec.header(anyString(), any(String[].class))).thenReturn(requestBodySpec);
         when(requestBodySpec.bodyValue(any())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(RequestValidationReport.class)).thenReturn(Mono.just(requestValidationReport));

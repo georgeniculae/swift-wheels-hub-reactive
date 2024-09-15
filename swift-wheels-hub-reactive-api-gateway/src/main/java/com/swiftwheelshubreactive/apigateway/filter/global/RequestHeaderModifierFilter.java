@@ -6,6 +6,7 @@ import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusExceptio
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -32,22 +33,26 @@ import java.util.function.Consumer;
 public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
     private static final String X_API_KEY_HEADER = "X-API-KEY";
+
     private static final String X_USERNAME = "X-USERNAME";
+
     private static final String X_ROLES = "X-ROLES";
-    private static final String REGISTER_PATH = "register";
-    private static final String DEFINITION_PATH = "definition";
-    private static final String FALLBACK = "fallback";
-    private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
-    private final NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder;
+
+    private static final String REGISTER_PATH = "/register";
+
+    private static final String DEFINITION_PATH = "/definition";
 
     @Value("${apikey-secret}")
     private String apikey;
+
+    private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
+
+    private final NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return createMutatedHeaders(exchange)
                 .flatMap(chain::filter)
-                .switchIfEmpty(Mono.defer(() -> chain.filter(exchange)))
                 .onErrorResume(e -> {
                     log.error("Error while trying to mutate headers: {}", e.getMessage());
 
@@ -66,15 +71,16 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private Mono<ServerWebExchange> createMutatedHeaders(ServerWebExchange exchange) {
         return Mono.just(exchange.getRequest())
                 .filter(this::doesPathContainPattern)
-                .flatMap(request -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(request)))
+                .flatMap(serverHttpRequest -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(serverHttpRequest)))
                 .flatMap(this::getAuthenticationInfo)
+                .switchIfEmpty(Mono.just(AuthenticationInfo.builder().build()))
                 .map(authenticationInfo -> createMutatedServerWebExchange(exchange, authenticationInfo));
     }
 
     private boolean doesPathContainPattern(ServerHttpRequest serverHttpRequest) {
         String path = serverHttpRequest.getPath().value();
 
-        return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH) && !path.contains(FALLBACK);
+        return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH);
     }
 
     private Mono<AuthenticationInfo> getAuthenticationInfo(Jwt jwt) {
@@ -117,8 +123,15 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private Consumer<ServerHttpRequest.Builder> mutateHeaders(String username, List<String> roles) {
         return requestBuilder -> {
             requestBuilder.header(X_API_KEY_HEADER, apikey);
-            requestBuilder.header(X_USERNAME, username);
-            requestBuilder.header(X_ROLES, roles.toArray(new String[]{}));
+
+            if (ObjectUtils.isNotEmpty(username)) {
+                requestBuilder.header(X_USERNAME, username);
+            }
+
+            if (ObjectUtils.isNotEmpty(roles)) {
+                requestBuilder.header(X_ROLES, roles.toArray(new String[]{}));
+            }
+
             requestBuilder.headers(headers -> headers.remove(HttpHeaders.AUTHORIZATION));
         };
     }

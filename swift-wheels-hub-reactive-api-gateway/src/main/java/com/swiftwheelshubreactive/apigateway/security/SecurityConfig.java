@@ -40,14 +40,6 @@ public class SecurityConfig {
                                 "/actuator/**"
                         )
                         .permitAll()
-                        .pathMatchers(
-                                "/agency/**",
-                                "/ai/**",
-                                "/bookings/**",
-                                "/customers/**",
-                                "/expense/**"
-                        )
-                        .authenticated()
                         .anyExchange()
                         .authenticated())
                 .exceptionHandling(request ->

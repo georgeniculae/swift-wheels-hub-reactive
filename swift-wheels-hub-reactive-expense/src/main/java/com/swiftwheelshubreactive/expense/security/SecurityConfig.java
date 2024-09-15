@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/expense"))
+                .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/expense/**"))
                 .authorizeExchange(request -> request.pathMatchers(
                                 "/expense/definition/**",
                                 "/actuator/**"

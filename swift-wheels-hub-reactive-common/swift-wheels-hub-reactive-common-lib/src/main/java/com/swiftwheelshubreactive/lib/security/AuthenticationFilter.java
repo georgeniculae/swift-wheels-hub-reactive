@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -34,12 +35,19 @@ public class AuthenticationFilter implements WebFilter {
                 .map(apiKey -> getApiKeyAuthenticationToken(exchange, apiKey))
                 .flatMap(reactiveAuthenticationManager::authenticate)
                 .flatMap(authentication -> {
-                    SecurityContext context = new SecurityContextImpl(authentication);
-                    Context updatedContext = ReactiveSecurityContextHolder.withSecurityContext(Mono.just(context));
+                    SecurityContext securityContext = getSecurityContext(authentication);
+                    Context updatedContext = ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext));
 
                     return chain.filter(exchange).contextWrite(updatedContext);
                 })
-                .switchIfEmpty(Mono.defer(()-> chain.filter(exchange)));
+                .switchIfEmpty(Mono.defer(() -> chain.filter(exchange)));
+    }
+
+    private SecurityContext getSecurityContext(Authentication authentication) {
+        SecurityContext securityContext = new SecurityContextImpl(authentication);
+        securityContext.setAuthentication(authentication);
+
+        return securityContext;
     }
 
     private String getApiKeyHeader(ServerWebExchange exchange) {

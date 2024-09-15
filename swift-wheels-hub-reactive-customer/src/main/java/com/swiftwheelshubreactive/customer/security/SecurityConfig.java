@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/customers"))
+                .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/customers/**"))
                 .authorizeExchange(request -> request.pathMatchers(
                                 "/customers/definition/**",
                                 "/customers/register",
