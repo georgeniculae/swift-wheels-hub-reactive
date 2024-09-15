@@ -43,7 +43,7 @@ public class SwaggerExtractorService {
                 .uri(url)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + identifier + " is empty")))
                 .onErrorMap(ExceptionUtil::handleException);
