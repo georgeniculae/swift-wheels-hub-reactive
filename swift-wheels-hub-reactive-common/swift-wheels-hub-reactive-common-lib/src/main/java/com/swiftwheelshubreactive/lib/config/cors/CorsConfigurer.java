@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.lib.config.cors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.config.CorsRegistry;
@@ -22,6 +23,12 @@ public class CorsConfigurer implements WebFluxConfigurer {
                 .allowedOrigins(corsProperties.getAllowedOrigins())
                 .allowedMethods(corsProperties.getAllowedMethods())
                 .allowedHeaders(corsProperties.getAllowedHeaders());
+    }
+
+    @Override
+    public void configureHttpMessageCodecs(@NonNull ServerCodecConfigurer serverCodecConfigurer) {
+        serverCodecConfigurer.defaultCodecs()
+                .maxInMemorySize(corsProperties.getCodecMaxInMemorySizeInMb() * 1024 * 1024);
     }
 
 }

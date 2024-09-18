@@ -31,6 +31,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
 
     private static final String DEFINITION = "definition";
     private static final String ACTUATOR = "actuator";
+    private static final String FALLBACK = "fallback";
     private final WebClient webClient;
 
     @Value("${request-validator-url}")
@@ -38,12 +39,8 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return Mono.just(exchange.getRequest())
-                .filter(this::containsRightPath)
-                .flatMap(this::getIncomingRequestDetails)
-                .flatMap(this::getValidationReport)
-                .flatMap(requestValidationReport -> filterRequest(exchange, chain, requestValidationReport))
-                .switchIfEmpty(Mono.defer(() -> chain.filter(exchange)))
+        return Mono.just(exchange)
+                .flatMap(serverWebExchange -> forwardRequest(chain, serverWebExchange))
                 .onErrorResume(e -> {
                     log.error("Error while validating request: {}", e.getMessage());
 
@@ -59,10 +56,24 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
         return 1;
     }
 
-    private boolean containsRightPath(ServerHttpRequest serverHttpRequest) {
+    private Mono<Void> forwardRequest(GatewayFilterChain chain, ServerWebExchange serverWebExchange) {
+        if (isRequestValidatable(serverWebExchange.getRequest())) {
+            return filterValidatedRequest(serverWebExchange, chain);
+        }
+
+        return chain.filter(serverWebExchange);
+    }
+
+    private boolean isRequestValidatable(ServerHttpRequest serverHttpRequest) {
         String path = serverHttpRequest.getPath().value();
 
-        return !path.contains(DEFINITION) && !path.contains(ACTUATOR);
+        return !path.contains(DEFINITION) && !path.contains(ACTUATOR) && !path.contains(FALLBACK);
+    }
+
+    private Mono<Void> filterValidatedRequest(ServerWebExchange exchange, GatewayFilterChain chain) {
+        return getIncomingRequestDetails(exchange.getRequest())
+                .flatMap(this::getValidationReport)
+                .flatMap(requestValidationReport -> validateResponse(exchange, chain, requestValidationReport));
     }
 
     private Mono<IncomingRequestDetails> getIncomingRequestDetails(ServerHttpRequest request) {
@@ -88,7 +99,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .bodyValue(incomingRequestDetails)
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)
-                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorMap(e -> {
                     log.error("Error while sending request to validator: {}", e.getMessage());
 
@@ -96,7 +107,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 });
     }
 
-    private Mono<Void> filterRequest(ServerWebExchange exchange, GatewayFilterChain chain, RequestValidationReport requestValidationReport) {
+    private Mono<Void> validateResponse(ServerWebExchange exchange, GatewayFilterChain chain, RequestValidationReport requestValidationReport) {
         if (ObjectUtils.isEmpty(requestValidationReport.errorMessage())) {
             return chain.filter(exchange);
         }

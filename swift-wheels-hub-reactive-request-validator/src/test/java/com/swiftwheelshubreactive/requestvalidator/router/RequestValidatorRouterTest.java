@@ -53,7 +53,7 @@ class RequestValidatorRouterTest {
     }
 
     @Test
-    void routeRequestTest_missingRequestBody_badRequest() {
+    void routeRequestTest_missingRequestBody() {
         Mono<ServerResponse> serverResponse = ServerResponse.badRequest().build();
 
         when(requestValidatorHandler.validateRequest(any(ServerRequest.class))).thenReturn(serverResponse);
@@ -72,7 +72,7 @@ class RequestValidatorRouterTest {
 
         when(requestValidatorHandler.repopulateRedisWithSwaggerFiles(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        Flux<Boolean> responseBody = webTestClient.delete()
+        Flux<Boolean> responseBody = webTestClient.post()
                 .uri("/invalidate/{microserviceName}", "expense")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -87,12 +87,12 @@ class RequestValidatorRouterTest {
     }
 
     @Test
-    void repopulateRedisWithSwaggerFilesTest_notFound_emptyPathVariable() {
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(true);
+    void repopulateRedisWithSwaggerFilesTest_emptyPathVariable_notFound() {
+        Mono<ServerResponse> serverResponse = ServerResponse.notFound().build();
 
         when(requestValidatorHandler.repopulateRedisWithSwaggerFiles(any(ServerRequest.class))).thenReturn(serverResponse);
 
-        webTestClient.delete()
+        webTestClient.post()
                 .uri("/invalidate/{microserviceName}", "")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

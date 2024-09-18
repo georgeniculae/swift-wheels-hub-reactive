@@ -74,7 +74,6 @@ class SwaggerExtractorServiceTest {
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-
         when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -133,7 +132,6 @@ class SwaggerExtractorServiceTest {
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-
         when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -191,7 +189,6 @@ class SwaggerExtractorServiceTest {
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-
         when(responseSpec.bodyToMono(String.class)).thenAnswer(new Answer() {
             private int count = 0;
 

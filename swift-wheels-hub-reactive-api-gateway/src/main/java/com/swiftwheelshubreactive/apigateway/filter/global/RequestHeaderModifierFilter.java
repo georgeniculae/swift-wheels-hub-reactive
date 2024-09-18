@@ -33,26 +33,21 @@ import java.util.function.Consumer;
 public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
     private static final String X_API_KEY_HEADER = "X-API-KEY";
-
     private static final String X_USERNAME = "X-USERNAME";
-
     private static final String X_ROLES = "X-ROLES";
-
-    private static final String REGISTER_PATH = "/register";
-
-    private static final String DEFINITION_PATH = "/definition";
+    private static final String REGISTER_PATH = "register";
+    private static final String DEFINITION_PATH = "definition";
+    private static final String FALLBACK = "fallback";
+    private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
+    private final NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder;
 
     @Value("${apikey-secret}")
     private String apikey;
 
-    private final JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
-
-    private final NimbusReactiveJwtDecoder nimbusReactiveJwtDecoder;
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return createMutatedHeaders(exchange)
-                .flatMap(chain::filter)
+        return Mono.just(exchange)
+                .flatMap(serverWebExchange -> forwardRequest(exchange, chain, serverWebExchange))
                 .onErrorResume(e -> {
                     log.error("Error while trying to mutate headers: {}", e.getMessage());
 
@@ -68,19 +63,24 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
         return 0;
     }
 
-    private Mono<ServerWebExchange> createMutatedHeaders(ServerWebExchange exchange) {
-        return Mono.just(exchange.getRequest())
-                .filter(this::doesPathContainPattern)
-                .flatMap(serverHttpRequest -> nimbusReactiveJwtDecoder.decode(getAuthorizationToken(serverHttpRequest)))
-                .flatMap(this::getAuthenticationInfo)
-                .switchIfEmpty(Mono.just(AuthenticationInfo.builder().build()))
-                .map(authenticationInfo -> createMutatedServerWebExchange(exchange, authenticationInfo));
+    private Mono<Void> forwardRequest(ServerWebExchange exchange, GatewayFilterChain chain, ServerWebExchange serverWebExchange) {
+        if (isRequestValidatable(serverWebExchange.getRequest())) {
+            return filterValidatedRequest(exchange, chain);
+        }
+
+        return chain.filter(exchange);
     }
 
-    private boolean doesPathContainPattern(ServerHttpRequest serverHttpRequest) {
+    private boolean isRequestValidatable(ServerHttpRequest serverHttpRequest) {
         String path = serverHttpRequest.getPath().value();
 
-        return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH);
+        return !path.contains(REGISTER_PATH) && !path.contains(DEFINITION_PATH) && !path.contains(FALLBACK);
+    }
+
+    private Mono<Void> filterValidatedRequest(ServerWebExchange exchange, GatewayFilterChain chain) {
+        return nimbusReactiveJwtDecoder.decode(getAuthorizationToken(exchange.getRequest()))
+                .flatMap(this::getAuthenticationInfo)
+                .flatMap(authenticationInfo -> filterValidatedRequest(chain, exchange, authenticationInfo));
     }
 
     private Mono<AuthenticationInfo> getAuthenticationInfo(Jwt jwt) {
@@ -111,6 +111,12 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                         )
                 )
                 .substring(7);
+    }
+
+    private Mono<Void> filterValidatedRequest(GatewayFilterChain chain,
+                                              ServerWebExchange exchange,
+                                              AuthenticationInfo authenticationInfo) {
+        return chain.filter(createMutatedServerWebExchange(exchange, authenticationInfo));
     }
 
     private ServerWebExchange createMutatedServerWebExchange(ServerWebExchange exchange,

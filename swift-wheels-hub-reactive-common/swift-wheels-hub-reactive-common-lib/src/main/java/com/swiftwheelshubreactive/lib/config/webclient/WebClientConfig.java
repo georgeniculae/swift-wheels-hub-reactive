@@ -21,10 +21,9 @@ public class WebClientConfig {
 
     @Bean
     public WebClient webClient(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder) {
-        HttpClient httpClient = HttpClient.create().responseTimeout(Duration.ofMinutes(2));
+        HttpClient httpClient = HttpClient.create().responseTimeout(Duration.ofSeconds(20));
 
-        return webClientBuilder
-//                .clientConnector(new ReactorClientHttpConnector(httpClient))
+        return webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
     }
 

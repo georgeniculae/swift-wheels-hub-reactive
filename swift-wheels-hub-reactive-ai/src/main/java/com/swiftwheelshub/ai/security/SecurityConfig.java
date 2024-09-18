@@ -1,25 +1,25 @@
 package com.swiftwheelshub.ai.security;
 
-import com.swiftwheelshubreactive.lib.security.AuthenticationFilter;
+import com.swiftwheelshubreactive.lib.security.LoadSecurityContextRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class SecurityConfig {
 
-    private final AuthenticationFilter authenticationFilter;
+    private final LoadSecurityContextRepository loadSecurityContextRepository;
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
     @Bean
@@ -28,16 +28,14 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .securityMatcher(ServerWebExchangeMatchers.pathMatchers("/ai/**"))
                 .authorizeExchange(request -> request.pathMatchers(
-                                "/ai/definition/**",
+                                "/definition/**",
                                 "/actuator/**"
                         )
                         .permitAll()
-                        .anyExchange()
-                        .authenticated())
+                        .anyExchange().authenticated())
+                .securityContextRepository(loadSecurityContextRepository)
                 .authenticationManager(reactiveAuthenticationManager)
-                .addFilterBefore(authenticationFilter, SecurityWebFiltersOrder.ANONYMOUS_AUTHENTICATION)
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }

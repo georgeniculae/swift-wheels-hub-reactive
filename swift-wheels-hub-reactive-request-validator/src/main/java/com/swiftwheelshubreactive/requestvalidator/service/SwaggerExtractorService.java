@@ -18,6 +18,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class SwaggerExtractorService {
 
+    private static final String X_API_KEY = "X-API-KEY";
     private final WebClient webClient;
     private final RegisteredEndpoints registeredEndpoints;
 
