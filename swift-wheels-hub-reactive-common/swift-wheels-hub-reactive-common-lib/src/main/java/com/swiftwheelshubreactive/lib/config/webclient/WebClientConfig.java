@@ -22,7 +22,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder) {
         HttpClient httpClient = HttpClient.create()
-                .responseTimeout(Duration.ofSeconds(30));
+                .responseTimeout(Duration.ofSeconds(40));
 
         ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 
