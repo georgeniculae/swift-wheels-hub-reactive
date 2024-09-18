@@ -26,7 +26,8 @@ public class WebClientConfig {
 
         ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 
-        return webClientBuilder.clientConnector(connector).build();
+        return webClientBuilder.clientConnector(connector)
+                .build();
     }
 
 }
