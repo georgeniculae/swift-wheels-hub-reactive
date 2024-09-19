@@ -29,7 +29,7 @@ public class GrantedAuthoritiesConverterConfig {
     }
 
     @Bean
-    public JwtGrantedAuthorityConverter getJwtGrantedAuthorityConverter() {
+    public JwtGrantedAuthorityConverter jwtGrantedAuthorityConverter() {
         return jwt -> {
             Map<String, List<String>> claims = getClaims(jwt);
 

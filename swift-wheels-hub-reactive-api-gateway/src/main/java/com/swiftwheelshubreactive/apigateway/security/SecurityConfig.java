@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -19,7 +21,7 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
-    private final LoadSecurityContextRepository loadSecurityContextRepository;
+    private final ReactiveJwtDecoder reactiveJwtDecoder;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkUri;
@@ -45,11 +47,11 @@ public class SecurityConfig {
                 .exceptionHandling(request ->
                         request.authenticationEntryPoint((response, _) -> getResponse(response, HttpStatus.UNAUTHORIZED))
                                 .accessDeniedHandler((response, _) -> getResponse(response, HttpStatus.FORBIDDEN)))
-                .oauth2ResourceServer(resourceServerSpec -> resourceServerSpec.jwt(
-                        jwtSpec -> jwtSpec.jwkSetUri(jwkUri)
-                                .authenticationManager(reactiveAuthenticationManager))
-                )
-                .securityContextRepository(loadSecurityContextRepository)
+                .oauth2ResourceServer(resourceServerSpec ->
+                        resourceServerSpec.jwt(jwtSpec -> jwtSpec.jwkSetUri(jwkUri)
+                                .authenticationManager(reactiveAuthenticationManager)
+                                .jwtDecoder(reactiveJwtDecoder)))
+                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
                 .build();
     }
