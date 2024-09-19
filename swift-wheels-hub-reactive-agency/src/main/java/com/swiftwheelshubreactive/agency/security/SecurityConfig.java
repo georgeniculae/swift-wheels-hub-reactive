@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.agency.security;
 
-import com.swiftwheelshubreactive.lib.security.LoadSecurityContextRepository;
+import com.swiftwheelshubreactive.lib.security.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
 
 @Configuration
@@ -19,8 +21,8 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 @ConditionalOnProperty(prefix = "apikey", name = "secret")
 public class SecurityConfig {
 
-    private final LoadSecurityContextRepository loadSecurityContextRepository;
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
+    private final AuthenticationFilter authenticationFilter;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -33,9 +35,10 @@ public class SecurityConfig {
                         .permitAll()
                         .anyExchange()
                         .authenticated())
-                .securityContextRepository(loadSecurityContextRepository)
                 .authenticationManager(reactiveAuthenticationManager)
+                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
+                .addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
 
