@@ -1,7 +1,9 @@
 package com.swiftwheelshubreactive.lib.security;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -16,9 +18,22 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-        return Mono.justOrEmpty(authentication)
-                .filter(auth -> apikeySecret.equals(auth.getPrincipal().toString()))
-                .doOnNext(auth -> auth.setAuthenticated(true));
+        return Mono.just(authentication)
+                .filter(this::isValidAuthentication)
+                .doOnNext(auth -> auth.setAuthenticated(true))
+                .switchIfEmpty(
+                        Mono.error(
+                                new SwiftWheelsHubResponseStatusException(
+                                        HttpStatus.UNAUTHORIZED,
+                                        "No matching API Key"
+                                )
+                        )
+                );
+    }
+
+    private boolean isValidAuthentication(Authentication authentication) {
+        return authentication instanceof ApiKeyAuthenticationToken apiKeyAuthenticationToken &&
+                apikeySecret.equals(apiKeyAuthenticationToken.getPrincipal().toString());
     }
 
 }

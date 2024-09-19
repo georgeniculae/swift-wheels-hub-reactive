@@ -1,6 +1,5 @@
 package com.swiftwheelshub.ai.security;
 
-import com.swiftwheelshubreactive.lib.security.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +10,8 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
+import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
 
@@ -22,7 +23,7 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 public class SecurityConfig {
 
     private final ReactiveAuthenticationManager reactiveAuthenticationManager;
-    private final AuthenticationFilter authenticationFilter;
+    private final ServerAuthenticationConverter serverAuthenticationConverter;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -37,8 +38,15 @@ public class SecurityConfig {
                 .authenticationManager(reactiveAuthenticationManager)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))
-                .addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(getAuthenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
+    }
+
+    private AuthenticationWebFilter getAuthenticationWebFilter() {
+        AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(reactiveAuthenticationManager);
+        authenticationWebFilter.setServerAuthenticationConverter(serverAuthenticationConverter);
+
+        return authenticationWebFilter;
     }
 
 }
