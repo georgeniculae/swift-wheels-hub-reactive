@@ -28,10 +28,8 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .authorizeExchange(request -> request.pathMatchers(
-                                "/definition/**",
-                                "/actuator/**"
-                        )
+                .authorizeExchange(request -> request.pathMatchers("/definition/**",
+                                "/actuator/**")
                         .permitAll()
                         .anyExchange().authenticated())
                 .securityContextRepository(loadSecurityContextRepository)

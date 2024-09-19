@@ -32,15 +32,13 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .authorizeExchange(request -> request.pathMatchers(
-                                "/agency/definition/**",
+                .authorizeExchange(request -> request.pathMatchers("/agency/definition/**",
                                 "/ai/definition/**",
                                 "/bookings/definition/**",
                                 "/customers/definition/**",
                                 "/customers/register",
                                 "/expense/definition/**",
-                                "/actuator/**"
-                        )
+                                "/actuator/**")
                         .permitAll()
                         .anyExchange()
                         .authenticated())
