@@ -126,7 +126,7 @@ resilience4j:
   timelimiter:
     instances:
       fallbackHandler:
-        timeoutDuration: 10s
+        timeoutDuration: 60s
 
 management:
   server:
