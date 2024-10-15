@@ -16,8 +16,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
-                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1
-                    }"""
+                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1}"""
     )
     @NonNull
     Mono<Car> findById(@NonNull ObjectId id);
@@ -37,8 +36,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
-                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1
-                    }"""
+                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1}"""
     )
     Flux<Car> findAllByFilterInsensitiveCase(String filter);
 
@@ -47,8 +45,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
-                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1
-                    }"""
+                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1}"""
     )
     @NonNull
     Flux<Car> findAll();
@@ -58,8 +55,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
-                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1
-                    }"""
+                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1}"""
     )
     @NonNull
     Flux<Car> findAllAvailableCars();
@@ -70,8 +66,7 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
             fields = """
                     {
                     'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
-                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1
-                    }"""
+                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1}"""
     )
     Flux<Car> findCarsByMakeInsensitiveCase(String make);
 
