@@ -80,8 +80,6 @@ spring:
     bootstrap-servers: localhost:9092
   sendgrid:
     api-key: ${SENDGRID_API_KEY}
-  mvc:
-    throw-exception-if-no-handler-found: true
   web:
     resources:
       add-mappings: false
