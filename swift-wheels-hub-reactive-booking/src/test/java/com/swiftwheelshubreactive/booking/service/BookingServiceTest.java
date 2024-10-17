@@ -514,15 +514,11 @@ class BookingServiceTest {
     void deleteBookingByCustomerUsernameTest_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         booking.setStatus(BookingStatus.CLOSED);
-        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
-                .apikey("apikey")
-                .roles(List.of("admin"))
-                .build();
 
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
         when(outboxService.processBookingDeletion(anyList(), any(Outbox.Operation.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(bookingService.deleteBookingByCustomerUsername(authenticationInfo, "user"))
+        StepVerifier.create(bookingService.deleteBookingByCustomerUsername("user"))
                 .expectComplete()
                 .verify();
     }
@@ -530,28 +526,19 @@ class BookingServiceTest {
     @Test
     void deleteBookingByCustomerUsernameTest_bookingInProgress_error() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
-        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
-                .apikey("apikey")
-                .roles(List.of("admin"))
-                .build();
 
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
 
-        StepVerifier.create(bookingService.deleteBookingByCustomerUsername(authenticationInfo, "user"))
+        StepVerifier.create(bookingService.deleteBookingByCustomerUsername("user"))
                 .expectError()
                 .verify();
     }
 
     @Test
     void deleteBookingByCustomerUsernameTest_errorOnFindingById() {
-        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
-                .apikey("apikey")
-                .roles(List.of("admin"))
-                .build();
-
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(bookingService.deleteBookingByCustomerUsername(authenticationInfo, "user"))
+        StepVerifier.create(bookingService.deleteBookingByCustomerUsername("user"))
                 .expectError()
                 .verify();
     }

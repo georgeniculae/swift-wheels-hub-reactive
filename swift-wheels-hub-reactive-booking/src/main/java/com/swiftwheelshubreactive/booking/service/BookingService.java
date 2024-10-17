@@ -184,7 +184,7 @@ public class BookingService {
             activityDescription = "Booking deletion",
             sentParameters = "id"
     )
-    public Mono<Void> deleteBookingByCustomerUsername(AuthenticationInfo authenticationInfo, String username) {
+    public Mono<Void> deleteBookingByCustomerUsername(String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .collectList()
                 .filter(this::checkIfThereIsNoBookingInProgress)

@@ -140,13 +140,7 @@ public class BookingHandler {
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> deleteBookingByCustomerUsername(ServerRequest serverRequest) {
-        return bookingService.deleteBookingByCustomerUsername(
-                        AuthenticationInfo.builder()
-                                .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
-                                .roles(ServerRequestUtil.getRolesHeader(serverRequest))
-                                .build(),
-                        serverRequest.pathVariable(USERNAME)
-                )
+        return bookingService.deleteBookingByCustomerUsername(serverRequest.pathVariable(USERNAME))
                 .then(ServerResponse.noContent().build());
     }
 

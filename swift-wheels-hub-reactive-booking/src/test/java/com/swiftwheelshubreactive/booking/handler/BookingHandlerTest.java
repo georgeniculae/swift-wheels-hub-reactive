@@ -307,7 +307,7 @@ class BookingHandlerTest {
                 .pathVariable("username", "user")
                 .build();
 
-        when(bookingService.deleteBookingByCustomerUsername(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.empty());
+        when(bookingService.deleteBookingByCustomerUsername(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(bookingHandler.deleteBookingByCustomerUsername(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
