@@ -70,8 +70,6 @@ spring:
             allow.auto.create.topics: true
   kafka:
     bootstrap-servers: localhost:9092
-  mvc:
-    throw-exception-if-no-handler-found: true
   web:
     resources:
       add-mappings: false

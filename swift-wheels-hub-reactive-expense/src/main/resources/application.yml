@@ -144,7 +144,6 @@ mongo-operations:
 webClient:
   url:
     swift-wheels-hub-bookings: http://swift-wheels-hub-reactive-booking/bookings
-    swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
 
 bookingConsumer:
   isMessageAckEnabled: false
