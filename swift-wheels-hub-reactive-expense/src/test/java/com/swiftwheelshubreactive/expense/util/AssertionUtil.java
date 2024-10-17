@@ -8,7 +8,7 @@ import com.swiftwheelshubreactive.model.Revenue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssertionUtils {
+public class AssertionUtil {
 
     public static void assertInvoiceRequest(Invoice invoice, InvoiceRequest invoiceRequest) {
         assertEquals(invoice.getCarReturnDate(), invoiceRequest.carReturnDate());

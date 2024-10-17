@@ -13,6 +13,7 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
@@ -395,13 +396,15 @@ class CarServiceTest {
     @Test
     void updateCarStatusTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
         StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarState.AVAILABLE))
-                .expectNext(carResponse)
+                .expectNext(statusUpdateResponse)
                 .verifyComplete();
     }
 
@@ -413,50 +416,57 @@ class CarServiceTest {
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarState.AVAILABLE))
-                .expectError()
-                .verify();
+                .expectNextMatches(statusUpdateResponse -> !statusUpdateResponse.isUpdateSuccessful())
+                .verifyComplete();
     }
 
     @Test
     void updateCarsStatusTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+
         UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
                 .carId("64f361caf291ae086e179547")
                 .carState(CarState.AVAILABLE)
                 .build();
+
         List<UpdateCarRequest> updateCarRequests = List.of(updateCarRequest);
 
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
 
         StepVerifier.create(carService.updateCarsStatus(updateCarRequests))
-                .expectNext(carResponse)
+                .expectNext(statusUpdateResponse)
                 .verifyComplete();
     }
 
     @Test
     void updateCarsStatusTest_errorOnSave() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
+
         UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
                 .carId("64f361caf291ae086e179547")
                 .carState(CarState.AVAILABLE)
                 .build();
+
         List<UpdateCarRequest> updateCarRequests = List.of(updateCarRequest);
 
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new RuntimeException()));
 
         StepVerifier.create(carService.updateCarsStatus(updateCarRequests))
-                .expectError()
-                .verify();
+                .expectNextMatches(statusUpdateResponse -> !statusUpdateResponse.isUpdateSuccessful())
+                .verifyComplete();
     }
 
     @Test
     void updateCarWhenBookingIsClosedTest_success() {
         Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
+
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
         CarUpdateDetails carUpdateDetails =
                 TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
@@ -465,7 +475,7 @@ class CarServiceTest {
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
         StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carUpdateDetails))
-                .expectNext(carResponse)
+                .expectNextMatches(StatusUpdateResponse::isUpdateSuccessful)
                 .verifyComplete();
     }
 
@@ -483,8 +493,8 @@ class CarServiceTest {
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carUpdateDetails))
-                .expectError()
-                .verify();
+                .expectNextMatches(statusUpdateResponse -> !statusUpdateResponse.isUpdateSuccessful())
+                .verifyComplete();
     }
 
     @Test

@@ -174,21 +174,21 @@ public class InvoiceService {
 
     private Mono<InvoiceRequest> validateInvoice(InvoiceRequest invoiceRequest) {
         return Mono.just(invoiceRequest)
-                .map(request -> {
+                .handle((request, sink) -> {
                     LocalDate dateOfReturnOfTheCar = Optional.ofNullable((request.carReturnDate()))
                             .orElseThrow(() -> new SwiftWheelsHubException("Car return date is null"));
 
                     validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
 
                     if (Boolean.TRUE.equals(request.isVehicleDamaged()) && ObjectUtils.isEmpty(request.damageCost())) {
-                        throw new SwiftWheelsHubResponseStatusException(
+                        sink.error(new SwiftWheelsHubResponseStatusException(
                                 HttpStatus.BAD_REQUEST,
                                 "If the vehicle is damaged, the damage cost cannot be null/empty"
-                        );
-
+                        ));
+                        return;
                     }
 
-                    return request;
+                    sink.next(request);
                 });
     }
 

@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.expense.mapper;
 
 import com.swiftwheelshubreactive.dto.RevenueResponse;
-import com.swiftwheelshubreactive.expense.util.AssertionUtils;
+import com.swiftwheelshubreactive.expense.util.AssertionUtil;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Revenue;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class RevenueMapperTest {
         RevenueResponse revenueResponse = rentalOfficeMapper.mapEntityToDto(revenue);
 
         assertNotNull(revenueResponse);
-        AssertionUtils.assertRevenueResponse(revenue, revenueResponse);
+        AssertionUtil.assertRevenueResponse(revenue, revenueResponse);
     }
 
 }

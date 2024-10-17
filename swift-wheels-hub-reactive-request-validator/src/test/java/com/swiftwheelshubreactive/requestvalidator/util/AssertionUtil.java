@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssertionUtils {
+public class AssertionUtil {
 
     public static void assertSwaggerFile(SwaggerFile expectedSwaggerFile, SwaggerFile actualSwaggerFile) {
         assertEquals(expectedSwaggerFile.getIdentifier(), actualSwaggerFile.getIdentifier());

@@ -6,7 +6,7 @@ import com.swiftwheelshubreactive.model.Booking;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssertionUtils {
+public class AssertionUtil {
 
     public static void assertBookingRequest(Booking booking, BookingRequest bookingRequest) {
         assertEquals(booking.getDateOfBooking(), bookingRequest.dateOfBooking());

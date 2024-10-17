@@ -18,15 +18,17 @@ public class BodyValidator<T> {
 
     public Mono<T> validateBody(T body) {
         return Mono.just(getErrors(body))
-                .map(errors -> {
+                .handle((errors, sink) -> {
                     if (ObjectUtils.isEmpty(errors) || errors.getAllErrors().isEmpty()) {
-                        return body;
+                        sink.next(body);
+
+                        return;
                     }
 
-                    throw new SwiftWheelsHubResponseStatusException(
+                    sink.error(new SwiftWheelsHubResponseStatusException(
                             HttpStatus.BAD_REQUEST,
                             errors.toString()
-                    );
+                    ));
                 });
     }
 

@@ -15,7 +15,7 @@ import com.swiftwheelshubreactive.model.RentalOffice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssertionUtils {
+public class AssertionUtil {
 
     public static void assertCarRequest(Car car, CarRequest carRequest) {
         assertEquals(car.getMake(), carRequest.make());

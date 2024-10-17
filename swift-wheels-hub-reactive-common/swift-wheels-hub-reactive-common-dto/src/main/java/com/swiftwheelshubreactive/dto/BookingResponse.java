@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Builder
+@Builder(toBuilder = true)
 public record BookingResponse(
         String id,
 

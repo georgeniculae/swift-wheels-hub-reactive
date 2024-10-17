@@ -8,6 +8,7 @@ import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -300,8 +301,6 @@ class CarHandlerTest {
 
     @Test
     void updateCarWhenBookingIsClosedTest_success() {
-        CarResponse carDto = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-
         CarUpdateDetails carUpdateDetails =
                 TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
@@ -310,9 +309,12 @@ class CarHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(carUpdateDetails));
 
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+
         when(carUpdateDetailsValidator.validateBody(any())).thenReturn(Mono.just(carUpdateDetails));
         when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(carDto));
+                .thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(carHandler.updateCarWhenBookingIsClosed(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -321,7 +323,8 @@ class CarHandlerTest {
 
     @Test
     void updateCarStatusTest_success() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PATCH)
@@ -329,7 +332,7 @@ class CarHandlerTest {
                 .queryParam("carState", "AVAILABLE")
                 .body(Mono.just(CarState.AVAILABLE));
 
-        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(carResponse));
+        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(carHandler.updateCarStatus(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -338,7 +341,8 @@ class CarHandlerTest {
 
     @Test
     void updateCarsStatusTest_success() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
 
         UpdateCarRequest updateCarRequest =
                 TestUtil.getResourceAsJson("/data/UpdateCarRequest.json", UpdateCarRequest.class);
@@ -348,7 +352,7 @@ class CarHandlerTest {
                 .body(Flux.just(updateCarRequest));
 
         when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
-        when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(carResponse));
+        when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(statusUpdateResponse));
 
         StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

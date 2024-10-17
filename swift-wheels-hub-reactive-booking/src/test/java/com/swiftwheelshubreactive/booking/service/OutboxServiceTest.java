@@ -90,7 +90,7 @@ class OutboxServiceTest {
         when(outboxRepository.save(any(Outbox.class))).thenReturn(Mono.just(outbox));
 
         StepVerifier.create(outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
-                .expectNext(outbox)
+                .expectNext(outbox.getContent())
                 .verifyComplete();
     }
 

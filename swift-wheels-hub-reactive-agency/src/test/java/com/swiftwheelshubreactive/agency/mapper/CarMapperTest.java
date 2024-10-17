@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
-import com.swiftwheelshubreactive.agency.util.AssertionUtils;
+import com.swiftwheelshubreactive.agency.util.AssertionUtil;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
@@ -24,7 +24,7 @@ class CarMapperTest {
         CarResponse carResponse = carMapper.mapEntityToDto(car);
 
         assertNotNull(carResponse);
-        AssertionUtils.assertCarResponse(car, carResponse);
+        AssertionUtil.assertCarResponse(car, carResponse);
     }
 
     @Test
@@ -39,7 +39,7 @@ class CarMapperTest {
         Car car = carMapper.mapDtoToEntity(carRequest, new byte[]{});
 
         assertNotNull(car);
-        AssertionUtils.assertCarRequest(car, carRequest);
+        AssertionUtil.assertCarRequest(car, carRequest);
     }
 
     @Test

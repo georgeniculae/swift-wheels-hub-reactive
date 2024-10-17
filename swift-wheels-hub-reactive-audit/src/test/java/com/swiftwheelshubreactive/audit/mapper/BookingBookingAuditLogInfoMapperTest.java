@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.audit.mapper;
 
-import com.swiftwheelshubreactive.audit.util.AssertionUtils;
+import com.swiftwheelshubreactive.audit.util.AssertionUtil;
 import com.swiftwheelshubreactive.audit.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuditLogInfoRequest;
 import com.swiftwheelshubreactive.model.BookingAuditLogInfo;
@@ -20,7 +20,7 @@ class BookingBookingAuditLogInfoMapperTest {
 
         AuditLogInfoRequest auditLogInfoDto = bookingAuditLogInfoMapper.mapEntityToDto(bookingAuditLogInfo);
 
-        AssertionUtils.assertAuditLogInfo(bookingAuditLogInfo, auditLogInfoDto);
+        AssertionUtil.assertAuditLogInfo(bookingAuditLogInfo, auditLogInfoDto);
     }
 
     @Test
@@ -30,7 +30,7 @@ class BookingBookingAuditLogInfoMapperTest {
 
         BookingAuditLogInfo bookingAuditLogInfo = bookingAuditLogInfoMapper.mapDtoToEntity(auditLogInfoRequest);
 
-        AssertionUtils.assertAuditLogInfo(bookingAuditLogInfo, auditLogInfoRequest);
+        AssertionUtil.assertAuditLogInfo(bookingAuditLogInfo, auditLogInfoRequest);
     }
 
 }

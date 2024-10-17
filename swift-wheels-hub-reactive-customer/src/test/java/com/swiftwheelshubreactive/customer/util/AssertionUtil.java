@@ -8,7 +8,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssertionUtils {
+public class AssertionUtil {
 
     public static void assertRegistrationResponse(UserRepresentation userRepresentation, RegistrationResponse registrationResponse) {
         assertEquals(userRepresentation.getUsername(), registrationResponse.username());

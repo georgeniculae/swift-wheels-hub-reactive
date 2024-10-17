@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.requestvalidator.service;
 
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
-import com.swiftwheelshubreactive.requestvalidator.util.AssertionUtils;
+import com.swiftwheelshubreactive.requestvalidator.util.AssertionUtil;
 import com.swiftwheelshubreactive.requestvalidator.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,10 +94,10 @@ class SwaggerExtractorServiceTest {
 
         swaggerExtractorService.getSwaggerFiles()
                 .as(StepVerifier::create)
-                .assertNext(swaggerFile -> AssertionUtils.assertSwaggerFile(agencySwagger, swaggerFile))
-                .assertNext(swaggerFile -> AssertionUtils.assertSwaggerFile(bookingSwagger, swaggerFile))
-                .assertNext(swaggerFile -> AssertionUtils.assertSwaggerFile(customerSwagger, swaggerFile))
-                .assertNext(swaggerFile -> AssertionUtils.assertSwaggerFile(expenseSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(agencySwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(bookingSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(customerSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(expenseSwagger, swaggerFile))
                 .verifyComplete();
     }
 

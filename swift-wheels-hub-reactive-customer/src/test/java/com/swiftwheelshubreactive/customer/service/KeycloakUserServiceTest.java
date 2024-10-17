@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.customer.service;
 
 import com.swiftwheelshubreactive.customer.mapper.CustomerMapper;
 import com.swiftwheelshubreactive.customer.mapper.CustomerMapperImpl;
-import com.swiftwheelshubreactive.customer.util.AssertionUtils;
+import com.swiftwheelshubreactive.customer.util.AssertionUtil;
 import com.swiftwheelshubreactive.customer.util.TestData;
 import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
@@ -115,7 +115,7 @@ class KeycloakUserServiceTest {
 
         UserInfo user = keycloakUserService.findUserByUsername("user");
 
-        AssertionUtils.assertUserDetails(userRepresentation, user);
+        AssertionUtil.assertUserDetails(userRepresentation, user);
     }
 
     @Test
@@ -144,7 +144,7 @@ class KeycloakUserServiceTest {
 
         UserInfo currentUser = keycloakUserService.getCurrentUser("user");
 
-        AssertionUtils.assertUserDetails(userRepresentation, currentUser);
+        AssertionUtil.assertUserDetails(userRepresentation, currentUser);
 
         verify(customerMapper).mapUserToUserInfo(any(UserRepresentation.class));
     }
@@ -204,7 +204,7 @@ class KeycloakUserServiceTest {
 
             RegistrationResponse registrationResponse = keycloakUserService.registerCustomer(registerRequest);
 
-            AssertionUtils.assertRegistrationResponse(registerRequest, registrationResponse);
+            AssertionUtil.assertRegistrationResponse(registerRequest, registrationResponse);
 
             verify(customerMapper).mapToRegistrationResponse(any(UserRepresentation.class));
         }
@@ -248,7 +248,7 @@ class KeycloakUserServiceTest {
 
         UserInfo userInfo = keycloakUserService.updateUser("user", userUpdateRequest);
 
-        AssertionUtils.assertUserDetails(userUpdateRequest, userInfo);
+        AssertionUtil.assertUserDetails(userUpdateRequest, userInfo);
     }
 
     @Test

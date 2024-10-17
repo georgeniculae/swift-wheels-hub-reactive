@@ -51,4 +51,6 @@ public class Booking {
 
     private ObjectId returnBranchId;
 
+    private BookingState bookingState;
+
 }

@@ -9,5 +9,6 @@
   "dateTo": "2099-02-22",
   "rentalCarPrice": 500,
   "amount": 500,
-  "rentalBranchId": "64f361caf291ae086e179547"
+  "rentalBranchId": "64f361caf291ae086e179547",
+  "bookingState" : "CREATED"
 }

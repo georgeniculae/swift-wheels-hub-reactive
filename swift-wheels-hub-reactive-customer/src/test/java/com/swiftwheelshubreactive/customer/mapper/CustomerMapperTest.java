@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.customer.mapper;
 
-import com.swiftwheelshubreactive.customer.util.AssertionUtils;
+import com.swiftwheelshubreactive.customer.util.AssertionUtil;
 import com.swiftwheelshubreactive.customer.util.TestData;
 import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
@@ -25,7 +25,7 @@ class CustomerMapperTest {
 
         UserRepresentation userRepresentation = customerMapper.mapToUserRepresentation(userUpdateRequest);
 
-        AssertionUtils.assertUserRepresentation(userUpdateRequest, userRepresentation);
+        AssertionUtil.assertUserRepresentation(userUpdateRequest, userRepresentation);
     }
 
     @Test
@@ -39,7 +39,7 @@ class CustomerMapperTest {
 
         UserInfo userInfo = customerMapper.mapUserToUserInfo(userRepresentation);
 
-        AssertionUtils.assertUserDetails(userRepresentation, userInfo);
+        AssertionUtil.assertUserDetails(userRepresentation, userInfo);
     }
 
     @Test
@@ -53,7 +53,7 @@ class CustomerMapperTest {
 
         RegistrationResponse registrationResponse = customerMapper.mapToRegistrationResponse(userRepresentation);
 
-        AssertionUtils.assertRegistrationResponse(userRepresentation, registrationResponse);
+        AssertionUtil.assertRegistrationResponse(userRepresentation, registrationResponse);
     }
 
     @Test

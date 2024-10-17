@@ -42,15 +42,20 @@ public class OutboxService {
     }
 
     @Transactional
-    public Mono<Outbox> saveBookingAndOutbox(Booking booking, Outbox.Operation operation) {
-        return bookingRepository.save(booking)
+    public Mono<Booking> saveBookingAndOutbox(Booking booking, Outbox.Operation operation) {
+        return bookingRepository.save(getUpdatedBooking(booking))
                 .flatMap(savedBooking -> saveOutbox(savedBooking, operation));
     }
 
     @Transactional
-    public Mono<List<String>> processBookingDeletion(List<Booking> bookings, Outbox.Operation operation) {
+    public Mono<Void> processBookingDeletion(List<Booking> bookings, Outbox.Operation operation) {
         return bookingRepository.deleteAllById(getBookingsIds(bookings))
-                .then(Mono.defer(() -> handleOutboxes(bookings, operation)));
+                .then(Mono.defer(() -> handleOutboxes(bookings, operation)))
+                .then();
+    }
+
+    private Booking getUpdatedBooking(Booking booking) {
+        return bookingMapper.createSuccessfulBooking(booking);
     }
 
     private List<ObjectId> getBookingsIds(List<Booking> bookings) {
@@ -59,10 +64,9 @@ public class OutboxService {
                 .toList();
     }
 
-    private Mono<Outbox> saveOutbox(Booking savedBooking, Outbox.Operation operation) {
-        Outbox outbox = createOutbox(savedBooking, operation);
-
-        return outboxRepository.save(outbox);
+    private Mono<Booking> saveOutbox(Booking savedBooking, Outbox.Operation operation) {
+        return outboxRepository.save(createOutbox(savedBooking, operation))
+                .map(Outbox::getContent);
     }
 
     private Mono<List<String>> handleOutboxes(List<Booking> bookings, Outbox.Operation operation) {

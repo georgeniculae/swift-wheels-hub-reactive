@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.expense.mapper;
 
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.expense.util.AssertionUtils;
+import com.swiftwheelshubreactive.expense.util.AssertionUtil;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Invoice;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class InvoiceMapperTest {
         InvoiceResponse invoiceResponse = invoiceMapper.mapEntityToDto(invoice);
 
         assertNotNull(invoiceResponse);
-        AssertionUtils.assertInvoiceResponse(invoice, invoiceResponse);
+        AssertionUtil.assertInvoiceResponse(invoice, invoiceResponse);
     }
 
     @Test
@@ -34,7 +34,7 @@ class InvoiceMapperTest {
         Invoice invoice = invoiceMapper.mapDtoToEntity(invoiceRequest);
 
         assertNotNull(invoice);
-        AssertionUtils.assertInvoiceRequest(invoice, invoiceRequest);
+        AssertionUtil.assertInvoiceRequest(invoice, invoiceRequest);
     }
 
 }

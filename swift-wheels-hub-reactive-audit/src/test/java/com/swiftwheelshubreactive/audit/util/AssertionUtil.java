@@ -5,7 +5,7 @@ import com.swiftwheelshubreactive.model.BookingAuditLogInfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AssertionUtils {
+public class AssertionUtil {
 
     public static void assertAuditLogInfo(BookingAuditLogInfo bookingAuditLogInfo, AuditLogInfoRequest auditLogInfoRequest) {
         assertEquals(bookingAuditLogInfo.getMethodName(), auditLogInfoRequest.methodName());

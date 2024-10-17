@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -373,7 +374,7 @@ import java.lang.annotation.Target;
                                                 responseCode = "200",
                                                 description = "Successful",
                                                 content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = CarResponse.class)),
+                                                        array = @ArraySchema(schema = @Schema(implementation = StatusUpdateResponse.class)),
                                                         mediaType = MediaType.APPLICATION_JSON_VALUE
                                                 )
                                         ),
@@ -402,7 +403,7 @@ import java.lang.annotation.Target;
                                                 responseCode = "200",
                                                 description = "Successful",
                                                 content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = CarResponse.class)),
+                                                        array = @ArraySchema(schema = @Schema(implementation = StatusUpdateResponse.class)),
                                                         mediaType = MediaType.APPLICATION_JSON_VALUE
                                                 )
                                         ),
@@ -448,7 +449,7 @@ import java.lang.annotation.Target;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = CarResponse.class))
+                                                content = @Content(schema = @Schema(implementation = StatusUpdateResponse.class))
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",

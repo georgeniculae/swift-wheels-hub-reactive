@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
-import com.swiftwheelshubreactive.agency.util.AssertionUtils;
+import com.swiftwheelshubreactive.agency.util.AssertionUtil;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.dto.RentalOfficeRequest;
 import com.swiftwheelshubreactive.dto.RentalOfficeResponse;
@@ -24,7 +24,7 @@ class RentalOfficeMapperTest {
         RentalOfficeResponse rentalOfficeDto = rentalOfficeMapper.mapEntityToDto(rentalOffice);
 
         assertNotNull(rentalOfficeDto);
-        AssertionUtils.assertRentalOfficeResponse(rentalOffice, rentalOfficeDto);
+        AssertionUtil.assertRentalOfficeResponse(rentalOffice, rentalOfficeDto);
     }
 
     @Test
@@ -40,7 +40,7 @@ class RentalOfficeMapperTest {
         RentalOffice rentalOffice = rentalOfficeMapper.mapDtoToEntity(rentalOfficeDto);
 
         assertNotNull(rentalOffice);
-        AssertionUtils.assertRentalOfficeRequest(rentalOffice, rentalOfficeDto);
+        AssertionUtil.assertRentalOfficeRequest(rentalOffice, rentalOfficeDto);
     }
 
     @Test

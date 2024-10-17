@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
@@ -42,19 +43,19 @@ public class CarService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<Void> changeCarStatus(AuthenticationInfo authenticationInfo, String carId, CarState carState) {
+    public Mono<StatusUpdateResponse> changeCarStatus(AuthenticationInfo authenticationInfo, String carId, CarState carState) {
         return webClient.patch()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status?carState={carState}", carId, carState)
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(StatusUpdateResponse.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorMap(this::handleException);
+                .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
 
-    public Mono<Void> updateCarWhenBookingIsFinished(AuthenticationInfo authenticationInfo, CarUpdateDetails carUpdateDetails) {
+    public Mono<StatusUpdateResponse> updateCarWhenBookingIsFinished(AuthenticationInfo authenticationInfo, CarUpdateDetails carUpdateDetails) {
         return webClient.put()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
@@ -62,12 +63,12 @@ public class CarService {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(StatusUpdateResponse.class)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorMap(this::handleException);
+                .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
 
-    public Mono<Void> updateCarsStatus(AuthenticationInfo authenticationInfo, List<UpdateCarRequest> updateCarRequests) {
+    public Mono<StatusUpdateResponse> updateCarsStatus(AuthenticationInfo authenticationInfo, List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + "update-statuses")
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
@@ -75,10 +76,32 @@ public class CarService {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(updateCarRequests)
                 .retrieve()
-                .bodyToFlux(CarResponse.class)
+                .bodyToFlux(StatusUpdateResponse.class)
+                .collectList()
+                .flatMap(this::checkCarsUpdateResponse)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .then()
                 .onErrorMap(this::handleException);
+    }
+
+    private StatusUpdateResponse getCarUpdateResponse() {
+        return StatusUpdateResponse.builder()
+                .isUpdateSuccessful(false)
+                .build();
+    }
+
+    private boolean checkIfBothCarsWereSuccessfullyUpdated(List<StatusUpdateResponse> statusUpdateResponses) {
+        return statusUpdateResponses.stream()
+                .allMatch(StatusUpdateResponse::isUpdateSuccessful);
+    }
+
+    private Mono<StatusUpdateResponse> checkCarsUpdateResponse(List<StatusUpdateResponse> statusUpdateResponses) {
+        boolean successful = checkIfBothCarsWereSuccessfullyUpdated(statusUpdateResponses);
+
+        StatusUpdateResponse statusUpdateResponse = StatusUpdateResponse.builder()
+                .isUpdateSuccessful(successful)
+                .build();
+
+        return Mono.just(statusUpdateResponse);
     }
 
     private RuntimeException handleException(Throwable e) {

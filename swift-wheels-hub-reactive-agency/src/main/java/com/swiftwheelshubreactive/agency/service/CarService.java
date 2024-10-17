@@ -10,6 +10,7 @@ import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
@@ -177,7 +178,7 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> updateCarStatus(String id, CarState carState) {
+    public Mono<StatusUpdateResponse> updateCarStatus(String id, CarState carState) {
         return findEntityById(id)
                 .map(existingCar -> {
                     Car car = carMapper.getNewCarInstance(existingCar);
@@ -186,15 +187,15 @@ public class CarService {
                     return car;
                 })
                 .flatMap(carRepository::save)
-                .map(carMapper::mapEntityToDto)
-                .onErrorMap(e -> {
-                    log.error("Error while updating car status cars: {}", e.getMessage());
+                .map(_ -> createUpdateStatusResponse())
+                .onErrorResume(e -> {
+                    log.error("Error while updating car {} status: {}", id, e.getMessage());
 
-                    return ExceptionUtil.handleException(e);
+                    return Mono.just(createFailedStatusResponse());
                 });
     }
 
-    public Flux<CarResponse> updateCarsStatus(List<UpdateCarRequest> updateCarRequests) {
+    public Flux<StatusUpdateResponse> updateCarsStatus(List<UpdateCarRequest> updateCarRequests) {
         return carRepository.findAllById(getCarIds(updateCarRequests))
                 .map(existingCar -> {
                     Car car = carMapper.getNewCarInstance(existingCar);
@@ -204,7 +205,12 @@ public class CarService {
                 })
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
-                .map(carMapper::mapEntityToDto);
+                .map(_ -> createUpdateStatusResponse())
+                .onErrorResume(e -> {
+                    log.error("Error while updating cars statuses: {}", e.getMessage());
+
+                    return Mono.just(createFailedStatusResponse());
+                });
     }
 
     public Mono<Void> deleteCarById(String id) {
@@ -226,14 +232,14 @@ public class CarService {
 
     }
 
-    public Mono<CarResponse> updateCarWhenBookingIsClosed(String id, CarUpdateDetails carUpdateDetails) {
+    public Mono<StatusUpdateResponse> updateCarWhenBookingIsClosed(String id, CarUpdateDetails carUpdateDetails) {
         return setupFinalCarDetails(id, carUpdateDetails)
                 .flatMap(carRepository::save)
-                .map(carMapper::mapEntityToDto)
-                .onErrorMap(e -> {
+                .map(_ -> createUpdateStatusResponse())
+                .onErrorResume(e -> {
                     log.error("Error while updating car: {}", e.getMessage());
 
-                    return ExceptionUtil.handleException(e);
+                    return Mono.just(createFailedStatusResponse());
                 });
     }
 
@@ -245,6 +251,18 @@ public class CarService {
                     return ExceptionUtil.handleException(e);
                 })
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Car with id " + id + " does not exist")));
+    }
+
+    private StatusUpdateResponse createUpdateStatusResponse() {
+        return StatusUpdateResponse.builder()
+                .isUpdateSuccessful(true)
+                .build();
+    }
+
+    private StatusUpdateResponse createFailedStatusResponse() {
+        return StatusUpdateResponse.builder()
+                .isUpdateSuccessful(false)
+                .build();
     }
 
     private Mono<CarRequest> getCarRequest(Part carRequestAsPart) {
