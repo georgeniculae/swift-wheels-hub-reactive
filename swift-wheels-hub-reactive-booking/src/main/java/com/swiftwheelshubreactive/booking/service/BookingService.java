@@ -171,7 +171,7 @@ public class BookingService {
     public Mono<BookingResponse> closeBooking(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails) {
         return updatedBookingWithEmployeeDetails(authenticationInfo, bookingClosingDetails)
                 .flatMap(bookingRepository::save)
-                .flatMap(pendingSavedBooking -> processBookingDependingOnCarUpdateSuccess(authenticationInfo, bookingClosingDetails, pendingSavedBooking))
+                .flatMap(pendingSavedBooking -> processBookingAfterCarUpdate(authenticationInfo, bookingClosingDetails, pendingSavedBooking))
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
@@ -291,7 +291,9 @@ public class BookingService {
         return Mono.defer(() -> bookingRepository.save(bookingMapper.createFailedBooking(pendingUpdatedBooking)));
     }
 
-    private Mono<Booking> processBookingDependingOnCarUpdateSuccess(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails, Booking pendingSavedBooking) {
+    private Mono<Booking> processBookingAfterCarUpdate(AuthenticationInfo authenticationInfo,
+                                                       BookingClosingDetails bookingClosingDetails,
+                                                       Booking pendingSavedBooking) {
         return updateCarWhenBookingIsClosed(authenticationInfo, pendingSavedBooking, bookingClosingDetails)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .flatMap(_ -> outboxService.saveBookingAndOutbox(pendingSavedBooking, Outbox.Operation.UPDATE))

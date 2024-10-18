@@ -26,9 +26,6 @@ public interface BookingMapper {
     @Mapping(target = "bookingState", constant = "SAVED")
     Booking createSuccessfulBooking(Booking booking);
 
-    @Mapping(target = "bookingState", constant = "UPDATED")
-    Booking createUpdatedBooking(Booking booking);
-
     @Mapping(target = "bookingState", constant = "FAILED")
     Booking createFailedBooking(Booking pendingBooking);
 
