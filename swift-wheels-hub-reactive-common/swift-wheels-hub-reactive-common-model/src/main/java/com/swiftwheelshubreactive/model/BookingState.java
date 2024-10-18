@@ -2,10 +2,10 @@ package com.swiftwheelshubreactive.model;
 
 public enum BookingState {
 
-    PENDING,
-    CREATED,
-    UPDATED,
-    SAVED,
+    CLOSING,
+    CREATING,
+    UPDATING,
+    SAVING,
     FAILED
 
 }
