@@ -23,7 +23,7 @@ public interface BookingMapper {
 
     Booking getNewBookingInstance(Booking booking);
 
-    @Mapping(target = "bookingState", constant = "SAVING")
+    @Mapping(target = "bookingState", constant = "SAVED")
     Booking createSuccessfulBooking(Booking booking);
 
     @Mapping(target = "bookingState", constant = "FAILED")

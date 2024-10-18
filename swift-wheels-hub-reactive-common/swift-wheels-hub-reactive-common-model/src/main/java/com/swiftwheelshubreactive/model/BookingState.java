@@ -5,7 +5,7 @@ public enum BookingState {
     CLOSING,
     CREATING,
     UPDATING,
-    SAVING,
+    SAVED,
     FAILED
 
 }
