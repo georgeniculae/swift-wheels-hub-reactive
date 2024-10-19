@@ -10,6 +10,10 @@ import reactor.core.publisher.Mono;
 public interface BookingRepository extends ReactiveMongoRepository<Booking, ObjectId> {
 
     @Query("""
+            { 'status': 'FAILED' }""")
+    Flux<Booking> findAllFailedBookings();
+
+    @Query("""
             { 'customerUsername': ?0 }""")
     Flux<Booking> findByCustomerUsername(String customerUsername);
 

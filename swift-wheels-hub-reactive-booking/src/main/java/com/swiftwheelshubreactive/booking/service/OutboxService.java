@@ -43,7 +43,7 @@ public class OutboxService {
 
     @Transactional
     public Mono<Booking> saveBookingAndOutbox(Booking booking, Outbox.Operation operation) {
-        return bookingRepository.save(getUpdatedBooking(booking))
+        return bookingRepository.save(booking)
                 .flatMap(savedBooking -> saveOutbox(savedBooking, operation));
     }
 
@@ -52,10 +52,6 @@ public class OutboxService {
         return bookingRepository.deleteAllById(getBookingsIds(bookings))
                 .then(Mono.defer(() -> handleOutboxes(bookings, operation)))
                 .then();
-    }
-
-    private Booking getUpdatedBooking(Booking booking) {
-        return bookingMapper.createSuccessfulBooking(booking);
     }
 
     private List<ObjectId> getBookingsIds(List<Booking> bookings) {

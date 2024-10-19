@@ -122,7 +122,7 @@ public class CarHandler {
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @PreAuthorize("hasRole('user')")
+    @PreAuthorize("hasAnyRole('user', 'booking_service')")
     public Mono<ServerResponse> updateCarStatus(ServerRequest serverRequest) {
         return carService.updateCarStatus(
                         serverRequest.pathVariable(ID),
@@ -131,7 +131,7 @@ public class CarHandler {
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @PreAuthorize("hasRole('user')")
+    @PreAuthorize("hasAnyRole('user', 'booking_service')")
     public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CarUpdateDetails.class)
                 .flatMap(carUpdateDetailsValidator::validateBody)
@@ -143,8 +143,8 @@ public class CarHandler {
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
     }
 
-    @PreAuthorize("hasRole('user')")
-    public Mono<ServerResponse> updateCarsStatus(ServerRequest serverRequest) {
+    @PreAuthorize("hasAnyRole('user', 'booking_service')")
+    public Mono<ServerResponse> updateCarsStatuses(ServerRequest serverRequest) {
         return serverRequest.bodyToFlux(UpdateCarRequest.class)
                 .flatMap(updateCarRequestValidator::validateBody)
                 .collectList()

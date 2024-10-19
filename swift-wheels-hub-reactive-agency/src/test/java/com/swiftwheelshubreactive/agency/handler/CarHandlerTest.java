@@ -340,7 +340,7 @@ class CarHandlerTest {
     }
 
     @Test
-    void updateCarsStatusTest_success() {
+    void updateCarsStatusesTest_success() {
         StatusUpdateResponse statusUpdateResponse =
                 TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
 
@@ -354,7 +354,7 @@ class CarHandlerTest {
         when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
         when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(statusUpdateResponse));
 
-        StepVerifier.create(carHandler.updateCarsStatus(serverRequest))
+        StepVerifier.create(carHandler.updateCarsStatuses(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

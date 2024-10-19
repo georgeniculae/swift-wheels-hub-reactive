@@ -23,11 +23,23 @@ public interface BookingMapper {
 
     Booking getNewBookingInstance(Booking booking);
 
-    @Mapping(target = "bookingState", constant = "SAVED")
-    Booking createSuccessfulBooking(Booking booking);
+    @Mapping(target = "bookingProcessState", constant = "SAVED_CREATED_BOOKING")
+    Booking createSuccessfulCreatedBooking(Booking booking);
 
-    @Mapping(target = "bookingState", constant = "FAILED")
-    Booking createFailedBooking(Booking pendingBooking);
+    @Mapping(target = "bookingProcessState", constant = "SAVED_UPDATED_BOOKING")
+    Booking createSuccessfulUpdatedBooking(Booking booking);
+
+    @Mapping(target = "bookingProcessState", constant = "SAVED_CLOSED_BOOKING")
+    Booking createSuccessfulClosedBooking(Booking booking);
+
+    @Mapping(target = "bookingProcessState", constant = "FAILED_CREATED_BOOKING")
+    Booking createFailedCreatedBooking(Booking pendingBooking);
+
+    @Mapping(target = "bookingProcessState", constant = "FAILED_UPDATED_BOOKING")
+    Booking createFailedUpdatedBooking(Booking pendingBooking);
+
+    @Mapping(target = "bookingProcessState", constant = "FAILED_CLOSED_BOOKING")
+    Booking createFailedClosedBooking(Booking pendingBooking);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

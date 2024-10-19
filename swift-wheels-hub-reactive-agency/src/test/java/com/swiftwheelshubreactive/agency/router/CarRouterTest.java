@@ -572,7 +572,7 @@ class CarRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
-        when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(carHandler.updateCarsStatuses(any(ServerRequest.class))).thenReturn(serverResponse);
 
         Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
@@ -596,7 +596,7 @@ class CarRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
-        when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(carHandler.updateCarsStatuses(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
                 .put()
@@ -614,7 +614,7 @@ class CarRouterTest {
 
         Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
 
-        when(carHandler.updateCarsStatus(any(ServerRequest.class))).thenReturn(serverResponse);
+        when(carHandler.updateCarsStatuses(any(ServerRequest.class))).thenReturn(serverResponse);
 
         webTestClient.put()
                 .uri(PATH + "/update-statuses")
