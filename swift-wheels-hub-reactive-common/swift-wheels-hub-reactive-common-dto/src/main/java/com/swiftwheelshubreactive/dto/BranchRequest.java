@@ -18,8 +18,8 @@ public record BranchRequest(
     @Override
     public String toString() {
         return "BranchRequest{" + "\n" +
-                ", name='" + name + "\n" +
-                ", address='" + address + "\n" +
+                ", name=" + name + "\n" +
+                ", address=" + address + "\n" +
                 ", rentalOfficeId=" + rentalOfficeId + "\n" +
                 "}";
     }

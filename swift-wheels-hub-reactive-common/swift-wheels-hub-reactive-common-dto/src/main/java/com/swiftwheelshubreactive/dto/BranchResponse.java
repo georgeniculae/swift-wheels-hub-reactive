@@ -21,8 +21,8 @@ public record BranchResponse(
     public String toString() {
         return "BranchResponse{" + "\n" +
                 "id=" + id + "\n" +
-                ", name='" + name + "\n" +
-                ", address='" + address + "\n" +
+                ", name=" + name + "\n" +
+                ", address=" + address + "\n" +
                 ", rentalOfficeId=" + rentalOfficeId + "\n" +
                 "}";
     }

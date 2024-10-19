@@ -44,11 +44,11 @@ public record CarResponse(
     public String toString() {
         return "CarResponse{" + "\n" +
                 "id=" + id +
-                "make='" + make + "\n" +
-                "model='" + model + "\n" +
+                "make=" + make + "\n" +
+                "model=" + model + "\n" +
                 "bodyCategory=" + bodyCategory + "\n" +
                 "yearOfProduction=" + yearOfProduction + "\n" +
-                "color='" + color + "\n" +
+                "color=" + color + "\n" +
                 "mileage=" + mileage + "\n" +
                 "carState=" + carState + "\n" +
                 "amount=" + amount + "\n" +

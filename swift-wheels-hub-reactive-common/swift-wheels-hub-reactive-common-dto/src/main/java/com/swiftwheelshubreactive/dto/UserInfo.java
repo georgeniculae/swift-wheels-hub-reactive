@@ -32,10 +32,10 @@ public record UserInfo(
     public String toString() {
         return "RegisterRequest{" +
                 "username='" + username + "\n" +
-                "email='" + email + "\n" +
-                "firstName='" + firstName + "\n" +
-                "lastName='" + lastName + "\n" +
-                "address='" + address + "\n" +
+                "email=" + email + "\n" +
+                "firstName=" + firstName + "\n" +
+                "lastName=" + lastName + "\n" +
+                "address=" + address + "\n" +
                 "dateOfBirth=" + dateOfBirth + "\n" +
                 "}";
     }

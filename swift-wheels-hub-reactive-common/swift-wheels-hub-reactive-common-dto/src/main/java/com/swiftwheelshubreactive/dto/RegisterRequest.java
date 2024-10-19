@@ -34,12 +34,12 @@ public record RegisterRequest(
     @Override
     public String toString() {
         return "RegisterRequest{" +
-                "username='" + username + "\n" +
-                "password='" + password + "\n" +
-                "firstName='" + firstName + "\n" +
-                "lastName='" + lastName + "\n" +
-                "email='" + email + "\n" +
-                "address='" + address + "\n" +
+                "username=" + username + "\n" +
+                "password=" + password + "\n" +
+                "firstName=" + firstName + "\n" +
+                "lastName=" + lastName + "\n" +
+                "email=" + email + "\n" +
+                "address=" + address + "\n" +
                 "dateOfBirth=" + dateOfBirth + "\n" +
                 "needsEmailVerification=" + needsEmailVerification + "\n" +
                 "}";

@@ -41,8 +41,8 @@ public record InvoiceResponse(
     public String toString() {
         return "InvoiceResponse{" + "\n" +
                 "id=" + id + "\n" +
-                "customerUsername='" + customerUsername + "\n" +
-                "customerEmail='" + customerEmail + "\n" +
+                "customerUsername=" + customerUsername + "\n" +
+                "customerEmail=" + customerEmail + "\n" +
                 "carId=" + carId + "\n" +
                 "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +
@@ -51,7 +51,7 @@ public record InvoiceResponse(
                 "damageCost=" + damageCost + "\n" +
                 "additionalPayment=" + additionalPayment + "\n" +
                 "totalAmount=" + totalAmount + "\n" +
-                "comments='" + comments + "\n" +
+                "comments=" + comments + "\n" +
                 "}";
     }
 

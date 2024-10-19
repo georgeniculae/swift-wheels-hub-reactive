@@ -43,11 +43,11 @@ public record ExcelCarRequest(
     @Override
     public String toString() {
         return "ExcelCarRequest{" + "\n" +
-                "make='" + make + "\n" +
-                "model='" + model + "\n" +
+                "make=" + make + "\n" +
+                "model=" + model + "\n" +
                 "bodyCategory=" + bodyCategory + "\n" +
                 "yearOfProduction=" + yearOfProduction + "\n" +
-                "color='" + color + "\n" +
+                "color=" + color + "\n" +
                 "mileage=" + mileage + "\n" +
                 "carState=" + carState + "\n" +
                 "amount=" + amount + "\n" +

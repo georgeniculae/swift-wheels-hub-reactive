@@ -21,9 +21,9 @@ public record RentalOfficeResponse(
     public String toString() {
         return "RentalOfficeResponse{" + "\n" +
                 "id=" + id + "\n" +
-                "name='" + name + "\n" +
-                "contactAddress='" + contactAddress + "\n" +
-                "phoneNumber='" + phoneNumber + "\n" +
+                "name=" + name + "\n" +
+                "contactAddress=" + contactAddress + "\n" +
+                "phoneNumber=" + phoneNumber + "\n" +
                 "}";
     }
 

@@ -24,9 +24,9 @@ public record EmployeeResponse(
     public String toString() {
         return "EmployeeResponse{" + "\n" +
                 "id=" + id + "\n" +
-                "firstName='" + firstName + "\n" +
-                "lastName='" + lastName + "\n" +
-                "jobPosition='" + jobPosition + "\n" +
+                "firstName=" + firstName + "\n" +
+                "lastName=" + lastName + "\n" +
+                "jobPosition=" + jobPosition + "\n" +
                 "workingBranchId=" + workingBranchId + "\n" +
                 "}";
     }

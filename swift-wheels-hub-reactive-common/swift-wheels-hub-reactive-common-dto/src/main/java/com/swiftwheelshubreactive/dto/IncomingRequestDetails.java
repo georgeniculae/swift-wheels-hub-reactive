@@ -25,7 +25,7 @@ public record IncomingRequestDetails(
         return "IncomingRequestDetails{" + "\n" +
                 "path=" + path + "\n" +
                 "method=" + method + "\n" +
-                "headers='" + headers + "\n" +
+                "headers=" + headers + "\n" +
                 "queryParams=" + queryParams + "\n" +
                 "body=" + body + "\n" +
                 "}";

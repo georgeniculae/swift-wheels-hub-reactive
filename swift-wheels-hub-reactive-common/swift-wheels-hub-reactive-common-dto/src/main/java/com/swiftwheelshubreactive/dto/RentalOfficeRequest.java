@@ -18,9 +18,9 @@ public record RentalOfficeRequest(
     @Override
     public String toString() {
         return "RentalOfficeRequest{" + "\n" +
-                "name='" + name + "\n" +
-                "contactAddress='" + contactAddress + "\n" +
-                "phoneNumber='" + phoneNumber + "\n" +
+                "name=" + name + "\n" +
+                "contactAddress=" + contactAddress + "\n" +
+                "phoneNumber=" + phoneNumber + "\n" +
                 "}";
     }
 

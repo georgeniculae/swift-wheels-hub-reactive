@@ -21,9 +21,9 @@ public record EmployeeRequest(
     @Override
     public String toString() {
         return "EmployeeRequest{" + "\n" +
-                "firstName='" + firstName + "\n" +
-                "lastName='" + lastName + "\n" +
-                "jobPosition='" + jobPosition + "\n" +
+                "firstName=" + firstName + "\n" +
+                "lastName=" + lastName + "\n" +
+                "jobPosition=" + jobPosition + "\n" +
                 "workingBranchId=" + workingBranchId + "\n" +
                 "}";
     }
