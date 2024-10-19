@@ -214,7 +214,7 @@ public class BookingService {
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.createSuccessfulBooking(pendingBooking))
                 .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
-                .switchIfEmpty(saveBookingAfterCarsStatusUpdateFailed(pendingBooking));
+                .switchIfEmpty(saveBookingAfterCarsStatusesUpdateFailed(pendingBooking));
     }
 
     private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
@@ -276,7 +276,7 @@ public class BookingService {
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.createSuccessfulBooking(pendingUpdatedBooking))
                 .flatMap(updatedBooking -> outboxService.saveBookingAndOutbox(updatedBooking, Outbox.Operation.UPDATE))
-                .switchIfEmpty(saveBookingAfterCarsStatusUpdateFailed(pendingUpdatedBooking));
+                .switchIfEmpty(saveBookingAfterCarsStatusesUpdateFailed(pendingUpdatedBooking));
     }
 
     private Mono<Booking> handleBookingWhenCarIsUnchanged(BookingRequest updatedBookingRequest, Booking existingBooking) {
@@ -287,7 +287,7 @@ public class BookingService {
         );
     }
 
-    private Mono<Booking> saveBookingAfterCarsStatusUpdateFailed(Booking pendingUpdatedBooking) {
+    private Mono<Booking> saveBookingAfterCarsStatusesUpdateFailed(Booking pendingUpdatedBooking) {
         return Mono.defer(() -> bookingRepository.save(bookingMapper.createFailedBooking(pendingUpdatedBooking)));
     }
 
@@ -296,8 +296,8 @@ public class BookingService {
                                                           Booking pendingSavedBooking) {
         return updateCarWhenBookingIsClosed(authenticationInfo, pendingSavedBooking, bookingClosingDetails)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
-                .flatMap(_ -> outboxService.saveBookingAndOutbox(pendingSavedBooking, Outbox.Operation.UPDATE))
-                .switchIfEmpty(saveBookingAfterCarsStatusUpdateFailed(pendingSavedBooking));
+                .flatMap(_ -> bookingRepository.save(bookingMapper.createSuccessfulBooking(pendingSavedBooking)))
+                .switchIfEmpty(saveBookingAfterCarsStatusesUpdateFailed(pendingSavedBooking));
     }
 
     private Mono<StatusUpdateResponse> updateCarWhenBookingIsClosed(AuthenticationInfo authenticationInfo,

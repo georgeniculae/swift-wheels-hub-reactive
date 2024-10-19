@@ -311,8 +311,6 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(updatedClosedBooking));
         when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(statusUpdateResponse));
-        when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
-                .thenReturn(Mono.just(updatedClosedBooking));
 
         StepVerifier.create(bookingService.closeBooking(authenticationInfo, bookingClosingDetails))
                 .expectNext(closedBookingResponse)
