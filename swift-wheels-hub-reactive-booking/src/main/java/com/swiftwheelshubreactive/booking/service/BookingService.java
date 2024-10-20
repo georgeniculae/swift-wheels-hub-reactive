@@ -20,7 +20,7 @@ import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Booking;
-import com.swiftwheelshubreactive.model.BookingProcessState;
+import com.swiftwheelshubreactive.model.BookingProcessStatus;
 import com.swiftwheelshubreactive.model.BookingStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -254,7 +254,7 @@ public class BookingService {
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
                     updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
-                    updatedBooking.setBookingProcessState(BookingProcessState.CLOSING);
+                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.CLOSING);
 
                     return updatedBooking;
                 });
@@ -373,7 +373,7 @@ public class BookingService {
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
         newBooking.setAmount(getAmount(newBooking.getDateFrom(), newBooking.getDateTo(), amount));
         newBooking.setRentalCarPrice(amount);
-        newBooking.setBookingProcessState(BookingProcessState.CREATING);
+        newBooking.setBookingProcessStatus(BookingProcessStatus.CREATING);
 
         return newBooking;
     }
@@ -387,7 +387,7 @@ public class BookingService {
         updatedBooking.setDateFrom(dateFrom);
         updatedBooking.setDateTo(dateTo);
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, existingBooking.getRentalCarPrice()));
-        updatedBooking.setBookingProcessState(BookingProcessState.UPDATING);
+        updatedBooking.setBookingProcessStatus(BookingProcessStatus.UPDATING);
 
         return updatedBooking;
     }
@@ -407,7 +407,7 @@ public class BookingService {
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedBooking.setRentalCarPrice(amount);
-        updatedBooking.setBookingProcessState(BookingProcessState.UPDATING);
+        updatedBooking.setBookingProcessStatus(BookingProcessStatus.UPDATING);
 
         return updatedBooking;
     }

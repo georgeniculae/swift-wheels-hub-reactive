@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.model;
 
-public enum BookingProcessState {
+public enum BookingProcessStatus {
 
     CREATING,
     UPDATING,

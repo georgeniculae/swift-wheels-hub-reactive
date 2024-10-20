@@ -9,7 +9,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.model.Booking;
-import com.swiftwheelshubreactive.model.BookingProcessState;
+import com.swiftwheelshubreactive.model.BookingProcessStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -62,11 +62,11 @@ public class FailedBookingScheduler {
     }
 
     private Mono<Booking> processFailedBooking(Booking failedBooking) {
-        if (BookingProcessState.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessState()) {
+        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
             return outboxService.saveBookingAndOutbox(bookingMapper.createSuccessfulCreatedBooking(failedBooking), Outbox.Operation.CREATE);
         }
 
-        if (BookingProcessState.FAILED_UPDATED_BOOKING == failedBooking.getBookingProcessState()) {
+        if (BookingProcessStatus.FAILED_UPDATED_BOOKING == failedBooking.getBookingProcessStatus()) {
             return outboxService.saveBookingAndOutbox(bookingMapper.createSuccessfulUpdatedBooking(failedBooking), Outbox.Operation.UPDATE);
         }
 
