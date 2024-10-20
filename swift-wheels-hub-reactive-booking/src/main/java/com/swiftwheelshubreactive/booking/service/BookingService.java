@@ -141,7 +141,7 @@ public class BookingService {
     public Mono<BookingResponse> saveBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
                 .flatMap(bookingRequest -> createNewBooking(authenticationInfo, newBookingRequest, bookingRequest))
-                .flatMap(this::saveCreatedBooking)
+                .flatMap(bookingRepository::save)
                 .flatMap(pendingBooking -> processCreatedBooking(authenticationInfo, pendingBooking))
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
@@ -197,10 +197,6 @@ public class BookingService {
                 });
     }
 
-    private Mono<Booking> saveCreatedBooking(Booking pendingBooking) {
-        return bookingRepository.save(pendingBooking);
-    }
-
     private Mono<Booking> createNewBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest, BookingRequest bookingRequest) {
         return Mono.zip(
                 carService.findAvailableCarById(authenticationInfo, bookingRequest.carId()),
@@ -210,11 +206,11 @@ public class BookingService {
     }
 
     private Mono<Booking> processCreatedBooking(AuthenticationInfo authenticationInfo, Booking pendingBooking) {
-        return setCarForNewBooking(authenticationInfo, pendingBooking)
+        return updateCarForNewBooking(authenticationInfo, pendingBooking)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
-                .map(_ -> bookingMapper.createSuccessfulCreatedBooking(pendingBooking))
+                .map(_ -> bookingMapper.getSuccessfulCreatedBooking(pendingBooking))
                 .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
-                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.createFailedCreatedBooking(pendingBooking)));
+                .switchIfEmpty(Mono.just(pendingBooking));
     }
 
     private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
@@ -254,7 +250,7 @@ public class BookingService {
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
                     updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
-                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.CLOSING);
+                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_CLOSING);
 
                     return updatedBooking;
                 });
@@ -276,7 +272,7 @@ public class BookingService {
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.createSuccessfulUpdatedBooking(pendingUpdatedBooking))
                 .flatMap(updatedBooking -> outboxService.saveBookingAndOutbox(updatedBooking, Outbox.Operation.UPDATE))
-                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.createFailedUpdatedBooking(pendingUpdatedBooking)));
+                .switchIfEmpty(Mono.just(pendingUpdatedBooking));
     }
 
     private Mono<Booking> handleBookingWhenCarIsUnchanged(BookingRequest updatedBookingRequest, Booking existingBooking) {
@@ -287,17 +283,13 @@ public class BookingService {
         );
     }
 
-    private Mono<Booking> saveBookingAfterFailedCarServiceResponse(Booking pendingUpdatedBooking) {
-        return Mono.defer(() -> bookingRepository.save(pendingUpdatedBooking));
-    }
-
     private Mono<Booking> processBookingWhenCarIsUpdated(AuthenticationInfo authenticationInfo,
                                                          BookingClosingDetails bookingClosingDetails,
                                                          Booking pendingSavedBooking) {
         return updateCarWhenBookingIsClosed(authenticationInfo, pendingSavedBooking, bookingClosingDetails)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .flatMap(_ -> bookingRepository.save(bookingMapper.createSuccessfulClosedBooking(pendingSavedBooking)))
-                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.createFailedClosedBooking(pendingSavedBooking)));
+                .switchIfEmpty(Mono.just(pendingSavedBooking));
     }
 
     private Mono<StatusUpdateResponse> updateCarWhenBookingIsClosed(AuthenticationInfo authenticationInfo,
@@ -312,7 +304,7 @@ public class BookingService {
         return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails);
     }
 
-    private Mono<StatusUpdateResponse> setCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
+    private Mono<StatusUpdateResponse> updateCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
         return carService.changeCarStatus(authenticationInfo, booking.getCarId().toString(), CarState.NOT_AVAILABLE);
     }
 
@@ -373,7 +365,7 @@ public class BookingService {
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
         newBooking.setAmount(getAmount(newBooking.getDateFrom(), newBooking.getDateTo(), amount));
         newBooking.setRentalCarPrice(amount);
-        newBooking.setBookingProcessStatus(BookingProcessStatus.CREATING);
+        newBooking.setBookingProcessStatus(BookingProcessStatus.IN_CREATION);
 
         return newBooking;
     }
@@ -406,7 +398,7 @@ public class BookingService {
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedBooking.setRentalCarPrice(amount);
-        updatedBooking.setBookingProcessStatus(BookingProcessStatus.UPDATING);
+        updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_UPDATE);
 
         return updatedBooking;
     }

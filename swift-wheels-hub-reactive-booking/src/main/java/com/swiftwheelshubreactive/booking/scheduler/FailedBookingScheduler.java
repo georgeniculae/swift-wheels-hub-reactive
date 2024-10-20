@@ -62,11 +62,11 @@ public class FailedBookingScheduler {
     }
 
     private Mono<Booking> processFailedBooking(Booking failedBooking) {
-        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
-            return outboxService.saveBookingAndOutbox(bookingMapper.createSuccessfulCreatedBooking(failedBooking), Outbox.Operation.CREATE);
+        if (BookingProcessStatus.IN_CREATION == failedBooking.getBookingProcessStatus()) {
+            return outboxService.saveBookingAndOutbox(bookingMapper.getSuccessfulCreatedBooking(failedBooking), Outbox.Operation.CREATE);
         }
 
-        if (BookingProcessStatus.FAILED_UPDATED_BOOKING == failedBooking.getBookingProcessStatus()) {
+        if (BookingProcessStatus.IN_UPDATE == failedBooking.getBookingProcessStatus()) {
             return outboxService.saveBookingAndOutbox(bookingMapper.createSuccessfulUpdatedBooking(failedBooking), Outbox.Operation.UPDATE);
         }
 

@@ -430,12 +430,8 @@ class BookingServiceTest {
         BookingRequest updatedBookingRequest =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
 
-        BookingResponse bookingResponse =
+        BookingResponse updatedBookingResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
-
-        BookingResponse updatedBookingResponse = bookingResponse.toBuilder()
-                .carId("64f361caf291ae086e179547")
-                .build();
 
         CarResponse carResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
