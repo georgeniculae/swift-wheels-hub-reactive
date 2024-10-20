@@ -187,6 +187,7 @@ public class BookingService {
     public Mono<Void> deleteBookingByCustomerUsername(String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .collectList()
+
                 .filter(this::checkIfThereIsNoBookingInProgress)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("There are bookings in progress")))
                 .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
