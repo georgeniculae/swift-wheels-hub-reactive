@@ -209,7 +209,7 @@ public class BookingService {
         return updateCarForNewBooking(authenticationInfo, pendingBooking)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.getSuccessfulCreatedBooking(pendingBooking))
-                .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
+                .flatMap(booking -> outboxService.processBookingSaving(booking, Outbox.Operation.CREATE))
                 .switchIfEmpty(Mono.just(pendingBooking));
     }
 
@@ -271,7 +271,7 @@ public class BookingService {
                 .flatMap(savedUpdatedBooking -> changeCarsStatuses(authenticationInfo, savedUpdatedBooking, existingBooking))
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.getSuccessfulUpdatedBooking(pendingUpdatedBooking))
-                .flatMap(updatedBooking -> outboxService.saveBookingAndOutbox(updatedBooking, Outbox.Operation.UPDATE))
+                .flatMap(updatedBooking -> outboxService.processBookingSaving(updatedBooking, Outbox.Operation.UPDATE))
                 .switchIfEmpty(Mono.just(pendingUpdatedBooking));
     }
 
@@ -279,7 +279,7 @@ public class BookingService {
         return Mono.defer(
                 () -> Mono.just(getUpdatedExistingBooking(updatedBookingRequest, existingBooking))
                         .map(bookingMapper::getSuccessfulUpdatedBooking)
-                        .flatMap(booking -> outboxService.saveBookingAndOutbox(booking, Outbox.Operation.UPDATE))
+                        .flatMap(booking -> outboxService.processBookingSaving(booking, Outbox.Operation.UPDATE))
         );
     }
 

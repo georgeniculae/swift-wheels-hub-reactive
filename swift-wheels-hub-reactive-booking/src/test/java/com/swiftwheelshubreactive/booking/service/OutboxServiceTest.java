@@ -89,7 +89,7 @@ class OutboxServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxRepository.save(any(Outbox.class))).thenReturn(Mono.just(outbox));
 
-        StepVerifier.create(outboxService.saveBookingAndOutbox(booking, Outbox.Operation.CREATE))
+        StepVerifier.create(outboxService.processBookingSaving(booking, Outbox.Operation.CREATE))
                 .expectNext(outbox.getContent())
                 .verifyComplete();
     }
@@ -108,7 +108,7 @@ class OutboxServiceTest {
     }
 
     @Test
-    void saveBookingAndOutboxTransactionalTest_successUpdateOperation() {
+    void processBookingSavingTransactionalTest_successUpdateOperation() {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.setOperation(Outbox.Operation.UPDATE);
 

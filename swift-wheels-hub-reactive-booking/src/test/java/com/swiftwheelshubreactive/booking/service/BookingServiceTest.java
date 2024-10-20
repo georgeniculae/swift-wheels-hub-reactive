@@ -207,7 +207,7 @@ class BookingServiceTest {
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(customerService.findUserByUsername(any(AuthenticationInfo.class))).thenReturn(Mono.just(userInfo));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
+        when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
         when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class)))
                 .thenReturn(Mono.just(statusUpdateResponse));
@@ -367,7 +367,7 @@ class BookingServiceTest {
                 .build();
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
+        when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", bookingRequest))
@@ -414,7 +414,7 @@ class BookingServiceTest {
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(outboxService.saveBookingAndOutbox(any(Booking.class), any(Outbox.Operation.class)))
+        when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
         when(carService.updateCarsStatus(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
 
