@@ -27,10 +27,10 @@ public interface BookingMapper {
     Booking getSuccessfulCreatedBooking(Booking booking);
 
     @Mapping(target = "bookingProcessStatus", constant = "SAVED_UPDATED_BOOKING")
-    Booking createSuccessfulUpdatedBooking(Booking booking);
+    Booking getSuccessfulUpdatedBooking(Booking booking);
 
     @Mapping(target = "bookingProcessStatus", constant = "SAVED_CLOSED_BOOKING")
-    Booking createSuccessfulClosedBooking(Booking booking);
+    Booking getSuccessfulClosedBooking(Booking booking);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

@@ -67,14 +67,14 @@ public class FailedBookingScheduler {
         }
 
         if (BookingProcessStatus.IN_UPDATE == failedBooking.getBookingProcessStatus()) {
-            return outboxService.saveBookingAndOutbox(bookingMapper.createSuccessfulUpdatedBooking(failedBooking), Outbox.Operation.UPDATE);
+            return outboxService.saveBookingAndOutbox(bookingMapper.getSuccessfulUpdatedBooking(failedBooking), Outbox.Operation.UPDATE);
         }
 
         return bookingRepository.save(processFailedClosedBooking(failedBooking));
     }
 
     private Booking processFailedClosedBooking(Booking failedBooking) {
-        return bookingMapper.createSuccessfulClosedBooking(failedBooking);
+        return bookingMapper.getSuccessfulClosedBooking(failedBooking);
     }
 
 }
