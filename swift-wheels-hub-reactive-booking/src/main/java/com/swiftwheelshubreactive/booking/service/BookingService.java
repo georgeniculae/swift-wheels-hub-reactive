@@ -387,7 +387,6 @@ public class BookingService {
         updatedBooking.setDateFrom(dateFrom);
         updatedBooking.setDateTo(dateTo);
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, existingBooking.getRentalCarPrice()));
-        updatedBooking.setBookingProcessStatus(BookingProcessStatus.UPDATING);
 
         return updatedBooking;
     }
