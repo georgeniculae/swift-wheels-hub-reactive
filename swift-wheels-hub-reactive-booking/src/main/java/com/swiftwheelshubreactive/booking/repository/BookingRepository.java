@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 public interface BookingRepository extends ReactiveMongoRepository<Booking, ObjectId> {
 
     @Query("""
-            { 'bookingProcessState': { $regex: '(?i)FAILED' } }""")
+            { 'bookingProcessState': { $regex: '(?i)IN_' } }""")
     Flux<Booking> findAllFailedBookings();
 
     @Query("""
