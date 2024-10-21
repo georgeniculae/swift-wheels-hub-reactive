@@ -13,6 +13,6 @@
     "amount": 500,
     "rentalCarPrice": 500,
     "rentalBranchId": "64f361caf291ae086e179547",
-    "bookingProcessStatus" : "CREATING"
+    "bookingProcessStatus": "IN_CREATION"
   }
 }
