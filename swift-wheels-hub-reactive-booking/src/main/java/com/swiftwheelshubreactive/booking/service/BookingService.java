@@ -253,7 +253,7 @@ public class BookingService {
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
                     updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
-                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.CLOSING);
+                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_CLOSING);
 
                     return updatedBooking;
                 });
@@ -372,7 +372,7 @@ public class BookingService {
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
         newBooking.setAmount(getAmount(newBooking.getDateFrom(), newBooking.getDateTo(), amount));
         newBooking.setRentalCarPrice(amount);
-        newBooking.setBookingProcessStatus(BookingProcessStatus.CREATING);
+        newBooking.setBookingProcessStatus(BookingProcessStatus.IN_CREATION);
 
         return newBooking;
     }
@@ -405,7 +405,7 @@ public class BookingService {
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedBooking.setRentalCarPrice(amount);
-        updatedBooking.setBookingProcessStatus(BookingProcessStatus.UPDATING);
+        updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_UPDATE);
 
         return updatedBooking;
     }
