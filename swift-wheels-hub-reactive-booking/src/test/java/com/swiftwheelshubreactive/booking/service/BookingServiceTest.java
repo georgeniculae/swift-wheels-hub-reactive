@@ -23,7 +23,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Flux;
@@ -202,7 +204,7 @@ class BookingServiceTest {
                 .build();
 
         StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(customerService.findUserByUsername(any(AuthenticationInfo.class))).thenReturn(Mono.just(userInfo));
@@ -242,9 +244,8 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse = StatusUpdateResponse.builder()
-                .isUpdateSuccessful(false)
-                .build();
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(customerService.findUserByUsername(any(AuthenticationInfo.class))).thenReturn(Mono.just(userInfo));
@@ -303,7 +304,7 @@ class BookingServiceTest {
                 .build();
 
         StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(employeeService.findEmployeeById(any(AuthenticationInfo.class), anyString()))
@@ -337,9 +338,8 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse = StatusUpdateResponse.builder()
-                .isUpdateSuccessful(false)
-                .build();
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
@@ -355,12 +355,16 @@ class BookingServiceTest {
     @Test
     void updateBookingTest_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
+
         String apikey = "apikey";
+
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey(apikey)
                 .roles(List.of("admin"))
@@ -395,21 +399,29 @@ class BookingServiceTest {
     @Test
     void updateBookingTest_updatedCar_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
         BookingRequest updatedBookingRequest =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
+
         BookingResponse updatedBookingResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
+
         CarResponse carResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
+
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
+
         outbox.getContent().setCarId(new ObjectId("64f361caf291ae086e179222"));
+
         String apikey = "apikey";
+
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey(apikey)
                 .roles(List.of("admin"))
                 .build();
+
         StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
@@ -424,8 +436,11 @@ class BookingServiceTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     void updateBookingTest_errorWhileUpdatingCar() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
+        Booking updatedBooking = TestUtil.getResourceAsJson("/data/UpdatedBooking.json", Booking.class);
 
         BookingRequest updatedBookingRequest =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
@@ -436,9 +451,6 @@ class BookingServiceTest {
         CarResponse carResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
 
-        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
-        outbox.getContent().setCarId(new ObjectId("64f361caf291ae086e179222"));
-
         String apikey = "apikey";
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -446,14 +458,25 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse = StatusUpdateResponse.builder()
-                .isUpdateSuccessful(false)
-                .build();
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(carService.updateCarsStatus(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
+        when(bookingRepository.save(any(Booking.class))).thenAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                count++;
+
+                if (count == 1) {
+                    return Mono.just(booking);
+                }
+
+                return Mono.just(updatedBooking);
+            }
+        });
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
                 .expectNext(updatedBookingResponse)

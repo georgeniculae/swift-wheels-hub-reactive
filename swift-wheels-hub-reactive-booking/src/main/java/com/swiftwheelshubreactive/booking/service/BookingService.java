@@ -171,7 +171,7 @@ public class BookingService {
     public Mono<BookingResponse> closeBooking(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails) {
         return updatedBookingWithEmployeeDetails(authenticationInfo, bookingClosingDetails)
                 .flatMap(bookingRepository::save)
-                .flatMap(pendingSavedBooking -> processBookingIfIsUpdated(authenticationInfo, bookingClosingDetails, pendingSavedBooking))
+                .flatMap(pendingSavedBooking -> processBookingIfCarIsUpdated(authenticationInfo, bookingClosingDetails, pendingSavedBooking))
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
@@ -187,6 +187,7 @@ public class BookingService {
     public Mono<Void> deleteBookingByCustomerUsername(String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .collectList()
+
                 .filter(this::checkIfThereIsNoBookingInProgress)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("There are bookings in progress")))
                 .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
@@ -194,6 +195,35 @@ public class BookingService {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
+                });
+    }
+
+    private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
+        return Mono.just(newBookingRequest)
+                .handle((bookingRequest, sink) -> {
+                    LocalDate dateFrom = bookingRequest.dateFrom();
+                    LocalDate dateTo = bookingRequest.dateTo();
+                    LocalDate currentDate = LocalDate.now();
+
+                    if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
+                        sink.error(new SwiftWheelsHubResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "A date of booking cannot be in the past"
+                        ));
+
+                        return;
+                    }
+
+                    if (dateFrom.isAfter(dateTo)) {
+                        sink.error(new SwiftWheelsHubResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Date from is after date to"
+                        ));
+
+                        return;
+                    }
+
+                    sink.next(bookingRequest);
                 });
     }
 
@@ -210,34 +240,7 @@ public class BookingService {
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.getSuccessfulCreatedBooking(pendingBooking))
                 .flatMap(booking -> outboxService.processBookingSaving(booking, Outbox.Operation.CREATE))
-                .switchIfEmpty(Mono.just(pendingBooking));
-    }
-
-    private Mono<BookingRequest> validateBookingDates(BookingRequest newBookingRequest) {
-        return Mono.just(newBookingRequest)
-                .handle((bookingRequest, sink) -> {
-                    LocalDate dateFrom = bookingRequest.dateFrom();
-                    LocalDate dateTo = bookingRequest.dateTo();
-                    LocalDate currentDate = LocalDate.now();
-
-                    if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
-                        sink.error(new SwiftWheelsHubResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "A date of booking cannot be in the past"
-                        ));
-                        return;
-                    }
-
-                    if (dateFrom.isAfter(dateTo)) {
-                        sink.error(new SwiftWheelsHubResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "Date from is after date to"
-                        ));
-                        return;
-                    }
-
-                    sink.next(bookingRequest);
-                });
+                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedCreatedBooking(pendingBooking)));
     }
 
     private Mono<Booking> updatedBookingWithEmployeeDetails(AuthenticationInfo authenticationInfo,
@@ -250,7 +253,7 @@ public class BookingService {
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
                     updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
-                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_CLOSING);
+                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.CLOSING);
 
                     return updatedBooking;
                 });
@@ -266,13 +269,27 @@ public class BookingService {
                 .map(bookingMapper::mapEntityToDto);
     }
 
+    private Mono<CarResponse> getCarIfIsChanged(AuthenticationInfo authenticationInfo,
+                                                BookingRequest updatedBookingRequest,
+                                                Booking existingBooking) {
+        return Mono.just(updatedBookingRequest.carId())
+                .filter(carId -> isCarChanged(existingBooking.getCarId().toString(), carId))
+                .flatMap(newCarId -> carService.findAvailableCarById(authenticationInfo, newCarId))
+                .flatMap(carResponse -> checkIfCarIsFromRightBranch(updatedBookingRequest, carResponse))
+                .switchIfEmpty(Mono.empty());
+    }
+
+    private boolean isCarChanged(String existingBookingId, String newCarId) {
+        return !existingBookingId.equals(newCarId);
+    }
+
     private Mono<Booking> handleBookingWhenCarIsChanged(AuthenticationInfo authenticationInfo, Booking existingBooking, Booking pendingUpdatedBooking) {
         return bookingRepository.save(pendingUpdatedBooking)
                 .flatMap(savedUpdatedBooking -> changeCarsStatuses(authenticationInfo, savedUpdatedBooking, existingBooking))
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.getSuccessfulUpdatedBooking(pendingUpdatedBooking))
                 .flatMap(updatedBooking -> outboxService.processBookingSaving(updatedBooking, Outbox.Operation.UPDATE))
-                .switchIfEmpty(Mono.just(pendingUpdatedBooking));
+                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedUpdatedBooking(pendingUpdatedBooking)));
     }
 
     private Mono<Booking> handleBookingWhenCarIsNotChanged(BookingRequest updatedBookingRequest, Booking existingBooking) {
@@ -283,13 +300,13 @@ public class BookingService {
         );
     }
 
-    private Mono<Booking> processBookingIfIsUpdated(AuthenticationInfo authenticationInfo,
-                                                    BookingClosingDetails bookingClosingDetails,
-                                                    Booking pendingSavedBooking) {
+    private Mono<Booking> processBookingIfCarIsUpdated(AuthenticationInfo authenticationInfo,
+                                                       BookingClosingDetails bookingClosingDetails,
+                                                       Booking pendingSavedBooking) {
         return updateCarWhenBookingIsClosed(authenticationInfo, pendingSavedBooking, bookingClosingDetails)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .flatMap(_ -> bookingRepository.save(bookingMapper.getSuccessfulClosedBooking(pendingSavedBooking)))
-                .switchIfEmpty(Mono.just(pendingSavedBooking));
+                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedClosedBooking(pendingSavedBooking)));
     }
 
     private Mono<StatusUpdateResponse> updateCarWhenBookingIsClosed(AuthenticationInfo authenticationInfo,
@@ -304,22 +321,12 @@ public class BookingService {
         return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails);
     }
 
+    private Mono<Booking> saveBookingAfterFailedCarServiceResponse(Booking pendingUpdatedBooking) {
+        return Mono.defer(() -> bookingRepository.save(pendingUpdatedBooking));
+    }
+
     private Mono<StatusUpdateResponse> updateCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
         return carService.changeCarStatus(authenticationInfo, booking.getCarId().toString(), CarState.NOT_AVAILABLE);
-    }
-
-    private Mono<CarResponse> getCarIfIsChanged(AuthenticationInfo authenticationInfo,
-                                                BookingRequest updatedBookingRequest,
-                                                Booking existingBooking) {
-        return Mono.just(updatedBookingRequest.carId())
-                .filter(carId -> isCarChanged(existingBooking.getCarId().toString(), carId))
-                .flatMap(newCarId -> carService.findAvailableCarById(authenticationInfo, newCarId))
-                .flatMap(carResponse -> checkIfCarIsFromRightBranch(updatedBookingRequest, carResponse))
-                .switchIfEmpty(Mono.empty());
-    }
-
-    private boolean isCarChanged(String existingBookingId, String newCarId) {
-        return !existingBookingId.equals(newCarId);
     }
 
     private boolean checkIfThereIsNoBookingInProgress(List<Booking> bookings) {
@@ -365,7 +372,7 @@ public class BookingService {
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
         newBooking.setAmount(getAmount(newBooking.getDateFrom(), newBooking.getDateTo(), amount));
         newBooking.setRentalCarPrice(amount);
-        newBooking.setBookingProcessStatus(BookingProcessStatus.IN_CREATION);
+        newBooking.setBookingProcessStatus(BookingProcessStatus.CREATING);
 
         return newBooking;
     }
@@ -398,7 +405,7 @@ public class BookingService {
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedBooking.setRentalCarPrice(amount);
-        updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_UPDATE);
+        updatedBooking.setBookingProcessStatus(BookingProcessStatus.UPDATING);
 
         return updatedBooking;
     }
