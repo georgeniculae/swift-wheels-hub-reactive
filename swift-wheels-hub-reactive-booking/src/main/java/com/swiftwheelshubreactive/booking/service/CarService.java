@@ -80,7 +80,7 @@ public class CarService {
                 .collectList()
                 .flatMap(this::checkCarsUpdateResponse)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorMap(this::handleException);
+                .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
 
     private StatusUpdateResponse getCarUpdateResponse() {
