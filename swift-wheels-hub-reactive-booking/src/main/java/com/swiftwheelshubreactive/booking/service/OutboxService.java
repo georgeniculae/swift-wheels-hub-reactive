@@ -68,8 +68,7 @@ public class OutboxService {
     private Mono<List<String>> processOutboxes(List<Booking> bookings, Outbox.Operation operation) {
         return Flux.fromIterable(bookings)
                 .map(booking -> createOutbox(booking, operation))
-                .collectList()
-                .flatMapMany(outboxRepository::saveAll)
+                .flatMap(outboxRepository::save)
                 .map(outbox -> outbox.getContent().getCarId().toString())
                 .collectList();
     }
