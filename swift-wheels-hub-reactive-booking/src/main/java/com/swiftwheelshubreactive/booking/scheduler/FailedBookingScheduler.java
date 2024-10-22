@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -41,7 +40,6 @@ public class FailedBookingScheduler {
     public void processFailedBookings() {
         bookingRepository.findAllFailedBookings()
                 .flatMap(this::processBookingsByOperation)
-                .subscribeOn(Schedulers.boundedElastic())
                 .subscribe();
     }
 
