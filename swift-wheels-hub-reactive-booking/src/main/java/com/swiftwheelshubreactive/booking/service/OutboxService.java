@@ -69,7 +69,7 @@ public class OutboxService {
         return Flux.fromIterable(bookings)
                 .map(booking -> createOutbox(booking, operation))
                 .flatMap(outboxRepository::save)
-                .map(outbox -> outbox.getContent().getCarId().toString())
+                .map(outbox -> outbox.getContent().getActualCarId().toString())
                 .collectList();
     }
 

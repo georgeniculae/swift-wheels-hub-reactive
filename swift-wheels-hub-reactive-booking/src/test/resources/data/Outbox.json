@@ -7,7 +7,7 @@
     "status": "IN_PROGRESS",
     "customerUsername": "admin",
     "customerEmail": "admin@email.com",
-    "carId": "64f361caf291ae086e179547",
+    "actualCarId": "64f361caf291ae086e179547",
     "dateFrom": "2099-02-21",
     "dateTo": "2099-02-22",
     "amount": 500,

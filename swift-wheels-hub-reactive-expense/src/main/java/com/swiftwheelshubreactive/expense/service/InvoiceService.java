@@ -3,7 +3,7 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.CarPhase;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
@@ -269,7 +269,7 @@ public class InvoiceService {
         return BookingClosingDetails.builder()
                 .bookingId(invoice.getBookingId().toString())
                 .receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString())
-                .carState(getCarStatus(isVehicleDamaged))
+                .carPhase(getCarStatus(isVehicleDamaged))
                 .build();
     }
 
@@ -299,8 +299,8 @@ public class InvoiceService {
                 .add(carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateTo, carReturnDate) * 2L)));
     }
 
-    private CarState getCarStatus(boolean isVehicleDamaged) {
-        return Boolean.TRUE.equals(isVehicleDamaged) ? CarState.BROKEN : CarState.AVAILABLE;
+    private CarPhase getCarStatus(boolean isVehicleDamaged) {
+        return Boolean.TRUE.equals(isVehicleDamaged) ? CarPhase.BROKEN : CarPhase.AVAILABLE;
     }
 
 }

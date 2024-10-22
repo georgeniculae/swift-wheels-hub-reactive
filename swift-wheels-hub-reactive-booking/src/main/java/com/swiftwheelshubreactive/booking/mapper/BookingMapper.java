@@ -17,8 +17,10 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface BookingMapper {
 
+    @Mapping(target = "carId", source = "actualCarId")
     BookingResponse mapEntityToDto(Booking booking);
 
+    @Mapping(target = "actualCarId", source = "carId")
     Booking mapDtoToEntity(BookingRequest bookingRequest);
 
     Booking getNewBookingInstance(Booking booking);

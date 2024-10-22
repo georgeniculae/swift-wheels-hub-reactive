@@ -35,7 +35,10 @@ public class Booking {
 
     private String customerEmail;
 
-    private ObjectId carId;
+    @NonNull
+    private ObjectId actualCarId;
+
+    private ObjectId previousCarId;
 
     @NonNull
     private LocalDate dateFrom;
@@ -52,5 +55,7 @@ public class Booking {
     private ObjectId returnBranchId;
 
     private BookingProcessStatus bookingProcessStatus;
+
+    private CarStage carStage;
 
 }

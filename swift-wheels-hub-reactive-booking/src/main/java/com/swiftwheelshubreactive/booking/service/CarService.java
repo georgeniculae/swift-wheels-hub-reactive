@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.retry.Retry;
@@ -49,8 +51,7 @@ public class CarService {
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(StatusUpdateResponse.class)
+                .exchangeToMono(this::getStatusUpdateResponseMono)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
@@ -62,25 +63,39 @@ public class CarService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(carUpdateDetails)
-                .retrieve()
-                .bodyToMono(StatusUpdateResponse.class)
+                .exchangeToMono(this::getStatusUpdateResponseMono)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
 
-    public Mono<StatusUpdateResponse> updateCarsStatus(AuthenticationInfo authenticationInfo, List<UpdateCarRequest> updateCarRequests) {
+    public Mono<StatusUpdateResponse> updateCarsStatuses(AuthenticationInfo authenticationInfo, List<UpdateCarRequest> updateCarRequests) {
         return webClient.put()
                 .uri(url + SEPARATOR + "update-statuses")
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(updateCarRequests)
-                .retrieve()
-                .bodyToFlux(StatusUpdateResponse.class)
+                .exchangeToFlux(this::processClientResponseFlux)
                 .collectList()
                 .flatMap(this::checkCarsUpdateResponse)
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
+    }
+
+    private Mono<StatusUpdateResponse> getStatusUpdateResponseMono(ClientResponse clientResponse) {
+        if (clientResponse.statusCode().isError()) {
+            return Mono.just(getCarUpdateResponse());
+        }
+
+        return clientResponse.bodyToMono(StatusUpdateResponse.class);
+    }
+
+    private Flux<StatusUpdateResponse> processClientResponseFlux(ClientResponse clientResponse) {
+        if (clientResponse.statusCode().isError()) {
+            return Flux.just(getCarUpdateResponse());
+        }
+
+        return clientResponse.bodyToFlux(StatusUpdateResponse.class);
     }
 
     private StatusUpdateResponse getCarUpdateResponse() {

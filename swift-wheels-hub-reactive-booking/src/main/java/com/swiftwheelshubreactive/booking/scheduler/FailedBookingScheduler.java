@@ -7,9 +7,12 @@ import com.swiftwheelshubreactive.booking.service.CarService;
 import com.swiftwheelshubreactive.booking.service.OutboxService;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
+import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingProcessStatus;
+import com.swiftwheelshubreactive.model.CarStage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,9 +44,28 @@ public class FailedBookingScheduler {
     }
 
     private Mono<Booking> processBookingsByOperation(Booking failedBooking) {
-        return carService.changeCarStatus(getAuthenticationInfo(), getCarId(failedBooking), CarState.NOT_AVAILABLE)
+        return processCarServiceCall(failedBooking)
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .flatMap(_ -> processFailedBooking(failedBooking));
+    }
+
+    private Mono<StatusUpdateResponse> processCarServiceCall(Booking booking) {
+        if (BookingProcessStatus.FAILED_CREATED_BOOKING == booking.getBookingProcessStatus()) {
+            return carService.changeCarStatus(
+                    getAuthenticationInfo(),
+                    booking.getActualCarId().toString(),
+                    CarState.NOT_AVAILABLE
+            );
+        }
+
+        if (BookingProcessStatus.FAILED_UPDATED_BOOKING == booking.getBookingProcessStatus()) {
+            return carService.updateCarsStatuses(
+                    getAuthenticationInfo(),
+                    getCarsToUpdate(booking.getPreviousCarId().toString(), booking.getActualCarId().toString())
+            );
+        }
+
+        return carService.updateCarWhenBookingIsFinished(getAuthenticationInfo(), getCarUpdateDetails(booking));
     }
 
     private AuthenticationInfo getAuthenticationInfo() {
@@ -57,8 +79,26 @@ public class FailedBookingScheduler {
         return List.of(machineRole);
     }
 
-    private String getCarId(Booking booking) {
-        return booking.getCarId().toString();
+    private List<UpdateCarRequest> getCarsToUpdate(String previousCarId, String newCarId) {
+        return List.of(
+                new UpdateCarRequest(previousCarId, CarState.AVAILABLE),
+                new UpdateCarRequest(newCarId, CarState.NOT_AVAILABLE)
+        );
+    }
+
+    private CarUpdateDetails getCarUpdateDetails(Booking booking) {
+        return CarUpdateDetails.builder()
+                .carId(booking.getActualCarId().toString())
+                .receptionistEmployeeId(booking.getReturnBranchId().toString())
+                .carState(getCarPhase(booking.getCarStage()))
+                .build();
+    }
+
+    private CarState getCarPhase(CarStage carStage) {
+        return switch (carStage) {
+            case AVAILABLE -> CarState.AVAILABLE;
+            case BROKEN -> CarState.BROKEN;
+        };
     }
 
     private Mono<Booking> processFailedBooking(Booking failedBooking) {

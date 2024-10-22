@@ -411,7 +411,7 @@ class BookingServiceTest {
 
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
-        outbox.getContent().setCarId(new ObjectId("64f361caf291ae086e179222"));
+        outbox.getContent().setActualCarId(new ObjectId("64f361caf291ae086e179222"));
 
         String apikey = "apikey";
 
@@ -428,7 +428,7 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
-        when(carService.updateCarsStatus(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
+        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
                 .expectNext(updatedBookingResponse)
@@ -463,7 +463,7 @@ class BookingServiceTest {
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(carService.updateCarsStatus(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
+        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
         when(bookingRepository.save(any(Booking.class))).thenAnswer(new Answer() {
             private int count = 0;
 

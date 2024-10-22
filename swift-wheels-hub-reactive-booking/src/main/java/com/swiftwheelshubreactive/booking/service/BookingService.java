@@ -7,6 +7,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.CarPhase;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
@@ -22,8 +23,10 @@ import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingProcessStatus;
 import com.swiftwheelshubreactive.model.BookingStatus;
+import com.swiftwheelshubreactive.model.CarStage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -187,7 +190,6 @@ public class BookingService {
     public Mono<Void> deleteBookingByCustomerUsername(String username) {
         return bookingRepository.findByCustomerUsername(username)
                 .collectList()
-
                 .filter(this::checkIfThereIsNoBookingInProgress)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("There are bookings in progress")))
                 .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
@@ -254,9 +256,17 @@ public class BookingService {
                     updatedBooking.setStatus(BookingStatus.CLOSED);
                     updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
                     updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_CLOSING);
+                    updatedBooking.setCarStage(getCarStage(bookingClosingDetails.carPhase()));
 
                     return updatedBooking;
                 });
+    }
+
+    private CarStage getCarStage(CarPhase carPhase) {
+        return switch (carPhase) {
+            case AVAILABLE -> CarStage.AVAILABLE;
+            case BROKEN -> CarStage.BROKEN;
+        };
     }
 
     private Mono<BookingResponse> processUpdatedBooking(AuthenticationInfo authenticationInfo,
@@ -273,7 +283,7 @@ public class BookingService {
                                                 BookingRequest updatedBookingRequest,
                                                 Booking existingBooking) {
         return Mono.just(updatedBookingRequest.carId())
-                .filter(carId -> isCarChanged(existingBooking.getCarId().toString(), carId))
+                .filter(carId -> isCarChanged(existingBooking.getActualCarId().toString(), carId))
                 .flatMap(newCarId -> carService.findAvailableCarById(authenticationInfo, newCarId))
                 .flatMap(carResponse -> checkIfCarIsFromRightBranch(updatedBookingRequest, carResponse))
                 .switchIfEmpty(Mono.empty());
@@ -313,12 +323,19 @@ public class BookingService {
                                                                     Booking bookingResponse,
                                                                     BookingClosingDetails bookingClosingDetails) {
         CarUpdateDetails carUpdateDetails = CarUpdateDetails.builder()
-                .carId(bookingResponse.getCarId().toString())
+                .carId(bookingResponse.getActualCarId().toString())
                 .receptionistEmployeeId(bookingClosingDetails.receptionistEmployeeId())
-                .carState(bookingClosingDetails.carState())
+                .carState(getCarState(bookingClosingDetails.carPhase()))
                 .build();
 
         return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails);
+    }
+
+    private CarState getCarState(CarPhase carPhase) {
+        return switch (carPhase) {
+            case AVAILABLE -> CarState.AVAILABLE;
+            case BROKEN -> CarState.BROKEN;
+        };
     }
 
     private Mono<Booking> saveBookingAfterFailedCarServiceResponse(Booking pendingUpdatedBooking) {
@@ -326,7 +343,7 @@ public class BookingService {
     }
 
     private Mono<StatusUpdateResponse> updateCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
-        return carService.changeCarStatus(authenticationInfo, booking.getCarId().toString(), CarState.NOT_AVAILABLE);
+        return carService.changeCarStatus(authenticationInfo, booking.getActualCarId().toString(), CarState.NOT_AVAILABLE);
     }
 
     private boolean checkIfThereIsNoBookingInProgress(List<Booking> bookings) {
@@ -366,7 +383,7 @@ public class BookingService {
 
         newBooking.setCustomerUsername(userInfo.username());
         newBooking.setCustomerEmail(userInfo.email());
-        newBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
+        newBooking.setActualCarId(MongoUtil.getObjectId(carResponse.id()));
         newBooking.setDateOfBooking(LocalDate.now());
         newBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
@@ -396,12 +413,14 @@ public class BookingService {
         LocalDate dateFrom = updatedBookingRequest.dateFrom();
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
+        final ObjectId existingCarId = existingBooking.getActualCarId();
         Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
         BigDecimal amount = carResponse.amount();
 
         updatedBooking.setDateFrom(dateFrom);
         updatedBooking.setDateTo(dateTo);
-        updatedBooking.setCarId(MongoUtil.getObjectId(carResponse.id()));
+        updatedBooking.setActualCarId(MongoUtil.getObjectId(carResponse.id()));
+        updatedBooking.setPreviousCarId(existingCarId);
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedBooking.setRentalCarPrice(amount);
@@ -413,12 +432,12 @@ public class BookingService {
     private Mono<StatusUpdateResponse> changeCarsStatuses(AuthenticationInfo authenticationInfo,
                                                           Booking updatedBooking,
                                                           Booking existingBooking) {
-        return Mono.just(existingBooking.getCarId().toString())
+        return Mono.just(existingBooking.getActualCarId().toString())
                 .flatMap(existingBookingCarId -> {
                     List<UpdateCarRequest> updateCarRequests =
-                            getUpdateCarRequestList(existingBookingCarId, updatedBooking.getCarId().toString());
+                            getUpdateCarRequestList(existingBookingCarId, updatedBooking.getActualCarId().toString());
 
-                    return carService.updateCarsStatus(authenticationInfo, updateCarRequests);
+                    return carService.updateCarsStatuses(authenticationInfo, updateCarRequests);
                 });
     }
 

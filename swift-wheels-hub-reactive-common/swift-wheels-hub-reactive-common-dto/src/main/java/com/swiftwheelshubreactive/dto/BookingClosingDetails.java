@@ -12,7 +12,7 @@ public record BookingClosingDetails(
         String receptionistEmployeeId,
 
         @NonNull
-        CarState carState
+        CarPhase carPhase
 ) {
 
     @Override
@@ -20,7 +20,7 @@ public record BookingClosingDetails(
         return "BookingClosingDetails{" + "\n" +
                 "bookingId=" + bookingId + "\n" +
                 "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
-                "carState=" + carState + "\n" +
+                "carPhase=" + carPhase + "\n" +
                 "}";
     }
 
