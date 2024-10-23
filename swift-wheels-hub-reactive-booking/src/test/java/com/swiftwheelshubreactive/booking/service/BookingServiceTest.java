@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -211,7 +212,7 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
-        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class)))
+        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(bookingService.saveBooking(authenticationInfo, bookingRequest))
@@ -250,7 +251,7 @@ class BookingServiceTest {
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(customerService.findUserByUsername(any(AuthenticationInfo.class))).thenReturn(Mono.just(userInfo));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class)))
+        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(bookingService.saveBooking(authenticationInfo, bookingRequest))
@@ -310,7 +311,7 @@ class BookingServiceTest {
         when(employeeService.findEmployeeById(any(AuthenticationInfo.class), anyString()))
                 .thenReturn(Mono.just(employeeResponse));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(updatedClosedBooking));
-        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class)))
+        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(bookingService.closeBooking(authenticationInfo, bookingClosingDetails))
@@ -344,7 +345,7 @@ class BookingServiceTest {
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(employeeService.findEmployeeById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(employeeResponse));
-        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class)))
+        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(bookingService.closeBooking(authenticationInfo, bookingClosingDetails))
@@ -428,7 +429,8 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
-        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
+        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList(), anyInt()))
+                .thenReturn(Mono.just(statusUpdateResponse));
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
                 .expectNext(updatedBookingResponse)
@@ -463,7 +465,8 @@ class BookingServiceTest {
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
+        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList(), anyInt()))
+                .thenReturn(Mono.just(statusUpdateResponse));
         when(bookingRepository.save(any(Booking.class))).thenAnswer(new Answer() {
             private int count = 0;
 

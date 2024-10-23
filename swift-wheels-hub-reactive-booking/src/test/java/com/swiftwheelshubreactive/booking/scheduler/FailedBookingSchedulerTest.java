@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -66,7 +67,7 @@ class FailedBookingSchedulerTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(bookingRepository.findAllFailedBookings()).thenReturn(Flux.just(booking));
-        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class)))
+        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
 
@@ -85,8 +86,10 @@ class FailedBookingSchedulerTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(bookingRepository.findAllFailedBookings()).thenReturn(Flux.just(booking));
-        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList())).thenReturn(Mono.just(statusUpdateResponse));
-        when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
+        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList(), anyInt()))
+                .thenReturn(Mono.just(statusUpdateResponse));
+        when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
+                .thenReturn(Mono.just(booking));
 
         assertDoesNotThrow(() -> failedBookingScheduler.processFailedBookings());
 
@@ -103,7 +106,7 @@ class FailedBookingSchedulerTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(bookingRepository.findAllFailedBookings()).thenReturn(Flux.just(booking));
-        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class)))
+        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
 
@@ -121,7 +124,7 @@ class FailedBookingSchedulerTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(bookingRepository.findAllFailedBookings()).thenReturn(Flux.just(booking));
-        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class)))
+        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
 

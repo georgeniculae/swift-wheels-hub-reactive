@@ -57,18 +57,20 @@ public class FailedBookingScheduler {
             return carService.changeCarStatus(
                     getAuthenticationInfo(),
                     booking.getActualCarId().toString(),
-                    CarState.NOT_AVAILABLE
+                    CarState.NOT_AVAILABLE,
+                    0
             );
         }
 
         if (BookingProcessStatus.FAILED_UPDATED_BOOKING == booking.getBookingProcessStatus()) {
             return carService.updateCarsStatuses(
                     getAuthenticationInfo(),
-                    getCarsToUpdate(booking.getPreviousCarId().toString(), booking.getActualCarId().toString())
+                    getCarsToUpdate(booking.getPreviousCarId().toString(), booking.getActualCarId().toString()),
+                    0
             );
         }
 
-        return carService.updateCarWhenBookingIsFinished(getAuthenticationInfo(), getCarUpdateDetails(booking));
+        return carService.updateCarWhenBookingIsFinished(getAuthenticationInfo(), getCarUpdateDetails(booking), 0);
     }
 
     private AuthenticationInfo getAuthenticationInfo() {

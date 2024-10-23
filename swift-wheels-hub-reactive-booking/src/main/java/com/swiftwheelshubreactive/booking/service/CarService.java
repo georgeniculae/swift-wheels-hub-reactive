@@ -45,30 +45,23 @@ public class CarService {
                 .onErrorMap(this::handleException);
     }
 
-    public Mono<StatusUpdateResponse> changeCarStatus(AuthenticationInfo authenticationInfo, String carId, CarState carState) {
+    public Mono<StatusUpdateResponse> changeCarStatus(AuthenticationInfo authenticationInfo,
+                                                      String carId,
+                                                      CarState carState,
+                                                      int retries) {
         return webClient.patch()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "change-status?carState={carState}", carId, carState)
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchangeToMono(this::getStatusUpdateResponseMono)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .retryWhen(Retry.fixedDelay(retries, Duration.ofSeconds(5)))
                 .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
 
-    public Mono<StatusUpdateResponse> updateCarWhenBookingIsFinished(AuthenticationInfo authenticationInfo, CarUpdateDetails carUpdateDetails) {
-        return webClient.put()
-                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
-                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carUpdateDetails)
-                .exchangeToMono(this::getStatusUpdateResponseMono)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
-    }
-
-    public Mono<StatusUpdateResponse> updateCarsStatuses(AuthenticationInfo authenticationInfo, List<UpdateCarRequest> updateCarRequests) {
+    public Mono<StatusUpdateResponse> updateCarsStatuses(AuthenticationInfo authenticationInfo,
+                                                         List<UpdateCarRequest> updateCarRequests,
+                                                         int retries) {
         return webClient.put()
                 .uri(url + SEPARATOR + "update-statuses")
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
@@ -78,7 +71,21 @@ public class CarService {
                 .exchangeToFlux(this::processClientResponseFlux)
                 .collectList()
                 .flatMap(this::checkCarsUpdateResponse)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .retryWhen(Retry.fixedDelay(retries, Duration.ofSeconds(5)))
+                .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
+    }
+
+    public Mono<StatusUpdateResponse> updateCarWhenBookingIsFinished(AuthenticationInfo authenticationInfo,
+                                                                     CarUpdateDetails carUpdateDetails,
+                                                                     int retries) {
+        return webClient.put()
+                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(carUpdateDetails)
+                .exchangeToMono(this::getStatusUpdateResponseMono)
+                .retryWhen(Retry.fixedDelay(retries, Duration.ofSeconds(5)))
                 .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }
 

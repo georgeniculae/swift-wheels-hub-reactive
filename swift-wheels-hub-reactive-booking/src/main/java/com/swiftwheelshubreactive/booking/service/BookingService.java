@@ -328,7 +328,7 @@ public class BookingService {
                 .carState(getCarState(bookingClosingDetails.carPhase()))
                 .build();
 
-        return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails);
+        return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails, 5);
     }
 
     private CarState getCarState(CarPhase carPhase) {
@@ -343,7 +343,7 @@ public class BookingService {
     }
 
     private Mono<StatusUpdateResponse> updateCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
-        return carService.changeCarStatus(authenticationInfo, booking.getActualCarId().toString(), CarState.NOT_AVAILABLE);
+        return carService.changeCarStatus(authenticationInfo, booking.getActualCarId().toString(), CarState.NOT_AVAILABLE, 5);
     }
 
     private boolean checkIfThereIsNoBookingInProgress(List<Booking> bookings) {
@@ -437,7 +437,7 @@ public class BookingService {
                     List<UpdateCarRequest> updateCarRequests =
                             getUpdateCarRequestList(existingBookingCarId, updatedBooking.getActualCarId().toString());
 
-                    return carService.updateCarsStatuses(authenticationInfo, updateCarRequests);
+                    return carService.updateCarsStatuses(authenticationInfo, updateCarRequests, 5);
                 });
     }
 
