@@ -14,6 +14,7 @@ import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingProcessStatus;
 import com.swiftwheelshubreactive.model.CarStage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class FailedBookingScheduler {
 
     private final BookingRepository bookingRepository;
@@ -40,6 +42,7 @@ public class FailedBookingScheduler {
     public void processFailedBookings() {
         bookingRepository.findAllFailedBookings()
                 .flatMap(this::processBookingsByOperation)
+                .onBackpressureBuffer()
                 .subscribe();
     }
 
@@ -102,19 +105,30 @@ public class FailedBookingScheduler {
     }
 
     private Mono<Booking> processFailedBooking(Booking failedBooking) {
-        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
-            return outboxService.processBookingSaving(bookingMapper.getSuccessfulCreatedBooking(failedBooking), Outbox.Operation.CREATE);
-        }
-
-        if (BookingProcessStatus.FAILED_UPDATED_BOOKING == failedBooking.getBookingProcessStatus()) {
-            return outboxService.processBookingSaving(bookingMapper.getSuccessfulUpdatedBooking(failedBooking), Outbox.Operation.UPDATE);
-        }
-
-        return bookingRepository.save(processFailedClosedBooking(failedBooking));
+        return Mono.just(failedBooking)
+                .filter(booking -> BookingProcessStatus.FAILED_CLOSED_BOOKING == booking.getBookingProcessStatus())
+                .flatMap(booking -> bookingRepository.save(processClosedBooking(booking)))
+                .switchIfEmpty(Mono.defer(() -> outboxService.processBookingSaving(getCorrespondingBooking(failedBooking), getOutboxOperation(failedBooking))));
     }
 
-    private Booking processFailedClosedBooking(Booking failedBooking) {
+    private Booking processClosedBooking(Booking failedBooking) {
         return bookingMapper.getSuccessfulClosedBooking(failedBooking);
+    }
+
+    private Booking getCorrespondingBooking(Booking failedBooking) {
+        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
+            return bookingMapper.getSuccessfulCreatedBooking(failedBooking);
+        }
+
+        return bookingMapper.getSuccessfulUpdatedBooking(failedBooking);
+    }
+
+    private Outbox.Operation getOutboxOperation(Booking failedBooking) {
+        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
+            return Outbox.Operation.CREATE;
+        }
+
+        return Outbox.Operation.UPDATE;
     }
 
 }
