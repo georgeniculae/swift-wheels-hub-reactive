@@ -112,4 +112,22 @@ class FailedBookingSchedulerTest {
         verify(bookingMapper).getSuccessfulClosedBooking(any(Booking.class));
     }
 
+    @Test
+    void processFailedBookingsTest_failedCarServiceCall() {
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+        booking.setBookingProcessStatus(BookingProcessStatus.FAILED_CREATED_BOOKING);
+
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
+
+        when(bookingRepository.findAllFailedBookings()).thenReturn(Flux.just(booking));
+        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class)))
+                .thenReturn(Mono.just(statusUpdateResponse));
+        when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.just(booking));
+
+        assertDoesNotThrow(() -> failedBookingScheduler.processFailedBookings());
+
+        verify(bookingMapper).getSuccessfulCreatedBooking(any(Booking.class));
+    }
+
 }
