@@ -12,6 +12,6 @@ import org.springframework.context.annotation.Configuration;
 public class ChatProperties {
 
     private String model;
-    private float temperature;
+    private Double temperature;
 
 }
