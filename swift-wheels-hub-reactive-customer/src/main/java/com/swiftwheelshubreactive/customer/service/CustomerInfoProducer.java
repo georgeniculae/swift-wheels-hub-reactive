@@ -19,10 +19,10 @@ public class CustomerInfoProducer {
 
     private final StreamBridge streamBridge;
 
-    @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.destination}")
+    @Value("${spring.cloud.stream.bindings.customerInfoProducer-out-0.destination}")
     private String emailNotificationBinderName;
 
-    @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.contentType}")
+    @Value("${spring.cloud.stream.bindings.customerInfoProducer-out-0.contentType}")
     private String emailNotificationMimeType;
 
     public Mono<Void> sendInvoice(CustomerInfo customerInfo) {
