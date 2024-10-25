@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.customer.service;
 
+import com.swiftwheelshubreactive.customer.mapper.CustomerMapper;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
@@ -22,6 +23,8 @@ public class CustomerService {
 
     private final KeycloakUserService keycloakUserService;
     private final BookingService bookingService;
+    private final CustomerInfoProducer customerInfoProducer;
+    private final CustomerMapper customerMapper;
 
     public Flux<UserInfo> findAllUsers() {
         return Mono.fromCallable(keycloakUserService::findAllUsers)
@@ -71,6 +74,7 @@ public class CustomerService {
     )
     public Mono<RegistrationResponse> registerUser(RegisterRequest request) {
         return Mono.fromCallable(() -> keycloakUserService.registerCustomer(request))
+                .delayUntil(registrationResponse -> customerInfoProducer.sendInvoice(customerMapper.mapToCustomerInfo(registrationResponse)))
                 .subscribeOn(Schedulers.boundedElastic())
                 .onErrorMap(e -> {
                     log.error("Error while registering user: {}", e.getMessage());

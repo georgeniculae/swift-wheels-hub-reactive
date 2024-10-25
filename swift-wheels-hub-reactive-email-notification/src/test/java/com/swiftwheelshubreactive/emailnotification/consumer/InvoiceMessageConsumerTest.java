@@ -1,8 +1,9 @@
 package com.swiftwheelshubreactive.emailnotification.consumer;
 
 import com.sendgrid.Response;
+import com.swiftwheelshubreactive.dto.EmailResponse;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.emailnotification.service.EmailService;
+import com.swiftwheelshubreactive.emailnotification.service.EmailProcessorService;
 import com.swiftwheelshubreactive.emailnotification.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,6 @@ import reactor.test.StepVerifier;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +33,7 @@ class InvoiceMessageConsumerTest {
     private InvoiceMessageConsumer invoiceMessageConsumer;
 
     @Mock
-    private EmailService emailService;
+    private EmailProcessorService emailProcessorService;
 
     @Mock
     private Acknowledgment acknowledgment;
@@ -41,6 +41,9 @@ class InvoiceMessageConsumerTest {
     @Test
     void emailNotificationConsumerTest_success_acknowledgementTrue() {
         ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
+
+        EmailResponse emailResponse =
+                TestUtil.getResourceAsJson("/data/EmailResponse.json", EmailResponse.class);
 
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
@@ -53,7 +56,7 @@ class InvoiceMessageConsumerTest {
         Message<InvoiceResponse> message = MessageBuilder.createMessage(invoiceResponse, messageHeaders);
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(message);
 
-        when(emailService.sendEmail(anyString(), any(Object.class))).thenReturn(Mono.just(response));
+        when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
 
         StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
                 .expectComplete()
@@ -67,13 +70,12 @@ class InvoiceMessageConsumerTest {
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Response response = new Response();
-        response.setStatusCode(200);
-        response.setBody("body");
+        EmailResponse emailResponse =
+                TestUtil.getResourceAsJson("/data/EmailResponse.json", EmailResponse.class);
 
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(new GenericMessage<>(invoiceResponse));
 
-        when(emailService.sendEmail(anyString(), any(Object.class))).thenReturn(Mono.just(response));
+        when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
 
         StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
                 .expectComplete()

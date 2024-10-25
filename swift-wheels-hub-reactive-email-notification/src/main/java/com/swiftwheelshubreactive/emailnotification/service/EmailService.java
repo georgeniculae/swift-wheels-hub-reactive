@@ -9,6 +9,8 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.swiftwheelshubreactive.dto.EmailResponse;
+import com.swiftwheelshubreactive.emailnotification.mapper.EmailResponseMapper;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,7 @@ public class EmailService {
     private static final String MUSTACHE_FORMAT = ".mustache";
     private final SendGrid sendGrid;
     private final MustacheFactory mustacheFactory;
+    private final EmailResponseMapper emailResponseMapper;
 
     @Value("${sendgrid.mail.from}")
     private String mailFrom;
@@ -38,18 +41,13 @@ public class EmailService {
     @Value("${sendgrid.mail.name}")
     private String name;
 
-    public Mono<Response> sendEmail(String toAddressEmail, Object object) {
-        return getMailAsPublisher(toAddressEmail, object)
-                .flatMap(this::getMailResponseAsPublisher);
+    public Mono<EmailResponse> sendEmail(String toAddressEmail, Object object) {
+        return getMailResponse(createMail(toAddressEmail, object))
+                .map(emailResponseMapper::mapToEmailResponse);
     }
 
-    private Mono<Response> getMailResponseAsPublisher(Mail mail) {
+    private Mono<Response> getMailResponse(Mail mail) {
         return Mono.fromCallable(() -> sendMail(mail))
-                .subscribeOn(Schedulers.boundedElastic());
-    }
-
-    private Mono<Mail> getMailAsPublisher(String toAddressEmail, Object object) {
-        return Mono.fromCallable(() -> createMail(toAddressEmail, object))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 

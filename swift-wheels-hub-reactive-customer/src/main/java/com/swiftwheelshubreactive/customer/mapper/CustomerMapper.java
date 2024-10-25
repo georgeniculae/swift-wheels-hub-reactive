@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.customer.mapper;
 
+import com.swiftwheelshubreactive.dto.CustomerInfo;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.dto.UserUpdateRequest;
@@ -40,6 +41,8 @@ public interface CustomerMapper {
     @Mapping(target = "dateOfBirth", expression = "java(getDateOfBirth(userRepresentation))")
     @Mapping(target = "registrationDate", expression = "java(getRegistrationDate())")
     RegistrationResponse mapToRegistrationResponse(UserRepresentation userRepresentation);
+
+    CustomerInfo mapToCustomerInfo(RegistrationResponse registrationResponse);
 
     default String getAddress(UserRepresentation userRepresentation) {
         return userRepresentation.getAttributes()

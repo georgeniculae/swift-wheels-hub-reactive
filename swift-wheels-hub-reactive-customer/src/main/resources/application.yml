@@ -42,6 +42,9 @@ spring:
         auditLogInfoProducer-out-0:
           destination: ${CUSTOMER_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
+        customerInfoProducer-out-0:
+          destination: ${CUSTOMER_INFO_REACTIVE_TOPIC}
+          contentType: application/json
   kafka:
     bootstrap-servers: localhost:9092
   web:

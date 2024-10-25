@@ -9,6 +9,12 @@ server:
 spring:
   application:
     name: swift-wheels-hub-reactive-email-notification
+  data:
+    mongodb:
+      database: swift_wheels_hub_email-notification
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubagency.itvzdx8.mongodb.net
   codec:
     max-in-memory-size: 20MB
   cloud:
@@ -39,6 +45,11 @@ spring:
     stream:
       defaultBinder: kafka
       bindings:
+        customerInfoConsumer-in-0:
+          binder: kafka
+          destination: ${CUSTOMER_INFO_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${EMAIL_NOTIFICATION_CONSUMER_GROUP}
         emailNotificationConsumer-in-0:
           binder: kafka
           destination: ${EMAIL_NOTIFICATION_REACTIVE_TOPIC}
