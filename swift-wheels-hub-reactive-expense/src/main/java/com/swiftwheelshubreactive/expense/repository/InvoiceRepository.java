@@ -15,6 +15,10 @@ public interface InvoiceRepository extends ReactiveMongoRepository<Invoice, Obje
             { 'comments': { $regex: '(?i)?0' } }""")
     Flux<Invoice> findByComments(String comments);
 
+    @Query("""
+            { 'invoiceProcessStatus': 'FAILED_CLOSED_INVOICE' }""")
+    Flux<Invoice> findAllFailedInvoices();
+
     Flux<Invoice> findByCustomerUsername(String customerUsername);
 
     Mono<Boolean> existsByBookingId(ObjectId id);

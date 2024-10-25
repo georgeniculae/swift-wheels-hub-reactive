@@ -9,18 +9,14 @@ public record BookingClosingDetails(
         String bookingId,
 
         @NonNull
-        String receptionistEmployeeId,
-
-        @NonNull
-        CarPhase carPhase
+        String returnBranchId
 ) {
 
     @Override
     public String toString() {
         return "BookingClosingDetails{" + "\n" +
                 "bookingId=" + bookingId + "\n" +
-                "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
-                "carPhase=" + carPhase + "\n" +
+                "returnBranchId=" + returnBranchId + "\n" +
                 "}";
     }
 

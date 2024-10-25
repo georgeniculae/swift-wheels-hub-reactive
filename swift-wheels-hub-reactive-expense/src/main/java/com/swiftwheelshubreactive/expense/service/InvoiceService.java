@@ -3,9 +3,12 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.CarPhase;
+import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
+import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -15,10 +18,10 @@ import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Invoice;
+import com.swiftwheelshubreactive.model.InvoiceProcessStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -42,6 +45,7 @@ public class InvoiceService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final RevenueService revenueService;
     private final BookingService bookingService;
+    private final CarService carService;
     private final InvoiceMapper invoiceMapper;
 
     public Flux<InvoiceResponse> findAllInvoices() {
@@ -146,8 +150,8 @@ public class InvoiceService {
     public Mono<InvoiceResponse> closeInvoice(AuthenticationInfo authenticationInfo, String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
                 .flatMap(request -> setupExistingInvoice(authenticationInfo, id, request))
-                .flatMap(revenueService::saveInvoiceRevenueAndOutbox)
-                .delayUntil(invoice -> bookingService.closeBooking(authenticationInfo, getBookingClosingDetails(invoice)))
+                .flatMap(invoiceRepository::save)
+                .flatMap(invoice -> processInvoiceClosing(authenticationInfo, invoice))
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
@@ -165,7 +169,6 @@ public class InvoiceService {
         Invoice invoice = new Invoice();
 
         invoice.setCustomerUsername(newBookingResponse.customerUsername());
-        invoice.setCustomerEmail(newBookingResponse.customerEmail());
         invoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
         invoice.setBookingId(MongoUtil.getObjectId(newBookingResponse.id()));
 
@@ -185,6 +188,7 @@ public class InvoiceService {
                                 HttpStatus.BAD_REQUEST,
                                 "If the vehicle is damaged, the damage cost cannot be null/empty"
                         ));
+
                         return;
                     }
 
@@ -233,24 +237,49 @@ public class InvoiceService {
     private Invoice getUpdatedInvoice(Invoice existingInvoice,
                                       InvoiceRequest invoiceRequest,
                                       BookingResponse bookingResponse) {
-        LocalDate carReturnDate = invoiceRequest.carReturnDate();
-        ObjectId receptionistEmployeeId = MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId());
-        ObjectId carId = MongoUtil.getObjectId(invoiceRequest.carId());
-
         Invoice updatedInvoice = invoiceMapper.getNewInvoiceInstance(existingInvoice);
 
         updatedInvoice.setCustomerUsername(bookingResponse.customerUsername());
-        updatedInvoice.setCustomerEmail(bookingResponse.customerEmail());
-        updatedInvoice.setCarReturnDate(carReturnDate);
-        updatedInvoice.setReceptionistEmployeeId(receptionistEmployeeId);
-        updatedInvoice.setCarId(carId);
+        updatedInvoice.setCarReturnDate(invoiceRequest.carReturnDate());
+        updatedInvoice.setReceptionistEmployeeId(MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId()));
+        updatedInvoice.setReturnBranchId(MongoUtil.getObjectId(invoiceRequest.returnBranchId()));
+        updatedInvoice.setCarId(MongoUtil.getObjectId(invoiceRequest.carId()));
         updatedInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
         updatedInvoice.setDamageCost(getDamageCost(invoiceRequest));
         updatedInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
         updatedInvoice.setComments(invoiceRequest.comments());
         updatedInvoice.setTotalAmount(getTotalAmount(invoiceRequest, bookingResponse));
+        updatedInvoice.setInvoiceProcessStatus(InvoiceProcessStatus.IN_CLOSING);
 
         return updatedInvoice;
+    }
+
+    private Mono<Invoice> processInvoiceClosing(AuthenticationInfo authenticationInfo, Invoice invoice) {
+        return updateProcesses(authenticationInfo, invoice)
+                .filter(Boolean.TRUE::equals)
+                .map(_ -> invoiceMapper.getSuccessfulCreatedInvoice(invoice))
+                .flatMap(revenueService::processInvoiceCreation)
+                .switchIfEmpty(Mono.defer(() -> invoiceRepository.save(invoiceMapper.getFailedCreatedInvoice(invoice))));
+    }
+
+    private Mono<Boolean> updateProcesses(AuthenticationInfo authenticationInfo, Invoice invoice) {
+        return Mono.zip(
+                carService.setCarAsAvailable(authenticationInfo, getCarUpdateDetails(invoice), 5),
+                bookingService.closeBooking(authenticationInfo, getBookingClosingDetails(invoice), 5),
+                this::getUpdateResponse
+        );
+    }
+
+    private CarUpdateDetails getCarUpdateDetails(Invoice invoiceRequest) {
+        return CarUpdateDetails.builder()
+                .carId(invoiceRequest.getCarId().toString())
+                .receptionistEmployeeId(invoiceRequest.getReceptionistEmployeeId().toString())
+                .carState(invoiceRequest.getIsVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
+                .build();
+    }
+
+    private boolean getUpdateResponse(StatusUpdateResponse statusUpdateResponse, BookingUpdateResponse bookingUpdateResponse) {
+        return statusUpdateResponse.isUpdateSuccessful() && bookingUpdateResponse.isSuccessful();
     }
 
     private BigDecimal getDamageCost(InvoiceRequest invoiceRequest) {
@@ -263,13 +292,9 @@ public class InvoiceService {
     }
 
     private BookingClosingDetails getBookingClosingDetails(Invoice invoice) {
-        Boolean isVehicleDamaged = Optional.ofNullable(invoice.getIsVehicleDamaged())
-                .orElseThrow(() -> new SwiftWheelsHubException("Parameter isVehicleDamaged should not be null"));
-
         return BookingClosingDetails.builder()
                 .bookingId(invoice.getBookingId().toString())
-                .receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString())
-                .carPhase(getCarStatus(isVehicleDamaged))
+                .returnBranchId(invoice.getReturnBranchId().toString())
                 .build();
     }
 
@@ -297,10 +322,6 @@ public class InvoiceService {
                                              BigDecimal carAmount) {
         return carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
                 .add(carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateTo, carReturnDate) * 2L)));
-    }
-
-    private CarPhase getCarStatus(boolean isVehicleDamaged) {
-        return Boolean.TRUE.equals(isVehicleDamaged) ? CarPhase.BROKEN : CarPhase.AVAILABLE;
     }
 
 }

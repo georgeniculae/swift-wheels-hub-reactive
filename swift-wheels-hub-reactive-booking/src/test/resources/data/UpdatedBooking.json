@@ -3,7 +3,6 @@
   "dateOfBooking": "2099-02-20",
   "status": "IN_PROGRESS",
   "customerUsername": "admin",
-  "customerEmail": "admin@email.com",
   "actualCarId": "64f361caf291ae086e179222",
   "dateFrom": "2099-02-21",
   "dateTo": "2099-02-22",

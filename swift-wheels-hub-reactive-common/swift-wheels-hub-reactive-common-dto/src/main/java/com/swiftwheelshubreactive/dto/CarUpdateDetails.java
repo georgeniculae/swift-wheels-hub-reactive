@@ -20,7 +20,7 @@ public record CarUpdateDetails(
         return "CarUpdateDetails{" + "\n" +
                 "carId=" + carId + "\n" +
                 "carState=" + carState + "\n" +
-                "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
+                "returnBranchId=" + receptionistEmployeeId + "\n" +
                 "}";
     }
 

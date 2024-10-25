@@ -72,9 +72,9 @@ public class RevenueService {
     }
 
     @Transactional
-    public Mono<Invoice> saveInvoiceRevenueAndOutbox(Invoice invoice) {
+    public Mono<Invoice> processInvoiceCreation(Invoice invoice) {
         return invoiceRepository.save(invoice)
-                .flatMap(savedInvoice -> outboxService.saveOutbox(savedInvoice, Outbox.Operation.CLOSE))
+                .flatMap(outboxService::saveOutbox)
                 .delayUntil(savedOutbox -> revenueRepository.save(getRevenue(savedOutbox.getContent())))
                 .map(Outbox::getContent)
                 .onErrorMap(e -> {

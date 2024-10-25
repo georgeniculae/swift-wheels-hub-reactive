@@ -23,15 +23,6 @@ public class Outbox {
     @BsonId
     private ObjectId id;
 
-    private Operation operation;
-
     private Invoice content;
-
-    @Getter
-    public enum Operation {
-
-        CREATE, UPDATE, CLOSE
-
-    }
 
 }

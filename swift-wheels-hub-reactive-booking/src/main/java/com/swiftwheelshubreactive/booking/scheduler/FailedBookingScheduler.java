@@ -7,12 +7,10 @@ import com.swiftwheelshubreactive.booking.service.CarService;
 import com.swiftwheelshubreactive.booking.service.OutboxService;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingProcessStatus;
-import com.swiftwheelshubreactive.model.CarStage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +39,8 @@ public class FailedBookingScheduler {
     @Scheduled(fixedDelayString = "${scheduled.fixedDelay}")
     public void processFailedBookings() {
         bookingRepository.findAllFailedBookings()
-                .flatMap(this::processBookingsByOperation)
                 .onBackpressureBuffer()
+                .flatMap(this::processBookingsByOperation)
                 .subscribe();
     }
 
@@ -52,25 +50,25 @@ public class FailedBookingScheduler {
                 .flatMap(_ -> processFailedBooking(failedBooking));
     }
 
-    private Mono<StatusUpdateResponse> processCarServiceCall(Booking booking) {
-        if (BookingProcessStatus.FAILED_CREATED_BOOKING == booking.getBookingProcessStatus()) {
-            return carService.changeCarStatus(
-                    getAuthenticationInfo(),
-                    booking.getActualCarId().toString(),
-                    CarState.NOT_AVAILABLE,
-                    0
-            );
-        }
-
-        if (BookingProcessStatus.FAILED_UPDATED_BOOKING == booking.getBookingProcessStatus()) {
-            return carService.updateCarsStatuses(
-                    getAuthenticationInfo(),
-                    getCarsToUpdate(booking.getPreviousCarId().toString(), booking.getActualCarId().toString()),
-                    0
-            );
-        }
-
-        return carService.updateCarWhenBookingIsFinished(getAuthenticationInfo(), getCarUpdateDetails(booking), 0);
+    private Mono<StatusUpdateResponse> processCarServiceCall(Booking failedBooking) {
+        return Mono.just(failedBooking)
+                .filter(booking -> BookingProcessStatus.FAILED_CREATED_BOOKING == booking.getBookingProcessStatus())
+                .flatMap(booking -> carService.changeCarStatus(
+                                getAuthenticationInfo(),
+                                booking.getActualCarId().toString(),
+                                CarState.NOT_AVAILABLE,
+                                0
+                        )
+                )
+                .switchIfEmpty(
+                        Mono.defer(() ->
+                                carService.updateCarsStatuses(
+                                        getAuthenticationInfo(),
+                                        getCarsToUpdate(failedBooking.getPreviousCarId().toString(), failedBooking.getActualCarId().toString()),
+                                        0
+                                )
+                        )
+                );
     }
 
     private AuthenticationInfo getAuthenticationInfo() {
@@ -91,46 +89,11 @@ public class FailedBookingScheduler {
         );
     }
 
-    private CarUpdateDetails getCarUpdateDetails(Booking booking) {
-        return CarUpdateDetails.builder()
-                .carId(booking.getActualCarId().toString())
-                .receptionistEmployeeId(booking.getReturnBranchId().toString())
-                .carState(getCarPhase(booking.getCarStage()))
-                .build();
-    }
-
-    private CarState getCarPhase(CarStage carStage) {
-        return switch (carStage) {
-            case AVAILABLE -> CarState.AVAILABLE;
-            case BROKEN -> CarState.BROKEN;
-        };
-    }
-
     private Mono<Booking> processFailedBooking(Booking failedBooking) {
         return Mono.just(failedBooking)
-                .filter(booking -> BookingProcessStatus.FAILED_CLOSED_BOOKING == booking.getBookingProcessStatus())
-                .flatMap(booking -> bookingRepository.save(processClosedBooking(booking)))
-                .switchIfEmpty(Mono.defer(() -> outboxService.processBookingSaving(getCorrespondingBooking(failedBooking), getOutboxOperation(failedBooking))));
-    }
-
-    private Booking processClosedBooking(Booking failedBooking) {
-        return bookingMapper.getSuccessfulClosedBooking(failedBooking);
-    }
-
-    private Booking getCorrespondingBooking(Booking failedBooking) {
-        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
-            return bookingMapper.getSuccessfulCreatedBooking(failedBooking);
-        }
-
-        return bookingMapper.getSuccessfulUpdatedBooking(failedBooking);
-    }
-
-    private Outbox.Operation getOutboxOperation(Booking failedBooking) {
-        if (BookingProcessStatus.FAILED_CREATED_BOOKING == failedBooking.getBookingProcessStatus()) {
-            return Outbox.Operation.CREATE;
-        }
-
-        return Outbox.Operation.UPDATE;
+                .filter(booking -> BookingProcessStatus.FAILED_CREATED_BOOKING == booking.getBookingProcessStatus())
+                .flatMap(booking -> outboxService.processBookingSaving(bookingMapper.getSuccessfulCreatedBooking(booking), Outbox.Operation.CREATE))
+                .switchIfEmpty(Mono.defer(() -> outboxService.processBookingSaving(bookingMapper.getSuccessfulUpdatedBooking(failedBooking), Outbox.Operation.UPDATE)));
     }
 
 }

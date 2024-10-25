@@ -100,10 +100,10 @@ class RevenueServiceTest {
         Revenue revenue = TestUtil.getResourceAsJson("/data/Revenue.json", Revenue.class);
 
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(outboxService.saveOutbox(any(Invoice.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
+        when(outboxService.saveOutbox(any(Invoice.class))).thenReturn(Mono.just(outbox));
         when(revenueRepository.save(any(Revenue.class))).thenReturn(Mono.just(revenue));
 
-        StepVerifier.create(revenueService.saveInvoiceRevenueAndOutbox(invoice))
+        StepVerifier.create(revenueService.processInvoiceCreation(invoice))
                 .assertNext(actualInvoice -> assertThat(invoice).usingRecursiveComparison().isEqualTo(actualInvoice))
                 .verifyComplete();
     }
@@ -114,10 +114,10 @@ class RevenueServiceTest {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(outboxService.saveOutbox(any(Invoice.class), any(Outbox.Operation.class))).thenReturn(Mono.just(outbox));
+        when(outboxService.saveOutbox(any(Invoice.class))).thenReturn(Mono.just(outbox));
         when(revenueRepository.save(any(Revenue.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(revenueService.saveInvoiceRevenueAndOutbox(invoice))
+        StepVerifier.create(revenueService.processInvoiceCreation(invoice))
                 .expectError()
                 .verify();
     }

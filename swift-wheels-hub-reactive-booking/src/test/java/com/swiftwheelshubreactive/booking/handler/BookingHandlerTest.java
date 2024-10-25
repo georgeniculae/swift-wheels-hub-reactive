@@ -8,6 +8,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -255,8 +256,8 @@ class BookingHandlerTest {
 
     @Test
     void closeBookingTest_success() {
-        BookingResponse bookingResponse =
-                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+        BookingUpdateResponse bookingUpdateResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingUpdateResponse.json", BookingUpdateResponse.class);
 
         BookingClosingDetails bookingClosingDetails =
                 TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
@@ -268,7 +269,7 @@ class BookingHandlerTest {
                 .body(Mono.just(bookingClosingDetails));
 
         when(bookingClosingDetailsValidator.validateBody(any())).thenReturn(Mono.just(bookingClosingDetails));
-        when(bookingService.closeBooking(any(AuthenticationInfo.class), any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingResponse));
+        when(bookingService.closeBooking(any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingUpdateResponse));
 
         StepVerifier.create(bookingHandler.closeBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

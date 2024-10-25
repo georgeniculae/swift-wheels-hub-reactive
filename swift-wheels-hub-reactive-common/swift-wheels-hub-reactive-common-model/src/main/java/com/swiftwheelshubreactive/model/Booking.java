@@ -33,8 +33,6 @@ public class Booking {
 
     private String customerUsername;
 
-    private String customerEmail;
-
     @NonNull
     private ObjectId actualCarId;
 

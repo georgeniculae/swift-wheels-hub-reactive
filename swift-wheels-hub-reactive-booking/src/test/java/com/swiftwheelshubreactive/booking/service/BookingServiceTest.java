@@ -9,12 +9,10 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.EmployeeResponse;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
-import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingStatus;
 import org.bson.types.ObjectId;
@@ -62,18 +60,13 @@ class BookingServiceTest {
     @Mock
     private OutboxService outboxService;
 
-    @Mock
-    private EmployeeService employeeService;
-
-    @Mock
-    private CustomerService customerService;
-
     @Spy
     private BookingMapper bookingMapper = new BookingMapperImpl();
 
     @Test
     void findAllBookingTest_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
@@ -192,9 +185,6 @@ class BookingServiceTest {
         CarResponse carResponse =
                 TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        UserInfo userInfo =
-                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
-
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         String apikey = "apikey";
@@ -208,7 +198,6 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
-        when(customerService.findUserByUsername(any(AuthenticationInfo.class))).thenReturn(Mono.just(userInfo));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
@@ -235,9 +224,6 @@ class BookingServiceTest {
         CarResponse carResponse =
                 TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
 
-        UserInfo userInfo =
-                TestUtil.getResourceAsJson("/data/UserInfo.json", UserInfo.class);
-
         String apikey = "apikey";
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -249,7 +235,6 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
-        when(customerService.findUserByUsername(any(AuthenticationInfo.class))).thenReturn(Mono.just(userInfo));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
@@ -288,68 +273,35 @@ class BookingServiceTest {
         Booking updatedClosedBooking =
                 TestUtil.getResourceAsJson("/data/UpdatedClosedBooking.json", Booking.class);
 
-        BookingResponse closedBookingResponse =
-                TestUtil.getResourceAsJson("/data/ClosedBookingResponse.json", BookingResponse.class);
+        BookingUpdateResponse bookingUpdateResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingUpdateResponse.json", BookingUpdateResponse.class);
 
         BookingClosingDetails bookingClosingDetails =
                 TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
 
-        EmployeeResponse employeeResponse =
-                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
-
-        String apikey = "apikey";
-
-        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
-                .apikey(apikey)
-                .roles(List.of("admin"))
-                .build();
-
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(any(AuthenticationInfo.class), anyString()))
-                .thenReturn(Mono.just(employeeResponse));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(updatedClosedBooking));
-        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
 
-        StepVerifier.create(bookingService.closeBooking(authenticationInfo, bookingClosingDetails))
-                .expectNext(closedBookingResponse)
+        StepVerifier.create(bookingService.closeBooking(bookingClosingDetails))
+                .expectNext(bookingUpdateResponse)
                 .verifyComplete();
     }
 
     @Test
-    void closeBookingTest_errorOnUpdatingCarWhenBookingIsFinished() {
+    void closeBookingTest_errorOnSavingCar() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
 
-        BookingResponse bookingResponse =
-                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+        BookingUpdateResponse bookingUpdateResponse =
+                TestUtil.getResourceAsJson("/data/FailedBookingUpdateResponse.json", BookingUpdateResponse.class);
 
         BookingClosingDetails bookingClosingDetails =
                 TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
 
-        EmployeeResponse employeeResponse =
-                TestUtil.getResourceAsJson("/data/EmployeeResponse.json", EmployeeResponse.class);
-
-        String apikey = "apikey";
-
-        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
-                .apikey(apikey)
-                .roles(List.of("admin"))
-                .build();
-
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(employeeService.findEmployeeById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(employeeResponse));
-        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
+        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.closeBooking(authenticationInfo, bookingClosingDetails))
-                .expectNext(bookingResponse)
+        StepVerifier.create(bookingService.closeBooking(bookingClosingDetails))
+                .expectNext(bookingUpdateResponse)
                 .verifyComplete();
     }
 
@@ -511,6 +463,7 @@ class BookingServiceTest {
     @Test
     void findBookingByDateOfBookingTest_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 

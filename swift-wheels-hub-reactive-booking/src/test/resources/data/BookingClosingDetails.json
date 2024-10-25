@@ -1,5 +1,4 @@
 {
   "bookingId": "64f361caf291ae086e179547",
-  "receptionistEmployeeId": "64f361caf291ae086e179547",
-  "carPhase": "AVAILABLE"
+  "returnBranchId": "64f361caf291ae086e179547"
 }

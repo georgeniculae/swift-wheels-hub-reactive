@@ -35,7 +35,7 @@ class OutboxServiceTest {
     private BookingRepository bookingRepository;
 
     @Mock
-    private SavedBookingProducerService savedBookingProducerService;
+    private CreatedBookingProducerService createdBookingProducerService;
 
     @Mock
     private UpdatedBookingProducerService updatedBookingProducerService;
@@ -48,7 +48,7 @@ class OutboxServiceTest {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(savedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
+        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(outboxService.handleOutboxes())

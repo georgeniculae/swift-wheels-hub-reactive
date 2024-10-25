@@ -106,22 +106,6 @@ public class BookingHandler {
     }
 
     @PreAuthorize("hasRole('user')")
-    public Mono<ServerResponse> closeBooking(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(BookingClosingDetails.class)
-                .flatMap(bookingClosingDetailsValidator::validateBody)
-                .flatMap(bookingClosingDetails ->
-                        bookingService.closeBooking(
-                                AuthenticationInfo.builder()
-                                        .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
-                                        .roles(ServerRequestUtil.getRolesHeader(serverRequest))
-                                        .build(),
-                                bookingClosingDetails
-                        )
-                )
-                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
-    }
-
-    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> updateBooking(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(BookingRequest.class)
                 .flatMap(bookingRequestValidator::validateBody)
@@ -136,6 +120,14 @@ public class BookingHandler {
                         )
                 )
                 .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
+    }
+
+    @PreAuthorize("hasAnyRole('user', 'invoice_service')")
+    public Mono<ServerResponse> closeBooking(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(BookingClosingDetails.class)
+                .flatMap(bookingClosingDetailsValidator::validateBody)
+                .flatMap(bookingService::closeBooking)
+                .flatMap(bookingUpdateResponse -> ServerResponse.ok().bodyValue(bookingUpdateResponse));
     }
 
     @PreAuthorize("hasRole('user')")

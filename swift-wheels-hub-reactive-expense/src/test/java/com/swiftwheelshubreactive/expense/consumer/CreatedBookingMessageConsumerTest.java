@@ -26,10 +26,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SavedBookingMessageConsumerTest {
+class CreatedBookingMessageConsumerTest {
 
     @InjectMocks
-    private SavedBookingMessageConsumer savedBookingMessageConsumer;
+    private CreatedBookingMessageConsumer createdBookingMessageConsumer;
 
     @Mock
     private InvoiceService invoiceService;
@@ -39,7 +39,7 @@ class SavedBookingMessageConsumerTest {
 
     @Test
     void savedBookingConsumerTest_success_acknowledgedMessage() {
-        ReflectionTestUtils.setField(savedBookingMessageConsumer, "isMessageAckEnabled", true);
+        ReflectionTestUtils.setField(createdBookingMessageConsumer, "isMessageAckEnabled", true);
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -52,14 +52,14 @@ class SavedBookingMessageConsumerTest {
 
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
 
-        StepVerifier.create(savedBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
                 .verify();
     }
 
     @Test
     void savedBookingConsumerTest_success_notAcknowledgedMessage() {
-        ReflectionTestUtils.setField(savedBookingMessageConsumer, "isMessageAckEnabled", false);
+        ReflectionTestUtils.setField(createdBookingMessageConsumer, "isMessageAckEnabled", false);
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -71,14 +71,14 @@ class SavedBookingMessageConsumerTest {
 
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
 
-        StepVerifier.create(savedBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
                 .verify();
     }
 
     @Test
     void savedBookingConsumerTest_success_emptyHeaders() {
-        ReflectionTestUtils.setField(savedBookingMessageConsumer, "isMessageAckEnabled", true);
+        ReflectionTestUtils.setField(createdBookingMessageConsumer, "isMessageAckEnabled", true);
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -90,14 +90,14 @@ class SavedBookingMessageConsumerTest {
 
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
 
-        StepVerifier.create(savedBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
                 .verify();
     }
 
     @Test
     void savedBookingConsumerTest_errorSavingInvoice() {
-        ReflectionTestUtils.setField(savedBookingMessageConsumer, "isMessageAckEnabled", true);
+        ReflectionTestUtils.setField(createdBookingMessageConsumer, "isMessageAckEnabled", true);
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
@@ -107,7 +107,7 @@ class SavedBookingMessageConsumerTest {
 
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(savedBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
                 .verify();
     }

@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.booking.service;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
@@ -71,20 +70,6 @@ public class CarService {
                 .exchangeToFlux(this::processClientResponseFlux)
                 .collectList()
                 .flatMap(this::checkCarsUpdateResponse)
-                .retryWhen(Retry.fixedDelay(retries, Duration.ofSeconds(5)))
-                .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
-    }
-
-    public Mono<StatusUpdateResponse> updateCarWhenBookingIsFinished(AuthenticationInfo authenticationInfo,
-                                                                     CarUpdateDetails carUpdateDetails,
-                                                                     int retries) {
-        return webClient.put()
-                .uri(url + SEPARATOR + "{id}" + SEPARATOR + "update-after-return", carUpdateDetails.carId())
-                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(carUpdateDetails)
-                .exchangeToMono(this::getStatusUpdateResponseMono)
                 .retryWhen(Retry.fixedDelay(retries, Duration.ofSeconds(5)))
                 .onErrorResume(_ -> Mono.just(getCarUpdateResponse()));
     }

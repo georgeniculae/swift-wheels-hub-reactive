@@ -3,8 +3,11 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
+import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapperImpl;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -27,6 +30,7 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -49,6 +53,9 @@ class InvoiceServiceTest {
 
     @Mock
     private InvoiceRepository invoiceRepository;
+
+    @Mock
+    private CarService carService;
 
     @Spy
     private InvoiceMapper invoiceMapper = new InvoiceMapperImpl();
@@ -239,16 +246,22 @@ class InvoiceServiceTest {
 
     @Test
     void closeInvoiceTest_success() {
-        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        Invoice invoice = TestUtil.getResourceAsJson("/data/ClosedInvoice.json", Invoice.class);
 
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         InvoiceResponse invoiceResponse =
-                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
+                TestUtil.getResourceAsJson("/data/ClosedInvoiceResponse.json", InvoiceResponse.class);
+
+        BookingUpdateResponse bookingUpdateResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingUpdateResponse.json", BookingUpdateResponse.class);
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
+        StatusUpdateResponse statusUpdateResponse =
+                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey("apikey")
@@ -260,10 +273,14 @@ class InvoiceServiceTest {
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.findBookingById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(bookingResponse));
-        when(revenueService.saveInvoiceRevenueAndOutbox(any(Invoice.class))).thenReturn(Mono.just(invoice));
-        when(bookingService.closeBooking(any(AuthenticationInfo.class), any(BookingClosingDetails.class)))
-                .thenReturn(Mono.empty());
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
+        when(bookingService.findBookingById(any(AuthenticationInfo.class), anyString()))
+                .thenReturn(Mono.just(bookingResponse));
+        when(carService.setCarAsAvailable(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
+                .thenReturn(Mono.just(statusUpdateResponse));
+        when(bookingService.closeBooking(any(AuthenticationInfo.class), any(BookingClosingDetails.class), anyInt()))
+                .thenReturn(Mono.just(bookingUpdateResponse));
+        when(revenueService.processInvoiceCreation(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
         StepVerifier.create(invoiceService.closeInvoice(authenticationInfo, "64f361caf291ae086e179547", invoiceRequest))
                 .expectNext(invoiceResponse)

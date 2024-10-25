@@ -31,17 +31,11 @@ public interface BookingMapper {
     @Mapping(target = "bookingProcessStatus", constant = "SAVED_UPDATED_BOOKING")
     Booking getSuccessfulUpdatedBooking(Booking booking);
 
-    @Mapping(target = "bookingProcessStatus", constant = "SAVED_CLOSED_BOOKING")
-    Booking getSuccessfulClosedBooking(Booking booking);
-
     @Mapping(target = "bookingProcessStatus", constant = "FAILED_CREATED_BOOKING")
     Booking getFailedCreatedBooking(Booking pendingBooking);
 
     @Mapping(target = "bookingProcessStatus", constant = "FAILED_UPDATED_BOOKING")
     Booking getFailedUpdatedBooking(Booking pendingBooking);
-
-    @Mapping(target = "bookingProcessStatus", constant = "FAILED_CLOSED_BOOKING")
-    Booking getFailedClosedBooking(Booking pendingBooking);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

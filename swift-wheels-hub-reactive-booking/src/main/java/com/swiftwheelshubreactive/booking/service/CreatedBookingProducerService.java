@@ -13,7 +13,7 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-public class SavedBookingProducerService {
+public class CreatedBookingProducerService {
 
     private final StreamBridge streamBridge;
 

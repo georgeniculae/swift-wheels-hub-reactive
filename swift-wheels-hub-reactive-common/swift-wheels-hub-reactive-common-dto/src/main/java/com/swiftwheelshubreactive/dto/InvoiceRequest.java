@@ -14,10 +14,14 @@ public record InvoiceRequest(
         String receptionistEmployeeId,
 
         @NonNull
+        String returnBranchId,
+
+        @NonNull
         String bookingId,
 
         LocalDate carReturnDate,
 
+        @NonNull
         Boolean isVehicleDamaged,
 
         BigDecimal damageCost,
@@ -33,7 +37,7 @@ public record InvoiceRequest(
     public String toString() {
         return "InvoiceRequest{" + "\n" +
                 "carId=" + carId + "\n" +
-                "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
+                "returnBranchId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +
                 "carReturnDate=" + carReturnDate + "\n" +
                 "isVehicleDamaged=" + isVehicleDamaged + "\n" +

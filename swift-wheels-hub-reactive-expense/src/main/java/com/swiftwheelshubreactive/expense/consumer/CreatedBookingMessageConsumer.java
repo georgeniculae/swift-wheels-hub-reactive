@@ -23,7 +23,7 @@ import java.util.function.Function;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class SavedBookingMessageConsumer {
+public class CreatedBookingMessageConsumer {
 
     private final InvoiceService invoiceService;
 

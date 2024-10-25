@@ -27,11 +27,11 @@ public class Invoice {
 
     private String customerUsername;
 
-    private String customerEmail;
-
     private ObjectId carId;
 
     private ObjectId receptionistEmployeeId;
+
+    private ObjectId returnBranchId;
 
     private ObjectId bookingId;
 
@@ -46,5 +46,7 @@ public class Invoice {
     private BigDecimal totalAmount;
 
     private String comments;
+
+    private InvoiceProcessStatus invoiceProcessStatus;
 
 }

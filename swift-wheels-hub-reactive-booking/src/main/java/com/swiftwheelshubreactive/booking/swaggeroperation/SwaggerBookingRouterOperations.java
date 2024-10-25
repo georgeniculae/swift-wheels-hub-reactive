@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.booking.handler.BookingHandler;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -332,7 +333,7 @@ import java.time.LocalDate;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = BookingResponse.class))
+                                                content = @Content(schema = @Schema(implementation = BookingUpdateResponse.class))
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",

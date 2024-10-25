@@ -130,6 +130,7 @@ logging:
 
 apikey:
   secret: ${API_KEY_SECRET}
+  machine-role: ${INVOICE_SERVICE_ROLE}
 
 cors:
   mapping: '/**'
@@ -143,6 +144,7 @@ mongo-operations:
 
 webClient:
   url:
+    swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
     swift-wheels-hub-bookings: http://swift-wheels-hub-reactive-booking/bookings
 
 bookingConsumer:

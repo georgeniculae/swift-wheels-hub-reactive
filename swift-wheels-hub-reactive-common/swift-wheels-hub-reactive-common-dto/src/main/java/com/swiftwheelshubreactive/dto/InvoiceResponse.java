@@ -14,12 +14,11 @@ public record InvoiceResponse(
         String customerUsername,
 
         @NonNull
-        String customerEmail,
-
-        @NonNull
         String carId,
 
         String receptionistEmployeeId,
+
+        String returnBranchId,
 
         @NonNull
         String bookingId,
@@ -42,9 +41,8 @@ public record InvoiceResponse(
         return "InvoiceResponse{" + "\n" +
                 "id=" + id + "\n" +
                 "customerUsername=" + customerUsername + "\n" +
-                "customerEmail=" + customerEmail + "\n" +
                 "carId=" + carId + "\n" +
-                "receptionistEmployeeId=" + receptionistEmployeeId + "\n" +
+                "returnBranchId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +
                 "carReturnDate=" + carReturnDate + "\n" +
                 "isVehicleDamaged=" + isVehicleDamaged + "\n" +

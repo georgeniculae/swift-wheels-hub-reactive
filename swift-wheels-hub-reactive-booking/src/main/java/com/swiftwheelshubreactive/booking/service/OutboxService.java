@@ -25,7 +25,7 @@ public class OutboxService {
 
     private final OutboxRepository outboxRepository;
     private final BookingRepository bookingRepository;
-    private final SavedBookingProducerService savedBookingProducerService;
+    private final CreatedBookingProducerService createdBookingProducerService;
     private final UpdatedBookingProducerService updatedBookingProducerService;
     private final DeletedBookingProducerService deletedBookingProducerService;
     private final BookingMapper bookingMapper;
@@ -89,7 +89,7 @@ public class OutboxService {
 
     private Mono<Boolean> sendBookingToCorrespondingTopic(Outbox outbox) {
         if (Outbox.Operation.CREATE.equals(outbox.getOperation())) {
-            return savedBookingProducerService.sendMessage(getBookingResponse(outbox.getContent()));
+            return createdBookingProducerService.sendMessage(getBookingResponse(outbox.getContent()));
         }
 
         if (Outbox.Operation.UPDATE.equals(outbox.getOperation())) {

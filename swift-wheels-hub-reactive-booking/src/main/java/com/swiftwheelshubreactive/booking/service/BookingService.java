@@ -7,13 +7,11 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.CarPhase;
+import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarRequest;
-import com.swiftwheelshubreactive.dto.UserInfo;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -23,7 +21,6 @@ import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingProcessStatus;
 import com.swiftwheelshubreactive.model.BookingStatus;
-import com.swiftwheelshubreactive.model.CarStage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -55,8 +52,6 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final CarService carService;
-    private final CustomerService customerService;
-    private final EmployeeService employeeService;
     private final OutboxService outboxService;
     private final BookingMapper bookingMapper;
 
@@ -171,15 +166,14 @@ public class BookingService {
                 });
     }
 
-    public Mono<BookingResponse> closeBooking(AuthenticationInfo authenticationInfo, BookingClosingDetails bookingClosingDetails) {
-        return updatedBookingWithEmployeeDetails(authenticationInfo, bookingClosingDetails)
+    public Mono<BookingUpdateResponse> closeBooking(BookingClosingDetails bookingClosingDetails) {
+        return updatedBookingWithClosingDetails(bookingClosingDetails)
                 .flatMap(bookingRepository::save)
-                .flatMap(pendingSavedBooking -> processBookingIfCarIsUpdated(authenticationInfo, bookingClosingDetails, pendingSavedBooking))
-                .map(bookingMapper::mapEntityToDto)
-                .onErrorMap(e -> {
+                .map(_ -> new BookingUpdateResponse(true))
+                .onErrorResume(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
-                    return ExceptionUtil.handleException(e);
+                    return Mono.just(new BookingUpdateResponse(false));
                 });
     }
 
@@ -229,12 +223,11 @@ public class BookingService {
                 });
     }
 
-    private Mono<Booking> createNewBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest, BookingRequest bookingRequest) {
-        return Mono.zip(
-                carService.findAvailableCarById(authenticationInfo, bookingRequest.carId()),
-                customerService.findUserByUsername(authenticationInfo),
-                (carResponse, userInfo) -> setupNewBooking(newBookingRequest, carResponse, userInfo)
-        );
+    private Mono<Booking> createNewBooking(AuthenticationInfo authenticationInfo,
+                                           BookingRequest newBookingRequest,
+                                           BookingRequest bookingRequest) {
+        return carService.findAvailableCarById(authenticationInfo, bookingRequest.carId())
+                .map(carResponse -> setupNewBooking(newBookingRequest, carResponse, authenticationInfo.username()));
     }
 
     private Mono<Booking> processCreatedBooking(AuthenticationInfo authenticationInfo, Booking pendingBooking) {
@@ -245,28 +238,17 @@ public class BookingService {
                 .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedCreatedBooking(pendingBooking)));
     }
 
-    private Mono<Booking> updatedBookingWithEmployeeDetails(AuthenticationInfo authenticationInfo,
-                                                            BookingClosingDetails bookingClosingDetails) {
-        return Mono.zip(
-                findEntityById(bookingClosingDetails.bookingId()),
-                employeeService.findEmployeeById(authenticationInfo, bookingClosingDetails.receptionistEmployeeId()),
-                (existingBooking, employeeResponse) -> {
+    private Mono<Booking> updatedBookingWithClosingDetails(BookingClosingDetails bookingClosingDetails) {
+        return findEntityById(bookingClosingDetails.bookingId())
+                .map(existingBooking -> {
                     Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
-                    updatedBooking.setReturnBranchId(MongoUtil.getObjectId(employeeResponse.workingBranchId()));
-                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_CLOSING);
-                    updatedBooking.setCarStage(getCarStage(bookingClosingDetails.carPhase()));
+                    updatedBooking.setReturnBranchId(MongoUtil.getObjectId(bookingClosingDetails.returnBranchId()));
+                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.SAVED_CLOSED_BOOKING);
 
                     return updatedBooking;
                 });
-    }
-
-    private CarStage getCarStage(CarPhase carPhase) {
-        return switch (carPhase) {
-            case AVAILABLE -> CarStage.AVAILABLE;
-            case BROKEN -> CarStage.BROKEN;
-        };
     }
 
     private Mono<BookingResponse> processUpdatedBooking(AuthenticationInfo authenticationInfo,
@@ -310,34 +292,6 @@ public class BookingService {
         );
     }
 
-    private Mono<Booking> processBookingIfCarIsUpdated(AuthenticationInfo authenticationInfo,
-                                                       BookingClosingDetails bookingClosingDetails,
-                                                       Booking pendingSavedBooking) {
-        return updateCarWhenBookingIsClosed(authenticationInfo, pendingSavedBooking, bookingClosingDetails)
-                .filter(StatusUpdateResponse::isUpdateSuccessful)
-                .flatMap(_ -> bookingRepository.save(bookingMapper.getSuccessfulClosedBooking(pendingSavedBooking)))
-                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedClosedBooking(pendingSavedBooking)));
-    }
-
-    private Mono<StatusUpdateResponse> updateCarWhenBookingIsClosed(AuthenticationInfo authenticationInfo,
-                                                                    Booking bookingResponse,
-                                                                    BookingClosingDetails bookingClosingDetails) {
-        CarUpdateDetails carUpdateDetails = CarUpdateDetails.builder()
-                .carId(bookingResponse.getActualCarId().toString())
-                .receptionistEmployeeId(bookingClosingDetails.receptionistEmployeeId())
-                .carState(getCarState(bookingClosingDetails.carPhase()))
-                .build();
-
-        return carService.updateCarWhenBookingIsFinished(authenticationInfo, carUpdateDetails, 5);
-    }
-
-    private CarState getCarState(CarPhase carPhase) {
-        return switch (carPhase) {
-            case AVAILABLE -> CarState.AVAILABLE;
-            case BROKEN -> CarState.BROKEN;
-        };
-    }
-
     private Mono<Booking> saveBookingAfterFailedCarServiceResponse(Booking pendingUpdatedBooking) {
         return Mono.defer(() -> bookingRepository.save(pendingUpdatedBooking));
     }
@@ -377,12 +331,11 @@ public class BookingService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Booking with id " + id + " does not exist")));
     }
 
-    private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse, UserInfo userInfo) {
+    private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse, String username) {
         Booking newBooking = bookingMapper.mapDtoToEntity(newBookingRequest);
         BigDecimal amount = carResponse.amount();
 
-        newBooking.setCustomerUsername(userInfo.username());
-        newBooking.setCustomerEmail(userInfo.email());
+        newBooking.setCustomerUsername(username);
         newBooking.setActualCarId(MongoUtil.getObjectId(carResponse.id()));
         newBooking.setDateOfBooking(LocalDate.now());
         newBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));

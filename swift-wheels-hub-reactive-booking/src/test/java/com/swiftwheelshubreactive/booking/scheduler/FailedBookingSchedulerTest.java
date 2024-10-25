@@ -9,11 +9,9 @@ import com.swiftwheelshubreactive.booking.service.OutboxService;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingProcessStatus;
-import com.swiftwheelshubreactive.model.CarStage;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,25 +92,6 @@ class FailedBookingSchedulerTest {
         assertDoesNotThrow(() -> failedBookingScheduler.processFailedBookings());
 
         verify(bookingMapper).getSuccessfulUpdatedBooking(any(Booking.class));
-    }
-
-    @Test
-    void processFailedBookingsTest_success_failedClosedBooking() {
-        Booking booking = TestUtil.getResourceAsJson("/data/UpdatedClosedBooking.json", Booking.class);
-        booking.setBookingProcessStatus(BookingProcessStatus.FAILED_CLOSED_BOOKING);
-        booking.setCarStage(CarStage.AVAILABLE);
-
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
-
-        when(bookingRepository.findAllFailedBookings()).thenReturn(Flux.just(booking));
-        when(carService.updateCarWhenBookingIsFinished(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
-        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-
-        assertDoesNotThrow(() -> failedBookingScheduler.processFailedBookings());
-
-        verify(bookingMapper).getSuccessfulClosedBooking(any(Booking.class));
     }
 
     @Test

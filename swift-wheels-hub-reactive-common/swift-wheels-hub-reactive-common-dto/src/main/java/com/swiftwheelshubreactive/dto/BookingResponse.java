@@ -19,9 +19,6 @@ public record BookingResponse(
         String customerUsername,
 
         @NonNull
-        String customerEmail,
-
-        @NonNull
         String carId,
 
         @NonNull
@@ -47,7 +44,6 @@ public record BookingResponse(
                 "dateOfBooking=" + dateOfBooking + "\n" +
                 "status=" + status + "\n" +
                 "customerUsername=" + customerUsername + "\n" +
-                "customerEmail=" + customerEmail + "\n" +
                 "carId=" + carId + "\n" +
                 "dateFrom=" + dateFrom + "\n" +
                 "dateTo=" + dateTo + "\n" +

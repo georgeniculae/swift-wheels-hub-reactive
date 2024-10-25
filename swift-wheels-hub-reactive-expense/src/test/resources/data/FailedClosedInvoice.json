@@ -1,4 +1,6 @@
 {
+  "id": "64f361caf291ae086e179547",
+  "customerUsername": "test",
   "carId": "64f361caf291ae086e179547",
   "receptionistEmployeeId": "64f361caf291ae086e179547",
   "returnBranchId": "64f361caf291ae086e179444",
@@ -8,5 +10,6 @@
   "damageCost": 50,
   "additionalPayment": 0,
   "totalAmount": 550,
-  "comments": "comment"
+  "comments": "comment",
+  "invoiceProcessStatus": "FAILED_CLOSED_INVOICE"
 }

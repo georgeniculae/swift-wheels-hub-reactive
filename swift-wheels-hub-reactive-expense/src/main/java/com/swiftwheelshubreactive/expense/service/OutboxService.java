@@ -20,20 +20,24 @@ public class OutboxService {
 
     public Flux<Void> handleOutboxes() {
         return outboxRepository.findAll()
-                .filter(outbox -> Outbox.Operation.CLOSE.equals(outbox.getOperation()))
-                .delayUntil(outbox -> invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))
-                        .filter(Boolean.TRUE::equals)
-                        .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending invoice failed"))))
+                .delayUntil(this::processInvoice)
                 .flatMap(outboxRepository::delete);
     }
 
-    public Mono<Outbox> saveOutbox(Invoice savedInvoice, Outbox.Operation operation) {
-        Outbox outbox = Outbox.builder()
-                .operation(operation)
+    public Mono<Outbox> saveOutbox(Invoice savedInvoice) {
+        return outboxRepository.save(createOutbox(savedInvoice));
+    }
+
+    private Mono<Boolean> processInvoice(Outbox outbox) {
+        return invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Sending invoice failed")));
+    }
+
+    private Outbox createOutbox(Invoice savedInvoice) {
+        return Outbox.builder()
                 .content(savedInvoice)
                 .build();
-
-        return outboxRepository.save(outbox);
     }
 
 }

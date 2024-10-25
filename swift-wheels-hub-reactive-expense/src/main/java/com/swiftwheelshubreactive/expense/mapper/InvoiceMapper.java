@@ -7,6 +7,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -21,6 +22,12 @@ public interface InvoiceMapper {
     Invoice mapDtoToEntity(InvoiceRequest invoiceRequest);
 
     Invoice getNewInvoiceInstance(Invoice existingInvoice);
+
+    @Mapping(target = "invoiceProcessStatus", constant = "SAVED_CLOSED_INVOICE")
+    Invoice getSuccessfulCreatedInvoice(Invoice invoice);
+
+    @Mapping(target = "invoiceProcessStatus", constant = "FAILED_CLOSED_INVOICE")
+    Invoice getFailedCreatedInvoice(Invoice invoice);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

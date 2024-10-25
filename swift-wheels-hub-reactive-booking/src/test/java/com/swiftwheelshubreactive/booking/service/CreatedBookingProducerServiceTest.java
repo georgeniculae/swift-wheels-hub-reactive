@@ -18,25 +18,25 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SavedBookingProducerServiceTest {
+class CreatedBookingProducerServiceTest {
 
     @InjectMocks
-    private SavedBookingProducerService savedBookingProducerService;
+    private CreatedBookingProducerService createdBookingProducerService;
 
     @Mock
     private StreamBridge streamBridge;
 
     @Test
     void sendMessageTest() {
-        ReflectionTestUtils.setField(savedBookingProducerService, "binderName", "booking-producer-out-0");
-        ReflectionTestUtils.setField(savedBookingProducerService, "mimeType", "application/json");
+        ReflectionTestUtils.setField(createdBookingProducerService, "binderName", "booking-producer-out-0");
+        ReflectionTestUtils.setField(createdBookingProducerService, "mimeType", "application/json");
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
 
-        StepVerifier.create(savedBookingProducerService.sendMessage(bookingResponse))
+        StepVerifier.create(createdBookingProducerService.sendMessage(bookingResponse))
                 .expectNext(true)
                 .verifyComplete();
     }
