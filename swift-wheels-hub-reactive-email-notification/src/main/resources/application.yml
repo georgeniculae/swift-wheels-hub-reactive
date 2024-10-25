@@ -14,7 +14,7 @@ spring:
       database: swift_wheels_hub_email-notification
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubagency.itvzdx8.mongodb.net
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@swiftwheelshubemailnoti.dhm06.mongodb.net
   codec:
     max-in-memory-size: 20MB
   cloud:
