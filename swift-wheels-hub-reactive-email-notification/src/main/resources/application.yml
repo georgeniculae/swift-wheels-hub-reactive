@@ -41,7 +41,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: emailNotificationConsumer
+      definition: customerInfoConsumer;emailNotificationConsumer
     stream:
       defaultBinder: kafka
       bindings:
