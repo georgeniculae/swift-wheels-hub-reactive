@@ -54,6 +54,4 @@ public class Booking {
 
     private BookingProcessStatus bookingProcessStatus;
 
-    private CarStage carStage;
-
 }
