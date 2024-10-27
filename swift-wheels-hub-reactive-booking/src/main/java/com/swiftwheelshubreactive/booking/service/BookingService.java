@@ -27,6 +27,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -49,10 +50,12 @@ public class BookingService {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATE_OF_BOOKING = "dateOfBooking";
+    private static final String LOCKED = "locked";
     private final BookingRepository bookingRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final CarService carService;
     private final OutboxService outboxService;
+    private final ReactiveRedisOperations<String, String> redisOperations;
     private final BookingMapper bookingMapper;
 
     public Flux<BookingResponse> findAllBookings() {
@@ -138,9 +141,13 @@ public class BookingService {
     )
     public Mono<BookingResponse> saveBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
-                .flatMap(bookingRequest -> createNewBooking(authenticationInfo, newBookingRequest, bookingRequest))
+                .flatMap(bookingRequest -> lockCar(bookingRequest.carId()))
+                .filter(Boolean.FALSE::equals)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Car is not available")))
+                .flatMap(_ -> createNewBooking(authenticationInfo, newBookingRequest))
                 .flatMap(bookingRepository::save)
                 .flatMap(pendingBooking -> processCreatedBooking(authenticationInfo, pendingBooking))
+                .delayUntil(booking -> unlockCar(booking.getActualCarId().toString()))
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
@@ -223,10 +230,17 @@ public class BookingService {
                 });
     }
 
+    private Mono<Boolean> lockCar(String carId) {
+        return redisOperations.opsForValue().setIfAbsent(carId, LOCKED);
+    }
+
+    private Mono<Boolean> unlockCar(String carId) {
+        return redisOperations.opsForValue().delete(carId);
+    }
+
     private Mono<Booking> createNewBooking(AuthenticationInfo authenticationInfo,
-                                           BookingRequest newBookingRequest,
-                                           BookingRequest bookingRequest) {
-        return carService.findAvailableCarById(authenticationInfo, bookingRequest.carId())
+                                           BookingRequest newBookingRequest) {
+        return carService.findAvailableCarById(authenticationInfo, newBookingRequest.carId())
                 .map(carResponse -> setupNewBooking(newBookingRequest, carResponse, authenticationInfo.username()));
     }
 
@@ -255,7 +269,7 @@ public class BookingService {
                                                         BookingRequest updatedBookingRequest,
                                                         Booking existingBooking) {
         return getCarIfIsChanged(authenticationInfo, updatedBookingRequest, existingBooking)
-                .map(carResponse -> updateBookingWithNewData(updatedBookingRequest, existingBooking, carResponse))
+                .flatMap(carResponse -> processNewBookingData(updatedBookingRequest, existingBooking, carResponse))
                 .flatMap(pendingUpdatedBooking -> handleBookingWhenCarIsChanged(authenticationInfo, existingBooking, pendingUpdatedBooking))
                 .switchIfEmpty(handleBookingWhenCarIsNotChanged(updatedBookingRequest, existingBooking))
                 .map(bookingMapper::mapEntityToDto);
@@ -275,13 +289,21 @@ public class BookingService {
         return !existingBookingId.equals(newCarId);
     }
 
+    private Mono<Booking> processNewBookingData(BookingRequest updatedBookingRequest, Booking existingBooking, CarResponse carResponse) {
+        return lockCar(carResponse.id())
+                .filter(Boolean.FALSE::equals)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Car is not available")))
+                .map(_ -> updateBookingWithNewData(updatedBookingRequest, existingBooking, carResponse));
+    }
+
     private Mono<Booking> handleBookingWhenCarIsChanged(AuthenticationInfo authenticationInfo, Booking existingBooking, Booking pendingUpdatedBooking) {
         return bookingRepository.save(pendingUpdatedBooking)
                 .flatMap(savedUpdatedBooking -> changeCarsStatuses(authenticationInfo, savedUpdatedBooking, existingBooking))
                 .filter(StatusUpdateResponse::isUpdateSuccessful)
                 .map(_ -> bookingMapper.getSuccessfulUpdatedBooking(pendingUpdatedBooking))
                 .flatMap(updatedBooking -> outboxService.processBookingSaving(updatedBooking, Outbox.Operation.UPDATE))
-                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedUpdatedBooking(pendingUpdatedBooking)));
+                .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedUpdatedBooking(pendingUpdatedBooking)))
+                .delayUntil(booking -> unlockCar(booking.getActualCarId().toString()));
     }
 
     private Mono<Booking> handleBookingWhenCarIsNotChanged(BookingRequest updatedBookingRequest, Booking existingBooking) {
