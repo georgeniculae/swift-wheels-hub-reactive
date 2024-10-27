@@ -1,11 +1,14 @@
 package com.swiftwheelshubreactive.apigateway.security;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -15,7 +18,9 @@ public class JwtAuthenticationTokenConverter {
     private final Converter<Jwt, Flux<GrantedAuthority>> jwtGrantedAuthoritiesConverter;
 
     public String extractUsername(Jwt source) {
-        return (String) source.getClaims().get(USERNAME_CLAIM);
+        return Optional.ofNullable(source.getClaims().get(USERNAME_CLAIM))
+                .map(String::valueOf)
+                .orElseThrow(() -> new SwiftWheelsHubException("Username claim is null"));
     }
 
     public Flux<GrantedAuthority> extractGrantedAuthorities(Jwt source) {
