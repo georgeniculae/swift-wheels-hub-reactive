@@ -258,7 +258,7 @@ public class InvoiceService {
         return updateProcesses(authenticationInfo, invoice)
                 .filter(Boolean.TRUE::equals)
                 .map(_ -> invoiceMapper.getSuccessfulCreatedInvoice(invoice))
-                .flatMap(revenueService::processInvoiceCreation)
+                .flatMap(revenueService::processClosing)
                 .switchIfEmpty(Mono.defer(() -> invoiceRepository.save(invoiceMapper.getFailedCreatedInvoice(invoice))));
     }
 

@@ -72,7 +72,7 @@ class FailedInvoiceSchedulerTest {
                 .thenReturn(Mono.just(statusUpdateResponse));
         when(bookingService.closeBooking(any(AuthenticationInfo.class), any(BookingClosingDetails.class), anyInt()))
                 .thenReturn(Mono.just(bookingUpdateResponse));
-        when(revenueService.processInvoiceCreation(any(Invoice.class))).thenReturn(Mono.just(invoice));
+        when(revenueService.processClosing(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
         assertDoesNotThrow(() -> failedInvoiceScheduler.processFailedInvoices());
 

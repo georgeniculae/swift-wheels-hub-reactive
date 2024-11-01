@@ -47,7 +47,7 @@ public class FailedInvoiceScheduler {
     private Mono<Invoice> processFailedOutbox(Invoice invoice) {
         return updateProcesses(getAuthenticationInfo(), invoice)
                 .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> revenueService.processInvoiceCreation(invoiceMapper.getSuccessfulCreatedInvoice(invoice)));
+                .flatMap(_ -> revenueService.processClosing(invoiceMapper.getSuccessfulCreatedInvoice(invoice)));
     }
 
     private Mono<Boolean> updateProcesses(AuthenticationInfo authenticationInfo, Invoice invoice) {
