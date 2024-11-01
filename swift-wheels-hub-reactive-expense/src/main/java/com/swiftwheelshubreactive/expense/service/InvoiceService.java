@@ -270,11 +270,11 @@ public class InvoiceService {
         );
     }
 
-    private CarUpdateDetails getCarUpdateDetails(Invoice invoiceRequest) {
+    private CarUpdateDetails getCarUpdateDetails(Invoice invoice) {
         return CarUpdateDetails.builder()
-                .carId(invoiceRequest.getCarId().toString())
-                .receptionistEmployeeId(invoiceRequest.getReceptionistEmployeeId().toString())
-                .carState(invoiceRequest.getIsVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
+                .carId(invoice.getCarId().toString())
+                .receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString())
+                .carState(invoice.getIsVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
                 .build();
     }
 
