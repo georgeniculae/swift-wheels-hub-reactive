@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
@@ -47,6 +48,23 @@ public class BookingService {
                 });
     }
 
+    public Mono<BookingRollbackResponse> rollbackBooking(AuthenticationInfo authenticationInfo,
+                                                         String bookingId,
+                                                         int retries) {
+        return webClient.patch()
+                .uri(url + SEPARATOR + "rollback-booking")
+                .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
+                .bodyValue(bookingId)
+                .exchangeToMono(clientResponse -> getBookingRollbackResponse(bookingId, clientResponse))
+                .subscribeOn(Schedulers.boundedElastic())
+                .retryWhen(Retry.fixedDelay(retries, Duration.ofSeconds(5)))
+                .onErrorResume(e -> {
+                    log.error("Error while trying to rollback booking: {}", e.getMessage());
+
+                    return Mono.just(getFailedBookingRollbackResponse(bookingId));
+                });
+    }
+
     public Mono<BookingResponse> findBookingById(AuthenticationInfo authenticationInfo, String bookingId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}", bookingId)
@@ -66,9 +84,24 @@ public class BookingService {
         return clientResponse.bodyToMono(BookingUpdateResponse.class);
     }
 
+    private Mono<BookingRollbackResponse> getBookingRollbackResponse(String bookingId, ClientResponse clientResponse) {
+        if (clientResponse.statusCode().isError()) {
+            return Mono.just(getFailedBookingRollbackResponse(bookingId));
+        }
+
+        return clientResponse.bodyToMono(BookingRollbackResponse.class);
+    }
+
     private BookingUpdateResponse getFailedBookingUpdateResponse() {
         return BookingUpdateResponse.builder()
                 .isSuccessful(false)
+                .build();
+    }
+
+    private BookingRollbackResponse getFailedBookingRollbackResponse(String bookingId) {
+        return BookingRollbackResponse.builder()
+                .isSuccessful(false)
+                .bookingId(bookingId)
                 .build();
     }
 

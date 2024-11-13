@@ -7,6 +7,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -181,6 +182,16 @@ public class BookingService {
                     log.error("Error while closing booking: {}", e.getMessage());
 
                     return Mono.just(new BookingUpdateResponse(false));
+                });
+    }
+
+    public Mono<BookingRollbackResponse> rollbackBooking(String bookingId) {
+        return bookingRepository.updateBookingStatus(new ObjectId(bookingId))
+                .map(booking -> new BookingRollbackResponse(true, booking.getId().toString()))
+                .onErrorResume(e -> {
+                    log.error("Error while rollback booking: {}", e.getMessage());
+
+                    return Mono.just(new BookingRollbackResponse(false, bookingId));
                 });
     }
 

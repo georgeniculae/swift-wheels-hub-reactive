@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
@@ -13,6 +14,8 @@ import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
+import com.swiftwheelshubreactive.expense.model.FailedBookingRollback;
+import com.swiftwheelshubreactive.expense.repository.FailedBookingRollbackRepository;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
@@ -45,6 +48,7 @@ public class InvoiceService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final RevenueService revenueService;
     private final BookingService bookingService;
+    private final FailedBookingRollbackRepository failedBookingRollbackRepository;
     private final CarService carService;
     private final InvoiceMapper invoiceMapper;
 
@@ -255,19 +259,44 @@ public class InvoiceService {
     }
 
     private Mono<Invoice> processInvoiceClosing(AuthenticationInfo authenticationInfo, Invoice invoice) {
-        return updateProcesses(authenticationInfo, invoice)
+        return updateBookingAndCar(authenticationInfo, invoice)
                 .filter(Boolean.TRUE::equals)
                 .map(_ -> invoiceMapper.getSuccessfulCreatedInvoice(invoice))
                 .flatMap(revenueService::processClosing)
                 .switchIfEmpty(Mono.defer(() -> invoiceRepository.save(invoiceMapper.getFailedCreatedInvoice(invoice))));
     }
 
-    private Mono<Boolean> updateProcesses(AuthenticationInfo authenticationInfo, Invoice invoice) {
-        return Mono.zip(
-                carService.setCarAsAvailable(authenticationInfo, getCarUpdateDetails(invoice), 5),
-                bookingService.closeBooking(authenticationInfo, getBookingClosingDetails(invoice), 5),
-                this::getUpdateResponse
-        );
+    private Mono<Boolean> updateBookingAndCar(AuthenticationInfo authenticationInfo, Invoice invoice) {
+        return bookingService.closeBooking(authenticationInfo, getBookingClosingDetails(invoice), 5)
+                .filter(BookingUpdateResponse::isSuccessful)
+                .flatMap(_ -> processCarStatusChange(authenticationInfo, invoice))
+                .switchIfEmpty(Mono.just(false));
+    }
+
+    private Mono<Boolean> processCarStatusChange(AuthenticationInfo authenticationInfo, Invoice invoice) {
+        return carService.setCarAsAvailable(authenticationInfo, getCarUpdateDetails(invoice), 5)
+                .filter(StatusUpdateResponse::isUpdateSuccessful)
+                .map(StatusUpdateResponse::isUpdateSuccessful)
+                .switchIfEmpty(Mono.defer(() -> processBookingRollback(authenticationInfo, invoice)));
+    }
+
+    private Mono<Boolean> processBookingRollback(AuthenticationInfo authenticationInfo, Invoice invoice) {
+        return bookingService.rollbackBooking(authenticationInfo, invoice.getBookingId().toString(), 5)
+                .filter(BookingRollbackResponse::isSuccessful)
+                .switchIfEmpty(Mono.defer(() -> handleFailedBookingRollback(invoice)))
+                .map(_ -> false);
+    }
+
+    private Mono<BookingRollbackResponse> handleFailedBookingRollback(Invoice invoice) {
+        return failedBookingRollbackRepository.save(new FailedBookingRollback(invoice.getBookingId().toString()))
+                .map(this::getFailedBookingRollbackResponse);
+    }
+
+    private BookingRollbackResponse getFailedBookingRollbackResponse(FailedBookingRollback failedBookingRollback) {
+        return BookingRollbackResponse.builder()
+                .isSuccessful(false)
+                .bookingId(failedBookingRollback.getBookingId())
+                .build();
     }
 
     private CarUpdateDetails getCarUpdateDetails(Invoice invoice) {
@@ -276,10 +305,6 @@ public class InvoiceService {
                 .receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString())
                 .carState(invoice.getIsVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
                 .build();
-    }
-
-    private boolean getUpdateResponse(StatusUpdateResponse statusUpdateResponse, BookingUpdateResponse bookingUpdateResponse) {
-        return statusUpdateResponse.isUpdateSuccessful() && bookingUpdateResponse.isSuccessful();
     }
 
     private BigDecimal getDamageCost(InvoiceRequest invoiceRequest) {

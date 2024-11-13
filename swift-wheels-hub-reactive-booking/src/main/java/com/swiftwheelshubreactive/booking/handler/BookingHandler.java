@@ -130,6 +130,12 @@ public class BookingHandler {
                 .flatMap(bookingUpdateResponse -> ServerResponse.ok().bodyValue(bookingUpdateResponse));
     }
 
+    @PreAuthorize("hasAnyRole('user', 'invoice_service')")
+    public Mono<ServerResponse> rollbackBooking(ServerRequest serverRequest) {
+        return bookingService.rollbackBooking(ServerRequestUtil.getQueryParam(serverRequest, ID))
+                .flatMap(bookingUpdateResponse -> ServerResponse.ok().bodyValue(bookingUpdateResponse));
+    }
+
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> deleteBookingByCustomerUsername(ServerRequest serverRequest) {
         return bookingService.deleteBookingByCustomerUsername(serverRequest.pathVariable(USERNAME))

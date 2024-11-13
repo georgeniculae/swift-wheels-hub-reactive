@@ -65,7 +65,7 @@ class FailedInvoiceSchedulerTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulBookingUpdateResponse.json", BookingUpdateResponse.class);
 
         StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(invoiceRepository.findAllFailedInvoices()).thenReturn(Flux.just(invoice));
         when(carService.setCarAsAvailable(any(AuthenticationInfo.class), any(CarUpdateDetails.class), anyInt()))
