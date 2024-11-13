@@ -189,10 +189,11 @@ public class BookingService {
             sentParameters = "id"
     )
     public Mono<Void> deleteBookingByCustomerUsername(String username) {
-        return bookingRepository.findByCustomerUsername(username)
-                .collectList()
-                .filter(this::checkIfThereIsNoBookingInProgress)
+        return bookingRepository.existsByCustomerUsernameAndStatus(username, BookingStatus.IN_PROGRESS)
+                .filter(Boolean.FALSE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("There are bookings in progress")))
+                .flatMapMany(_ -> bookingRepository.findByCustomerUsername(username))
+                .collectList()
                 .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
                 .onErrorMap(e -> {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
@@ -320,10 +321,6 @@ public class BookingService {
 
     private Mono<StatusUpdateResponse> updateCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
         return carService.changeCarStatus(authenticationInfo, booking.getActualCarId().toString(), CarState.NOT_AVAILABLE, 5);
-    }
-
-    private boolean checkIfThereIsNoBookingInProgress(List<Booking> bookings) {
-        return bookings.stream().noneMatch(booking -> BookingStatus.IN_PROGRESS == booking.getStatus());
     }
 
     private Query getQuery(String dateOfBooking) {

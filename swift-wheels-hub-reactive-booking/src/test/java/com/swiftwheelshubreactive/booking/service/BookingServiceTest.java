@@ -280,7 +280,6 @@ class BookingServiceTest {
         verify(bookingMapper).mapEntityToDto(any(Booking.class));
     }
 
-
     @Test
     void saveBookingTest_errorOnFindingAvailableCarById() {
         BookingRequest bookingRequest =
@@ -562,6 +561,8 @@ class BookingServiceTest {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         booking.setStatus(BookingStatus.CLOSED);
 
+        when(bookingRepository.existsByCustomerUsernameAndStatus(anyString(), any(BookingStatus.class)))
+                .thenReturn(Mono.just(false));
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
         when(outboxService.processBookingDeletion(anyList(), any(Outbox.Operation.class))).thenReturn(Mono.empty());
 
@@ -573,8 +574,10 @@ class BookingServiceTest {
     @Test
     void deleteBookingByCustomerUsernameTest_bookingInProgress_error() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+        booking.setStatus(BookingStatus.CLOSED);
 
-        when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
+        when(bookingRepository.existsByCustomerUsernameAndStatus(anyString(), any(BookingStatus.class)))
+                .thenReturn(Mono.just(true));
 
         StepVerifier.create(bookingService.deleteBookingByCustomerUsername("user"))
                 .expectError()
@@ -583,6 +586,8 @@ class BookingServiceTest {
 
     @Test
     void deleteBookingByCustomerUsernameTest_errorOnFindingById() {
+        when(bookingRepository.existsByCustomerUsernameAndStatus(anyString(), any(BookingStatus.class)))
+                .thenReturn(Mono.just(false));
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.error(new Throwable()));
 
         StepVerifier.create(bookingService.deleteBookingByCustomerUsername("user"))
