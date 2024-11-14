@@ -559,12 +559,10 @@ class BookingServiceTest {
 
     @Test
     void rollbackBookingTest_success() {
-        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
-
         BookingRollbackResponse bookingRollbackResponse =
                 TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
 
-        when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.just(booking));
+        when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.empty());
 
         bookingService.rollbackBooking("64f361caf291ae086e179547")
                 .as(StepVerifier::create)

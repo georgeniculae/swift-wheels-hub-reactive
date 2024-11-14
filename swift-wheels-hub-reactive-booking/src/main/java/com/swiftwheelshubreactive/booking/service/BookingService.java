@@ -187,7 +187,7 @@ public class BookingService {
 
     public Mono<BookingRollbackResponse> rollbackBooking(String bookingId) {
         return bookingRepository.updateBookingStatus(new ObjectId(bookingId))
-                .map(booking -> new BookingRollbackResponse(true, booking.getId().toString()))
+                .thenReturn(new BookingRollbackResponse(true, bookingId))
                 .onErrorResume(e -> {
                     log.error("Error while rollback booking: {}", e.getMessage());
 

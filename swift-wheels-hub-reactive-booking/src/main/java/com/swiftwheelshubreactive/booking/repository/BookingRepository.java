@@ -30,6 +30,6 @@ public interface BookingRepository extends ReactiveMongoRepository<Booking, Obje
 
     @Query(value = "{ '_id': ?0 }")
     @Update(value = "{'status': 'IN_PROGRESS'}")
-    Mono<Booking> updateBookingStatus(ObjectId id);
+    Mono<Void> updateBookingStatus(ObjectId id);
 
 }
