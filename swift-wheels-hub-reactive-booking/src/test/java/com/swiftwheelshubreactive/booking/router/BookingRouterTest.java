@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.booking.router;
 import com.swiftwheelshubreactive.booking.handler.BookingHandler;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -431,6 +432,68 @@ class BookingRouterTest {
                 .exchange()
                 .expectStatus()
                 .isForbidden();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    void rollbackBookingTest_success() {
+        BookingRollbackResponse bookingRollbackResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingRollbackResponse);
+
+        when(bookingHandler.rollbackBooking(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        Flux<BookingRollbackResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .patch()
+                .uri("/{id}/rollback", "64f361caf291ae086e179547")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(BookingRollbackResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(responseBody)
+                .expectNext(bookingRollbackResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void rollbackBookingTest_forbidden() {
+        BookingRollbackResponse bookingRollbackResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingRollbackResponse);
+
+        when(bookingHandler.rollbackBooking(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.patch()
+                .uri("/{id}/rollback", "64f361caf291ae086e179547")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isForbidden();
+    }
+
+    @Test
+    @WithAnonymousUser
+    void rollbackBookingTest_unauthorized() {
+        BookingRollbackResponse bookingRollbackResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
+
+        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingRollbackResponse);
+
+        when(bookingHandler.rollbackBooking(any(ServerRequest.class))).thenReturn(serverResponse);
+
+        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
+                .patch()
+                .uri("/{id}/rollback", "64f361caf291ae086e179547")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
     }
 
     @Test

@@ -9,6 +9,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -554,6 +555,34 @@ class BookingServiceTest {
         StepVerifier.create(bookingService.findBookingsByDateOfBooking("2099-02-20"))
                 .expectError()
                 .verify();
+    }
+
+    @Test
+    void rollbackBookingTest_success() {
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
+        BookingRollbackResponse bookingRollbackResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
+
+        when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.just(booking));
+
+        bookingService.rollbackBooking("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
+                .expectNext(bookingRollbackResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    void rollbackBookingTest_errorWhileUpdatingBooking() {
+        BookingRollbackResponse bookingRollbackResponse =
+                TestUtil.getResourceAsJson("/data/FailedBookingRollbackResponse.json", BookingRollbackResponse.class);
+
+        when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
+
+        bookingService.rollbackBooking("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
+                .expectNext(bookingRollbackResponse)
+                .verifyComplete();
     }
 
     @Test

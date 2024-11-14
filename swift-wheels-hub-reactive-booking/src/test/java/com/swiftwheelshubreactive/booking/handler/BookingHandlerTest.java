@@ -8,6 +8,7 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -296,6 +297,25 @@ class BookingHandlerTest {
                 .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
+                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
+                .verifyComplete();
+    }
+
+    @Test
+    void rollbackBookingTest_success() {
+        BookingRollbackResponse bookingRollbackResponse =
+                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
+
+        MockServerRequest serverRequest = MockServerRequest.builder()
+                .method(HttpMethod.PATCH)
+                .header("X-API-KEY", "apikey")
+                .header("X-USERNAME", "user")
+                .pathVariable("id", "64f361caf291ae086e179547")
+                .build();
+
+        when(bookingService.rollbackBooking(anyString())).thenReturn(Mono.just(bookingRollbackResponse));
+
+        StepVerifier.create(bookingHandler.rollbackBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
