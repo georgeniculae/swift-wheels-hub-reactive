@@ -37,6 +37,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -243,7 +244,7 @@ public class BookingService {
     }
 
     private Mono<Boolean> lockCar(String carId) {
-        return redisOperations.opsForValue().setIfAbsent(carId, LOCKED);
+        return redisOperations.opsForValue().setIfAbsent(carId, LOCKED, Duration.ofSeconds(30));
     }
 
     private Mono<Boolean> unlockCar(String carId) {
