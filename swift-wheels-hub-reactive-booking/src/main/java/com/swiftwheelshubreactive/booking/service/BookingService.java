@@ -144,7 +144,7 @@ public class BookingService {
     public Mono<BookingResponse> saveBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
                 .flatMap(bookingRequest -> lockCar(bookingRequest.carId()))
-                .filter(Boolean.FALSE::equals)
+                .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Car is not available")))
                 .flatMap(_ -> createNewBooking(authenticationInfo, newBookingRequest))
                 .flatMap(bookingRepository::save)
@@ -304,7 +304,7 @@ public class BookingService {
 
     private Mono<Booking> processNewBookingData(BookingRequest updatedBookingRequest, Booking existingBooking, CarResponse carResponse) {
         return lockCar(carResponse.id())
-                .filter(Boolean.FALSE::equals)
+                .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Car is not available")))
                 .map(_ -> updateBookingWithNewData(updatedBookingRequest, existingBooking, carResponse));
     }
