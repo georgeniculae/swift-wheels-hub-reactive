@@ -34,6 +34,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -207,7 +208,7 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(false));
+        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
@@ -267,7 +268,7 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(false));
+        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
@@ -414,7 +415,7 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
 
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(false));
+        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
@@ -488,7 +489,7 @@ class BookingServiceTest {
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(false));
+        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList(), anyInt()))
                 .thenReturn(Mono.just(statusUpdateResponse));
