@@ -28,15 +28,10 @@ spring:
   cloud:
     loadbalancer:
       enabled: true
-      ribbon:
-        enabled: false
       cache:
         enabled: true
     consul:
       enabled: true
-      config:
-        enabled: false
-        acl-token: ${CONSUL_ACL_TOKEN}
       host: localhost
       port: 8500
       discovery:
@@ -131,8 +126,6 @@ mongo-operations:
 webclient:
   url:
     swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
-
-
 
 scheduled:
   fixedDelay: 5000

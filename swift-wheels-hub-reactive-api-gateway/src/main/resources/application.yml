@@ -20,15 +20,10 @@ spring:
   cloud:
     loadbalancer:
       enabled: true
-      ribbon:
-        enabled: false
       cache:
         enabled: true
     consul:
       enabled: true
-      config:
-        enabled: false
-        acl-token: ${CONSUL_ACL_TOKEN}
       host: localhost
       port: 8500
       discovery:
@@ -114,8 +109,6 @@ resilience4j:
     instances:
       fallbackHandler:
         registerHealthIndicator: true
-        ringBufferSizeInClosedState: 10
-        ringBufferSizeInHalfOpenState: 5
         waitDurationInOpenState: 10000
         failureRateThreshold: 50
         eventConsumerBufferSize: 10

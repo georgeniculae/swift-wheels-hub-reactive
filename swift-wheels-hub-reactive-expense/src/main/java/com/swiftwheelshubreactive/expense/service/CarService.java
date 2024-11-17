@@ -24,7 +24,7 @@ public class CarService {
     private static final String SEPARATOR = "/";
     private final WebClient webClient;
 
-    @Value("${webclient.url.swift-wheels-hub-agency-cars}")
+    @Value("${webClient.url.swift-wheels-hub-agency-cars}")
     private String url;
 
     public Mono<StatusUpdateResponse> setCarAsAvailable(AuthenticationInfo authenticationInfo,
