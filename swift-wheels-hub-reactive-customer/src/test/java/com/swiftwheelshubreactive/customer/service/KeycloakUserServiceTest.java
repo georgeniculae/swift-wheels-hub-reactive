@@ -185,7 +185,7 @@ class KeycloakUserServiceTest {
         headers.put("test", List.of());
         Response response = new ServerResponse(null, 201, headers);
 
-        try (var ignored = mockStatic(CreatedResponseUtil.class)) {
+        try (var _ = mockStatic(CreatedResponseUtil.class)) {
             when(CreatedResponseUtil.getCreatedId(any())).thenReturn("id");
             when(keycloak.realm(anyString())).thenReturn(realmResource);
             when(realmResource.roles()).thenReturn(rolesResource);
