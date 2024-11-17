@@ -31,11 +31,16 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .authorizeExchange(request -> request.pathMatchers("/definition/**",
-                                "/register",
-                                "/actuator/**")
-                        .permitAll()
-                        .anyExchange().authenticated())
+                .authorizeExchange(
+                        request -> request.pathMatchers(
+                                        "/definition/**",
+                                        "/register",
+                                        "/actuator/**"
+                                )
+                                .permitAll()
+                                .anyExchange()
+                                .authenticated()
+                )
                 .authenticationManager(reactiveAuthenticationManager)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .requestCache(request -> request.requestCache(NoOpServerRequestCache.getInstance()))

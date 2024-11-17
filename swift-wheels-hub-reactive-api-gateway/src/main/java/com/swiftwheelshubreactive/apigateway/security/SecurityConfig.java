@@ -32,16 +32,19 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .authorizeExchange(request -> request.pathMatchers("/agency/definition/**",
-                                "/ai/definition/**",
-                                "/bookings/definition/**",
-                                "/customers/definition/**",
-                                "/customers/register",
-                                "/expense/definition/**",
-                                "/actuator/**")
-                        .permitAll()
-                        .anyExchange()
-                        .authenticated())
+                .authorizeExchange(
+                        request -> request.pathMatchers(
+                                        "/agency/definition/**",
+                                        "/ai/definition/**",
+                                        "/bookings/definition/**",
+                                        "/customers/definition/**",
+                                        "/customers/register",
+                                        "/expense/definition/**",
+                                        "/actuator/**")
+                                .permitAll()
+                                .anyExchange()
+                                .authenticated()
+                )
                 .exceptionHandling(request ->
                         request.authenticationEntryPoint((response, _) -> getResponse(response, HttpStatus.UNAUTHORIZED))
                                 .accessDeniedHandler((response, _) -> getResponse(response, HttpStatus.FORBIDDEN)))
