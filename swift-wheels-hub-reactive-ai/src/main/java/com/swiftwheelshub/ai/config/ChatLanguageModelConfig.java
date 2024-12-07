@@ -19,13 +19,15 @@ public class ChatLanguageModelConfig {
 
     @Bean
     public ChatModel chatModel(OllamaApi ollamaApi, ChatProperties chatProperties) {
-        return new OllamaChatModel(
-                ollamaApi,
-                OllamaOptions.builder()
-                        .withModel(chatProperties.getModel())
-                        .withTemperature(chatProperties.getTemperature())
-                        .build()
-        );
+        return OllamaChatModel.builder()
+                .withOllamaApi(ollamaApi)
+                .withDefaultOptions(
+                        OllamaOptions.builder()
+                                .withModel(chatProperties.getModel())
+                                .withTemperature(chatProperties.getTemperature())
+                                .build()
+                )
+                .build();
     }
 
     @Bean
