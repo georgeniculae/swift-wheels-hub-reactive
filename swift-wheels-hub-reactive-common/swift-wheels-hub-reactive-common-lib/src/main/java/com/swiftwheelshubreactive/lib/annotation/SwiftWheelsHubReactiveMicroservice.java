@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.lib.annotation;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -21,7 +22,10 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@SpringBootApplication(exclude = ReactiveUserDetailsServiceAutoConfiguration.class)
+@SpringBootApplication(exclude = {
+        ReactiveSecurityAutoConfiguration.class,
+        ReactiveUserDetailsServiceAutoConfiguration.class
+})
 @ComponentScan(basePackages = "com.swiftwheelshubreactive")
 @EntityScan("com.swiftwheelshubreactive")
 @EnableReactiveMongoRepositories(basePackages = "com.swiftwheelshubreactive")
