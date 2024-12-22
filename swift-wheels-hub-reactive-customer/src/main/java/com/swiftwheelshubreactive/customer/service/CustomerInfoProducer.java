@@ -26,7 +26,13 @@ public class CustomerInfoProducer {
     private String emailNotificationMimeType;
 
     public Mono<Void> sendInvoice(CustomerInfo customerInfo) {
-        return Mono.fromRunnable(() -> streamBridge.send(emailNotificationBinderName, buildMessage(customerInfo), MimeType.valueOf(emailNotificationMimeType)))
+        return Mono.fromRunnable(
+                        () -> streamBridge.send(
+                                emailNotificationBinderName,
+                                buildMessage(customerInfo),
+                                MimeType.valueOf(emailNotificationMimeType)
+                        )
+                )
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
