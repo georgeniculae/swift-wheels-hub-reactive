@@ -24,7 +24,13 @@ public class CreatedBookingProducerService {
     private String mimeType;
 
     public Mono<Boolean> sendMessage(BookingResponse bookingResponse) {
-        return Mono.fromCallable(() -> streamBridge.send(binderName, buildMessage(bookingResponse), MimeType.valueOf(mimeType)))
+        return Mono.fromCallable(
+                        () -> streamBridge.send(
+                                binderName,
+                                buildMessage(bookingResponse),
+                                MimeType.valueOf(mimeType)
+                        )
+                )
                 .subscribeOn(Schedulers.boundedElastic());
     }
 

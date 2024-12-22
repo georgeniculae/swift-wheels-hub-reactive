@@ -23,7 +23,13 @@ public class DeletedBookingProducerService {
     private String mimeType;
 
     public Mono<Boolean> sendMessage(String bookingId) {
-        return Mono.fromCallable(() -> streamBridge.send(binderName, buildMessage(bookingId), MimeType.valueOf(mimeType)))
+        return Mono.fromCallable(
+                        () -> streamBridge.send(
+                                binderName,
+                                buildMessage(bookingId),
+                                MimeType.valueOf(mimeType)
+                        )
+                )
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
