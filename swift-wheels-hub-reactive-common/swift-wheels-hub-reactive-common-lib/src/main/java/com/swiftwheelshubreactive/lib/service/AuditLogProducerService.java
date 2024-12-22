@@ -26,7 +26,13 @@ public class AuditLogProducerService {
     private String auditLogMimeType;
 
     public Mono<Void> sendAuditLog(AuditLogInfoRequest auditLogInfoRequest) {
-        return Mono.fromRunnable(() -> streamBridge.send(auditLogBinderName, buildMessage(auditLogInfoRequest), MimeType.valueOf(auditLogMimeType)))
+        return Mono.fromRunnable(
+                        () -> streamBridge.send(
+                                auditLogBinderName,
+                                buildMessage(auditLogInfoRequest),
+                                MimeType.valueOf(auditLogMimeType)
+                        )
+                )
                 .subscribeOn(Schedulers.boundedElastic())
                 .then();
     }
