@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.dto.IncomingRequestDetails;
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.util.RetryUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -19,10 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 @Component
 @RequiredArgsConstructor
@@ -99,7 +98,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .bodyValue(incomingRequestDetails)
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .retryWhen(RetryUtil.retry())
                 .onErrorMap(e -> {
                     log.error("Error while sending request to validator: {}", e.getMessage());
 

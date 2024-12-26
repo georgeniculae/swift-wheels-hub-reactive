@@ -87,7 +87,7 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
         return Mono.zip(
                 getUsername(jwt),
                 getRoles(jwt),
-                (username, roles) -> AuthenticationInfo.builder().username(username).roles(roles).build()
+                this::getAuthenticationInfo
         );
     }
 
@@ -101,6 +101,13 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .map(GrantedAuthority::getAuthority)
                 .collectList()
                 .switchIfEmpty(Mono.just(List.of()));
+    }
+
+    private AuthenticationInfo getAuthenticationInfo(String username, List<String> roles) {
+        return AuthenticationInfo.builder()
+                .username(username)
+                .roles(roles)
+                .build();
     }
 
     private String getAuthorizationToken(ServerHttpRequest request) {
