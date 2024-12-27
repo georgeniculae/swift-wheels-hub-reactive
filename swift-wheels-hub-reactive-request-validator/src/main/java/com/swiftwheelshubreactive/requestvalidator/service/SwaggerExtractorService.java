@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.requestvalidator.service;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +18,7 @@ public class SwaggerExtractorService {
 
     private final WebClient webClient;
     private final RegisteredEndpoints registeredEndpoints;
+    private final RetryHandler retryHandler;
 
     public Flux<SwaggerFile> getSwaggerFiles() {
         return Flux.fromIterable(registeredEndpoints.getEndpoints())
@@ -43,7 +42,7 @@ public class SwaggerExtractorService {
                 .uri(url)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(6, Duration.ofSeconds(10)))
+                .retryWhen(retryHandler.retry())
                 .filter(StringUtils::isNotBlank)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Swagger for: " + identifier + " is empty")))
                 .onErrorMap(ExceptionUtil::handleException);

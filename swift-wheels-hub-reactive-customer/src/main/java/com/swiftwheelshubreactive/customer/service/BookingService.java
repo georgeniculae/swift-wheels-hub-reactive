@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.customer.service;
 
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +18,7 @@ public class BookingService {
 
     private static final String SEPARATOR = "/";
     private final WebClient webClient;
+    private final RetryHandler retryHandler;
 
     @Value("${booking-service.url}")
     private String url;
@@ -31,7 +30,7 @@ public class BookingService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
+                .retryWhen(retryHandler.retry())
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());
 

@@ -8,6 +8,7 @@ import java.util.List;
 public record AuthenticationInfo(
         String apikey,
         String username,
+        String email,
         List<String> roles
 ) {
 }

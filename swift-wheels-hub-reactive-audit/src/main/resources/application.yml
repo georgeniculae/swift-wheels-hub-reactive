@@ -63,8 +63,20 @@ spring:
             key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             allow.auto.create.topics: true
+        bindings:
+          bookingAuditLogInfoConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          customerAuditLogInfoConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          expenseAuditLogInfoConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
   kafka:
     bootstrap-servers: localhost:9092
+    consumer:
+      enable-auto-commit: false
   web:
     resources:
       add-mappings: false
@@ -73,8 +85,6 @@ management:
   server:
     port: ${server.port}
   endpoint:
-    loggers:
-      enabled: true
     health:
       group:
         custom:
@@ -104,9 +114,6 @@ logging:
           mongodb:
             core:
               ReactiveMongoTemplate: ERROR
-
-auditConsumer:
-  isMessageAckEnabled: false
 
 mongo-operations:
   enabled: true

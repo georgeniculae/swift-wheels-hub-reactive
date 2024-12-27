@@ -3,10 +3,8 @@ package com.swiftwheelshubreactive.agency.swaggeroperation;
 import com.swiftwheelshubreactive.agency.handler.CarHandler;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
-import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -353,82 +351,6 @@ import java.lang.annotation.Target;
                                                 responseCode = "500",
                                                 description = "Internal Server Error",
                                                 content = @Content(schema = @Schema())
-                                        )
-                                }
-                        )
-                ),
-                @RouterOperation(
-                        method = RequestMethod.PUT,
-                        path = "/cars/update-statuses",
-                        beanClass = CarHandler.class,
-                        beanMethod = "updateCarsStatus",
-                        operation = @Operation(
-                                operationId = "updateCarsStatus",
-                                requestBody = @RequestBody(
-                                        description = "Update cars status",
-                                        required = true,
-                                        content = @Content(schema = @Schema(implementation = UpdateCarRequest.class))
-                                ),
-                                responses = {
-                                        @ApiResponse(
-                                                responseCode = "200",
-                                                description = "Successful",
-                                                content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = StatusUpdateResponse.class)),
-                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
-                                                )
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema())
-                                        )
-                                }
-                        )
-                ),
-                @RouterOperation(
-                        method = RequestMethod.PATCH,
-                        path = "/cars/{id}/change-status",
-                        beanClass = CarHandler.class,
-                        beanMethod = "updateCarStatus",
-                        operation = @Operation(
-                                operationId = "updateCarStatus",
-                                responses = {
-                                        @ApiResponse(
-                                                responseCode = "200",
-                                                description = "Successful",
-                                                content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = StatusUpdateResponse.class)),
-                                                        mediaType = MediaType.APPLICATION_JSON_VALUE
-                                                )
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema())
-                                        )
-                                },
-                                parameters = {
-                                        @Parameter(
-                                                in = ParameterIn.PATH,
-                                                name = "id",
-                                                content = @Content(schema = @Schema(implementation = String.class))
-                                        ),
-                                        @Parameter(
-                                                name = "carState",
-                                                in = ParameterIn.QUERY,
-                                                required = true,
-                                                content = @Content(schema = @Schema(implementation = CarState.class))
                                         )
                                 }
                         )

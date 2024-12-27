@@ -22,14 +22,10 @@ public class BookingRouter {
                         .andRoute(RequestPredicates.GET("/count"), bookingHandler::countBookings)
                         .andRoute(RequestPredicates.GET("/count-by-logged-in-user"), bookingHandler::countBookingsOfLoggedInUser)
                         .andRoute(RequestPredicates.GET("/current-date"), bookingHandler::getCurrentDate)
-                        .andRoute(RequestPredicates.GET("/bookings-amount-sum"), bookingHandler::getSumOfAllBookingAmount)
-                        .andRoute(RequestPredicates.GET("/amount-by-user"), bookingHandler::getAmountSpentByLoggedInUser)
                         .andRoute(RequestPredicates.GET("/by-current-user"), bookingHandler::findBookingsByLoggedInUser)
                         .andRoute(RequestPredicates.GET("/{id}"), bookingHandler::findBookingById)
                         .andRoute(RequestPredicates.POST("/new"), bookingHandler::saveBooking)
-                        .andRoute(RequestPredicates.POST("/close-booking"), bookingHandler::closeBooking)
                         .andRoute(RequestPredicates.PUT("/{id}"), bookingHandler::updateBooking)
-                        .andRoute(RequestPredicates.PATCH("/{id}/rollback"), bookingHandler::rollbackBooking)
                         .andRoute(RequestPredicates.DELETE("/{username}"), bookingHandler::deleteBookingByCustomerUsername));
     }
 

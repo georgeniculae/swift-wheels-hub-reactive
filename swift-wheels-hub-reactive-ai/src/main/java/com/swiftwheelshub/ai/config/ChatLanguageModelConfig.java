@@ -20,11 +20,11 @@ public class ChatLanguageModelConfig {
     @Bean
     public ChatModel chatModel(OllamaApi ollamaApi, ChatProperties chatProperties) {
         return OllamaChatModel.builder()
-                .withOllamaApi(ollamaApi)
-                .withDefaultOptions(
+                .ollamaApi(ollamaApi)
+                .defaultOptions(
                         OllamaOptions.builder()
-                                .withModel(chatProperties.getModel())
-                                .withTemperature(chatProperties.getTemperature())
+                                .model(chatProperties.getModel())
+                                .temperature(chatProperties.getTemperature())
                                 .build()
                 )
                 .build();

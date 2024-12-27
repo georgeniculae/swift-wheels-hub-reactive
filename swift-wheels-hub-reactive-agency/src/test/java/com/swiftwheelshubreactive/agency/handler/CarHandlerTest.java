@@ -4,12 +4,8 @@ import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
-import com.swiftwheelshubreactive.agency.validator.UpdateCarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
-import com.swiftwheelshubreactive.dto.UpdateCarRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +26,6 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -48,9 +43,6 @@ class CarHandlerTest {
 
     @Mock
     private CarUpdateDetailsValidator carUpdateDetailsValidator;
-
-    @Mock
-    private UpdateCarRequestValidator updateCarRequestValidator;
 
     @Test
     void findAllCarsTest_success() {
@@ -309,52 +301,10 @@ class CarHandlerTest {
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .body(Mono.just(carUpdateDetails));
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(carUpdateDetailsValidator.validateBody(any())).thenReturn(Mono.just(carUpdateDetails));
-        when(carService.updateCarWhenBookingIsClosed(anyString(), any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(statusUpdateResponse));
+        when(carService.updateCarWhenBookingIsClosed(any(CarUpdateDetails.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(carHandler.updateCarWhenBookingIsClosed(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
-    void updateCarStatusTest_success() {
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
-
-        ServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.PATCH)
-                .pathVariable("id", "64f361caf291ae086e179547")
-                .queryParam("carState", "AVAILABLE")
-                .body(Mono.just(CarState.AVAILABLE));
-
-        when(carService.updateCarStatus(anyString(), any(CarState.class))).thenReturn(Mono.just(statusUpdateResponse));
-
-        StepVerifier.create(carHandler.updateCarStatus(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
-    void updateCarsStatusesTest_success() {
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
-
-        UpdateCarRequest updateCarRequest =
-                TestUtil.getResourceAsJson("/data/UpdateCarRequest.json", UpdateCarRequest.class);
-
-        ServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.PUT)
-                .body(Flux.just(updateCarRequest));
-
-        when(updateCarRequestValidator.validateBody(any())).thenReturn(Mono.just(updateCarRequest));
-        when(carService.updateCarsStatus(anyList())).thenReturn(Flux.just(statusUpdateResponse));
-
-        StepVerifier.create(carHandler.updateCarsStatuses(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

@@ -10,11 +10,10 @@ import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
-import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
-import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.model.Branch;
@@ -397,68 +396,64 @@ class CarServiceTest {
     void updateCarStatusTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
+        CarStatusUpdate carStatusUpdate =
+                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarState.AVAILABLE))
-                .expectNext(statusUpdateResponse)
-                .verifyComplete();
+        StepVerifier.create(carService.updateCarStatus(carStatusUpdate))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void updateCarStatusTest_errorOnSave() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
 
+        CarStatusUpdate carStatusUpdate =
+                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
+
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCarStatus("64f361caf291ae086e179547", CarState.AVAILABLE))
-                .expectNextMatches(statusUpdateResponse -> !statusUpdateResponse.isUpdateSuccessful())
-                .verifyComplete();
+        StepVerifier.create(carService.updateCarStatus(carStatusUpdate))
+                .expectError()
+                .verify();
     }
 
     @Test
     void updateCarsStatusTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/StatusUpdateResponse.json", StatusUpdateResponse.class);
-
-        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
-                .carId("64f361caf291ae086e179547")
-                .carState(CarState.AVAILABLE)
+        UpdateCarsRequest updateCarsRequest = UpdateCarsRequest.builder()
+                .previousCarId("64f361caf291ae086e179547")
+                .actualCarId("64f361caf291ae086e179222")
                 .build();
-
-        List<UpdateCarRequest> updateCarRequests = List.of(updateCarRequest);
 
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
 
-        StepVerifier.create(carService.updateCarsStatus(updateCarRequests))
-                .expectNext(statusUpdateResponse)
-                .verifyComplete();
+        StepVerifier.create(carService.updateCarsStatus(updateCarsRequest))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void updateCarsStatusTest_errorOnSave() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
 
-        UpdateCarRequest updateCarRequest = UpdateCarRequest.builder()
-                .carId("64f361caf291ae086e179547")
-                .carState(CarState.AVAILABLE)
+        UpdateCarsRequest updateCarsRequest = UpdateCarsRequest.builder()
+                .previousCarId("64f361caf291ae086e179547")
+                .actualCarId("64f361caf291ae086e179222")
                 .build();
-
-        List<UpdateCarRequest> updateCarRequests = List.of(updateCarRequest);
 
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new RuntimeException()));
 
-        StepVerifier.create(carService.updateCarsStatus(updateCarRequests))
-                .expectNextMatches(statusUpdateResponse -> !statusUpdateResponse.isUpdateSuccessful())
-                .verifyComplete();
+        StepVerifier.create(carService.updateCarsStatus(updateCarsRequest))
+                .expectError()
+                .verify();
     }
 
     @Test
@@ -474,9 +469,9 @@ class CarServiceTest {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carUpdateDetails))
-                .expectNextMatches(StatusUpdateResponse::isUpdateSuccessful)
-                .verifyComplete();
+        StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
+                .expectComplete()
+                .verify();
     }
 
     @Test
@@ -492,9 +487,9 @@ class CarServiceTest {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed("64f361caf291ae086e179547", carUpdateDetails))
-                .expectNextMatches(statusUpdateResponse -> !statusUpdateResponse.isUpdateSuccessful())
-                .verifyComplete();
+        StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
+                .expectError()
+                .verify();
     }
 
     @Test

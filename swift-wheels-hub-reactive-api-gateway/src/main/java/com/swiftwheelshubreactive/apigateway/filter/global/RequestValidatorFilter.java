@@ -4,7 +4,7 @@ import com.swiftwheelshubreactive.dto.IncomingRequestDetails;
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
-import com.swiftwheelshubreactive.lib.util.RetryUtil;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -32,6 +32,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
     private static final String ACTUATOR = "actuator";
     private static final String FALLBACK = "fallback";
     private final WebClient webClient;
+    private final RetryHandler retryHandler;
 
     @Value("${request-validator-url}")
     private String requestValidatorUrl;
@@ -98,7 +99,7 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                 .bodyValue(incomingRequestDetails)
                 .retrieve()
                 .bodyToMono(RequestValidationReport.class)
-                .retryWhen(RetryUtil.retry())
+                .retryWhen(retryHandler.retry())
                 .onErrorMap(e -> {
                     log.error("Error while sending request to validator: {}", e.getMessage());
 

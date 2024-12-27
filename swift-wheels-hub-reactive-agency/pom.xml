@@ -23,17 +23,16 @@
             <groupId>com.swiftwheelshub</groupId>
             <artifactId>swift-wheels-hub-reactive-common-lib</artifactId>
             <version>${swift-wheels-hub-common-reactive.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-stream</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>io.mongock</groupId>
             <artifactId>mongodb-reactive-driver</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
         <dependency>

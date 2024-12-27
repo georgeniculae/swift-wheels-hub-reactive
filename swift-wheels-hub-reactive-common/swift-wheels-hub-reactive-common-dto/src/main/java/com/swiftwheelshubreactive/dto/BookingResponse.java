@@ -19,6 +19,9 @@ public record BookingResponse(
         String customerUsername,
 
         @NonNull
+        String customerEmail,
+
+        @NonNull
         String carId,
 
         @NonNull
@@ -26,8 +29,6 @@ public record BookingResponse(
 
         @NonNull
         LocalDate dateTo,
-
-        BigDecimal amount,
 
         BigDecimal rentalCarPrice,
 
@@ -44,10 +45,9 @@ public record BookingResponse(
                 "dateOfBooking=" + dateOfBooking + "\n" +
                 "status=" + status + "\n" +
                 "customerUsername=" + customerUsername + "\n" +
-                "carId=" + carId + "\n" +
+                "previousCarId=" + carId + "\n" +
                 "dateFrom=" + dateFrom + "\n" +
                 "dateTo=" + dateTo + "\n" +
-                "amount=" + amount + "\n" +
                 "rentalCarPrice=" + rentalCarPrice + "\n" +
                 "rentalBranchId=" + rentalBranchId + "\n" +
                 "returnBranchId=" + returnBranchId + "\n" +

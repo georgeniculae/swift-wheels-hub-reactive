@@ -27,6 +27,8 @@ public class Invoice {
 
     private String customerUsername;
 
+    private String customerEmail;
+
     private ObjectId carId;
 
     private ObjectId receptionistEmployeeId;
@@ -35,9 +37,15 @@ public class Invoice {
 
     private ObjectId bookingId;
 
+    private LocalDate dateTo;
+
+    private LocalDate dateFrom;
+
     private LocalDate carReturnDate;
 
     private Boolean isVehicleDamaged;
+
+    private BigDecimal rentalCarPrice;
 
     private BigDecimal damageCost;
 

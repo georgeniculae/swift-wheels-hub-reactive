@@ -7,12 +7,10 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
-import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
-import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -39,11 +37,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +50,8 @@ public class BookingService {
     private static final String LOCKED = "locked";
     private final BookingRepository bookingRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
+    private final CreateBookingCarUpdateProducerService createBookingCarUpdateProducerService;
+    private final UpdateBookingUpdateCarsProducerService updateBookingUpdateCarsProducerService;
     private final CarService carService;
     private final OutboxService outboxService;
     private final ReactiveRedisOperations<String, String> redisOperations;
@@ -101,20 +98,6 @@ public class BookingService {
                 });
     }
 
-    public Mono<BigDecimal> getAmountSpentByLoggedInUser(String username) {
-        return findBookingsByLoggedInUser(username)
-                .map(BookingResponse::amount)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public Mono<BigDecimal> getSumOfAllBookingAmount() {
-        return findAllBookings()
-                .map(BookingResponse::amount)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     public Mono<Long> countBookings() {
         return bookingRepository.count()
                 .onErrorMap(e -> {
@@ -148,7 +131,7 @@ public class BookingService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Car is not available")))
                 .flatMap(_ -> createNewBooking(authenticationInfo, newBookingRequest))
                 .flatMap(bookingRepository::save)
-                .flatMap(pendingBooking -> processCreatedBooking(authenticationInfo, pendingBooking))
+                .flatMap(this::processCreatedBooking)
                 .delayUntil(booking -> unlockCar(booking.getActualCarId().toString()))
                 .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
@@ -175,24 +158,23 @@ public class BookingService {
                 });
     }
 
-    public Mono<BookingUpdateResponse> closeBooking(BookingClosingDetails bookingClosingDetails) {
+    public Mono<Void> closeBooking(BookingClosingDetails bookingClosingDetails) {
         return updatedBookingWithClosingDetails(bookingClosingDetails)
                 .flatMap(bookingRepository::save)
-                .map(_ -> new BookingUpdateResponse(true))
+                .then()
                 .onErrorResume(e -> {
                     log.error("Error while closing booking: {}", e.getMessage());
 
-                    return Mono.just(new BookingUpdateResponse(false));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
-    public Mono<BookingRollbackResponse> rollbackBooking(String bookingId) {
+    public Mono<Void> rollbackBooking(String bookingId) {
         return bookingRepository.updateBookingStatus(new ObjectId(bookingId))
-                .thenReturn(new BookingRollbackResponse(true, bookingId))
                 .onErrorResume(e -> {
                     log.error("Error while rollback booking: {}", e.getMessage());
 
-                    return Mono.just(new BookingRollbackResponse(false, bookingId));
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -254,12 +236,12 @@ public class BookingService {
     private Mono<Booking> createNewBooking(AuthenticationInfo authenticationInfo,
                                            BookingRequest newBookingRequest) {
         return carService.findAvailableCarById(authenticationInfo, newBookingRequest.carId())
-                .map(carResponse -> setupNewBooking(newBookingRequest, carResponse, authenticationInfo.username()));
+                .map(carResponse -> setupNewBooking(newBookingRequest, carResponse, authenticationInfo));
     }
 
-    private Mono<Booking> processCreatedBooking(AuthenticationInfo authenticationInfo, Booking pendingBooking) {
-        return updateCarForNewBooking(authenticationInfo, pendingBooking)
-                .filter(StatusUpdateResponse::isUpdateSuccessful)
+    private Mono<Booking> processCreatedBooking(Booking pendingBooking) {
+        return updateCarForNewBooking(pendingBooking)
+                .filter(Boolean.TRUE::equals)
                 .map(_ -> bookingMapper.getSuccessfulCreatedBooking(pendingBooking))
                 .flatMap(booking -> outboxService.processBookingSaving(booking, Outbox.Operation.CREATE))
                 .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedCreatedBooking(pendingBooking)));
@@ -283,7 +265,7 @@ public class BookingService {
                                                         Booking existingBooking) {
         return getCarIfIsChanged(authenticationInfo, updatedBookingRequest, existingBooking)
                 .flatMap(carResponse -> processNewBookingData(updatedBookingRequest, existingBooking, carResponse))
-                .flatMap(pendingUpdatedBooking -> handleBookingWhenCarIsChanged(authenticationInfo, existingBooking, pendingUpdatedBooking))
+                .flatMap(pendingUpdatedBooking -> handleBookingWhenCarIsChanged(existingBooking, pendingUpdatedBooking))
                 .switchIfEmpty(handleBookingWhenCarIsNotChanged(updatedBookingRequest, existingBooking))
                 .map(bookingMapper::mapEntityToDto);
     }
@@ -309,10 +291,10 @@ public class BookingService {
                 .map(_ -> updateBookingWithNewData(updatedBookingRequest, existingBooking, carResponse));
     }
 
-    private Mono<Booking> handleBookingWhenCarIsChanged(AuthenticationInfo authenticationInfo, Booking existingBooking, Booking pendingUpdatedBooking) {
+    private Mono<Booking> handleBookingWhenCarIsChanged(Booking existingBooking, Booking pendingUpdatedBooking) {
         return bookingRepository.save(pendingUpdatedBooking)
-                .flatMap(savedUpdatedBooking -> changeCarsStatuses(authenticationInfo, savedUpdatedBooking, existingBooking))
-                .filter(StatusUpdateResponse::isUpdateSuccessful)
+                .flatMap(savedUpdatedBooking -> changeCarsStatuses(savedUpdatedBooking, existingBooking))
+                .filter(Boolean.TRUE::equals)
                 .map(_ -> bookingMapper.getSuccessfulUpdatedBooking(pendingUpdatedBooking))
                 .flatMap(updatedBooking -> outboxService.processBookingSaving(updatedBooking, Outbox.Operation.UPDATE))
                 .switchIfEmpty(saveBookingAfterFailedCarServiceResponse(bookingMapper.getFailedUpdatedBooking(pendingUpdatedBooking)))
@@ -331,8 +313,15 @@ public class BookingService {
         return Mono.defer(() -> bookingRepository.save(pendingUpdatedBooking));
     }
 
-    private Mono<StatusUpdateResponse> updateCarForNewBooking(AuthenticationInfo authenticationInfo, Booking booking) {
-        return carService.changeCarStatus(authenticationInfo, booking.getActualCarId().toString(), CarState.NOT_AVAILABLE, 5);
+    private Mono<Boolean> updateCarForNewBooking(Booking booking) {
+        return createBookingCarUpdateProducerService.sendCarUpdateDetails(getCarStatusUpdate(booking.getActualCarId().toString()));
+    }
+
+    private CarStatusUpdate getCarStatusUpdate(String actualCarId) {
+        return CarStatusUpdate.builder()
+                .carId(actualCarId)
+                .carState(CarState.NOT_AVAILABLE)
+                .build();
     }
 
     private Query getQuery(String dateOfBooking) {
@@ -362,16 +351,18 @@ public class BookingService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Booking with id " + id + " does not exist")));
     }
 
-    private Booking setupNewBooking(BookingRequest newBookingRequest, CarResponse carResponse, String username) {
+    private Booking setupNewBooking(BookingRequest newBookingRequest,
+                                    CarResponse carResponse,
+                                    AuthenticationInfo authenticationInfo) {
         Booking newBooking = bookingMapper.mapDtoToEntity(newBookingRequest);
         BigDecimal amount = carResponse.amount();
 
-        newBooking.setCustomerUsername(username);
+        newBooking.setCustomerUsername(authenticationInfo.username());
+        newBooking.setCustomerEmail(authenticationInfo.email());
         newBooking.setActualCarId(MongoUtil.getObjectId(carResponse.id()));
         newBooking.setDateOfBooking(LocalDate.now());
         newBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
-        newBooking.setAmount(getAmount(newBooking.getDateFrom(), newBooking.getDateTo(), amount));
         newBooking.setRentalCarPrice(amount);
         newBooking.setBookingProcessStatus(BookingProcessStatus.IN_CREATION);
 
@@ -386,7 +377,6 @@ public class BookingService {
 
         updatedBooking.setDateFrom(dateFrom);
         updatedBooking.setDateTo(dateTo);
-        updatedBooking.setAmount(getAmount(dateFrom, dateTo, existingBooking.getRentalCarPrice()));
 
         return updatedBooking;
     }
@@ -406,40 +396,27 @@ public class BookingService {
         updatedBooking.setActualCarId(MongoUtil.getObjectId(carResponse.id()));
         updatedBooking.setPreviousCarId(existingCarId);
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(carResponse.actualBranchId()));
-        updatedBooking.setAmount(getAmount(dateFrom, dateTo, amount));
         updatedBooking.setRentalCarPrice(amount);
         updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_UPDATE);
 
         return updatedBooking;
     }
 
-    private Mono<StatusUpdateResponse> changeCarsStatuses(AuthenticationInfo authenticationInfo,
-                                                          Booking updatedBooking,
-                                                          Booking existingBooking) {
+    private Mono<Boolean> changeCarsStatuses(Booking updatedBooking, Booking existingBooking) {
         return Mono.just(existingBooking.getActualCarId().toString())
                 .flatMap(existingBookingCarId -> {
-                    List<UpdateCarRequest> updateCarRequests =
-                            getUpdateCarRequestList(existingBookingCarId, updatedBooking.getActualCarId().toString());
+                    UpdateCarsRequest updateCarsRequest =
+                            getUpdateCarsRequest(existingBookingCarId, updatedBooking.getActualCarId().toString());
 
-                    return carService.updateCarsStatuses(authenticationInfo, updateCarRequests, 5);
+                    return updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(updateCarsRequest);
                 });
     }
 
-    private List<UpdateCarRequest> getUpdateCarRequestList(String existingCarId, String newCarId) {
-        return List.of(
-                new UpdateCarRequest(existingCarId, CarState.AVAILABLE),
-                new UpdateCarRequest(newCarId, CarState.NOT_AVAILABLE)
-        );
-    }
-
-    private BigDecimal getAmount(LocalDate dateFrom, LocalDate dateTo, BigDecimal amount) {
-        int bookingDays = Period.between(dateFrom, dateTo).getDays();
-
-        if (bookingDays == 0) {
-            return amount;
-        }
-
-        return amount.multiply(BigDecimal.valueOf(bookingDays));
+    private UpdateCarsRequest getUpdateCarsRequest(String existingCarId, String newCarId) {
+        return UpdateCarsRequest.builder()
+                .previousCarId(existingCarId)
+                .actualCarId(newCarId)
+                .build();
     }
 
     private Mono<CarResponse> checkIfCarIsFromRightBranch(BookingRequest updatedBookingRequest, CarResponse carResponse) {

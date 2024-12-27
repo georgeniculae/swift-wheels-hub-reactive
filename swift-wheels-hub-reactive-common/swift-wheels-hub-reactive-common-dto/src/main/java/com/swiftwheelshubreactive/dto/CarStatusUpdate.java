@@ -4,7 +4,7 @@ import lombok.Builder;
 import org.springframework.lang.NonNull;
 
 @Builder
-public record UpdateCarRequest(
+public record CarStatusUpdate(
         @NonNull
         String carId,
 
@@ -14,8 +14,8 @@ public record UpdateCarRequest(
 
     @Override
     public String toString() {
-        return "UpdateCarRequest{" + "\n" +
-                "carId=" + carId + "\n" +
+        return "CarStatusUpdate{" + "\n" +
+                "previousCarId=" + carId + "\n" +
                 "carState=" + carState + "\n" +
                 "}";
     }

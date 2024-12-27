@@ -14,7 +14,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -38,8 +37,6 @@ class BookingBookingAuditLogInfoConsumerMessageTest {
 
     @Test
     void bookingAuditLogInfoConsumerTest_success_acknowledgementTrue() {
-        ReflectionTestUtils.setField(bookingAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
-
         AuditLogInfoRequest auditLogInfoRequest =
                 TestUtil.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 
@@ -56,8 +53,6 @@ class BookingBookingAuditLogInfoConsumerMessageTest {
 
     @Test
     void bookingAuditLogInfoConsumerTest_acknowledgementTrue_noHeaders() {
-        ReflectionTestUtils.setField(bookingAuditLogInfoConsumerMessage, "isMessageAckEnabled", true);
-
         AuditLogInfoRequest auditLogInfoDto =
                 TestUtil.getResourceAsJson("/data/BookingAuditLogInfoRequest.json", AuditLogInfoRequest.class);
 

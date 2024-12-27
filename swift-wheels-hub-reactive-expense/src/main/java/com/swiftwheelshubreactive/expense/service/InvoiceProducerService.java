@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.expense.service;
 
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -16,6 +17,7 @@ import reactor.core.scheduler.Schedulers;
 public class InvoiceProducerService {
 
     private final StreamBridge streamBridge;
+    private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.destination}")
     private String emailNotificationBinderName;
@@ -24,8 +26,15 @@ public class InvoiceProducerService {
     private String emailNotificationMimeType;
 
     public Mono<Boolean> sendInvoice(InvoiceResponse invoiceResponse) {
-        return Mono.fromCallable(() -> streamBridge.send(emailNotificationBinderName, buildMessage(invoiceResponse), MimeType.valueOf(emailNotificationMimeType)))
-                .subscribeOn(Schedulers.boundedElastic());
+        return Mono.fromCallable(
+                        () -> streamBridge.send(
+                                emailNotificationBinderName,
+                                buildMessage(invoiceResponse),
+                                MimeType.valueOf(emailNotificationMimeType)
+                        )
+                )
+                .subscribeOn(Schedulers.boundedElastic())
+                .retryWhen(retryHandler.retry());
     }
 
     private Message<InvoiceResponse> buildMessage(InvoiceResponse invoiceResponse) {

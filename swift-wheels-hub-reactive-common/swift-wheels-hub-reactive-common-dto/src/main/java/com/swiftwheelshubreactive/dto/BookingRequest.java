@@ -34,7 +34,7 @@ public record BookingRequest(
     public String toString() {
         return "BookingRequest{" + "\n" +
                 "dateOfBooking=" + dateOfBooking + "\n" +
-                "carId=" + carId + "\n" +
+                "previousCarId=" + carId + "\n" +
                 "dateFrom=" + dateFrom + "\n" +
                 "dateTo=" + dateTo + "\n" +
                 "amount=" + amount + "\n" +

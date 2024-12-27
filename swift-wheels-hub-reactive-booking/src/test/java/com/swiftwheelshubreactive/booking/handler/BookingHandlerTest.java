@@ -2,14 +2,10 @@ package com.swiftwheelshubreactive.booking.handler;
 
 import com.swiftwheelshubreactive.booking.service.BookingService;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
-import com.swiftwheelshubreactive.booking.validator.BookingClosingDetailsValidator;
 import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
-import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
-import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +17,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -39,9 +34,6 @@ class BookingHandlerTest {
 
     @Mock
     private BookingRequestValidator bookingRequestValidator;
-
-    @Mock
-    private BookingClosingDetailsValidator bookingClosingDetailsValidator;
 
     @Test
     void findAllBookingsTest_success() {
@@ -166,33 +158,6 @@ class BookingHandlerTest {
     }
 
     @Test
-    void getAmountSpentByLoggedInUserTest_success() {
-        MockServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.GET)
-                .header("X-USERNAME", "user")
-                .build();
-
-        when(bookingService.getAmountSpentByLoggedInUser(anyString())).thenReturn(Mono.just(BigDecimal.valueOf(500)));
-
-        StepVerifier.create(bookingHandler.getAmountSpentByLoggedInUser(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
-    void getSumOfAllBookingAmountTest_success() {
-        MockServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.GET)
-                .build();
-
-        when(bookingService.getSumOfAllBookingAmount()).thenReturn(Mono.just(BigDecimal.valueOf(500)));
-
-        StepVerifier.create(bookingHandler.getSumOfAllBookingAmount(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
     void countBookingsTest_success() {
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
@@ -256,28 +221,6 @@ class BookingHandlerTest {
     }
 
     @Test
-    void closeBookingTest_success() {
-        BookingUpdateResponse bookingUpdateResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulBookingUpdateResponse.json", BookingUpdateResponse.class);
-
-        BookingClosingDetails bookingClosingDetails =
-                TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
-
-        MockServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.POST)
-                .header("X-API-KEY", "apikey")
-                .header("X-USERNAME", "user")
-                .body(Mono.just(bookingClosingDetails));
-
-        when(bookingClosingDetailsValidator.validateBody(any())).thenReturn(Mono.just(bookingClosingDetails));
-        when(bookingService.closeBooking(any(BookingClosingDetails.class))).thenReturn(Mono.just(bookingUpdateResponse));
-
-        StepVerifier.create(bookingHandler.closeBooking(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
     void updateBookingTest_success() {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
@@ -297,25 +240,6 @@ class BookingHandlerTest {
                 .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
-    void rollbackBookingTest_success() {
-        BookingRollbackResponse bookingRollbackResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
-
-        MockServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.PATCH)
-                .header("X-API-KEY", "apikey")
-                .header("X-USERNAME", "user")
-                .pathVariable("id", "64f361caf291ae086e179547")
-                .build();
-
-        when(bookingService.rollbackBooking(anyString())).thenReturn(Mono.just(bookingRollbackResponse));
-
-        StepVerifier.create(bookingHandler.rollbackBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

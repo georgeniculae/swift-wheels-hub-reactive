@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.apigateway.filter.global;
 
 import com.swiftwheelshubreactive.dto.RequestValidationReport;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.util.retry.RetrySpec;
+
+import java.time.Duration;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -45,6 +49,9 @@ class RequestValidatorFilterTest {
     @Mock
     private WebClient.ResponseSpec responseSpec;
 
+    @Mock
+    private RetryHandler retryHandler;
+
     @Test
     @SuppressWarnings("unchecked")
     void filterTest_success() {
@@ -63,6 +70,7 @@ class RequestValidatorFilterTest {
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(RequestValidationReport.class)).thenReturn(Mono.just(requestValidationReport));
         when(chain.filter(any(ServerWebExchange.class))).thenReturn(Mono.empty());
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         requestValidatorFilter.filter(exchange, chain)
                 .as(StepVerifier::create)

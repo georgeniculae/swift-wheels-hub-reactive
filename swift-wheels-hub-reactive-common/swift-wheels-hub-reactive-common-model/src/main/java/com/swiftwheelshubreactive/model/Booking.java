@@ -33,6 +33,8 @@ public class Booking {
 
     private String customerUsername;
 
+    private String customerEmail;
+
     @NonNull
     private ObjectId actualCarId;
 
@@ -43,8 +45,6 @@ public class Booking {
 
     @NonNull
     private LocalDate dateTo;
-
-    private BigDecimal amount;
 
     private BigDecimal rentalCarPrice;
 

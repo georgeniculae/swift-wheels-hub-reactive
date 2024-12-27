@@ -24,6 +24,9 @@ public interface InvoiceMapper {
     Invoice getNewInvoiceInstance(Invoice existingInvoice);
 
     @Mapping(target = "invoiceProcessStatus", constant = "SAVED_CLOSED_INVOICE")
+    Invoice mapRequestToSuccessfulInvoice(InvoiceRequest invoiceRequest);
+
+    @Mapping(target = "invoiceProcessStatus", constant = "SAVED_CLOSED_INVOICE")
     Invoice getSuccessfulCreatedInvoice(Invoice invoice);
 
     @Mapping(target = "invoiceProcessStatus", constant = "FAILED_CLOSED_INVOICE")

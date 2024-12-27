@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.requestvalidator.service;
 
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import com.swiftwheelshubreactive.requestvalidator.util.AssertionUtil;
@@ -14,7 +15,9 @@ import org.mockito.stubbing.Answer;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.util.retry.RetrySpec;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -42,6 +45,9 @@ class SwaggerExtractorServiceTest {
 
     @Mock
     private RegisteredEndpoints registeredEndpoints;
+
+    @Mock
+    private RetryHandler retryHandler;
 
     @Test
     @SuppressWarnings("all")
@@ -91,6 +97,7 @@ class SwaggerExtractorServiceTest {
                 }
             }
         });
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         swaggerExtractorService.getSwaggerFiles()
                 .as(StepVerifier::create)
@@ -149,6 +156,7 @@ class SwaggerExtractorServiceTest {
                 }
             }
         });
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         swaggerExtractorService.getSwaggerFileForMicroservice("expense")
                 .as(StepVerifier::create)
@@ -206,6 +214,7 @@ class SwaggerExtractorServiceTest {
                 }
             }
         });
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         swaggerExtractorService.getSwaggerFileForMicroservice("test")
                 .as(StepVerifier::create)

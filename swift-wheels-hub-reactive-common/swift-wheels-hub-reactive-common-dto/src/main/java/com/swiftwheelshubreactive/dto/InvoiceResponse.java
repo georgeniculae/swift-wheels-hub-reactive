@@ -14,6 +14,9 @@ public record InvoiceResponse(
         String customerUsername,
 
         @NonNull
+        String customerEmail,
+
+        @NonNull
         String carId,
 
         String receptionistEmployeeId,
@@ -25,6 +28,10 @@ public record InvoiceResponse(
 
         LocalDate carReturnDate,
 
+        LocalDate dateTo,
+
+        LocalDate dateFrom,
+
         Boolean isVehicleDamaged,
 
         BigDecimal damageCost,
@@ -32,6 +39,8 @@ public record InvoiceResponse(
         BigDecimal additionalPayment,
 
         BigDecimal totalAmount,
+
+        BigDecimal rentalCarPrice,
 
         String comments
 ) {
@@ -41,7 +50,7 @@ public record InvoiceResponse(
         return "InvoiceResponse{" + "\n" +
                 "id=" + id + "\n" +
                 "customerUsername=" + customerUsername + "\n" +
-                "carId=" + carId + "\n" +
+                "previousCarId=" + carId + "\n" +
                 "returnBranchId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +
                 "carReturnDate=" + carReturnDate + "\n" +

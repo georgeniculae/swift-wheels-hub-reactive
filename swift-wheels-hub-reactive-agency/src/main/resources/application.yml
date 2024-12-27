@@ -37,6 +37,49 @@ spring:
         healthCheckInterval: 5s
         hostname: localhost
         failFast: false
+    function:
+      definition: invoiceCarUpdateConsumer;saveBookingCarUpdateConsumer;updateBookingCarUpdateConsumer
+    stream:
+      defaultBinder: kafka
+      bindings:
+        invoiceCarUpdateConsumer-in-0:
+          binder: kafka
+          destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AGENCY_CONSUMER_GROUP}
+        saveBookingCarUpdateConsumer-in-0:
+          binder: kafka
+          destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AGENCY_CONSUMER_GROUP}
+        updateBookingCarUpdateConsumer-in-0:
+          binder: kafka
+          destination: ${UPDATE_BOOKING_CARS_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AGENCY_CONSUMER_GROUP}
+      kafka:
+        binder:
+          auto-create-topics: true
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: true
+            auto.offset.reset: latest
+        bindings:
+          invoiceCarUpdateConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          saveBookingCarUpdateConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          updateBookingCarUpdateConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      enable-auto-commit: false
   web:
     resources:
       add-mappings: false
@@ -56,8 +99,6 @@ management:
   server:
     port: ${server.port}
   endpoint:
-    loggers:
-      enabled: true
     health:
       group:
         custom:

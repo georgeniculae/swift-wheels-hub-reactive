@@ -43,6 +43,8 @@ spring:
         healthCheckInterval: 10s
         hostname: localhost
         failFast: false
+    function:
+      definition: bookingUpdateConsumer;bookingRollbackConsumer
     stream:
       defaultBinder: kafka
       bindings:
@@ -58,8 +60,46 @@ spring:
         auditLogInfoProducer-out-0:
           destination: ${BOOKING_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
+        saveBookingCarUpdateProducer-out-0:
+          destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+        updateBookingCarsUpdateProducer-out-0:
+          destination: ${UPDATE_BOOKING_CARS_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+        bookingUpdateConsumer-in-0:
+          binder: kafka
+          destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${BOOKING_CONSUMER_GROUP}
+        bookingRollbackConsumer-in-0:
+          binder: kafka
+          destination: ${BOOKING_ROLLBACK_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${BOOKING_CONSUMER_GROUP}
+      kafka:
+        binder:
+          auto-create-topics: true
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: true
+            auto.offset.reset: latest
+        bindings:
+          bookingUpdateConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          bookingRollbackConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+    consumer:
+      enable-auto-commit: false
   web:
     resources:
       add-mappings: false
@@ -77,8 +117,6 @@ management:
   server:
     port: ${server.port}
   endpoint:
-    loggers:
-      enabled: true
     health:
       group:
         custom:
@@ -111,7 +149,6 @@ logging:
 
 apikey:
   secret: ${API_KEY_SECRET}
-  machine-role: ${BOOKING_SERVICE_ROLE}
 
 cors:
   mapping: '/**'

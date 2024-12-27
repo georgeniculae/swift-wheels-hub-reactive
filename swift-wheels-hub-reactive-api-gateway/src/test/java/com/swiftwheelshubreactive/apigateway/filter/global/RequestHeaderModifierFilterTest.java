@@ -62,6 +62,7 @@ class RequestHeaderModifierFilterTest {
 
         when(nimbusReactiveJwtDecoder.decode(anyString())).thenReturn(Mono.just(jwt));
         when(jwtAuthenticationTokenConverter.extractUsername(any(Jwt.class))).thenReturn("user");
+        when(jwtAuthenticationTokenConverter.extractEmail(any(Jwt.class))).thenReturn("user@mail.com");
         when(jwtAuthenticationTokenConverter.extractGrantedAuthorities(any(Jwt.class)))
                 .thenReturn(Flux.just(simpleGrantedAuthority));
         when(chain.filter(any(ServerWebExchange.class))).thenReturn(Mono.empty());
@@ -105,6 +106,7 @@ class RequestHeaderModifierFilterTest {
 
         when(nimbusReactiveJwtDecoder.decode(anyString())).thenReturn(Mono.just(jwt));
         when(jwtAuthenticationTokenConverter.extractUsername(any(Jwt.class))).thenReturn("user");
+        when(jwtAuthenticationTokenConverter.extractEmail(any(Jwt.class))).thenReturn("user@mail.com");
         when(jwtAuthenticationTokenConverter.extractGrantedAuthorities(any(Jwt.class)))
                 .thenReturn(Flux.just(simpleGrantedAuthority));
         when(chain.filter(any(ServerWebExchange.class))).thenReturn(Mono.empty());

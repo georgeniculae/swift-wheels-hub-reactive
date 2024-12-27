@@ -15,12 +15,19 @@ import java.util.Optional;
 public class JwtAuthenticationTokenConverter {
 
     private static final String USERNAME_CLAIM = "preferred_username";
+    private static final String EMAIL_CLAIM = "email";
     private final Converter<Jwt, Flux<GrantedAuthority>> jwtGrantedAuthoritiesConverter;
 
     public String extractUsername(Jwt source) {
         return Optional.ofNullable(source.getClaims().get(USERNAME_CLAIM))
                 .map(String::valueOf)
                 .orElseThrow(() -> new SwiftWheelsHubException("Username claim is null"));
+    }
+
+    public String extractEmail(Jwt source) {
+        return Optional.ofNullable(source.getClaims().get(EMAIL_CLAIM))
+                .map(String::valueOf)
+                .orElseThrow(() -> new SwiftWheelsHubException("Email claim is null"));
     }
 
     public Flux<GrantedAuthority> extractGrantedAuthorities(Jwt source) {

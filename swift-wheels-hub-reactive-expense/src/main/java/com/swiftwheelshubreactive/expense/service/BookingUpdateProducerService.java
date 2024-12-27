@@ -1,6 +1,7 @@
-package com.swiftwheelshubreactive.customer.service;
+package com.swiftwheelshubreactive.expense.service;
 
-import com.swiftwheelshubreactive.dto.CustomerInfo;
+import com.swiftwheelshubreactive.dto.BookingClosingDetails;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,30 +16,31 @@ import reactor.core.scheduler.Schedulers;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CustomerInfoProducer {
+public class BookingUpdateProducerService {
 
     private final StreamBridge streamBridge;
+    private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.customerInfoProducer-out-0.destination}")
+    @Value("${spring.cloud.stream.bindings.bookingUpdateProducer-out-0.destination}")
     private String emailNotificationBinderName;
 
-    @Value("${spring.cloud.stream.bindings.customerInfoProducer-out-0.contentType}")
+    @Value("${spring.cloud.stream.bindings.bookingUpdateProducer-out-0.contentType}")
     private String emailNotificationMimeType;
 
-    public Mono<Void> sendInvoice(CustomerInfo customerInfo) {
-        return Mono.fromRunnable(
+    public Mono<Boolean> sendBookingClosingDetails(BookingClosingDetails bookingClosingDetails) {
+        return Mono.fromCallable(
                         () -> streamBridge.send(
                                 emailNotificationBinderName,
-                                buildMessage(customerInfo),
+                                buildMessage(bookingClosingDetails),
                                 MimeType.valueOf(emailNotificationMimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
-                .then();
+                .retryWhen(retryHandler.retry());
     }
 
-    private Message<CustomerInfo> buildMessage(CustomerInfo customerInfo) {
-        return MessageBuilder.withPayload(customerInfo)
+    private Message<BookingClosingDetails> buildMessage(BookingClosingDetails bookingClosingDetails) {
+        return MessageBuilder.withPayload(bookingClosingDetails)
                 .build();
     }
 

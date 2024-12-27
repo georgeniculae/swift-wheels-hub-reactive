@@ -83,16 +83,31 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .flatMap(authenticationInfo -> filterValidatedRequest(chain, exchange, authenticationInfo));
     }
 
+    @SuppressWarnings("unchecked")
     private Mono<AuthenticationInfo> getAuthenticationInfo(Jwt jwt) {
         return Mono.zip(
-                getUsername(jwt),
-                getRoles(jwt),
-                this::getAuthenticationInfo
+                List.of(
+                        getUsername(jwt),
+                        getEmail(jwt),
+                        getRoles(jwt)
+                ),
+                authenticationDetails -> {
+                    String username = (String) authenticationDetails[0];
+                    String email = (String) authenticationDetails[1];
+                    List<String> roles = (List<String>) authenticationDetails[2];
+
+                    return getAuthenticationInfo(username, email, roles);
+                }
         );
     }
 
     private Mono<String> getUsername(Jwt jwt) {
         return Mono.just(jwtAuthenticationTokenConverter.extractUsername(jwt))
+                .switchIfEmpty(Mono.defer(() -> Mono.just(StringUtils.EMPTY)));
+    }
+
+    private Mono<String> getEmail(Jwt jwt) {
+        return Mono.just(jwtAuthenticationTokenConverter.extractEmail(jwt))
                 .switchIfEmpty(Mono.defer(() -> Mono.just(StringUtils.EMPTY)));
     }
 
@@ -103,9 +118,10 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                 .switchIfEmpty(Mono.just(List.of()));
     }
 
-    private AuthenticationInfo getAuthenticationInfo(String username, List<String> roles) {
+    private AuthenticationInfo getAuthenticationInfo(String username, String email, List<String> roles) {
         return AuthenticationInfo.builder()
                 .username(username)
+                .email(email)
                 .roles(roles)
                 .build();
     }
@@ -129,15 +145,19 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
     private ServerWebExchange createMutatedServerWebExchange(ServerWebExchange exchange,
                                                              AuthenticationInfo authenticationInfo) {
         return exchange.mutate()
-                .request(mutateHeaders(authenticationInfo.username(), authenticationInfo.roles()))
+                .request(mutateHeaders(authenticationInfo.username(), authenticationInfo.email(), authenticationInfo.roles()))
                 .build();
     }
 
-    private Consumer<ServerHttpRequest.Builder> mutateHeaders(String username, List<String> roles) {
+    private Consumer<ServerHttpRequest.Builder> mutateHeaders(String username, String email, List<String> roles) {
         return requestBuilder -> {
             requestBuilder.header(X_API_KEY_HEADER, apikey);
 
             if (ObjectUtils.isNotEmpty(username)) {
+                requestBuilder.header(X_USERNAME, username);
+            }
+
+            if (ObjectUtils.isNotEmpty(email)) {
                 requestBuilder.header(X_USERNAME, username);
             }
 

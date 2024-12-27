@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,11 +16,12 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.util.retry.RetrySpec;
 
+import java.time.Duration;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,10 +39,11 @@ class UpdatedBookingMessageConsumerTest {
     @Mock
     private Acknowledgment acknowledgment;
 
+    @Mock
+    private RetryHandler retryHandler;
+
     @Test
     void savedBookingConsumerTest_success_acknowledgedMessage() {
-        ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
-
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
@@ -51,6 +54,7 @@ class UpdatedBookingMessageConsumerTest {
         Message<BookingResponse> message = MessageBuilder.createMessage(bookingResponse, messageHeaders);
 
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -59,8 +63,6 @@ class UpdatedBookingMessageConsumerTest {
 
     @Test
     void savedBookingConsumerTest_success_notAcknowledgedMessage() {
-        ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", false);
-
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
@@ -70,6 +72,7 @@ class UpdatedBookingMessageConsumerTest {
         Message<BookingResponse> message = new GenericMessage<>(bookingResponse);
 
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -78,8 +81,6 @@ class UpdatedBookingMessageConsumerTest {
 
     @Test
     void savedBookingConsumerTest_success_emptyHeaders() {
-        ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
-
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
@@ -89,6 +90,7 @@ class UpdatedBookingMessageConsumerTest {
         Message<BookingResponse> message = new GenericMessage<>(bookingResponse);
 
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -97,8 +99,6 @@ class UpdatedBookingMessageConsumerTest {
 
     @Test
     void savedBookingConsumerTest_errorSavingInvoice() {
-        ReflectionTestUtils.setField(updatedBookingMessageConsumer, "isMessageAckEnabled", true);
-
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
@@ -106,6 +106,7 @@ class UpdatedBookingMessageConsumerTest {
         Message<BookingResponse> message = MessageBuilder.createMessage(bookingResponse, messageHeaders);
 
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.error(new Throwable()));
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
                 .expectComplete()

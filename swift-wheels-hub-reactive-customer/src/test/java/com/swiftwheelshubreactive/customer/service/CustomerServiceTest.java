@@ -1,10 +1,7 @@
 package com.swiftwheelshubreactive.customer.service;
 
-import com.swiftwheelshubreactive.customer.mapper.CustomerMapper;
-import com.swiftwheelshubreactive.customer.mapper.CustomerMapperImpl;
 import com.swiftwheelshubreactive.customer.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
-import com.swiftwheelshubreactive.dto.CustomerInfo;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
@@ -14,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -25,7 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,12 +34,6 @@ class CustomerServiceTest {
 
     @Mock
     private BookingService bookingService;
-
-    @Mock
-    private CustomerInfoProducer customerInfoProducer;
-
-    @Spy
-    private CustomerMapper customerMapper = new CustomerMapperImpl();
 
     @Test
     void findUserByUsernameTest_success() {
@@ -121,14 +110,11 @@ class CustomerServiceTest {
                 TestUtil.getResourceAsJson("/data/RegistrationResponse.json", RegistrationResponse.class);
 
         when(keycloakUserService.registerCustomer(any(RegisterRequest.class))).thenReturn(registrationResponse);
-        when(customerInfoProducer.sendInvoice(any(CustomerInfo.class))).thenReturn(Mono.empty());
 
         customerService.registerUser(registerRequest)
                 .as(StepVerifier::create)
                 .expectNext(registrationResponse)
                 .verifyComplete();
-
-        verify(customerMapper).mapToCustomerInfo(any(RegistrationResponse.class));
     }
 
     @Test

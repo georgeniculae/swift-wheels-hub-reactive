@@ -38,12 +38,24 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: savedBookingConsumer;updatedBookingConsumer;deletedBookingConsumer
+      definition: savedBookingConsumer;updatedBookingConsumer;deletedBookingConsumer;failedInvoiceDlqConsumer
     stream:
       defaultBinder: kafka
       bindings:
+        bookingUpdateProducer-out-0:
+          destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+        bookingRollbackProducer-out-0:
+          destination: ${BOOKING_ROLLBACK_REACTIVE_TOPIC}
+          contentType: application/json
+        carUpdateDetailsProducer-out-0:
+          destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
+          contentType: application/json
         emailNotificationProducer-out-0:
           destination: ${EMAIL_NOTIFICATION_REACTIVE_TOPIC}
+          contentType: application/json
+        failedInvoiceDlqProducer-out-0:
+          destination: ${FAILED_INVOICE_DLQ_REACTIVE_TOPIC}
           contentType: application/json
         auditLogInfoProducer-out-0:
           destination: ${EXPENSE_AUDIT_LOG_INFO_REACTIVE_TOPIC}
@@ -63,6 +75,11 @@ spring:
           destination: ${DELETED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
           group: ${EXPENSE_CONSUMER_GROUP}
+        failedInvoiceDlqConsumer-in-0:
+          binder: kafka
+          destination: ${FAILED_INVOICE_DLQ_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${EXPENSE_CONSUMER_GROUP}
       kafka:
         binder:
           auto-create-topics: true
@@ -71,8 +88,30 @@ spring:
             key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
             allow.auto.create.topics: true
+            auto.offset.reset: latest
+        bindings:
+          savedBookingConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          updatedBookingConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          deletedBookingConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          failedInvoiceDlqConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+    consumer:
+      enable-auto-commit: false
   sendgrid:
     api-key: ${SENDGRID_API_KEY}
   web:
@@ -91,8 +130,6 @@ management:
   server:
     port: ${server.port}
   endpoint:
-    loggers:
-      enabled: true
     health:
       group:
         custom:
@@ -125,7 +162,6 @@ logging:
 
 apikey:
   secret: ${API_KEY_SECRET}
-  machine-role: ${INVOICE_SERVICE_ROLE}
 
 cors:
   mapping: '/**'
@@ -136,14 +172,6 @@ cors:
 
 mongo-operations:
   enabled: true
-
-webClient:
-  url:
-    swift-wheels-hub-agency-cars: http://swift-wheels-hub-reactive-agency/agency/cars
-    swift-wheels-hub-bookings: http://swift-wheels-hub-reactive-booking/bookings
-
-bookingConsumer:
-  isMessageAckEnabled: false
 
 scheduled:
   fixedDelay: 5000

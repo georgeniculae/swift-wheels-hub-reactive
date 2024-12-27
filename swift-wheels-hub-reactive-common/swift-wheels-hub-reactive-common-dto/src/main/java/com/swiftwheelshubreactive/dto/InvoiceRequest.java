@@ -36,7 +36,7 @@ public record InvoiceRequest(
     @Override
     public String toString() {
         return "InvoiceRequest{" + "\n" +
-                "carId=" + carId + "\n" +
+                "previousCarId=" + carId + "\n" +
                 "returnBranchId=" + receptionistEmployeeId + "\n" +
                 "bookingId=" + bookingId + "\n" +
                 "carReturnDate=" + carReturnDate + "\n" +

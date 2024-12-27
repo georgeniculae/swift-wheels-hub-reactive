@@ -9,11 +9,9 @@ import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
-import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.model.Booking;
 import com.swiftwheelshubreactive.model.BookingStatus;
 import org.bson.types.ObjectId;
@@ -33,13 +31,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -63,6 +59,12 @@ class BookingServiceTest {
 
     @Mock
     private OutboxService outboxService;
+
+    @Mock
+    private CreateBookingCarUpdateProducerService createBookingCarUpdateProducerService;
+
+    @Mock
+    private UpdateBookingUpdateCarsProducerService updateBookingUpdateCarsProducerService;
 
     @Mock
     private ReactiveRedisOperations<String, String> redisOperations;
@@ -204,17 +206,14 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
+        when(createBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+                .thenReturn(Mono.just(true));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
-        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
 
         StepVerifier.create(bookingService.saveBooking(authenticationInfo, bookingRequest))
@@ -264,15 +263,12 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(createBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+                .thenReturn(Mono.just(false));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(carService.changeCarStatus(any(AuthenticationInfo.class), anyString(), any(CarState.class), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
 
         StepVerifier.create(bookingService.saveBooking(authenticationInfo, bookingRequest))
@@ -310,9 +306,6 @@ class BookingServiceTest {
         Booking updatedClosedBooking =
                 TestUtil.getResourceAsJson("/data/UpdatedClosedBooking.json", Booking.class);
 
-        BookingUpdateResponse bookingUpdateResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulBookingUpdateResponse.json", BookingUpdateResponse.class);
-
         BookingClosingDetails bookingClosingDetails =
                 TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
 
@@ -320,16 +313,13 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(updatedClosedBooking));
 
         StepVerifier.create(bookingService.closeBooking(bookingClosingDetails))
-                .expectNext(bookingUpdateResponse)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void closeBookingTest_errorOnSavingCar() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
-
-        BookingUpdateResponse bookingUpdateResponse =
-                TestUtil.getResourceAsJson("/data/FailedBookingUpdateResponse.json", BookingUpdateResponse.class);
 
         BookingClosingDetails bookingClosingDetails =
                 TestUtil.getResourceAsJson("/data/BookingClosingDetails.json", BookingClosingDetails.class);
@@ -338,8 +328,8 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(bookingService.closeBooking(bookingClosingDetails))
-                .expectNext(bookingUpdateResponse)
-                .verifyComplete();
+                .expectError()
+                .verify();
     }
 
     @Test
@@ -411,18 +401,15 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulStatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
+                .thenReturn(Mono.just(true));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
-        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList(), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
@@ -484,15 +471,12 @@ class BookingServiceTest {
                 .roles(List.of("admin"))
                 .build();
 
-        StatusUpdateResponse statusUpdateResponse =
-                TestUtil.getResourceAsJson("/data/FailedStatusUpdateResponse.json", StatusUpdateResponse.class);
-
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
-        when(carService.updateCarsStatuses(any(AuthenticationInfo.class), anyList(), anyInt()))
-                .thenReturn(Mono.just(statusUpdateResponse));
+        when(updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
+                .thenReturn(Mono.just(false));
         when(bookingRepository.save(any(Booking.class))).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -510,28 +494,6 @@ class BookingServiceTest {
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
                 .expectNext(updatedBookingResponse)
-                .verifyComplete();
-    }
-
-    @Test
-    void getAmountSpentByUserTest_success() {
-        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
-
-        when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
-
-        StepVerifier.create(bookingService.getAmountSpentByLoggedInUser("username"))
-                .expectNext(BigDecimal.valueOf(500))
-                .verifyComplete();
-    }
-
-    @Test
-    void getSumOfAllBookingAmountTest_success() {
-        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
-
-        when(bookingRepository.findAll()).thenReturn(Flux.just(booking));
-
-        StepVerifier.create(bookingService.getSumOfAllBookingAmount())
-                .expectNext(BigDecimal.valueOf(500))
                 .verifyComplete();
     }
 
@@ -560,28 +522,22 @@ class BookingServiceTest {
 
     @Test
     void rollbackBookingTest_success() {
-        BookingRollbackResponse bookingRollbackResponse =
-                TestUtil.getResourceAsJson("/data/SuccessfulBookingRollbackResponse.json", BookingRollbackResponse.class);
-
         when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.empty());
 
         bookingService.rollbackBooking("64f361caf291ae086e179547")
                 .as(StepVerifier::create)
-                .expectNext(bookingRollbackResponse)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void rollbackBookingTest_errorWhileUpdatingBooking() {
-        BookingRollbackResponse bookingRollbackResponse =
-                TestUtil.getResourceAsJson("/data/FailedBookingRollbackResponse.json", BookingRollbackResponse.class);
-
         when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
         bookingService.rollbackBooking("64f361caf291ae086e179547")
                 .as(StepVerifier::create)
-                .expectNext(bookingRollbackResponse)
-                .verifyComplete();
+                .expectError()
+                .verify();
     }
 
     @Test

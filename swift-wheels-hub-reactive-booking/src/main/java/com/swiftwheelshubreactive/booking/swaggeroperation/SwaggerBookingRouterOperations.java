@@ -4,7 +4,6 @@ import com.swiftwheelshubreactive.booking.handler.BookingHandler;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.BookingRollbackResponse;
 import com.swiftwheelshubreactive.dto.BookingUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -370,40 +369,6 @@ import java.time.LocalDate;
                                                 responseCode = "200",
                                                 description = "Successful",
                                                 content = @Content(schema = @Schema(implementation = BookingResponse.class))
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema())
-                                        )
-                                },
-                                parameters = @Parameter(
-                                        in = ParameterIn.PATH,
-                                        required = true,
-                                        name = "id",
-                                        content = @Content(schema = @Schema(implementation = String.class))
-                                )
-                        )
-                ),
-                @RouterOperation(
-                        method = RequestMethod.PATCH,
-                        path = "/bookings/{id}/rollback",
-                        beanClass = BookingHandler.class,
-                        beanMethod = "rollbackBooking",
-                        operation = @Operation(
-                                description = "Rollback booking",
-                                operationId = "Rollback booking",
-                                tags = "Rollback booking",
-                                responses = {
-                                        @ApiResponse(
-                                                responseCode = "200",
-                                                description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = BookingRollbackResponse.class))
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",

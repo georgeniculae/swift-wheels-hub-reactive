@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.dto.EmailResponse;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.emailnotification.service.EmailProcessorService;
 import com.swiftwheelshubreactive.emailnotification.util.TestUtil;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,11 +17,12 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.util.retry.RetrySpec;
 
+import java.time.Duration;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -38,10 +40,11 @@ class InvoiceMessageConsumerTest {
     @Mock
     private Acknowledgment acknowledgment;
 
+    @Mock
+    private RetryHandler retryHandler;
+
     @Test
     void emailNotificationConsumerTest_success_acknowledgementTrue() {
-        ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
-
         EmailResponse emailResponse =
                 TestUtil.getResourceAsJson("/data/EmailResponse.json", EmailResponse.class);
 
@@ -57,6 +60,7 @@ class InvoiceMessageConsumerTest {
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(message);
 
         when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
                 .expectComplete()
@@ -65,8 +69,6 @@ class InvoiceMessageConsumerTest {
 
     @Test
     void emailNotificationConsumerTest_acknowledgementTrue_noHeaders() {
-        ReflectionTestUtils.setField(invoiceMessageConsumer, "isMessageAckEnabled", true);
-
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
@@ -76,6 +78,7 @@ class InvoiceMessageConsumerTest {
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(new GenericMessage<>(invoiceResponse));
 
         when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
+        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
                 .expectComplete()

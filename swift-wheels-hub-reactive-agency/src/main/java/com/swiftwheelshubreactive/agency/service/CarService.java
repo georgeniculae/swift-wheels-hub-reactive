@@ -8,10 +8,10 @@ import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
-import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
-import com.swiftwheelshubreactive.dto.UpdateCarRequest;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
@@ -178,38 +178,33 @@ public class CarService {
                 });
     }
 
-    public Mono<StatusUpdateResponse> updateCarStatus(String id, CarState carState) {
-        return findEntityById(id)
+    public Mono<Void> updateCarStatus(CarStatusUpdate carStatusUpdate) {
+        return findEntityById(carStatusUpdate.carId())
                 .map(existingCar -> {
                     Car car = carMapper.getNewCarInstance(existingCar);
-                    car.setCarStatus(CarStatus.valueOf(carState.name()));
+                    car.setCarStatus(CarStatus.valueOf(carStatusUpdate.carState().name()));
 
                     return car;
                 })
                 .flatMap(carRepository::save)
-                .map(_ -> createUpdateStatusResponse())
+                .then()
                 .onErrorResume(e -> {
-                    log.error("Error while updating car {} status: {}", id, e.getMessage());
+                    log.error("Error while updating car {} status: {}", carStatusUpdate.carId(), e.getMessage());
 
-                    return Mono.just(createFailedStatusResponse());
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
-    public Flux<StatusUpdateResponse> updateCarsStatus(List<UpdateCarRequest> updateCarRequests) {
-        return carRepository.findAllById(getCarIds(updateCarRequests))
-                .map(existingCar -> {
-                    Car car = carMapper.getNewCarInstance(existingCar);
-                    car.setCarStatus(getUpdatedCarStatus(updateCarRequests, existingCar));
-
-                    return car;
-                })
+    public Mono<Void> updateCarsStatus(UpdateCarsRequest updateCarsRequests) {
+        return carRepository.findAllById(getCarIds(updateCarsRequests))
+                .map(existingCar -> getUpdatedCar(updateCarsRequests, existingCar))
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
-                .map(_ -> createUpdateStatusResponse())
+                .then()
                 .onErrorResume(e -> {
                     log.error("Error while updating cars statuses: {}", e.getMessage());
 
-                    return Mono.just(createFailedStatusResponse());
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
     }
 
@@ -222,6 +217,12 @@ public class CarService {
                 });
     }
 
+    public Mono<Void> updateCarWhenBookingIsClosed(CarUpdateDetails carUpdateDetails) {
+        return setupFinalCarDetails(carUpdateDetails)
+                .flatMap(carRepository::save)
+                .then();
+    }
+
     public Mono<Long> countCars() {
         return carRepository.count()
                 .onErrorMap(e -> {
@@ -232,37 +233,9 @@ public class CarService {
 
     }
 
-    public Mono<StatusUpdateResponse> updateCarWhenBookingIsClosed(String id, CarUpdateDetails carUpdateDetails) {
-        return setupFinalCarDetails(id, carUpdateDetails)
-                .flatMap(carRepository::save)
-                .map(_ -> createUpdateStatusResponse())
-                .onErrorResume(e -> {
-                    log.error("Error while updating car: {}", e.getMessage());
-
-                    return Mono.just(createFailedStatusResponse());
-                });
-    }
-
     private Mono<Car> findEntityById(String id) {
         return carRepository.findById(MongoUtil.getObjectId(id))
-                .onErrorMap(e -> {
-                    log.error("Error while finding by id: {}", e.getMessage());
-
-                    return ExceptionUtil.handleException(e);
-                })
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Car with id " + id + " does not exist")));
-    }
-
-    private StatusUpdateResponse createUpdateStatusResponse() {
-        return StatusUpdateResponse.builder()
-                .isUpdateSuccessful(true)
-                .build();
-    }
-
-    private StatusUpdateResponse createFailedStatusResponse() {
-        return StatusUpdateResponse.builder()
-                .isUpdateSuccessful(false)
-                .build();
     }
 
     private Mono<CarRequest> getCarRequest(Part carRequestAsPart) {
@@ -282,7 +255,8 @@ public class CarService {
                 List.of(
                         branchService.findEntityById(carRequest.originalBranchId()),
                         branchService.findEntityById(carRequest.actualBranchId()),
-                        getImageContent(carRequestPartMap.get(IMAGE))),
+                        getImageContent(carRequestPartMap.get(IMAGE))
+                ),
                 carDetails -> getNewCarInstance(carRequest, carDetails)
         );
     }
@@ -299,19 +273,24 @@ public class CarService {
         return car;
     }
 
-    private CarStatus getUpdatedCarStatus(List<UpdateCarRequest> updateCarRequests, Car existingCar) {
-        UpdateCarRequest matchingUpdateCarRequest = updateCarRequests.stream()
-                .filter(updateCarRequest -> existingCar.getId().toString().equals(updateCarRequest.carId()))
-                .findAny()
-                .orElseThrow(() -> new SwiftWheelsHubNotFoundException("Car details not found"));
+    private Car getUpdatedCar(UpdateCarsRequest updateCarsRequests, Car existingCar) {
+        Car car = carMapper.getNewCarInstance(existingCar);
+        car.setCarStatus(getUpdatedCarStatus(updateCarsRequests, existingCar));
 
-        return CarStatus.valueOf(matchingUpdateCarRequest.carState().name());
+        return car;
     }
 
-    private List<ObjectId> getCarIds(List<UpdateCarRequest> updateCarRequests) {
-        return updateCarRequests.stream()
-                .map(updateCarRequest -> MongoUtil.getObjectId(updateCarRequest.carId()))
-                .toList();
+    private CarStatus getUpdatedCarStatus(UpdateCarsRequest updateCarsRequest, Car existingCar) {
+        return existingCar.getId().toString().equals(updateCarsRequest.previousCarId()) ?
+                CarStatus.AVAILABLE :
+                CarStatus.NOT_AVAILABLE;
+    }
+
+    private List<ObjectId> getCarIds(UpdateCarsRequest updateCarsRequests) {
+        return List.of(
+                MongoUtil.getObjectId(updateCarsRequests.previousCarId()),
+                MongoUtil.getObjectId(updateCarsRequests.actualCarId())
+        );
     }
 
     private Mono<Car> setupUpdatedCar(String id, Map<String, Part> carRequestPartMap, CarRequest updatedCarRequest) {
@@ -320,7 +299,8 @@ public class CarService {
                         findEntityById(id),
                         branchService.findEntityById(updatedCarRequest.originalBranchId()),
                         branchService.findEntityById(updatedCarRequest.actualBranchId()),
-                        getImageContent(carRequestPartMap.get(IMAGE))),
+                        getImageContent(carRequestPartMap.get(IMAGE))
+                ),
                 carDetails -> getUpdatedCar(updatedCarRequest, carDetails)
         );
     }
@@ -351,9 +331,9 @@ public class CarService {
         return updatedCar;
     }
 
-    private Mono<Car> setupFinalCarDetails(String id, CarUpdateDetails carUpdateDetails) {
+    private Mono<Car> setupFinalCarDetails(CarUpdateDetails carUpdateDetails) {
         return Mono.zip(
-                findEntityById(id),
+                findEntityById(carUpdateDetails.carId()),
                 employeeService.findEntityById(carUpdateDetails.receptionistEmployeeId()),
                 (existingCar, receptionistEmployee) -> updateCarDetails(carUpdateDetails, existingCar, receptionistEmployee)
         );

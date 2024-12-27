@@ -1,10 +1,8 @@
 package com.swiftwheelshubreactive.expense.handler;
 
-import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
 import com.swiftwheelshubreactive.expense.validator.InvoiceRequestValidator;
-import com.swiftwheelshubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -85,10 +83,6 @@ public class InvoiceHandler {
         return serverRequest.bodyToMono(InvoiceRequest.class)
                 .flatMap(invoiceRequestValidator::validateBody)
                 .flatMap(invoiceRequest -> invoiceService.closeInvoice(
-                                AuthenticationInfo.builder()
-                                        .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
-                                        .roles(ServerRequestUtil.getRolesHeader(serverRequest))
-                                        .build(),
                                 serverRequest.pathVariable(ID),
                                 invoiceRequest
                         )

@@ -2,22 +2,17 @@ package com.swiftwheelshubreactive.expense.consumer;
 
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
+import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 @Configuration
@@ -26,9 +21,7 @@ import java.util.function.Function;
 public class UpdatedBookingMessageConsumer {
 
     private final InvoiceService invoiceService;
-
-    @Value("${bookingConsumer.isMessageAckEnabled:false}")
-    private boolean isMessageAckEnabled;
+    private final RetryHandler retryHandler;
 
     @Bean
     public Function<Flux<Message<BookingResponse>>, Mono<Void>> updatedBookingConsumer() {
@@ -38,29 +31,16 @@ public class UpdatedBookingMessageConsumer {
 
     private Mono<InvoiceResponse> processMessage(Message<BookingResponse> message) {
         return invoiceService.updateInvoiceAfterBookingUpdate(message.getPayload())
+                .retryWhen(retryHandler.retry())
                 .doOnNext(invoiceResponse -> {
+                    KafkaUtil.acknowledgeMessage(message.getHeaders());
                     log.info("Invoice updated: {}", invoiceResponse);
-
-                    if (isMessageAckEnabled) {
-                        sendMessageAcknowledgement(message.getHeaders());
-                    }
                 })
                 .onErrorResume(e -> {
                     log.error("Exception during processing updated booking message: {}", e.getMessage(), e);
 
                     return Mono.empty();
                 });
-    }
-
-    private void sendMessageAcknowledgement(MessageHeaders messageHeaders) {
-        Optional.ofNullable(messageHeaders.get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class))
-                .orElseThrow(
-                        () -> new SwiftWheelsHubResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "There is no Kafka acknowledgement in message headers"
-                        )
-                )
-                .acknowledge();
     }
 
 }
