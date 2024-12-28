@@ -37,10 +37,7 @@ public class InvoiceReprocessingService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking rollback failed")))
                 .then()
                 .onErrorResume(e -> {
-                    log.error(
-                            "Error while sending booking id for rollback: {}, saving message on rollback DLQ",
-                            e.getMessage()
-                    );
+                    log.error("Error while sending booking id for rollback: {}", e.getMessage());
 
                     return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
@@ -49,7 +46,12 @@ public class InvoiceReprocessingService {
     private Mono<Boolean> processCarStatusUpdate(InvoiceReprocessRequest invoiceReprocessRequest) {
         return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceReprocessRequest))
                 .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.defer(() -> bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId())));
+                .switchIfEmpty(Mono.defer(() -> processBookingRollback(invoiceReprocessRequest)));
+    }
+
+    private Mono<Boolean> processBookingRollback(InvoiceReprocessRequest invoiceReprocessRequest) {
+        return bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId())
+                .map(_ -> Boolean.FALSE);
     }
 
     private Mono<Invoice> markInvoiceAsSuccessful(InvoiceReprocessRequest invoiceReprocessRequest) {

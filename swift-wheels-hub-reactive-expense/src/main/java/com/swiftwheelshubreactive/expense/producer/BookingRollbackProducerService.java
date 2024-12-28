@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.expense.producer;
 
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,8 @@ public class BookingRollbackProducerService {
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking rollback failed")))
                 .retryWhen(retryHandler.retry());
     }
 

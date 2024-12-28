@@ -158,7 +158,7 @@ public class InvoiceService {
                 .flatMap(this::processInvoiceClosing)
                 .map(invoiceMapper::mapEntityToDto)
                 .onErrorResume(e -> {
-                    log.error("Error while closing invoice: {}", e.getMessage());
+                    log.error("Error while closing invoice: {}, storing message to DLQ", e.getMessage());
 
                     return reprocessInvoice(id, invoiceRequest);
                 });

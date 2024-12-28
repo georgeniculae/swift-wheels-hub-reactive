@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,6 +67,54 @@ class InvoiceReprocessingServiceTest {
                 .verify();
 
         verify(invoiceMapper).getSuccessfulCreatedInvoice(any(Invoice.class));
+    }
+
+    @Test
+    void reprocessInvoiceTest_updateBookingFailed() {
+        InvoiceReprocessRequest invoiceReprocessRequest =
+                TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
+
+        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
+                .thenReturn(Mono.just(false));
+
+        invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
+                .as(StepVerifier::create)
+                .expectError()
+                .verify();
+    }
+
+    @Test
+    void reprocessInvoiceTest_carUpdateFailed() {
+        InvoiceReprocessRequest invoiceReprocessRequest =
+                TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
+
+        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
+                .thenReturn(Mono.just(true));
+        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
+                .thenReturn(Mono.just(false));
+        when(bookingRollbackProducerService.sendBookingId(anyString())).thenReturn(Mono.just(true));
+
+        invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
+                .as(StepVerifier::create)
+                .expectError()
+                .verify();
+    }
+
+    @Test
+    void reprocessInvoiceTest_carUpdateFailed_failedRollback() {
+        InvoiceReprocessRequest invoiceReprocessRequest =
+                TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
+
+        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
+                .thenReturn(Mono.just(true));
+        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
+                .thenReturn(Mono.just(false));
+        when(bookingRollbackProducerService.sendBookingId(anyString())).thenReturn(Mono.just(false));
+
+        invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
+                .as(StepVerifier::create)
+                .expectError()
+                .verify();
     }
 
 }
