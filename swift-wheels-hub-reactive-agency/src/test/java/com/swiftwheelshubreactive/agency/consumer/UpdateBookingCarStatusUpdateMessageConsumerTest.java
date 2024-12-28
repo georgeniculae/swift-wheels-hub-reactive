@@ -39,7 +39,7 @@ class UpdateBookingCarStatusUpdateMessageConsumerTest {
     private RetryHandler retryHandler;
 
     @Test
-    void invoiceCarUpdateConsumerTest_success() {
+    void updateBookingCarUpdateConsumerTest_success() {
         UpdateCarsRequest updateCarsRequest =
                 TestUtil.getResourceAsJson("/data/UpdateCarsRequest.json", UpdateCarsRequest.class);
 
@@ -59,7 +59,7 @@ class UpdateBookingCarStatusUpdateMessageConsumerTest {
     }
 
     @Test
-    void invoiceCarUpdateConsumerTest_noAcknowledgement() {
+    void updateBookingCarUpdateConsumerTest_noAcknowledgement() {
         UpdateCarsRequest updateCarsRequest =
                 TestUtil.getResourceAsJson("/data/UpdateCarsRequest.json", UpdateCarsRequest.class);
 
