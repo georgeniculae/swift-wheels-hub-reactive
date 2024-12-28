@@ -18,6 +18,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -117,6 +119,19 @@ class OutboxServiceTest {
         when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(outboxService.handleOutboxes())
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void processBookingDeletionTest_success() {
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
+
+        when(bookingRepository.deleteAllById(any())).thenReturn(Mono.empty());
+        when(outboxRepository.save(any(Outbox.class))).thenReturn(Mono.just(outbox));
+
+        StepVerifier.create(outboxService.processBookingDeletion(List.of(booking), Outbox.Operation.DELETE))
                 .expectComplete()
                 .verify();
     }
