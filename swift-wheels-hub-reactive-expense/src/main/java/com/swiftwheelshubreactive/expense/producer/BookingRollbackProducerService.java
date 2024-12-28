@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.expense.producer;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import reactor.core.scheduler.Schedulers;
 public class BookingRollbackProducerService {
 
     private final StreamBridge streamBridge;
+    private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.bookingRollbackProducer-out-0.destination}")
     private String emailNotificationBinderName;
@@ -36,6 +38,7 @@ public class BookingRollbackProducerService {
                 .subscribeOn(Schedulers.boundedElastic())
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Failed to send booking id for rollback")))
+                .retryWhen(retryHandler.retry())
                 .onErrorResume(e -> {
                     log.error(
                             "Error while sending booking id for rollback: {}, saving message on rollback DLQ",
