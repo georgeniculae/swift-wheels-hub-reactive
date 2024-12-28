@@ -1,6 +1,5 @@
 package com.swiftwheelshubreactive.expense.producer;
 
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,17 +35,7 @@ public class BookingRollbackProducerService {
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
-                .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Failed to send booking id for rollback")))
-                .retryWhen(retryHandler.retry())
-                .onErrorResume(e -> {
-                    log.error(
-                            "Error while sending booking id for rollback: {}, saving message on rollback DLQ",
-                            e.getMessage()
-                    );
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
+                .retryWhen(retryHandler.retry());
     }
 
     private Message<String> buildMessage(String bookingId) {

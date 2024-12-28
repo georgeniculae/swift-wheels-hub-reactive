@@ -4,19 +4,22 @@ import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.producer.BookingRollbackProducerService;
 import com.swiftwheelshubreactive.expense.producer.BookingUpdateProducerService;
 import com.swiftwheelshubreactive.expense.producer.CarStatusUpdateProducerService;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
-import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
+import com.swiftwheelshubreactive.model.Invoice;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InvoiceReprocessingService {
 
     private final BookingUpdateProducerService bookingUpdateProducerService;
@@ -24,14 +27,23 @@ public class InvoiceReprocessingService {
     private final BookingRollbackProducerService bookingRollbackProducerService;
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
-    private final RetryHandler retryHandler;
 
     public Mono<Void> reprocessInvoice(InvoiceReprocessRequest invoiceReprocessRequest) {
         return bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceReprocessRequest))
                 .filter(Boolean.TRUE::equals)
                 .flatMap(_ -> processCarStatusUpdate(invoiceReprocessRequest))
+                .filter(Boolean.TRUE::equals)
                 .flatMap(_ -> markInvoiceAsSuccessful(invoiceReprocessRequest))
-                .retryWhen(retryHandler.retry());
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking rollback failed")))
+                .then()
+                .onErrorResume(e -> {
+                    log.error(
+                            "Error while sending booking id for rollback: {}, saving message on rollback DLQ",
+                            e.getMessage()
+                    );
+
+                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
+                });
     }
 
     private Mono<Boolean> processCarStatusUpdate(InvoiceReprocessRequest invoiceReprocessRequest) {
@@ -40,11 +52,10 @@ public class InvoiceReprocessingService {
                 .flatMap(_ -> bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId()));
     }
 
-    private Mono<Void> markInvoiceAsSuccessful(InvoiceReprocessRequest invoiceReprocessRequest) {
+    private Mono<Invoice> markInvoiceAsSuccessful(InvoiceReprocessRequest invoiceReprocessRequest) {
         return invoiceRepository.findById(MongoUtil.getObjectId(invoiceReprocessRequest.invoiceId()))
                 .map(invoiceMapper::getSuccessfulCreatedInvoice)
-                .flatMap(invoiceRepository::save)
-                .then();
+                .flatMap(invoiceRepository::save);
     }
 
     private BookingClosingDetails getBookingClosingDetails(InvoiceReprocessRequest invoiceReprocessRequest) {

@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.expense.consumer;
 import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.expense.service.InvoiceReprocessingService;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
-import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,9 +15,6 @@ import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import reactor.util.retry.RetrySpec;
-
-import java.time.Duration;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -35,9 +31,6 @@ class FailedInvoiceDlqMessageConsumerTest {
     @Mock
     private Acknowledgment acknowledgment;
 
-    @Mock
-    private RetryHandler retryHandler;
-
     @Test
     void failedInvoiceDlqConsumerTest_success_withAcknowledgement() {
         InvoiceReprocessRequest invoiceReprocessRequest =
@@ -48,7 +41,6 @@ class FailedInvoiceDlqMessageConsumerTest {
                 .build();
 
         when(invoiceReprocessingService.reprocessInvoice(any(InvoiceReprocessRequest.class))).thenReturn(Mono.empty());
-        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(failedInvoiceDlqMessageConsumer.failedInvoiceDlqConsumer().apply(Flux.just(message)))
                 .expectComplete()
@@ -64,7 +56,6 @@ class FailedInvoiceDlqMessageConsumerTest {
                 .build();
 
         when(invoiceReprocessingService.reprocessInvoice(any(InvoiceReprocessRequest.class))).thenReturn(Mono.empty());
-        when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         StepVerifier.create(failedInvoiceDlqMessageConsumer.failedInvoiceDlqConsumer().apply(Flux.just(message)))
                 .expectComplete()

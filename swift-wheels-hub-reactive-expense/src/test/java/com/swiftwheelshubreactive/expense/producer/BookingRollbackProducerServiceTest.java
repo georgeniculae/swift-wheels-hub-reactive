@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.expense.producer;
 
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,6 +20,9 @@ class BookingRollbackProducerServiceTest {
     @Mock
     private RetryHandler retryHandler;
 
+    @Test
+    void sendBookingIdTest_success(){
 
+    }
 
 }
