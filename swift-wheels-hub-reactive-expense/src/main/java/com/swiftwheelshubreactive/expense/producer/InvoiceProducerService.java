@@ -1,9 +1,8 @@
-package com.swiftwheelshubreactive.expense.service;
+package com.swiftwheelshubreactive.expense.producer;
 
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
@@ -15,32 +14,31 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class CarStatusUpdateProducerService {
+public class InvoiceProducerService {
 
     private final StreamBridge streamBridge;
     private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.carUpdateDetailsProducer-out-0.destination}")
-    private String carUpdateBinderName;
+    @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.destination}")
+    private String emailNotificationBinderName;
 
-    @Value("${spring.cloud.stream.bindings.carUpdateDetailsProducer-out-0.contentType}")
-    private String carUpdateMimeType;
+    @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.contentType}")
+    private String emailNotificationMimeType;
 
-    public Mono<Boolean> sendCarUpdateDetails(CarUpdateDetails carUpdateDetails) {
+    public Mono<Boolean> sendInvoice(InvoiceResponse invoiceResponse) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
-                                carUpdateBinderName,
-                                buildMessage(carUpdateDetails),
-                                MimeType.valueOf(carUpdateMimeType)
+                                emailNotificationBinderName,
+                                buildMessage(invoiceResponse),
+                                MimeType.valueOf(emailNotificationMimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
                 .retryWhen(retryHandler.retry());
     }
 
-    private Message<CarUpdateDetails> buildMessage(CarUpdateDetails carUpdateDetails) {
-        return MessageBuilder.withPayload(carUpdateDetails)
+    private Message<InvoiceResponse> buildMessage(InvoiceResponse invoiceResponse) {
+        return MessageBuilder.withPayload(invoiceResponse)
                 .build();
     }
 

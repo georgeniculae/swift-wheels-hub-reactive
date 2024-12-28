@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.expense.service;
+package com.swiftwheelshubreactive.expense.producer;
 
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import lombok.RequiredArgsConstructor;

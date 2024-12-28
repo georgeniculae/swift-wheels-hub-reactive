@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.expense.service;
+package com.swiftwheelshubreactive.expense.producer;
 
 import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;

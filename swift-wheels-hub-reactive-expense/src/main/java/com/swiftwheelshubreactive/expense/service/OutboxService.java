@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.model.Outbox;
+import com.swiftwheelshubreactive.expense.producer.InvoiceProducerService;
 import com.swiftwheelshubreactive.expense.repository.OutboxRepository;
 import com.swiftwheelshubreactive.model.Invoice;
 import lombok.RequiredArgsConstructor;
