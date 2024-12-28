@@ -156,6 +156,27 @@ class CarServiceTest {
     }
 
     @Test
+    void getAllAvailableCarTest_success() {
+        Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
+        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        when(carRepository.findAllAvailableCars()).thenReturn(Flux.just(car));
+
+        StepVerifier.create(carService.getAllAvailableCars())
+                .expectNext(carResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    void getAllAvailableCarTest_errorOnFindingCars() {
+        when(carRepository.findAllAvailableCars()).thenReturn(Flux.error(new RuntimeException()));
+
+        StepVerifier.create(carService.getAllAvailableCars())
+                .expectError()
+                .verify();
+    }
+
+    @Test
     void getAvailableCarTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
         CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
