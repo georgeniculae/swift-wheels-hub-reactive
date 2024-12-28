@@ -49,7 +49,7 @@ public class InvoiceReprocessingService {
     private Mono<Boolean> processCarStatusUpdate(InvoiceReprocessRequest invoiceReprocessRequest) {
         return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceReprocessRequest))
                 .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId()));
+                .switchIfEmpty(Mono.defer(() -> bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId())));
     }
 
     private Mono<Invoice> markInvoiceAsSuccessful(InvoiceReprocessRequest invoiceReprocessRequest) {
