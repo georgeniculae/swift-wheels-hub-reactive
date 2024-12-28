@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.booking.service;
 
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -15,6 +16,7 @@ import reactor.core.scheduler.Schedulers;
 public class DeletedBookingProducerService {
 
     private final StreamBridge streamBridge;
+    private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.destination}")
     private String binderName;
@@ -30,7 +32,8 @@ public class DeletedBookingProducerService {
                                 MimeType.valueOf(mimeType)
                         )
                 )
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.boundedElastic())
+                .retryWhen(retryHandler.retry());
     }
 
     private Message<String> buildMessage(String bookingId) {
