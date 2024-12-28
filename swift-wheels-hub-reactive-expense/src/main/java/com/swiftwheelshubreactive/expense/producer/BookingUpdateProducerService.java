@@ -22,17 +22,17 @@ public class BookingUpdateProducerService {
     private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.bookingUpdateProducer-out-0.destination}")
-    private String emailNotificationBinderName;
+    private String binderName;
 
     @Value("${spring.cloud.stream.bindings.bookingUpdateProducer-out-0.contentType}")
-    private String emailNotificationMimeType;
+    private String mimeType;
 
     public Mono<Boolean> sendBookingClosingDetails(BookingClosingDetails bookingClosingDetails) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
-                                emailNotificationBinderName,
+                                binderName,
                                 buildMessage(bookingClosingDetails),
-                                MimeType.valueOf(emailNotificationMimeType)
+                                MimeType.valueOf(mimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())

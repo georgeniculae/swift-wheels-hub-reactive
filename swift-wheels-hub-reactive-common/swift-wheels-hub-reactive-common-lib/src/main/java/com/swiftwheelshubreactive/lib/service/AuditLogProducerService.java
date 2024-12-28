@@ -20,17 +20,17 @@ public class AuditLogProducerService {
     private final StreamBridge streamBridge;
 
     @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.destination}")
-    private String auditLogBinderName;
+    private String binderName;
 
     @Value("${spring.cloud.stream.bindings.auditLogInfoProducer-out-0.contentType}")
-    private String auditLogMimeType;
+    private String mimeType;
 
     public Mono<Void> sendAuditLog(AuditLogInfoRequest auditLogInfoRequest) {
         return Mono.fromRunnable(
                         () -> streamBridge.send(
-                                auditLogBinderName,
+                                binderName,
                                 buildMessage(auditLogInfoRequest),
-                                MimeType.valueOf(auditLogMimeType)
+                                MimeType.valueOf(mimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())

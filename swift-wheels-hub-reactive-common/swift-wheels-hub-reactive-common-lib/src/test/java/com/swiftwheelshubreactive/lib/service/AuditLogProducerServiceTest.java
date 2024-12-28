@@ -28,8 +28,8 @@ class AuditLogProducerServiceTest {
 
     @Test
     void sendAuditLogTest_success() {
-        ReflectionTestUtils.setField(auditLogProducerService, "auditLogBinderName", "audit-log-info-out-0");
-        ReflectionTestUtils.setField(auditLogProducerService, "auditLogMimeType", "application/json");
+        ReflectionTestUtils.setField(auditLogProducerService, "binderName", "audit-log-info-out-0");
+        ReflectionTestUtils.setField(auditLogProducerService, "mimeType", "application/json");
 
         AuditLogInfoRequest auditLogInfoRequest =
                 TestUtil.getResourceAsJson("/data/AuditLogInfoRequest.json", AuditLogInfoRequest.class);

@@ -22,17 +22,17 @@ public class FailedInvoiceDlqProducerService {
     private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.failedInvoiceDlqProducer-out-0.destination}")
-    private String failedInvoiceDlqBinderName;
+    private String binderName;
 
     @Value("${spring.cloud.stream.bindings.failedInvoiceDlqProducer-out-0.contentType}")
-    private String failedInvoiceDlqMimeType;
+    private String mimeType;
 
     public Mono<Void> reprocessInvoice(InvoiceReprocessRequest invoiceReprocessRequest) {
         return Mono.fromRunnable(
                         () -> streamBridge.send(
-                                failedInvoiceDlqBinderName,
+                                binderName,
                                 buildMessage(invoiceReprocessRequest),
-                                MimeType.valueOf(failedInvoiceDlqMimeType)
+                                MimeType.valueOf(mimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())

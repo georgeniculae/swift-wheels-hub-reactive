@@ -20,17 +20,17 @@ public class InvoiceProducerService {
     private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.destination}")
-    private String emailNotificationBinderName;
+    private String binderName;
 
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.contentType}")
-    private String emailNotificationMimeType;
+    private String mimeType;
 
     public Mono<Boolean> sendInvoice(InvoiceResponse invoiceResponse) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
-                                emailNotificationBinderName,
+                                binderName,
                                 buildMessage(invoiceResponse),
-                                MimeType.valueOf(emailNotificationMimeType)
+                                MimeType.valueOf(mimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())

@@ -35,8 +35,8 @@ class UpdateBookingUpdateCarsProducerServiceTest {
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(updateBookingUpdateCarsProducerService, "carUpdateBinderName", "carUpdateBinderName");
-        ReflectionTestUtils.setField(updateBookingUpdateCarsProducerService, "carUpdateMimeType", "application/json");
+        ReflectionTestUtils.setField(updateBookingUpdateCarsProducerService, "binderName", "carUpdateBinderName");
+        ReflectionTestUtils.setField(updateBookingUpdateCarsProducerService, "mimeType", "application/json");
     }
 
     @Test

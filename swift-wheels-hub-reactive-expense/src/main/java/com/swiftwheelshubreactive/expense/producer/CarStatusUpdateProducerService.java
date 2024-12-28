@@ -22,17 +22,17 @@ public class CarStatusUpdateProducerService {
     private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.carUpdateDetailsProducer-out-0.destination}")
-    private String carUpdateBinderName;
+    private String binderName;
 
     @Value("${spring.cloud.stream.bindings.carUpdateDetailsProducer-out-0.contentType}")
-    private String carUpdateMimeType;
+    private String mimeType;
 
     public Mono<Boolean> sendCarUpdateDetails(CarUpdateDetails carUpdateDetails) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
-                                carUpdateBinderName,
+                                binderName,
                                 buildMessage(carUpdateDetails),
-                                MimeType.valueOf(carUpdateMimeType)
+                                MimeType.valueOf(mimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())

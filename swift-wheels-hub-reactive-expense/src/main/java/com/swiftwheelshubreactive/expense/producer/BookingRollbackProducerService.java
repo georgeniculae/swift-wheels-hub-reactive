@@ -21,17 +21,17 @@ public class BookingRollbackProducerService {
     private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.bookingRollbackProducer-out-0.destination}")
-    private String emailNotificationBinderName;
+    private String binderName;
 
     @Value("${spring.cloud.stream.bindings.bookingRollbackProducer-out-0.contentType}")
-    private String emailNotificationMimeType;
+    private String mimeType;
 
     public Mono<Boolean> sendBookingId(String bookingId) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
-                                emailNotificationBinderName,
+                                binderName,
                                 buildMessage(bookingId),
-                                MimeType.valueOf(emailNotificationMimeType)
+                                MimeType.valueOf(mimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
