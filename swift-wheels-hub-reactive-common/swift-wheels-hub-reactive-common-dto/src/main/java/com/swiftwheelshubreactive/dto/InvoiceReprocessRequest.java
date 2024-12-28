@@ -7,20 +7,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
-public record InvoiceResponse(
-        String id,
-
+public record InvoiceReprocessRequest(
         @NonNull
-        String customerUsername,
-
-        @NonNull
-        String customerEmail,
+        String invoiceId,
 
         @NonNull
         String carId,
 
         String receptionistEmployeeId,
 
+        @NonNull
         String returnBranchId,
 
         @NonNull
@@ -28,10 +24,7 @@ public record InvoiceResponse(
 
         LocalDate carReturnDate,
 
-        LocalDate dateTo,
-
-        LocalDate dateFrom,
-
+        @NonNull
         Boolean isVehicleDamaged,
 
         BigDecimal damageCost,
@@ -40,33 +33,23 @@ public record InvoiceResponse(
 
         BigDecimal totalAmount,
 
-        BigDecimal rentalCarPrice,
-
-        String comments,
-
-        InvoiceProcessState invoiceProcessState
+        String comments
 ) {
 
     @Override
     public String toString() {
-        return "InvoiceResponse{" +
-                "id='" + id + '\'' +
-                ", customerUsername='" + customerUsername + '\'' +
-                ", customerEmail='" + customerEmail + '\'' +
+        return "InvoiceReprocessRequest{" +
+                "invoiceId='" + invoiceId + '\'' +
                 ", carId='" + carId + '\'' +
                 ", receptionistEmployeeId='" + receptionistEmployeeId + '\'' +
                 ", returnBranchId='" + returnBranchId + '\'' +
                 ", bookingId='" + bookingId + '\'' +
                 ", carReturnDate=" + carReturnDate +
-                ", dateTo=" + dateTo +
-                ", dateFrom=" + dateFrom +
                 ", isVehicleDamaged=" + isVehicleDamaged +
                 ", damageCost=" + damageCost +
                 ", additionalPayment=" + additionalPayment +
                 ", totalAmount=" + totalAmount +
-                ", rentalCarPrice=" + rentalCarPrice +
                 ", comments='" + comments + '\'' +
-                ", invoiceProcessState=" + invoiceProcessState +
                 '}';
     }
 

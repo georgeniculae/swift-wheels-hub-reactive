@@ -3,6 +3,7 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
@@ -17,7 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
@@ -272,8 +275,12 @@ class InvoiceServiceTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     void closeInvoiceTest_bookingUpdateFailed_error() {
         Invoice invoice = TestUtil.getResourceAsJson("/data/ClosedInvoice.json", Invoice.class);
+
+        Invoice failedInvoice =
+                TestUtil.getResourceAsJson("/data/FailedClosedInvoice.json", Invoice.class);
 
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
@@ -283,10 +290,22 @@ class InvoiceServiceTest {
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                count++;
+
+                if (count == 1) {
+                    return Mono.just(invoice);
+                }
+
+                return Mono.just(failedInvoice);
+            }
+        });
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
                 .thenReturn(Mono.just(false));
-        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceRequest.class)))
+        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(invoiceService.closeInvoice("64f361caf291ae086e179547", invoiceRequest))
@@ -295,24 +314,42 @@ class InvoiceServiceTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     void closeInvoiceTest_carUpdateFailed_error() {
         Invoice invoice = TestUtil.getResourceAsJson("/data/ClosedInvoice.json", Invoice.class);
 
+        Invoice failedInvoice =
+                TestUtil.getResourceAsJson("/data/FailedClosedInvoice.json", Invoice.class);
+
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+
+        TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                count++;
+
+                if (count == 1) {
+                    return Mono.just(invoice);
+                }
+
+                return Mono.just(failedInvoice);
+            }
+        });
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
                 .thenReturn(Mono.just(true));
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRollbackProducerService.sendBookingId(anyString())).thenReturn(Mono.just(true));
-        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceRequest.class)))
+        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(invoiceService.closeInvoice("64f361caf291ae086e179547", invoiceRequest))
@@ -321,24 +358,43 @@ class InvoiceServiceTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     void closeInvoiceTest_bookingRollbackFailed_error() {
         Invoice invoice = TestUtil.getResourceAsJson("/data/ClosedInvoice.json", Invoice.class);
 
+        Invoice failedInvoice =
+                TestUtil.getResourceAsJson("/data/FailedClosedInvoice.json", Invoice.class);
+
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+
+        InvoiceResponse failedInvoiceResponse =
+                TestUtil.getResourceAsJson("/data/FailedInvoiceResponse.json", InvoiceResponse.class);
 
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
                 .build();
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
-        when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                count++;
+
+                if (count == 1) {
+                    return Mono.just(invoice);
+                }
+
+                return Mono.just(failedInvoice);
+            }
+        });
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
                 .thenReturn(Mono.just(true));
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRollbackProducerService.sendBookingId(anyString())).thenReturn(Mono.just(false));
-        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceRequest.class)))
+        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(invoiceService.closeInvoice("64f361caf291ae086e179547", invoiceRequest))

@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.expense.service;
 
-import com.swiftwheelshubreactive.dto.InvoiceRequest;
+import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +27,11 @@ public class FailedInvoiceDlqProducerService {
     @Value("${spring.cloud.stream.bindings.failedInvoiceDlqProducer-out-0.contentType}")
     private String failedInvoiceDlqMimeType;
 
-    public Mono<Void> reprocessInvoice(InvoiceRequest invoiceRequest) {
+    public Mono<Void> reprocessInvoice(InvoiceReprocessRequest invoiceReprocessRequest) {
         return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 failedInvoiceDlqBinderName,
-                                buildMessage(invoiceRequest),
+                                buildMessage(invoiceReprocessRequest),
                                 MimeType.valueOf(failedInvoiceDlqMimeType)
                         )
                 )
@@ -40,8 +40,8 @@ public class FailedInvoiceDlqProducerService {
                 .then();
     }
 
-    private Message<InvoiceRequest> buildMessage(InvoiceRequest invoiceRequest) {
-        return MessageBuilder.withPayload(invoiceRequest)
+    private Message<InvoiceReprocessRequest> buildMessage(InvoiceReprocessRequest invoiceReprocessRequest) {
+        return MessageBuilder.withPayload(invoiceReprocessRequest)
                 .build();
     }
 

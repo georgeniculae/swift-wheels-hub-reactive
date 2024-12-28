@@ -156,7 +156,7 @@ public class InvoiceService {
                 .onErrorResume(e -> {
                     log.error("Error while closing invoice: {}", e.getMessage());
 
-                    return reprocessInvoice(invoiceRequest);
+                    return reprocessInvoice(id, invoiceRequest);
                 });
     }
 
@@ -260,10 +260,10 @@ public class InvoiceService {
                 .map(_ -> invoiceMapper.getSuccessfulCreatedInvoice(invoice))
                 .flatMap(revenueService::processClosing)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Failed to process invoice closing"))))
-                .onErrorMap(e -> {
+                .onErrorResume(e -> {
                     log.error("Error while processing invoice closing: {}", e.getMessage());
 
-                    return ExceptionUtil.handleException(e);
+                    return invoiceRepository.save(invoiceMapper.getFailedCreatedInvoice(invoice));
                 });
     }
 
@@ -335,8 +335,8 @@ public class InvoiceService {
                 .add(carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateTo, carReturnDate) * 2L)));
     }
 
-    private Mono<InvoiceResponse> reprocessInvoice(InvoiceRequest invoiceRequest) {
-        return failedInvoiceDlqProducerService.reprocessInvoice(invoiceRequest)
+    private Mono<InvoiceResponse> reprocessInvoice(String id, InvoiceRequest invoiceRequest) {
+        return failedInvoiceDlqProducerService.reprocessInvoice(invoiceMapper.mapToInvoiceReprocessRequest(id, invoiceRequest))
                 .then(Mono.empty());
     }
 

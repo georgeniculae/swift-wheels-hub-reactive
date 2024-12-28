@@ -1,7 +1,6 @@
 package com.swiftwheelshubreactive.expense.consumer;
 
-import com.swiftwheelshubreactive.dto.InvoiceRequest;
-import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
+import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.expense.service.InvoiceReprocessingService;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.KafkaUtil;
@@ -21,16 +20,15 @@ import java.util.function.Function;
 public class FailedInvoiceDlqMessageConsumer {
 
     private final InvoiceReprocessingService invoiceReprocessingService;
-    private final InvoiceRepository invoiceRepository;
     private final RetryHandler retryHandler;
 
     @Bean
-    public Function<Flux<Message<InvoiceRequest>>, Mono<Void>> failedInvoiceDlqConsumer() {
+    public Function<Flux<Message<InvoiceReprocessRequest>>, Mono<Void>> failedInvoiceDlqConsumer() {
         return messageFlux -> messageFlux.concatMap(this::reprocessInvoice)
                 .then();
     }
 
-    public Mono<Void> reprocessInvoice(Message<InvoiceRequest> message) {
+    public Mono<Void> reprocessInvoice(Message<InvoiceReprocessRequest> message) {
         return invoiceReprocessingService.reprocessInvoice(message.getPayload())
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {

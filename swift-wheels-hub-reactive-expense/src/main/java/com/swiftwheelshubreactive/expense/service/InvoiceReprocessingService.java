@@ -3,10 +3,11 @@ package com.swiftwheelshubreactive.expense.service;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.InvoiceRequest;
+import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
+import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -22,33 +23,39 @@ public class InvoiceReprocessingService {
     private final InvoiceMapper invoiceMapper;
     private final RetryHandler retryHandler;
 
-    public Mono<Void> reprocessInvoice(InvoiceRequest invoiceRequest) {
-        return bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceRequest))
+    public Mono<Void> reprocessInvoice(InvoiceReprocessRequest invoiceReprocessRequest) {
+        return bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceReprocessRequest))
                 .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> processCarStatusUpdate(invoiceRequest))
-                .flatMap(_ -> invoiceRepository.save(invoiceMapper.mapRequestToSuccessfulInvoice(invoiceRequest)))
-                .retryWhen(retryHandler.retry())
+                .flatMap(_ -> processCarStatusUpdate(invoiceReprocessRequest))
+                .flatMap(_ -> markInvoiceAsSuccessful(invoiceReprocessRequest))
+                .retryWhen(retryHandler.retry());
+    }
+
+    private Mono<Boolean> processCarStatusUpdate(InvoiceReprocessRequest invoiceReprocessRequest) {
+        return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceReprocessRequest))
+                .filter(Boolean.TRUE::equals)
+                .flatMap(_ -> bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId()));
+    }
+
+    private Mono<Void> markInvoiceAsSuccessful(InvoiceReprocessRequest invoiceReprocessRequest) {
+        return invoiceRepository.findById(MongoUtil.getObjectId(invoiceReprocessRequest.invoiceId()))
+                .map(invoiceMapper::getSuccessfulCreatedInvoice)
+                .flatMap(invoiceRepository::save)
                 .then();
     }
 
-    private Mono<Boolean> processCarStatusUpdate(InvoiceRequest invoiceRequest) {
-        return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceRequest))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> bookingRollbackProducerService.sendBookingId(invoiceRequest.bookingId()));
-    }
-
-    private BookingClosingDetails getBookingClosingDetails(InvoiceRequest invoiceRequest) {
+    private BookingClosingDetails getBookingClosingDetails(InvoiceReprocessRequest invoiceReprocessRequest) {
         return BookingClosingDetails.builder()
-                .bookingId(invoiceRequest.bookingId())
-                .returnBranchId(invoiceRequest.returnBranchId())
+                .bookingId(invoiceReprocessRequest.bookingId())
+                .returnBranchId(invoiceReprocessRequest.returnBranchId())
                 .build();
     }
 
-    private CarUpdateDetails getCarUpdateDetails(InvoiceRequest invoiceRequest) {
+    private CarUpdateDetails getCarUpdateDetails(InvoiceReprocessRequest invoiceReprocessRequest) {
         return CarUpdateDetails.builder()
-                .carId(invoiceRequest.carId())
-                .carState(invoiceRequest.isVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
-                .receptionistEmployeeId(invoiceRequest.receptionistEmployeeId())
+                .carId(invoiceReprocessRequest.carId())
+                .carState(invoiceReprocessRequest.isVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
+                .receptionistEmployeeId(invoiceReprocessRequest.receptionistEmployeeId())
                 .build();
     }
 
