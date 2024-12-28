@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.booking.service;
+package com.swiftwheelshubreactive.booking.producer;
 
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;

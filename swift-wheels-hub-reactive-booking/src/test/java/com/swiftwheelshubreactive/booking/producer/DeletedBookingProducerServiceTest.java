@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.booking.service;
+package com.swiftwheelshubreactive.booking.producer;
 
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.BeforeEach;

@@ -30,7 +30,9 @@ public class Outbox {
     @Getter
     public enum Operation {
 
-        CREATE, UPDATE, DELETE
+        CREATE,
+        UPDATE,
+        DELETE
 
     }
 

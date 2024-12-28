@@ -1,7 +1,9 @@
-package com.swiftwheelshubreactive.booking.service;
+package com.swiftwheelshubreactive.booking.producer;
 
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
@@ -13,31 +15,32 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-public class DeletedBookingProducerService {
+@Slf4j
+public class CreateBookingCarUpdateProducerService {
 
     private final StreamBridge streamBridge;
     private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.destination}")
-    private String binderName;
+    @Value("${spring.cloud.stream.bindings.saveBookingCarUpdateProducer-out-0.destination}")
+    private String carUpdateBinderName;
 
-    @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.contentType}")
-    private String mimeType;
+    @Value("${spring.cloud.stream.bindings.saveBookingCarUpdateProducer-out-0.contentType}")
+    private String carUpdateMimeType;
 
-    public Mono<Boolean> sendMessage(String bookingId) {
+    public Mono<Boolean> sendCarUpdateDetails(CarStatusUpdate carStatusUpdate) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
-                                binderName,
-                                buildMessage(bookingId),
-                                MimeType.valueOf(mimeType)
+                                carUpdateBinderName,
+                                buildMessage(carStatusUpdate),
+                                MimeType.valueOf(carUpdateMimeType)
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
                 .retryWhen(retryHandler.retry());
     }
 
-    private Message<String> buildMessage(String bookingId) {
-        return MessageBuilder.withPayload(bookingId)
+    private Message<CarStatusUpdate> buildMessage(CarStatusUpdate carStatusUpdate) {
+        return MessageBuilder.withPayload(carStatusUpdate)
                 .build();
     }
 

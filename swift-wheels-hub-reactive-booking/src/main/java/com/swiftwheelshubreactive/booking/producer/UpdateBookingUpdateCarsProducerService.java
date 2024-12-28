@@ -1,6 +1,6 @@
-package com.swiftwheelshubreactive.booking.service;
+package com.swiftwheelshubreactive.booking.producer;
 
-import com.swiftwheelshubreactive.dto.CarStatusUpdate;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,22 +16,22 @@ import reactor.core.scheduler.Schedulers;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CreateBookingCarUpdateProducerService {
+public class UpdateBookingUpdateCarsProducerService {
 
     private final StreamBridge streamBridge;
     private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.saveBookingCarUpdateProducer-out-0.destination}")
+    @Value("${spring.cloud.stream.bindings.updateBookingCarsUpdateProducer-out-0.destination}")
     private String carUpdateBinderName;
 
-    @Value("${spring.cloud.stream.bindings.saveBookingCarUpdateProducer-out-0.contentType}")
+    @Value("${spring.cloud.stream.bindings.updateBookingCarsUpdateProducer-out-0.contentType}")
     private String carUpdateMimeType;
 
-    public Mono<Boolean> sendCarUpdateDetails(CarStatusUpdate carStatusUpdate) {
+    public Mono<Boolean> sendUpdateCarsRequest(UpdateCarsRequest updateCarsRequest) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
                                 carUpdateBinderName,
-                                buildMessage(carStatusUpdate),
+                                buildMessage(updateCarsRequest),
                                 MimeType.valueOf(carUpdateMimeType)
                         )
                 )
@@ -39,8 +39,8 @@ public class CreateBookingCarUpdateProducerService {
                 .retryWhen(retryHandler.retry());
     }
 
-    private Message<CarStatusUpdate> buildMessage(CarStatusUpdate carStatusUpdate) {
-        return MessageBuilder.withPayload(carStatusUpdate)
+    private Message<UpdateCarsRequest> buildMessage(UpdateCarsRequest updateCarsRequest) {
+        return MessageBuilder.withPayload(updateCarsRequest)
                 .build();
     }
 

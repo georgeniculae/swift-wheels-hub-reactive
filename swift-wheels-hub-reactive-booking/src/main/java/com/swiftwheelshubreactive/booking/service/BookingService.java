@@ -2,6 +2,8 @@ package com.swiftwheelshubreactive.booking.service;
 
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.model.Outbox;
+import com.swiftwheelshubreactive.booking.producer.CreateBookingCarUpdateProducerService;
+import com.swiftwheelshubreactive.booking.producer.UpdateBookingUpdateCarsProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
@@ -187,8 +189,8 @@ public class BookingService {
                 .filter(Boolean.FALSE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("There are bookings in progress")))
                 .flatMapMany(_ -> bookingRepository.findByCustomerUsername(username))
-                .collectList()
-                .flatMap(bookings -> outboxService.processBookingDeletion(bookings, Outbox.Operation.DELETE))
+                .flatMap(booking -> outboxService.processBookingDeletion(booking, Outbox.Operation.DELETE))
+                .then()
                 .onErrorMap(e -> {
                     log.error("Error while deleting booking by username: {}", e.getMessage());
 

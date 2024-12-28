@@ -3,6 +3,8 @@ package com.swiftwheelshubreactive.booking.service;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshubreactive.booking.model.Outbox;
+import com.swiftwheelshubreactive.booking.producer.CreateBookingCarUpdateProducerService;
+import com.swiftwheelshubreactive.booking.producer.UpdateBookingUpdateCarsProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
@@ -36,7 +38,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -548,7 +549,7 @@ class BookingServiceTest {
         when(bookingRepository.existsByCustomerUsernameAndStatus(anyString(), any(BookingStatus.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
-        when(outboxService.processBookingDeletion(anyList(), any(Outbox.Operation.class))).thenReturn(Mono.empty());
+        when(outboxService.processBookingDeletion(any(Booking.class), any(Outbox.Operation.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(bookingService.deleteBookingByCustomerUsername("user"))
                 .expectComplete()

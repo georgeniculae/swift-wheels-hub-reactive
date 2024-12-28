@@ -3,11 +3,15 @@ package com.swiftwheelshubreactive.booking.service;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshubreactive.booking.model.Outbox;
+import com.swiftwheelshubreactive.booking.producer.CreatedBookingProducerService;
+import com.swiftwheelshubreactive.booking.producer.DeletedBookingProducerService;
+import com.swiftwheelshubreactive.booking.producer.UpdatedBookingProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.OutboxRepository;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.model.Booking;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,9 +22,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,11 +45,14 @@ class OutboxServiceTest {
     @Mock
     private UpdatedBookingProducerService updatedBookingProducerService;
 
+    @Mock
+    private DeletedBookingProducerService deletedBookingProducerService;
+
     @Spy
     private BookingMapper bookingMapper = new BookingMapperImpl();
 
     @Test
-    void handleOutboxesTest_successCreateOperation() {
+    void handleOutboxesTest_success_createOperation() {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
@@ -70,12 +76,26 @@ class OutboxServiceTest {
     }
 
     @Test
-    void handleOutboxesTest_successUpdateOperation() {
+    void handleOutboxesTest_success_updateOperation() {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         outbox.setOperation(Outbox.Operation.UPDATE);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
         when(updatedBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
+        when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
+
+        StepVerifier.create(outboxService.handleOutboxes())
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void handleOutboxesTest_success_deleteOperation() {
+        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
+        outbox.setOperation(Outbox.Operation.DELETE);
+
+        when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
+        when(deletedBookingProducerService.sendMessage(anyString())).thenReturn(Mono.just(true));
         when(outboxRepository.delete(any(Outbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(outboxService.handleOutboxes())
@@ -128,12 +148,12 @@ class OutboxServiceTest {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
-        when(bookingRepository.deleteAllById(any())).thenReturn(Mono.empty());
+        when(bookingRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
         when(outboxRepository.save(any(Outbox.class))).thenReturn(Mono.just(outbox));
 
-        StepVerifier.create(outboxService.processBookingDeletion(List.of(booking), Outbox.Operation.DELETE))
-                .expectComplete()
-                .verify();
+        StepVerifier.create(outboxService.processBookingDeletion(booking, Outbox.Operation.DELETE))
+                .expectNext(outbox)
+                .verifyComplete();
     }
 
 }

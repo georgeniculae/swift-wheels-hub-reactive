@@ -2,6 +2,9 @@ package com.swiftwheelshubreactive.booking.service;
 
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.model.Outbox;
+import com.swiftwheelshubreactive.booking.producer.CreatedBookingProducerService;
+import com.swiftwheelshubreactive.booking.producer.DeletedBookingProducerService;
+import com.swiftwheelshubreactive.booking.producer.UpdatedBookingProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.OutboxRepository;
 import com.swiftwheelshubreactive.dto.BookingResponse;
@@ -10,13 +13,10 @@ import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.model.Booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,16 +48,9 @@ public class OutboxService {
     }
 
     @Transactional
-    public Mono<Void> processBookingDeletion(List<Booking> bookings, Outbox.Operation operation) {
-        return bookingRepository.deleteAllById(getBookingsIds(bookings))
-                .then(Mono.defer(() -> processOutboxes(bookings, operation)))
-                .then();
-    }
-
-    private List<ObjectId> getBookingsIds(List<Booking> bookings) {
-        return bookings.stream()
-                .map(Booking::getId)
-                .toList();
+    public Mono<Outbox> processBookingDeletion(Booking booking, Outbox.Operation operation) {
+        return bookingRepository.deleteById(booking.getId())
+                .then(Mono.defer(() -> processOutboxes(booking, operation)));
     }
 
     private Mono<Booking> saveOutbox(Booking savedBooking, Outbox.Operation operation) {
@@ -65,18 +58,15 @@ public class OutboxService {
                 .map(Outbox::getContent);
     }
 
-    private Mono<List<String>> processOutboxes(List<Booking> bookings, Outbox.Operation operation) {
-        return Flux.fromIterable(bookings)
-                .map(booking -> createOutbox(booking, operation))
-                .flatMap(outboxRepository::save)
-                .map(outbox -> outbox.getContent().getActualCarId().toString())
-                .collectList();
+    private Mono<Outbox> processOutboxes(Booking booking, Outbox.Operation operation) {
+        return Mono.just(createOutbox(booking, operation))
+                .flatMap(outboxRepository::save);
     }
 
-    private Outbox createOutbox(Booking savedBooking, Outbox.Operation operation) {
+    private Outbox createOutbox(Booking booking, Outbox.Operation operation) {
         return Outbox.builder()
                 .operation(operation)
-                .content(savedBooking)
+                .content(booking)
                 .build();
     }
 
