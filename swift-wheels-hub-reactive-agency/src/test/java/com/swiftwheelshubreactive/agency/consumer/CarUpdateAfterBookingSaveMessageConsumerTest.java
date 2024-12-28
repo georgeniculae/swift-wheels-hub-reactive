@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.agency.consumer;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
-import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,10 +24,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateBookingCarStatusUpdateMessageConsumerTest {
+class CarUpdateAfterBookingSaveMessageConsumerTest {
 
     @InjectMocks
-    private UpdateBookingCarStatusUpdateMessageConsumer updateBookingCarStatusUpdateMessageConsumer;
+    private CarUpdateAfterBookingSaveMessageConsumer carUpdateAfterBookingSaveMessageConsumer;
 
     @Mock
     private CarService carService;
@@ -39,39 +39,39 @@ class UpdateBookingCarStatusUpdateMessageConsumerTest {
     private RetryHandler retryHandler;
 
     @Test
-    void updateBookingCarUpdateConsumerTest_success() {
-        UpdateCarsRequest updateCarsRequest =
-                TestUtil.getResourceAsJson("/data/UpdateCarsRequest.json", UpdateCarsRequest.class);
+    void carUpdateAfterBookingSaveConsumerTest_success() {
+        CarStatusUpdate carStatusUpdate =
+                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
 
-        Message<UpdateCarsRequest> updateCarsRequestMessage = MessageBuilder.withPayload(updateCarsRequest)
+        Message<CarStatusUpdate> carStatusUpdateMessage = MessageBuilder.withPayload(carStatusUpdate)
                 .setHeader(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment)
                 .build();
 
-        Flux<Message<UpdateCarsRequest>> messageFlux = Flux.just(updateCarsRequestMessage);
+        Flux<Message<CarStatusUpdate>> messageFlux = Flux.just(carStatusUpdateMessage);
 
-        when(carService.updateCarsStatus(any(UpdateCarsRequest.class))).thenReturn(Mono.empty());
+        when(carService.updateCarStatus(any(CarStatusUpdate.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        updateBookingCarStatusUpdateMessageConsumer.updateBookingCarUpdateConsumer().apply(messageFlux)
+        carUpdateAfterBookingSaveMessageConsumer.carUpdateAfterBookingSaveConsumer().apply(messageFlux)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
 
     @Test
-    void updateBookingCarUpdateConsumerTest_noAcknowledgement() {
-        UpdateCarsRequest updateCarsRequest =
-                TestUtil.getResourceAsJson("/data/UpdateCarsRequest.json", UpdateCarsRequest.class);
+    void carUpdateAfterBookingSaveConsumerTest_noAcknowledgement() {
+        CarStatusUpdate carStatusUpdate =
+                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
 
-        Message<UpdateCarsRequest> updateCarsRequestMessage = MessageBuilder.withPayload(updateCarsRequest)
+        Message<CarStatusUpdate> carStatusUpdateMessage = MessageBuilder.withPayload(carStatusUpdate)
                 .build();
 
-        Flux<Message<UpdateCarsRequest>> messageFlux = Flux.just(updateCarsRequestMessage);
+        Flux<Message<CarStatusUpdate>> messageFlux = Flux.just(carStatusUpdateMessage);
 
-        when(carService.updateCarsStatus(any(UpdateCarsRequest.class))).thenReturn(Mono.empty());
+        when(carService.updateCarStatus(any(CarStatusUpdate.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        updateBookingCarStatusUpdateMessageConsumer.updateBookingCarUpdateConsumer().apply(messageFlux)
+        carUpdateAfterBookingSaveMessageConsumer.carUpdateAfterBookingSaveConsumer().apply(messageFlux)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();

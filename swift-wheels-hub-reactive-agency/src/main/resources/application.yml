@@ -38,7 +38,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: invoiceCarUpdateConsumer;saveBookingCarUpdateConsumer;updateBookingCarUpdateConsumer
+      definition: carUpdateAfterBookingSaveConsumer;carUpdateAfterBookingUpdateConsumer;carUpdateAfterInvoiceCloseConsumer
     stream:
       defaultBinder: kafka
       bindings:

@@ -2,7 +2,7 @@ package com.swiftwheelshubreactive.agency.consumer;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
-import com.swiftwheelshubreactive.dto.CarStatusUpdate;
+import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,10 +24,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SaveBookingCarStatusUpdateMessageConsumerTest {
+class CarUpdateAfterInvoiceCloseMessageConsumerTest {
 
     @InjectMocks
-    private SaveBookingCarStatusUpdateMessageConsumer saveBookingCarStatusUpdateMessageConsumer;
+    private CarUpdateAfterInvoiceCloseMessageConsumer carUpdateAfterInvoiceCloseMessageConsumer;
 
     @Mock
     private CarService carService;
@@ -39,39 +39,39 @@ class SaveBookingCarStatusUpdateMessageConsumerTest {
     private RetryHandler retryHandler;
 
     @Test
-    void saveBookingCarUpdateConsumerTest_success() {
-        CarStatusUpdate carStatusUpdate =
-                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
+    void invoiceCarUpdateConsumerTest_success() {
+        CarUpdateDetails carUpdateDetails =
+                TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
-        Message<CarStatusUpdate> carStatusUpdateMessage = MessageBuilder.withPayload(carStatusUpdate)
+        Message<CarUpdateDetails> carUpdateDetailsMessage = MessageBuilder.withPayload(carUpdateDetails)
                 .setHeader(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment)
                 .build();
 
-        Flux<Message<CarStatusUpdate>> messageFlux = Flux.just(carStatusUpdateMessage);
+        Flux<Message<CarUpdateDetails>> messageFlux = Flux.just(carUpdateDetailsMessage);
 
-        when(carService.updateCarStatus(any(CarStatusUpdate.class))).thenReturn(Mono.empty());
+        when(carService.updateCarWhenBookingIsClosed(any(CarUpdateDetails.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        saveBookingCarStatusUpdateMessageConsumer.saveBookingCarUpdateConsumer().apply(messageFlux)
+        carUpdateAfterInvoiceCloseMessageConsumer.invoiceCarUpdateConsumer().apply(messageFlux)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
 
     @Test
-    void saveBookingCarUpdateConsumerTest_noAcknowledgement() {
-        CarStatusUpdate carStatusUpdate =
-                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
+    void invoiceCarUpdateConsumerTest_noAcknowledgement() {
+        CarUpdateDetails carUpdateDetails =
+                TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
-        Message<CarStatusUpdate> carStatusUpdateMessage = MessageBuilder.withPayload(carStatusUpdate)
+        Message<CarUpdateDetails> carUpdateDetailsMessage = MessageBuilder.withPayload(carUpdateDetails)
                 .build();
 
-        Flux<Message<CarStatusUpdate>> messageFlux = Flux.just(carStatusUpdateMessage);
+        Flux<Message<CarUpdateDetails>> messageFlux = Flux.just(carUpdateDetailsMessage);
 
-        when(carService.updateCarStatus(any(CarStatusUpdate.class))).thenReturn(Mono.empty());
+        when(carService.updateCarWhenBookingIsClosed(any(CarUpdateDetails.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        saveBookingCarStatusUpdateMessageConsumer.saveBookingCarUpdateConsumer().apply(messageFlux)
+        carUpdateAfterInvoiceCloseMessageConsumer.invoiceCarUpdateConsumer().apply(messageFlux)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();

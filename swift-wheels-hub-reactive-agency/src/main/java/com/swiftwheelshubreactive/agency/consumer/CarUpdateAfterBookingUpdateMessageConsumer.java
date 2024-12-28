@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.consumer;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,23 +17,23 @@ import java.util.function.Function;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class InvoiceCarUpdateMessageConsumer {
+public class CarUpdateAfterBookingUpdateMessageConsumer {
 
     private final CarService carService;
     private final RetryHandler retryHandler;
 
     @Bean
-    public Function<Flux<Message<CarUpdateDetails>>, Mono<Void>> invoiceCarUpdateConsumer() {
+    public Function<Flux<Message<UpdateCarsRequest>>, Mono<Void>> carUpdateAfterInvoiceCloseConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processCarUpdate)
                 .then();
     }
 
-    private Mono<Void> processCarUpdate(Message<CarUpdateDetails> message) {
-        return carService.updateCarWhenBookingIsClosed(message.getPayload())
+    private Mono<Void> processCarUpdate(Message<UpdateCarsRequest> message) {
+        return carService.updateCarsStatus(message.getPayload())
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
-                    log.info("Car status updated after closing booking");
+                    log.info("Car status updated");
                 })
                 .onErrorResume(e -> {
                     log.error("Exception during car status update: {}", e.getMessage(), e);
