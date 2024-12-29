@@ -78,15 +78,13 @@ spring:
 
 sendgrid:
   mail:
-    mailFrom: ${SENDGRID_MAIL_FROM}
+    from: ${SENDGRID_MAIL_FROM}
     name: Swift Wheels Hub
 
 management:
   server:
     port: ${server.port}
   endpoint:
-    loggers:
-      enabled: true
     health:
       group:
         custom:
