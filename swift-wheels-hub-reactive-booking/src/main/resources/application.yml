@@ -48,32 +48,32 @@ spring:
     stream:
       defaultBinder: kafka
       bindings:
-        savedBookingProducer-out-0:
-          destination: ${SAVED_BOOKING_REACTIVE_TOPIC}
-          contentType: application/json
-        updatedBookingProducer-out-0:
-          destination: ${UPDATED_BOOKING_REACTIVE_TOPIC}
+        auditLogInfoProducer-out-0:
+          destination: ${BOOKING_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
         deletedBookingProducer-out-0:
           destination: ${DELETED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
-        auditLogInfoProducer-out-0:
-          destination: ${BOOKING_AUDIT_LOG_INFO_REACTIVE_TOPIC}
-          contentType: application/json
         saveBookingCarUpdateProducer-out-0:
           destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+        savedBookingProducer-out-0:
+          destination: ${SAVED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
         updateBookingCarsUpdateProducer-out-0:
           destination: ${UPDATE_BOOKING_CARS_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
-        bookingUpdateConsumer-in-0:
-          binder: kafka
-          destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
+        updatedBookingProducer-out-0:
+          destination: ${UPDATED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
-          group: ${BOOKING_CONSUMER_GROUP}
         bookingRollbackConsumer-in-0:
           binder: kafka
           destination: ${BOOKING_ROLLBACK_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${BOOKING_CONSUMER_GROUP}
+        bookingUpdateConsumer-in-0:
+          binder: kafka
+          destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
       kafka:
@@ -86,11 +86,11 @@ spring:
             allow.auto.create.topics: true
             auto.offset.reset: latest
         bindings:
-          bookingUpdateConsumer-in-0:
+          bookingRollbackConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
-          bookingRollbackConsumer-in-0:
+          bookingUpdateConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
