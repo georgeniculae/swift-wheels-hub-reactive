@@ -38,7 +38,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: savedBookingConsumer;updatedBookingConsumer;deletedBookingConsumer;failedInvoiceDlqConsumer
+      definition: deletedBookingConsumer;failedInvoiceDlqConsumer;savedBookingConsumer;updatedBookingConsumer
     stream:
       defaultBinder: kafka
       bindings:
