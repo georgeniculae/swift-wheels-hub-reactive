@@ -34,6 +34,7 @@ public interface InvoiceMapper {
     @Mapping(target = "invoiceProcessStatus", constant = "FAILED_CLOSED_INVOICE")
     Invoice getFailedCreatedInvoice(Invoice invoice);
 
+    @Mapping(target = "invoiceId", expression = "java(id)")
     InvoiceReprocessRequest mapToInvoiceReprocessRequest(String id, InvoiceRequest invoiceRequest);
 
     default String mapObjectIdToString(ObjectId id) {
