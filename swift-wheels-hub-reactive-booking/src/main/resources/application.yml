@@ -44,7 +44,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: bookingUpdateConsumer;bookingRollbackConsumer
+      definition: bookingRollbackConsumer;bookingUpdateConsumer
     stream:
       defaultBinder: kafka
       bindings:
