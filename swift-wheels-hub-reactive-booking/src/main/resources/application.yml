@@ -96,10 +96,10 @@ spring:
               standard-headers: both
   kafka:
     bootstrap-servers: localhost:9092
-    producer:
-      acks: all
     consumer:
       enable-auto-commit: false
+    producer:
+      acks: all
   web:
     resources:
       add-mappings: false
