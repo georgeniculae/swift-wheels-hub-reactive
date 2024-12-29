@@ -34,10 +34,10 @@ public class InvoiceReprocessingService {
                 .flatMap(_ -> processCarStatusUpdate(invoiceReprocessRequest))
                 .filter(Boolean.TRUE::equals)
                 .flatMap(_ -> markInvoiceAsSuccessful(invoiceReprocessRequest))
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking rollback failed")))
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Invoice reprocessing failed")))
                 .then()
                 .onErrorResume(e -> {
-                    log.error("Error while sending booking id for rollback: {}", e.getMessage());
+                    log.error("Error while trying to reprocess invoice: {}", e.getMessage());
 
                     return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
