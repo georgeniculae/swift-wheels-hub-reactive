@@ -60,16 +60,6 @@ spring:
         failedInvoiceDlqProducer-out-0:
           destination: ${FAILED_INVOICE_DLQ_REACTIVE_TOPIC}
           contentType: application/json
-        savedBookingConsumer-in-0:
-          binder: kafka
-          destination: ${SAVED_BOOKING_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${EXPENSE_CONSUMER_GROUP}
-        updatedBookingConsumer-in-0:
-          binder: kafka
-          destination: ${UPDATED_BOOKING_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${EXPENSE_CONSUMER_GROUP}
         deletedBookingConsumer-in-0:
           binder: kafka
           destination: ${DELETED_BOOKING_REACTIVE_TOPIC}
@@ -78,6 +68,16 @@ spring:
         failedInvoiceDlqConsumer-in-0:
           binder: kafka
           destination: ${FAILED_INVOICE_DLQ_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${EXPENSE_CONSUMER_GROUP}
+        savedBookingConsumer-in-0:
+          binder: kafka
+          destination: ${SAVED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${EXPENSE_CONSUMER_GROUP}
+        updatedBookingConsumer-in-0:
+          binder: kafka
+          destination: ${UPDATED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
           group: ${EXPENSE_CONSUMER_GROUP}
       kafka:
