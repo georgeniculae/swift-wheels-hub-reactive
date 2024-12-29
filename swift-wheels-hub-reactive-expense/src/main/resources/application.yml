@@ -42,6 +42,9 @@ spring:
     stream:
       defaultBinder: kafka
       bindings:
+        auditLogInfoProducer-out-0:
+          destination: ${EXPENSE_AUDIT_LOG_INFO_REACTIVE_TOPIC}
+          contentType: application/json
         bookingUpdateProducer-out-0:
           destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
@@ -56,9 +59,6 @@ spring:
           contentType: application/json
         failedInvoiceDlqProducer-out-0:
           destination: ${FAILED_INVOICE_DLQ_REACTIVE_TOPIC}
-          contentType: application/json
-        auditLogInfoProducer-out-0:
-          destination: ${EXPENSE_AUDIT_LOG_INFO_REACTIVE_TOPIC}
           contentType: application/json
         savedBookingConsumer-in-0:
           binder: kafka
