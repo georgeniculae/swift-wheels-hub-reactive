@@ -90,19 +90,19 @@ spring:
             allow.auto.create.topics: true
             auto.offset.reset: latest
         bindings:
-          savedBookingConsumer-in-0:
-            consumer:
-              ack-mode: MANUAL_IMMEDIATE
-              standard-headers: both
-          updatedBookingConsumer-in-0:
-            consumer:
-              ack-mode: MANUAL_IMMEDIATE
-              standard-headers: both
           deletedBookingConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
           failedInvoiceDlqConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          savedBookingConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          updatedBookingConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
