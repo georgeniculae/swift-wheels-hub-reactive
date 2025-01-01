@@ -204,6 +204,8 @@ class BookingServiceTest {
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey(apikey)
+                .username("user")
+                .email("user@mail.com")
                 .roles(List.of("admin"))
                 .build();
 
@@ -261,6 +263,8 @@ class BookingServiceTest {
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .apikey(apikey)
+                .apikey(apikey)
+                .username("user")
                 .roles(List.of("admin"))
                 .build();
 

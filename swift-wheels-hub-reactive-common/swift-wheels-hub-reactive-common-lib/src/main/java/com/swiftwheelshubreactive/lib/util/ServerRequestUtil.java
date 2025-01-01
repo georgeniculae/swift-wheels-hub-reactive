@@ -11,6 +11,7 @@ public class ServerRequestUtil {
 
     private static final String X_API_KEY = "X-API-KEY";
     private static final String X_USERNAME = "X-USERNAME";
+    private static final String X_EMAIL = "X-EMAIL";
     private static final String X_ROLES = "X-ROLES";
 
     public static String getQueryParam(ServerRequest serverRequest, String name) {
@@ -27,6 +28,10 @@ public class ServerRequestUtil {
 
     public static String getUsername(ServerRequest serverRequest) {
         return serverRequest.headers().firstHeader(X_USERNAME);
+    }
+
+    public static String getEmail(ServerRequest serverRequest) {
+        return serverRequest.headers().firstHeader(X_EMAIL);
     }
 
     public static String getApiKeyHeader(ServerHttpRequest serverHttpRequest) {

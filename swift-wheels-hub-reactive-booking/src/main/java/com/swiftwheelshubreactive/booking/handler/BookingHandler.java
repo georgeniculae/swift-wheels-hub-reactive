@@ -83,6 +83,7 @@ public class BookingHandler {
                         AuthenticationInfo.builder()
                                 .apikey(ServerRequestUtil.getApiKeyHeader(serverRequest))
                                 .username(ServerRequestUtil.getUsername(serverRequest))
+                                .email(ServerRequestUtil.getEmail(serverRequest))
                                 .roles(ServerRequestUtil.getRolesHeader(serverRequest))
                                 .build(),
                         bookingRequest)
