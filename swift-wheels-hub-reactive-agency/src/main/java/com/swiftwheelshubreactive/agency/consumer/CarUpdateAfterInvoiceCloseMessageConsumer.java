@@ -23,7 +23,7 @@ public class CarUpdateAfterInvoiceCloseMessageConsumer {
     private final RetryHandler retryHandler;
 
     @Bean
-    public Function<Flux<Message<CarUpdateDetails>>, Mono<Void>> invoiceCarUpdateConsumer() {
+    public Function<Flux<Message<CarUpdateDetails>>, Mono<Void>> carUpdateAfterInvoiceCloseConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processCarUpdate)
                 .then();
     }

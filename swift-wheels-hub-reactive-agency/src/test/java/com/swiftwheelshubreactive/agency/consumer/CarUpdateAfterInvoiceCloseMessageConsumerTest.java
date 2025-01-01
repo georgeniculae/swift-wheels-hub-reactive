@@ -52,7 +52,7 @@ class CarUpdateAfterInvoiceCloseMessageConsumerTest {
         when(carService.updateCarWhenBookingIsClosed(any(CarUpdateDetails.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        carUpdateAfterInvoiceCloseMessageConsumer.invoiceCarUpdateConsumer().apply(messageFlux)
+        carUpdateAfterInvoiceCloseMessageConsumer.carUpdateAfterInvoiceCloseConsumer().apply(messageFlux)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
@@ -71,7 +71,7 @@ class CarUpdateAfterInvoiceCloseMessageConsumerTest {
         when(carService.updateCarWhenBookingIsClosed(any(CarUpdateDetails.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        carUpdateAfterInvoiceCloseMessageConsumer.invoiceCarUpdateConsumer().apply(messageFlux)
+        carUpdateAfterInvoiceCloseMessageConsumer.carUpdateAfterInvoiceCloseConsumer().apply(messageFlux)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
