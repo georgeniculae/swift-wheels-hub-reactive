@@ -4,6 +4,7 @@ import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import org.junit.jupiter.api.Test;
@@ -169,14 +170,15 @@ class CarHandlerTest {
 
     @Test
     void getAvailableCarTest_success() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .pathVariable("id", "64f361caf291ae086e179547")
                 .build();
 
-        when(carService.getAvailableCar(anyString())).thenReturn(Mono.just(carResponse));
+        when(carService.getAvailableCar(anyString())).thenReturn(Mono.just(availableCarInfo));
 
         StepVerifier.create(carHandler.getAvailableCar(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

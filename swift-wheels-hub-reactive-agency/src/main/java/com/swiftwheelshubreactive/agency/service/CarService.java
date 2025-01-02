@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swiftwheelshubreactive.agency.mapper.CarMapper;
 import com.swiftwheelshubreactive.agency.repository.CarRepository;
 import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarState;
@@ -87,10 +88,10 @@ public class CarService {
                 });
     }
 
-    public Mono<CarResponse> getAvailableCar(String id) {
+    public Mono<AvailableCarInfo> getAvailableCar(String id) {
         return findEntityById(id)
                 .filter(car -> CarStatus.AVAILABLE.equals(car.getCarStatus()))
-                .map(carMapper::mapEntityToDto)
+                .map(carMapper::mapToAvailableCarInfo)
                 .switchIfEmpty(
                         Mono.error(
                                 new SwiftWheelsHubResponseStatusException(

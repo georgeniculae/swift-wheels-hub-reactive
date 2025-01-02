@@ -8,6 +8,7 @@ import com.swiftwheelshubreactive.agency.repository.CarRepository;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
 import com.swiftwheelshubreactive.agency.validator.CarRequestValidator;
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarStatusUpdate;
@@ -179,12 +180,14 @@ class CarServiceTest {
     @Test
     void getAvailableCarTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car.json", Car.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
         StepVerifier.create(carService.getAvailableCar("64f361caf291ae086e179547"))
-                .expectNext(carResponse)
+                .expectNext(availableCarInfo)
                 .verifyComplete();
     }
 

@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.agency.mapper;
 
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.BodyCategory;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
@@ -39,6 +40,9 @@ public interface CarMapper {
     @Mapping(target = "carStatus", source = "carState")
     @Mapping(target = "image", expression = "java(mapByteArrayToBinary(excelCarRequest.image()))")
     Car mapExcelCarRequestToEntity(ExcelCarRequest excelCarRequest);
+
+    @Mapping(target = "actualBranchId", expression = "java(mapObjectIdToString(car.getActualBranch().getId()))")
+    AvailableCarInfo mapToAvailableCarInfo(Car car);
 
     Car getNewCarInstance(Car existingCar);
 

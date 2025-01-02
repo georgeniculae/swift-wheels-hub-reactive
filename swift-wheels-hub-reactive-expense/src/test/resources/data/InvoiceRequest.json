@@ -1,5 +1,4 @@
 {
-  "carId": "64f361caf291ae086e179547",
   "receptionistEmployeeId": "64f361caf291ae086e179547",
   "returnBranchId": "64f361caf291ae086e179444",
   "bookingId": "64f361caf291ae086e179547",
@@ -7,6 +6,5 @@
   "isVehicleDamaged": true,
   "damageCost": 50,
   "additionalPayment": 0,
-  "totalAmount": 550,
   "comments": "comment"
 }

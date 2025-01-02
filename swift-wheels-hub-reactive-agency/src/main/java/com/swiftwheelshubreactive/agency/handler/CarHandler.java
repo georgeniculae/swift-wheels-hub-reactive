@@ -62,7 +62,7 @@ public class CarHandler {
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getAvailableCar(ServerRequest serverRequest) {
         return carService.getAvailableCar(serverRequest.pathVariable(ID))
-                .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse))
+                .flatMap(availableCarInfo -> ServerResponse.ok().bodyValue(availableCarInfo))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 

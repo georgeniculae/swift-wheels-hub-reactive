@@ -7,6 +7,7 @@ import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -32,10 +33,15 @@ public class CreatedBookingMessageConsumer {
     private Mono<InvoiceResponse> processMessage(Message<BookingResponse> message) {
         return invoiceService.saveInvoice(message.getPayload())
                 .retryWhen(retryHandler.retry())
-                .doOnNext(invoiceResponse -> {
-                    log.info("Invoice saved: {}", invoiceResponse);
+                .doOnSuccess(invoiceResponse -> {
+                    if (ObjectUtils.isNotEmpty(invoiceResponse)) {
+                        KafkaUtil.acknowledgeMessage(message.getHeaders());
+                        log.info("Invoice saved: {}", invoiceResponse);
 
-                    KafkaUtil.acknowledgeMessage(message.getHeaders());
+                        return;
+                    }
+
+                    log.info("Invoice: {} already exists", message.getPayload().id());
                 })
                 .onErrorResume(e -> {
                     log.error("Exception during processing saved booking message: {}", e.getMessage(), e);

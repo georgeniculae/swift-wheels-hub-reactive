@@ -68,10 +68,10 @@ class InvoiceMapperTest {
     void mapToInvoiceProcessStateTest_defaultCase() {
         SwiftWheelsHubException swiftWheelsHubException = assertThrows(
                 SwiftWheelsHubException.class,
-                () -> invoiceMapper.mapToInvoiceProcessState(InvoiceProcessStatus.IN_PROGRESS)
+                () -> invoiceMapper.mapToInvoiceProcessState(InvoiceProcessStatus.IN_CLOSING)
         );
 
-        assertEquals("Invalid invoice process status: IN_PROGRESS", swiftWheelsHubException.getMessage());
+        assertEquals("Invalid invoice process status: IN_CLOSING", swiftWheelsHubException.getMessage());
     }
 
 }

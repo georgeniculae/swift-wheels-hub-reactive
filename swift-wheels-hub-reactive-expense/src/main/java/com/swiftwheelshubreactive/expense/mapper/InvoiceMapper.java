@@ -51,6 +51,7 @@ public interface InvoiceMapper {
         }
 
         return switch (invoiceProcessStatus) {
+            case IN_PROGRESS -> InvoiceProcessState.IN_PROGRESS;
             case SAVED_CLOSED_INVOICE -> InvoiceProcessState.SAVED_CLOSED_INVOICE;
             case FAILED_CLOSED_INVOICE -> InvoiceProcessState.FAILED_CLOSED_INVOICE;
             default -> throw new SwiftWheelsHubException("Invalid invoice process status: " + invoiceProcessStatus);

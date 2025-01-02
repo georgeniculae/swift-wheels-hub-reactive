@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.service;
 
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
-import com.swiftwheelshubreactive.dto.CarResponse;
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +24,13 @@ public class CarService {
     @Value("${webclient.url.swift-wheels-hub-agency-cars}")
     private String url;
 
-    public Mono<CarResponse> findAvailableCarById(AuthenticationInfo authenticationInfo, String carId) {
+    public Mono<AvailableCarInfo> findAvailableCarById(AuthenticationInfo authenticationInfo, String carId) {
         return webClient.get()
                 .uri(url + SEPARATOR + "{id}" + SEPARATOR + "availability", carId)
                 .headers(WebClientUtil.setHttpHeaders(authenticationInfo.apikey(), authenticationInfo.roles()))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(CarResponse.class)
+                .bodyToMono(AvailableCarInfo.class)
                 .subscribeOn(Schedulers.boundedElastic())
                 .onErrorMap(this::handleException);
     }

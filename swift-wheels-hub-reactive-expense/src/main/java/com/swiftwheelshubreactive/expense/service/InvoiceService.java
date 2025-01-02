@@ -124,14 +124,6 @@ public class InvoiceService {
     public Mono<InvoiceResponse> saveInvoice(BookingResponse newBookingResponse) {
         return invoiceRepository.existsByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .filter(Boolean.FALSE::equals)
-                .switchIfEmpty(
-                        Mono.error(
-                                new SwiftWheelsHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Invoice already exists"
-                                )
-                        )
-                )
                 .flatMap(_ -> invoiceRepository.save(getInvoice(newBookingResponse)))
                 .map(invoiceMapper::mapEntityToDto);
     }
@@ -141,6 +133,7 @@ public class InvoiceService {
                 .flatMap(invoice -> {
                     Invoice updatedInvoice = invoiceMapper.getNewInvoiceInstance(invoice);
                     updatedInvoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
+                    updatedInvoice.setRentalCarPrice(newBookingResponse.rentalCarPrice());
 
                     return invoiceRepository.save(updatedInvoice);
                 })
@@ -247,7 +240,6 @@ public class InvoiceService {
         updatedInvoice.setCarReturnDate(invoiceRequest.carReturnDate());
         updatedInvoice.setReceptionistEmployeeId(MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId()));
         updatedInvoice.setReturnBranchId(MongoUtil.getObjectId(invoiceRequest.returnBranchId()));
-        updatedInvoice.setCarId(MongoUtil.getObjectId(invoiceRequest.carId()));
         updatedInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
         updatedInvoice.setDamageCost(getDamageCost(invoiceRequest));
         updatedInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));

@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.swaggeroperation;
 
 import com.swiftwheelshubreactive.agency.handler.CarHandler;
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarUpdateDetails;
@@ -158,7 +159,7 @@ import java.lang.annotation.Target;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = CarResponse.class))
+                                                content = @Content(schema = @Schema(implementation = AvailableCarInfo.class))
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",

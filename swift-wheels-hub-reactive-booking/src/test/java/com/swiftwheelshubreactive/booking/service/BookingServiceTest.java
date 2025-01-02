@@ -8,10 +8,10 @@ import com.swiftwheelshubreactive.booking.producer.UpdateBookingUpdateCarsProduc
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
+import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.CarResponse;
 import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.model.Booking;
@@ -195,8 +195,8 @@ class BookingServiceTest {
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
@@ -211,7 +211,7 @@ class BookingServiceTest {
 
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
-        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(availableCarInfo));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(createBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.just(true));
@@ -256,8 +256,8 @@ class BookingServiceTest {
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         String apikey = "apikey";
 
@@ -270,7 +270,8 @@ class BookingServiceTest {
 
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
-        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
+                .thenReturn(Mono.just(availableCarInfo));
         when(createBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
@@ -392,8 +393,8 @@ class BookingServiceTest {
         BookingResponse updatedBookingResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
 
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
@@ -407,8 +408,10 @@ class BookingServiceTest {
                 .build();
 
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
-        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class)))
+                .thenReturn(Mono.just(true));
+        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
+                .thenReturn(Mono.just(availableCarInfo));
         when(updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
                 .thenReturn(Mono.just(true));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
@@ -429,8 +432,8 @@ class BookingServiceTest {
         BookingRequest updatedBookingRequest =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
 
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
@@ -446,7 +449,8 @@ class BookingServiceTest {
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(true));
-        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
+                .thenReturn(Mono.just(availableCarInfo));
 
         StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
                 .expectError()
@@ -466,8 +470,8 @@ class BookingServiceTest {
         BookingResponse updatedBookingResponse =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingResponse.json", BookingResponse.class);
 
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/UpdatedNewCarResponse.json", CarResponse.class);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
         String apikey = "apikey";
 
@@ -478,8 +482,10 @@ class BookingServiceTest {
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
-        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(carResponse));
+        when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class)))
+                .thenReturn(Mono.just(true));
+        when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
+                .thenReturn(Mono.just(availableCarInfo));
         when(updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRepository.save(any(Booking.class))).thenAnswer(new Answer() {

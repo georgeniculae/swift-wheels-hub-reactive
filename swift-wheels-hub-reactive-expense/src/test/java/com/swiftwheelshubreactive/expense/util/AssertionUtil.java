@@ -15,7 +15,6 @@ public class AssertionUtil {
         assertEquals(invoice.getIsVehicleDamaged(), invoiceRequest.isVehicleDamaged());
         assertEquals(invoice.getDamageCost(), invoiceRequest.damageCost());
         assertEquals(invoice.getAdditionalPayment(), invoiceRequest.additionalPayment());
-        assertEquals(invoice.getTotalAmount(), invoiceRequest.totalAmount());
         assertEquals(invoice.getComments(), invoiceRequest.comments());
     }
 
