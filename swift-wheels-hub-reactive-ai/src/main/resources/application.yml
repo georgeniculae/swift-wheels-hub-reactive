@@ -15,7 +15,6 @@ spring:
     max-in-memory-size: 20MB
   ai:
     ollama:
-      base-url: http://localhost:11434/
       chat:
         options:
           model: mistral
