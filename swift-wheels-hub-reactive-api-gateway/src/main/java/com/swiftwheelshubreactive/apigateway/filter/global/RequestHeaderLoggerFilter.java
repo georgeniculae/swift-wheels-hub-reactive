@@ -16,7 +16,6 @@ import reactor.core.publisher.Mono;
 public class RequestHeaderLoggerFilter implements GlobalFilter, Ordered {
 
     private static final String X_API_KEY = "X-API-KEY";
-    private static final String X_USERNAME = "X-USERNAME";
     private static final String X_EMAIL = "X-EMAIL";
 
     @Override
@@ -44,7 +43,7 @@ public class RequestHeaderLoggerFilter implements GlobalFilter, Ordered {
         log.info("Request headers: ");
 
         httpHeaders.forEach((header, value) -> {
-            if (!X_API_KEY.equals(header) && !X_USERNAME.equals(header) && !X_EMAIL.equals(header)) {
+            if (!X_API_KEY.equals(header) && !X_EMAIL.equals(header)) {
                 log.info("{}: {}", header, value);
             }
         });
