@@ -152,8 +152,9 @@ public class CarService {
     public Mono<CarResponse> saveCar(Map<String, Part> carRequestPartMap) {
         return getCarRequest(carRequestPartMap.get(CAR_REQUEST))
                 .flatMap(carRequestValidator::validateBody)
-                .flatMap(carRequest -> setupNewCar(carRequestPartMap, carRequest))
+                .flatMap(this::setupNewCar)
                 .flatMap(carRepository::save)
+                .delayUntil(car -> saveCarImage(getDataBuffer(carRequestPartMap.get(IMAGE)), car.getId().toString()))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -165,11 +166,9 @@ public class CarService {
     public Flux<CarResponse> uploadCars(FilePart filePart) {
         return filePart.content()
                 .concatMap(this::extractCarsFromExcelRows)
-//                .concatMap(this::createNewCar)
-//                .flatMap(car -> saveCarImage(car.getId().toString()))
-                .flatMap(excelCarRequest -> {
-                    return saveCarImage(getImageAsDataBuffer(excelCarRequest), "");
-                })
+                .flatMap(excelCarRequest -> createNewCarFromExcel(excelCarRequest)
+                        .flatMap(carRepository::save)
+                        .delayUntil(car -> saveCarImage(getImageAsDataBuffer(excelCarRequest), car.getId().toString())))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while uploading cars: {}", e.getMessage());
@@ -191,7 +190,7 @@ public class CarService {
     public Mono<CarResponse> updateCar(String id, Map<String, Part> carRequestPartMap) {
         return getCarRequest(carRequestPartMap.get(CAR_REQUEST))
                 .flatMap(carRequestValidator::validateBody)
-                .flatMap(updatedCarRequest -> setupUpdatedCar(id, carRequestPartMap, updatedCarRequest))
+                .flatMap(updatedCarRequest -> setupUpdatedCar(id, updatedCarRequest))
                 .flatMap(carRepository::save)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
@@ -283,23 +282,12 @@ public class CarService {
         });
     }
 
-    private Mono<Car> setupNewCar(Map<String, Part> carRequestPartMap, CarRequest carRequest) {
+    private Mono<Car> setupNewCar(CarRequest carRequest) {
         return Mono.zip(
-                        branchService.findEntityById(carRequest.originalBranchId()),
-                        branchService.findEntityById(carRequest.actualBranchId()),
-                        (originalBranch, actualBranch) -> getNewCarInstance(originalBranch, actualBranch, carRequest)
-                )
-                .flatMap(car -> addImageIdToCar(carRequestPartMap, car));
-    }
-
-    private Mono<Car> addImageIdToCar(Map<String, Part> carRequestPartMap, Car car) {
-        return saveCarImage(getPartContent(carRequestPartMap.get(IMAGE)), car.getId().toString())
-                .map(imageId -> {
-                    Car newCar = carMapper.getNewCarInstance(car);
-                    newCar.setImageId(imageId);
-
-                    return newCar;
-                });
+                branchService.findEntityById(carRequest.originalBranchId()),
+                branchService.findEntityById(carRequest.actualBranchId()),
+                (originalBranch, actualBranch) -> getNewCarInstance(originalBranch, actualBranch, carRequest)
+        );
     }
 
     private Car getNewCarInstance(Branch originalBranch, Branch actualBranch, CarRequest carRequest) {
@@ -330,16 +318,15 @@ public class CarService {
         );
     }
 
-    private Mono<Car> setupUpdatedCar(String id, Map<String, Part> carRequestPartMap, CarRequest updatedCarRequest) {
+    private Mono<Car> setupUpdatedCar(String id, CarRequest updatedCarRequest) {
         return Mono.zip(
-                        List.of(
-                                findEntityById(id),
-                                branchService.findEntityById(updatedCarRequest.originalBranchId()),
-                                branchService.findEntityById(updatedCarRequest.actualBranchId())
-                        ),
-                        carDetails -> getUpdatedCar(updatedCarRequest, carDetails)
-                )
-                .flatMap(updatedCar -> addImageIdToCar(carRequestPartMap, updatedCar));
+                List.of(
+                        findEntityById(id),
+                        branchService.findEntityById(updatedCarRequest.originalBranchId()),
+                        branchService.findEntityById(updatedCarRequest.actualBranchId())
+                ),
+                carDetails -> getUpdatedCar(updatedCarRequest, carDetails)
+        );
     }
 
     private Car getUpdatedCar(CarRequest updatedCarRequest, Object[] carDetails) {
@@ -385,7 +372,7 @@ public class CarService {
         return reactiveGridFsTemplate.store(dataBufferFlux, carId);
     }
 
-    private Flux<DataBuffer> getPartContent(Part part) {
+    private Flux<DataBuffer> getDataBuffer(Part part) {
         return ObjectUtils.isEmpty(part) ? Flux.empty() : part.content();
     }
 
@@ -395,7 +382,7 @@ public class CarService {
                 .flatMapMany(Flux::fromIterable);
     }
 
-    private Mono<Car> createNewCar(ExcelCarRequest excelCarRequest) {
+    private Mono<Car> createNewCarFromExcel(ExcelCarRequest excelCarRequest) {
         return Mono.zip(
                 branchService.findEntityById(excelCarRequest.originalBranchId()),
                 branchService.findEntityById(excelCarRequest.actualBranchId()),
