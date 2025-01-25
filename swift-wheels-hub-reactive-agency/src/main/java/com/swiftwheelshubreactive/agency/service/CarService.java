@@ -154,7 +154,7 @@ public class CarService {
                 .flatMap(carRequestValidator::validateBody)
                 .flatMap(this::setupNewCar)
                 .flatMap(carRepository::save)
-                .delayUntil(car -> saveCarImage(getDataBuffer(carRequestPartMap.get(IMAGE)), car.getId().toString()))
+                .delayUntil(car -> saveCarImage(carRequestPartMap, car))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -166,9 +166,7 @@ public class CarService {
     public Flux<CarResponse> uploadCars(FilePart filePart) {
         return filePart.content()
                 .concatMap(this::extractCarsFromExcelRows)
-                .flatMap(excelCarRequest -> createNewCarFromExcel(excelCarRequest)
-                        .flatMap(carRepository::save)
-                        .delayUntil(car -> saveCarImage(getImageAsDataBuffer(excelCarRequest), car.getId().toString())))
+                .flatMap(this::processCarFromExcel)
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while uploading cars: {}", e.getMessage());
@@ -254,20 +252,37 @@ public class CarService {
         return carRepository.findCarByIdAndCarStatus(MongoUtil.getObjectId(id), CarStatus.NOT_AVAILABLE);
     }
 
-    private Flux<DataBuffer> getDataBufferImage(String id) {
-        return reactiveGridFsTemplate.find(Query.query(GridFsCriteria.whereFilename().is(id)))
-                .flatMap(reactiveGridFsTemplate::getResource)
-                .flatMap(ReactiveGridFsResource::getDownloadStream);
+    private Mono<ObjectId> saveCarImage(Map<String, Part> carRequestPartMap, Car car) {
+        return Mono.just(carRequestPartMap.get(IMAGE))
+                .filter(ObjectUtils::isNotEmpty)
+                .flatMap(part -> saveCarImage(getDataBuffer(part), car.getId().toString()));
     }
 
-    private Flux<DataBuffer> getImageAsDataBuffer(ExcelCarRequest excelCarRequest) {
+    private Mono<Car> processCarFromExcel(ExcelCarRequest excelCarRequest) {
+        return createNewCarFromExcelData(excelCarRequest)
+                .flatMap(carRepository::save)
+                .delayUntil(car -> saveExcelImage(excelCarRequest, car));
+    }
+
+    private Mono<ObjectId> saveExcelImage(ExcelCarRequest excelCarRequest, Car car) {
+        return Mono.just(excelCarRequest.image())
+                .filter(image -> image.length > 0)
+                .flatMap(image -> saveCarImage(getImageAsDataBuffer(image), car.getId().toString()));
+    }
+
+    private Flux<DataBuffer> getImageAsDataBuffer(byte[] bytes) {
         DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
 
-        byte[] bytes = excelCarRequest.image();
         DataBuffer buffer = bufferFactory.allocateBuffer(bytes.length);
         buffer.write(bytes);
 
         return Flux.just(buffer);
+    }
+
+    private Flux<DataBuffer> getDataBufferImage(String id) {
+        return reactiveGridFsTemplate.find(Query.query(GridFsCriteria.whereFilename().is(id)))
+                .flatMap(reactiveGridFsTemplate::getResource)
+                .flatMap(ReactiveGridFsResource::getDownloadStream);
     }
 
     private Mono<CarRequest> getCarRequest(Part carRequestAsPart) {
@@ -382,7 +397,7 @@ public class CarService {
                 .flatMapMany(Flux::fromIterable);
     }
 
-    private Mono<Car> createNewCarFromExcel(ExcelCarRequest excelCarRequest) {
+    private Mono<Car> createNewCarFromExcelData(ExcelCarRequest excelCarRequest) {
         return Mono.zip(
                 branchService.findEntityById(excelCarRequest.originalBranchId()),
                 branchService.findEntityById(excelCarRequest.actualBranchId()),
