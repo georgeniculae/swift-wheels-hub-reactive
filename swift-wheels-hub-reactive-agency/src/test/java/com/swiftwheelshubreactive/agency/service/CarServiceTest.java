@@ -31,6 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.MultiValueMap;
@@ -76,6 +77,9 @@ class CarServiceTest {
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private ReactiveGridFsTemplate reactiveGridFsTemplate;
 
     @Spy
     private CarMapper carMapper = new CarMapperImpl();
@@ -296,6 +300,8 @@ class CarServiceTest {
         when(carRequestValidator.validateBody(any())).thenReturn(Mono.just(carRequest));
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+        when(reactiveGridFsTemplate.store(any(), anyString()))
+                .thenReturn(Mono.just(new ObjectId("65e8cf871b2c27702941b7a1")));
 
         StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
                 .expectNext(carResponse)

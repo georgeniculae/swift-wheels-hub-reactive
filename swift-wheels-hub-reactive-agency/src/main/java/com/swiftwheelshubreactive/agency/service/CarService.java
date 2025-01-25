@@ -177,16 +177,6 @@ public class CarService {
                 });
     }
 
-    private Flux<DataBuffer> getImageAsDataBuffer(ExcelCarRequest excelCarRequest) {
-        DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
-
-        byte[] bytes = excelCarRequest.image();
-        DataBuffer buffer = bufferFactory.allocateBuffer(bytes.length);
-        buffer.write(bytes);
-
-        return Flux.just(buffer);
-    }
-
     public Mono<CarResponse> updateCar(String id, Map<String, Part> carRequestPartMap) {
         return getCarRequest(carRequestPartMap.get(CAR_REQUEST))
                 .flatMap(carRequestValidator::validateBody)
@@ -268,6 +258,16 @@ public class CarService {
         return reactiveGridFsTemplate.find(Query.query(GridFsCriteria.whereFilename().is(id)))
                 .flatMap(reactiveGridFsTemplate::getResource)
                 .flatMap(ReactiveGridFsResource::getDownloadStream);
+    }
+
+    private Flux<DataBuffer> getImageAsDataBuffer(ExcelCarRequest excelCarRequest) {
+        DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+
+        byte[] bytes = excelCarRequest.image();
+        DataBuffer buffer = bufferFactory.allocateBuffer(bytes.length);
+        buffer.write(bytes);
+
+        return Flux.just(buffer);
     }
 
     private Mono<CarRequest> getCarRequest(Part carRequestAsPart) {
