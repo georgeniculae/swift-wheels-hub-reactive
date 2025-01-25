@@ -93,9 +93,6 @@ public class TestData {
     }
 
     public static Car getCar() {
-        Path path = Paths.get("src/test/resources/image/car.jpg");
-        Flux<DataBuffer> imageDataBuffer = DataBufferUtils.read(path, new DefaultDataBufferFactory(), 131072);
-
         return Car.builder()
                 .make("Volkswagen")
                 .model("Golf")
@@ -107,7 +104,6 @@ public class TestData {
                 .amount(BigDecimal.valueOf(500))
                 .originalBranch(getBranch())
                 .actualBranch(getBranch())
-                .image(new Binary(getImageContent(getFilePart("image", "image", imageDataBuffer))))
                 .build();
     }
 

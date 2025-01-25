@@ -33,7 +33,7 @@ public class BookingUpdateMessageConsumer {
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
-                    log.info("Booking closed");
+                    log.info("Booking: {} closed", message.getPayload().bookingId());
                 })
                 .onErrorResume(e -> {
                     log.error("Exception during processing saved booking message: {}", e.getMessage(), e);

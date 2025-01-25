@@ -33,7 +33,7 @@ public class FailedInvoiceDlqMessageConsumer {
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
-                    log.info("Invoice reprocessed successfully");
+                    log.info("Invoice: {} reprocessed successfully", message.getPayload().invoiceId());
                 })
                 .onErrorResume(e -> {
                     log.info("Error while reprocessing invoice: {}", e.getMessage());

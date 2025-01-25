@@ -26,11 +26,15 @@ import com.swiftwheelshubreactive.model.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsCriteria;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsResource;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
@@ -54,6 +58,7 @@ public class CarService {
     private final BranchService branchService;
     private final EmployeeService employeeService;
     private final ExcelParserService excelParserService;
+    private final ReactiveGridFsTemplate reactiveGridFsTemplate;
     private final CarMapper carMapper;
     private final CarRequestValidator carRequestValidator;
     private final ObjectMapper objectMapper;
@@ -129,9 +134,14 @@ public class CarService {
     }
 
     public Mono<byte[]> getCarImage(String id) {
-        return carRepository.findImageByCarId(MongoUtil.getObjectId(id))
-                .map(Car::getImage)
-                .map(Binary::getData)
+        return DataBufferUtils.join(getDataBufferImage(id))
+                .map(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+
+                    return bytes;
+                })
                 .onErrorMap(e -> {
                     log.error("Error while getting car image: {}", e.getMessage());
 
@@ -154,16 +164,28 @@ public class CarService {
 
     public Flux<CarResponse> uploadCars(FilePart filePart) {
         return filePart.content()
-                .concatMap(this::getDataFromExcelAsPublisher)
-                .concatMap(this::createNewCar)
-                .collectList()
-                .flatMapMany(carRepository::saveAll)
+                .concatMap(this::extractCarsFromExcelRows)
+//                .concatMap(this::createNewCar)
+//                .flatMap(car -> saveCarImage(car.getId().toString()))
+                .flatMap(excelCarRequest -> {
+                    return saveCarImage(getImageAsDataBuffer(excelCarRequest), "");
+                })
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while uploading cars: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
                 });
+    }
+
+    private Flux<DataBuffer> getImageAsDataBuffer(ExcelCarRequest excelCarRequest) {
+        DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+
+        byte[] bytes = excelCarRequest.image();
+        DataBuffer buffer = bufferFactory.allocateBuffer(bytes.length);
+        buffer.write(bytes);
+
+        return Flux.just(buffer);
     }
 
     public Mono<CarResponse> updateCar(String id, Map<String, Part> carRequestPartMap) {
@@ -219,7 +241,7 @@ public class CarService {
     }
 
     public Mono<Void> updateCarWhenBookingIsClosed(CarUpdateDetails carUpdateDetails) {
-        return setupFinalCarDetails(carUpdateDetails)
+        return updateCarAfterClosingBooking(carUpdateDetails)
                 .flatMap(carRepository::save)
                 .then();
     }
@@ -239,6 +261,16 @@ public class CarService {
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubNotFoundException("Car with id " + id + " does not exist")));
     }
 
+    private Mono<Car> findCarInUse(String id) {
+        return carRepository.findCarByIdAndCarStatus(MongoUtil.getObjectId(id), CarStatus.NOT_AVAILABLE);
+    }
+
+    private Flux<DataBuffer> getDataBufferImage(String id) {
+        return reactiveGridFsTemplate.find(Query.query(GridFsCriteria.whereFilename().is(id)))
+                .flatMap(reactiveGridFsTemplate::getResource)
+                .flatMap(ReactiveGridFsResource::getDownloadStream);
+    }
+
     private Mono<CarRequest> getCarRequest(Part carRequestAsPart) {
         return Mono.fromSupplier(() -> {
             FormFieldPart carRequestFormFieldPart = (FormFieldPart) carRequestAsPart;
@@ -253,21 +285,25 @@ public class CarService {
 
     private Mono<Car> setupNewCar(Map<String, Part> carRequestPartMap, CarRequest carRequest) {
         return Mono.zip(
-                List.of(
                         branchService.findEntityById(carRequest.originalBranchId()),
                         branchService.findEntityById(carRequest.actualBranchId()),
-                        getImageContent(carRequestPartMap.get(IMAGE))
-                ),
-                carDetails -> getNewCarInstance(carRequest, carDetails)
-        );
+                        (originalBranch, actualBranch) -> getNewCarInstance(originalBranch, actualBranch, carRequest)
+                )
+                .flatMap(car -> addImageIdToCar(carRequestPartMap, car));
     }
 
-    private Car getNewCarInstance(CarRequest carRequest, Object[] carDetails) {
-        Branch originalBranch = (Branch) carDetails[0];
-        Branch actualBranch = (Branch) carDetails[1];
-        byte[] imageContent = (byte[]) carDetails[2];
+    private Mono<Car> addImageIdToCar(Map<String, Part> carRequestPartMap, Car car) {
+        return saveCarImage(getPartContent(carRequestPartMap.get(IMAGE)), car.getId().toString())
+                .map(imageId -> {
+                    Car newCar = carMapper.getNewCarInstance(car);
+                    newCar.setImageId(imageId);
 
-        Car car = carMapper.mapDtoToEntity(carRequest, imageContent);
+                    return newCar;
+                });
+    }
+
+    private Car getNewCarInstance(Branch originalBranch, Branch actualBranch, CarRequest carRequest) {
+        Car car = carMapper.mapDtoToEntity(carRequest);
         car.setOriginalBranch(originalBranch);
         car.setActualBranch(actualBranch);
 
@@ -296,21 +332,20 @@ public class CarService {
 
     private Mono<Car> setupUpdatedCar(String id, Map<String, Part> carRequestPartMap, CarRequest updatedCarRequest) {
         return Mono.zip(
-                List.of(
-                        findEntityById(id),
-                        branchService.findEntityById(updatedCarRequest.originalBranchId()),
-                        branchService.findEntityById(updatedCarRequest.actualBranchId()),
-                        getImageContent(carRequestPartMap.get(IMAGE))
-                ),
-                carDetails -> getUpdatedCar(updatedCarRequest, carDetails)
-        );
+                        List.of(
+                                findEntityById(id),
+                                branchService.findEntityById(updatedCarRequest.originalBranchId()),
+                                branchService.findEntityById(updatedCarRequest.actualBranchId())
+                        ),
+                        carDetails -> getUpdatedCar(updatedCarRequest, carDetails)
+                )
+                .flatMap(updatedCar -> addImageIdToCar(carRequestPartMap, updatedCar));
     }
 
     private Car getUpdatedCar(CarRequest updatedCarRequest, Object[] carDetails) {
         Car existingCar = (Car) carDetails[0];
         Branch originalBranch = (Branch) carDetails[1];
         Branch actualBranch = (Branch) carDetails[2];
-        byte[] imageContent = (byte[]) carDetails[3];
 
         Car updatedCar = carMapper.getNewCarInstance(existingCar);
 
@@ -325,16 +360,12 @@ public class CarService {
         updatedCar.setOriginalBranch(originalBranch);
         updatedCar.setActualBranch(actualBranch);
 
-        if (imageContent.length != 0) {
-            updatedCar.setImage(new Binary(BsonBinarySubType.BINARY, imageContent));
-        }
-
         return updatedCar;
     }
 
-    private Mono<Car> setupFinalCarDetails(CarUpdateDetails carUpdateDetails) {
+    private Mono<Car> updateCarAfterClosingBooking(CarUpdateDetails carUpdateDetails) {
         return Mono.zip(
-                findEntityById(carUpdateDetails.carId()),
+                findCarInUse(carUpdateDetails.carId()),
                 employeeService.findEntityById(carUpdateDetails.receptionistEmployeeId()),
                 (existingCar, receptionistEmployee) -> updateCarDetails(carUpdateDetails, existingCar, receptionistEmployee)
         );
@@ -350,23 +381,15 @@ public class CarService {
         return updatedCar;
     }
 
-    private Mono<byte[]> getImageContent(Part part) {
-        return DataBufferUtils.join(getPartContent(part))
-                .map(dataBuffer -> {
-                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                    dataBuffer.read(bytes);
-                    DataBufferUtils.release(dataBuffer);
-
-                    return bytes;
-                })
-                .switchIfEmpty(Mono.just(new byte[]{}));
+    private Mono<ObjectId> saveCarImage(Flux<DataBuffer> dataBufferFlux, String carId) {
+        return reactiveGridFsTemplate.store(dataBufferFlux, carId);
     }
 
     private Flux<DataBuffer> getPartContent(Part part) {
         return ObjectUtils.isEmpty(part) ? Flux.empty() : part.content();
     }
 
-    private Flux<ExcelCarRequest> getDataFromExcelAsPublisher(DataBuffer dataBuffer) {
+    private Flux<ExcelCarRequest> extractCarsFromExcelRows(DataBuffer dataBuffer) {
         return Mono.fromCallable(() -> excelParserService.extractDataFromExcel(dataBuffer.asInputStream()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);

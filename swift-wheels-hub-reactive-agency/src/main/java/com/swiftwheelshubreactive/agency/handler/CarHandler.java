@@ -1,9 +1,7 @@
 package com.swiftwheelshubreactive.agency.handler;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
-import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.codec.multipart.FilePart;
@@ -23,7 +21,6 @@ public class CarHandler {
     private static final String FILTER = "filter";
     private static final String FILE = "file";
     private final CarService carService;
-    private final CarUpdateDetailsValidator carUpdateDetailsValidator;
 
     @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> findAllCars(ServerRequest serverRequest) {
@@ -114,14 +111,6 @@ public class CarHandler {
                         )
                 )
                 .flatMap(carResponse -> ServerResponse.ok().bodyValue(carResponse));
-    }
-
-    @PreAuthorize("hasRole('user')")
-    public Mono<ServerResponse> updateCarWhenBookingIsClosed(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(CarUpdateDetails.class)
-                .flatMap(carUpdateDetailsValidator::validateBody)
-                .flatMap(carService::updateCarWhenBookingIsClosed)
-                .then(ServerResponse.noContent().build());
     }
 
     @PreAuthorize("hasRole('admin')")

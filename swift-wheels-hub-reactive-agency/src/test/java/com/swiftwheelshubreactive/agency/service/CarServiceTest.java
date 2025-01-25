@@ -490,8 +490,23 @@ class CarServiceTest {
                 TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
-        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
+        when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+
+        StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void updateCarWhenBookingIsClosedTest_noCarFound() {
+        Employee employee = TestUtil.getResourceAsJson("/data/Employee.json", Employee.class);
+
+        CarUpdateDetails carUpdateDetails =
+                TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
+
+        when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
+        when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
                 .expectComplete()
@@ -508,7 +523,7 @@ class CarServiceTest {
                 TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
 
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
-        when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
+        when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
         StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))

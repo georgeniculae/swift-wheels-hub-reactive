@@ -3,10 +3,8 @@ package com.swiftwheelshubreactive.agency.handler;
 import com.swiftwheelshubreactive.agency.service.CarService;
 import com.swiftwheelshubreactive.agency.util.TestData;
 import com.swiftwheelshubreactive.agency.util.TestUtil;
-import com.swiftwheelshubreactive.agency.validator.CarUpdateDetailsValidator;
 import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,9 +39,6 @@ class CarHandlerTest {
 
     @Mock
     private FilePart filePart;
-
-    @Mock
-    private CarUpdateDetailsValidator carUpdateDetailsValidator;
 
     @Test
     void findAllCarsTest_success() {
@@ -289,24 +284,6 @@ class CarHandlerTest {
         when(carService.updateCar(anyString(), any())).thenReturn(Mono.just(carResponse));
 
         StepVerifier.create(carHandler.updateCar(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
-    @Test
-    void updateCarWhenBookingIsClosedTest_success() {
-        CarUpdateDetails carUpdateDetails =
-                TestUtil.getResourceAsJson("/data/CarUpdateDetails.json", CarUpdateDetails.class);
-
-        ServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.PUT)
-                .pathVariable("id", "64f361caf291ae086e179547")
-                .body(Mono.just(carUpdateDetails));
-
-        when(carUpdateDetailsValidator.validateBody(any())).thenReturn(Mono.just(carUpdateDetails));
-        when(carService.updateCarWhenBookingIsClosed(any(CarUpdateDetails.class))).thenReturn(Mono.empty());
-
-        StepVerifier.create(carHandler.updateCarWhenBookingIsClosed(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

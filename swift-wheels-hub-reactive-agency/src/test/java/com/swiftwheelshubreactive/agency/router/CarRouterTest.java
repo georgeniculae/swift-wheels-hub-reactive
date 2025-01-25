@@ -508,65 +508,6 @@ class CarRouterTest {
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    void updateCarStatusAfterClosedBookingTest_success() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
-
-        when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        Flux<CarResponse> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .put()
-                .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .returnResult(CarResponse.class)
-                .getResponseBody();
-
-        StepVerifier.create(responseBody)
-                .expectNext(carResponse)
-                .verifyComplete();
-    }
-
-    @Test
-    @WithAnonymousUser
-    void updateCarStatusAfterClosedBookingTest_unauthorized() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
-
-        when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .put()
-                .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isUnauthorized();
-    }
-
-    @Test
-    @WithAnonymousUser
-    void updateCarStatusAfterClosedBookingTest_forbidden() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponse);
-
-        when(carHandler.updateCarWhenBookingIsClosed(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        webTestClient.put()
-                .uri(PATH + "/{id}/update-after-return", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isForbidden();
-    }
-
-    @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void deleteCarByIdTest_success() {
         Mono<ServerResponse> serverResponse = ServerResponse.noContent().build();
 

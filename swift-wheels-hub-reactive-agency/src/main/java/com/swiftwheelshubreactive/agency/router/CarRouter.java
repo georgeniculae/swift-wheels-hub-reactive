@@ -28,7 +28,6 @@ public class CarRouter {
                         .andRoute(RequestPredicates.GET("/{id}"), carHandler::findCarById)
                         .andRoute(RequestPredicates.POST(""), carHandler::saveCar)
                         .andRoute(RequestPredicates.POST("/upload"), carHandler::uploadCars)
-                        .andRoute(RequestPredicates.PUT("/{id}/update-after-return"), carHandler::updateCarWhenBookingIsClosed)
                         .andRoute(RequestPredicates.PUT("/{id}"), carHandler::updateCar)
                         .andRoute(RequestPredicates.DELETE("/{id}"), carHandler::deleteCarById));
     }

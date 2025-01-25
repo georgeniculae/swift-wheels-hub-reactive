@@ -44,7 +44,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: bookingRollbackConsumer;bookingUpdateConsumer
+      definition: bookingUpdateConsumer
     stream:
       defaultBinder: kafka
       bindings:
@@ -66,11 +66,6 @@ spring:
         updatedBookingProducer-out-0:
           destination: ${UPDATED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
-        bookingRollbackConsumer-in-0:
-          binder: kafka
-          destination: ${BOOKING_ROLLBACK_REACTIVE_TOPIC}
-          contentType: application/json
-          group: ${BOOKING_CONSUMER_GROUP}
         bookingUpdateConsumer-in-0:
           binder: kafka
           destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
@@ -86,10 +81,6 @@ spring:
             allow.auto.create.topics: true
             auto.offset.reset: latest
         bindings:
-          bookingRollbackConsumer-in-0:
-            consumer:
-              ack-mode: MANUAL_IMMEDIATE
-              standard-headers: both
           bookingUpdateConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE

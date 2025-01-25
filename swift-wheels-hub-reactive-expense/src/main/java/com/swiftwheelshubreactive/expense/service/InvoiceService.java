@@ -10,7 +10,6 @@ import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
-import com.swiftwheelshubreactive.expense.producer.BookingRollbackProducerService;
 import com.swiftwheelshubreactive.expense.producer.BookingUpdateProducerService;
 import com.swiftwheelshubreactive.expense.producer.CarStatusUpdateProducerService;
 import com.swiftwheelshubreactive.expense.producer.FailedInvoiceDlqProducerService;
@@ -48,7 +47,6 @@ public class InvoiceService {
     private final RevenueService revenueService;
     private final BookingUpdateProducerService bookingUpdateProducerService;
     private final CarStatusUpdateProducerService carStatusUpdateProducerService;
-    private final BookingRollbackProducerService bookingRollbackProducerService;
     private final FailedInvoiceDlqProducerService failedInvoiceDlqProducerService;
     private final InvoiceMapper invoiceMapper;
 
@@ -251,7 +249,7 @@ public class InvoiceService {
     }
 
     private Mono<Invoice> processInvoiceClosing(Invoice invoice) {
-        return updateBookingAndCar(invoice)
+        return updateCarAndBooking(invoice)
                 .filter(Boolean.TRUE::equals)
                 .map(_ -> invoiceMapper.getSuccessfulCreatedInvoice(invoice))
                 .flatMap(revenueService::processClosing)
@@ -263,22 +261,11 @@ public class InvoiceService {
                 });
     }
 
-    private Mono<Boolean> updateBookingAndCar(Invoice invoice) {
-        return bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoice))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> processCarStatusChange(invoice))
-                .switchIfEmpty(Mono.just(false));
-    }
-
-    private Mono<Boolean> processCarStatusChange(Invoice invoice) {
+    private Mono<Boolean> updateCarAndBooking(Invoice invoice) {
         return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoice))
                 .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.defer(() -> processBookingRollback(invoice)));
-    }
-
-    private Mono<Boolean> processBookingRollback(Invoice invoice) {
-        return bookingRollbackProducerService.sendBookingId(invoice.getBookingId().toString())
-                .map(_ -> false);
+                .flatMap(_ -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoice)))
+                .switchIfEmpty(Mono.just(false));
     }
 
     private CarUpdateDetails getCarUpdateDetails(Invoice invoice) {

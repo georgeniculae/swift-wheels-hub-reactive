@@ -5,7 +5,6 @@ import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapperImpl;
-import com.swiftwheelshubreactive.expense.producer.BookingRollbackProducerService;
 import com.swiftwheelshubreactive.expense.producer.BookingUpdateProducerService;
 import com.swiftwheelshubreactive.expense.producer.CarStatusUpdateProducerService;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -22,7 +21,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,9 +35,6 @@ class InvoiceReprocessingServiceTest {
 
     @Mock
     private CarStatusUpdateProducerService carStatusUpdateProducerService;
-
-    @Mock
-    private BookingRollbackProducerService bookingRollbackProducerService;
 
     @Mock
     private InvoiceRepository invoiceRepository;
@@ -92,7 +87,6 @@ class InvoiceReprocessingServiceTest {
                 .thenReturn(Mono.just(true));
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(false));
-        when(bookingRollbackProducerService.sendBookingId(anyString())).thenReturn(Mono.just(true));
 
         invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
                 .as(StepVerifier::create)
@@ -109,7 +103,6 @@ class InvoiceReprocessingServiceTest {
                 .thenReturn(Mono.just(true));
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(false));
-        when(bookingRollbackProducerService.sendBookingId(anyString())).thenReturn(Mono.just(false));
 
         invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
                 .as(StepVerifier::create)

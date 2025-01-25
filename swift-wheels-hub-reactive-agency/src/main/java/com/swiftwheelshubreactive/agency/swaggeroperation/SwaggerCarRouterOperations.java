@@ -4,8 +4,6 @@ import com.swiftwheelshubreactive.agency.handler.CarHandler;
 import com.swiftwheelshubreactive.dto.AvailableCarInfo;
 import com.swiftwheelshubreactive.dto.CarRequest;
 import com.swiftwheelshubreactive.dto.CarResponse;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
-import com.swiftwheelshubreactive.dto.StatusUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -354,43 +352,6 @@ import java.lang.annotation.Target;
                                                 content = @Content(schema = @Schema())
                                         )
                                 }
-                        )
-                ),
-                @RouterOperation(
-                        method = RequestMethod.PUT,
-                        path = "/cars/{id}/update-after-return",
-                        beanClass = CarHandler.class,
-                        beanMethod = "updateCarWhenBookingIsClosed",
-                        operation = @Operation(
-                                operationId = "updateCarWhenBookingIsClosed",
-                                requestBody = @RequestBody(
-                                        description = "Update car status",
-                                        required = true,
-                                        content = @Content(schema = @Schema(implementation = CarUpdateDetails.class))
-                                ),
-                                responses = {
-                                        @ApiResponse(
-                                                responseCode = "200",
-                                                description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = StatusUpdateResponse.class))
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema())
-                                        )
-                                },
-                                parameters = @Parameter(
-                                        name = "id",
-                                        in = ParameterIn.PATH,
-                                        required = true,
-                                        content = @Content(schema = @Schema(implementation = String.class))
-                                )
                         )
                 ),
                 @RouterOperation(

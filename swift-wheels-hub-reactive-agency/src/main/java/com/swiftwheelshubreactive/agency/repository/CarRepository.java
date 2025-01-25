@@ -1,6 +1,7 @@
 package com.swiftwheelshubreactive.agency.repository;
 
 import com.swiftwheelshubreactive.model.Car;
+import com.swiftwheelshubreactive.model.CarStatus;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
@@ -29,6 +30,17 @@ public interface CarRepository extends ReactiveMongoRepository<Car, ObjectId> {
     )
     @NonNull
     Mono<Car> findImageByCarId(@NonNull ObjectId id);
+
+    @Query(
+            value = """
+                    {$and : [{ 'id' : ?0 }, { 'carStatus' : ?1 }]}""",
+            fields = """
+                    {
+                    'id' : 1, 'make' : 1, 'model' : 1, 'bodyType' : 1, 'yearOfProduction' : 1, 'color' : 1,
+                    'mileage' : 1, 'carStatus' : 1, 'amount' : 1, 'originalBranch' : 1, 'actualBranch' : 1}"""
+    )
+    @NonNull
+    Mono<Car> findCarByIdAndCarStatus(ObjectId id, CarStatus carStatus);
 
     @Query(
             value = """

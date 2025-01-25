@@ -10,8 +10,6 @@ import com.swiftwheelshubreactive.model.BodyType;
 import com.swiftwheelshubreactive.model.Car;
 import com.swiftwheelshubreactive.model.CarStatus;
 import org.apache.commons.lang3.ObjectUtils;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -33,22 +31,16 @@ public interface CarMapper {
 
     @Mapping(target = "bodyType", expression = "java(mapToBodyType(carRequest.bodyCategory()))")
     @Mapping(target = "carStatus", expression = "java(mapToCarStatus(carRequest.carState()))")
-    @Mapping(target = "image", expression = "java(mapByteArrayToBinary(imageContent))")
-    Car mapDtoToEntity(CarRequest carRequest, byte[] imageContent);
+    Car mapDtoToEntity(CarRequest carRequest);
 
     @Mapping(target = "bodyType", source = "bodyCategory")
     @Mapping(target = "carStatus", source = "carState")
-    @Mapping(target = "image", expression = "java(mapByteArrayToBinary(excelCarRequest.image()))")
     Car mapExcelCarRequestToEntity(ExcelCarRequest excelCarRequest);
 
     @Mapping(target = "actualBranchId", expression = "java(mapObjectIdToString(car.getActualBranch().getId()))")
     AvailableCarInfo mapToAvailableCarInfo(Car car);
 
     Car getNewCarInstance(Car existingCar);
-
-    default Binary mapByteArrayToBinary(byte[] bytes) {
-        return ObjectUtils.isEmpty(bytes) ? null : new Binary(BsonBinarySubType.BINARY, bytes);
-    }
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

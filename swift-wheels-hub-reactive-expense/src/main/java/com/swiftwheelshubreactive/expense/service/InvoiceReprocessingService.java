@@ -6,7 +6,6 @@ import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
-import com.swiftwheelshubreactive.expense.producer.BookingRollbackProducerService;
 import com.swiftwheelshubreactive.expense.producer.BookingUpdateProducerService;
 import com.swiftwheelshubreactive.expense.producer.CarStatusUpdateProducerService;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
@@ -24,14 +23,13 @@ public class InvoiceReprocessingService {
 
     private final BookingUpdateProducerService bookingUpdateProducerService;
     private final CarStatusUpdateProducerService carStatusUpdateProducerService;
-    private final BookingRollbackProducerService bookingRollbackProducerService;
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
 
     public Mono<Void> reprocessInvoice(InvoiceReprocessRequest invoiceReprocessRequest) {
-        return bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceReprocessRequest))
+        return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceReprocessRequest))
                 .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> processCarStatusUpdate(invoiceReprocessRequest))
+                .flatMap(_ -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceReprocessRequest)))
                 .filter(Boolean.TRUE::equals)
                 .flatMap(_ -> markInvoiceAsSuccessful(invoiceReprocessRequest))
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Invoice reprocessing failed")))
@@ -41,17 +39,6 @@ public class InvoiceReprocessingService {
 
                     return Mono.error(new SwiftWheelsHubException(e.getMessage()));
                 });
-    }
-
-    private Mono<Boolean> processCarStatusUpdate(InvoiceReprocessRequest invoiceReprocessRequest) {
-        return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceReprocessRequest))
-                .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.defer(() -> processBookingRollback(invoiceReprocessRequest)));
-    }
-
-    private Mono<Boolean> processBookingRollback(InvoiceReprocessRequest invoiceReprocessRequest) {
-        return bookingRollbackProducerService.sendBookingId(invoiceReprocessRequest.bookingId())
-                .map(_ -> Boolean.FALSE);
     }
 
     private Mono<Invoice> markInvoiceAsSuccessful(InvoiceReprocessRequest invoiceReprocessRequest) {
