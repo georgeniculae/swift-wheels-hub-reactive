@@ -23,8 +23,8 @@ public class RentalOfficeRouter {
                         .andRoute(RequestPredicates.GET("/filter/{filter}"), rentalOfficeHandler::findRentalOfficesByFilterInsensitiveCase)
                         .andRoute(RequestPredicates.GET("/count"), rentalOfficeHandler::countRentalOffices)
                         .andRoute(RequestPredicates.GET("/{id}"), rentalOfficeHandler::findRentalOfficeById)
-                        .andRoute(RequestPredicates.POST(""), rentalOfficeHandler::saveRentalOffice)
                         .andRoute(RequestPredicates.PUT("/{id}"), rentalOfficeHandler::updateRentalOffice)
+                        .andRoute(RequestPredicates.POST(""), rentalOfficeHandler::saveRentalOffice)
                         .andRoute(RequestPredicates.DELETE("/{id}"), rentalOfficeHandler::deleteRentalOfficeById));
     }
 

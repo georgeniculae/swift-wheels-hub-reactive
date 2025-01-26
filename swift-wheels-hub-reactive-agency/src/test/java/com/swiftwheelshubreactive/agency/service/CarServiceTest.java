@@ -241,26 +241,6 @@ class CarServiceTest {
     }
 
     @Test
-    void getCarImageTest_success() {
-        Car car = TestData.getCar();
-
-        when(carRepository.findImageByCarId(any(ObjectId.class))).thenReturn(Mono.just(car));
-
-        StepVerifier.create(carService.getCarImage("64f361caf291ae086e179547"))
-                .expectNextCount(1)
-                .verifyComplete();
-    }
-
-    @Test
-    void getCarImageTest_errorOnFindingById() {
-        when(carRepository.findImageByCarId(any(ObjectId.class))).thenReturn(Mono.error(new SwiftWheelsHubException("error")));
-
-        StepVerifier.create(carService.getCarImage("64f361caf291ae086e179547"))
-                .expectError()
-                .verify();
-    }
-
-    @Test
     void findCarByFilterTest_errorOnFindingByFilter() {
         when(carRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
@@ -360,7 +340,9 @@ class CarServiceTest {
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(excelParserService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
-        when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
+        when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+        when(reactiveGridFsTemplate.store(any(), anyString()))
+                .thenReturn(Mono.just(new ObjectId("65e8cf871b2c27702941b7a1")));
 
         StepVerifier.create(carService.uploadCars(filePart))
                 .expectNext(carResponse)
@@ -378,7 +360,7 @@ class CarServiceTest {
         when(filePart.content()).thenReturn(dataBuffer);
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(excelParserService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
-        when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new SwiftWheelsHubException("error")));
+        when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new SwiftWheelsHubException("error")));
 
         StepVerifier.create(carService.uploadCars(filePart))
                 .expectError()
@@ -398,6 +380,8 @@ class CarServiceTest {
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+        when(reactiveGridFsTemplate.store(any(), anyString()))
+                .thenReturn(Mono.just(new ObjectId("65e8cf871b2c27702941b7a1")));
 
         StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap()))
                 .expectNext(carResponse)

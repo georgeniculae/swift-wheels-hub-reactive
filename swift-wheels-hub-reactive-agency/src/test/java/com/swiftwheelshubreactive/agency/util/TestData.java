@@ -3,13 +3,7 @@ package com.swiftwheelshubreactive.agency.util;
 import com.swiftwheelshubreactive.dto.BodyCategory;
 import com.swiftwheelshubreactive.dto.CarState;
 import com.swiftwheelshubreactive.dto.ExcelCarRequest;
-import com.swiftwheelshubreactive.model.BodyType;
-import com.swiftwheelshubreactive.model.Branch;
-import com.swiftwheelshubreactive.model.Car;
-import com.swiftwheelshubreactive.model.CarStatus;
-import com.swiftwheelshubreactive.model.RentalOffice;
 import org.bson.types.Binary;
-import org.bson.types.ObjectId;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -92,21 +86,6 @@ public class TestData {
                 .build();
     }
 
-    public static Car getImage() {
-        return Car.builder()
-                .make("Volkswagen")
-                .model("Golf")
-                .bodyType(BodyType.HATCHBACK)
-                .yearOfProduction(2010)
-                .color("black")
-                .mileage(270000)
-                .carStatus(CarStatus.AVAILABLE)
-                .amount(BigDecimal.valueOf(500))
-                .originalBranch(getBranch())
-                .actualBranch(getBranch())
-                .build();
-    }
-
     @SuppressWarnings("all")
     private static FormFieldPart getFormFieldPart(String value, String name, Flux<DataBuffer> content) {
         return new FormFieldPart() {
@@ -167,24 +146,6 @@ public class TestData {
         DataBuffer dataBuffer = bufferFactory.wrap(text.getBytes());
 
         return Flux.just(dataBuffer);
-    }
-
-    private static Branch getBranch() {
-        return Branch.builder()
-                .id(new ObjectId("64f361caf291ae086e179547"))
-                .name("Test Branch")
-                .address("Ploiesti")
-                .rentalOffice(getRentalOffice())
-                .build();
-    }
-
-    private static RentalOffice getRentalOffice() {
-        return RentalOffice.builder()
-                .id(new ObjectId("64f361caf291ae086e179547"))
-                .name("Test Rental Office")
-                .contactAddress("Ploiesti")
-                .phoneNumber("")
-                .build();
     }
 
     private static byte[] getImageContent(FilePart filePart) {

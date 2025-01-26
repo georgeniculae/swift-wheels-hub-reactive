@@ -69,6 +69,8 @@ class InvoiceReprocessingServiceTest {
         InvoiceReprocessRequest invoiceReprocessRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
 
+        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
+                .thenReturn(Mono.just(true));
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
                 .thenReturn(Mono.just(false));
 
@@ -83,24 +85,6 @@ class InvoiceReprocessingServiceTest {
         InvoiceReprocessRequest invoiceReprocessRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
 
-        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(true));
-        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(false));
-
-        invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
-                .as(StepVerifier::create)
-                .expectError()
-                .verify();
-    }
-
-    @Test
-    void reprocessInvoiceTest_carUpdateFailed_failedRollback() {
-        InvoiceReprocessRequest invoiceReprocessRequest =
-                TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
-
-        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(true));
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
                 .thenReturn(Mono.just(false));
 
