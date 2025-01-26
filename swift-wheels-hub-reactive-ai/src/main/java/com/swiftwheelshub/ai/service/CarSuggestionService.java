@@ -41,10 +41,7 @@ public class CarSuggestionService {
     }
 
     private Mono<CarSuggestionResponse> getCarSuggestionResponse(TripInfo tripInfo, List<String> cars) {
-        String text = getText();
-        Map<String, Object> params = getParams(tripInfo, cars);
-
-        return chatService.getChatReply(text, params);
+        return chatService.getChatReply(getText(), getParams(tripInfo, cars));
     }
 
     private Flux<String> getAvailableCars(String apikey, List<String> roles) {
