@@ -9,5 +9,6 @@ public record CarSuggestionResponse(
         String carSuggested,
 
         @NotEmpty
-        String justification) {
+        String justification
+) {
 }
