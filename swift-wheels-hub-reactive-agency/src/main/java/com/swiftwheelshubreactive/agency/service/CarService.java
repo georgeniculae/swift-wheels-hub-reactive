@@ -155,6 +155,7 @@ public class CarService {
                 .flatMap(this::setupNewCar)
                 .flatMap(carRepository::save)
                 .delayUntil(car -> saveCarImage(carRequestPartMap, car))
+                .doOnNext(car -> log.info(car.toString()))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -253,8 +254,7 @@ public class CarService {
     }
 
     private Mono<ObjectId> saveCarImage(Map<String, Part> carRequestPartMap, Car car) {
-        return Mono.just(carRequestPartMap.get(IMAGE))
-                .filter(ObjectUtils::isNotEmpty)
+        return Mono.justOrEmpty(carRequestPartMap.get(IMAGE))
                 .flatMap(part -> saveCarImage(getDataBuffer(part), car.getId().toString()));
     }
 
