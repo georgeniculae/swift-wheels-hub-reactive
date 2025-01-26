@@ -92,7 +92,7 @@ public class TestData {
                 .build();
     }
 
-    public static Car getCar() {
+    public static Car getImage() {
         return Car.builder()
                 .make("Volkswagen")
                 .model("Golf")
