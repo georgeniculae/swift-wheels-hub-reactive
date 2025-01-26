@@ -155,7 +155,6 @@ public class CarService {
                 .flatMap(this::setupNewCar)
                 .flatMap(carRepository::save)
                 .delayUntil(car -> saveCarImage(carRequestPartMap, car))
-                .doOnNext(car -> log.info(car.toString()))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving car: {}", e.getMessage());
@@ -181,6 +180,7 @@ public class CarService {
                 .flatMap(carRequestValidator::validateBody)
                 .flatMap(updatedCarRequest -> setupUpdatedCar(id, updatedCarRequest))
                 .flatMap(carRepository::save)
+                .delayUntil(car -> saveCarImage(carRequestPartMap, car))
                 .map(carMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while updating cars: {}", e.getMessage());
