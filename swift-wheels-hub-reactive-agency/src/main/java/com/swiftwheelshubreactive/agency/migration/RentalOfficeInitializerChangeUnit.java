@@ -59,14 +59,13 @@ public class RentalOfficeInitializerChangeUnit {
     public void rollbackExecution(ClientSession clientSession, MongoDatabase mongoDatabase) {
         SubscriberSync<DeleteResult> subscriber = new MongoSubscriberSync<>();
 
-        mongoDatabase
-                .getCollection(COLLECTION_NAME, RentalOffice.class)
+        mongoDatabase.getCollection(COLLECTION_NAME, RentalOffice.class)
                 .deleteMany(clientSession, new Document())
                 .subscribe(subscriber);
 
         DeleteResult result = subscriber.getFirst();
 
-        log.info("ClientInitializerChangeLog.rollbackExecution wasAcknowledged: {}", result.wasAcknowledged());
+        log.info("ClientInitializerChangeLog.rollbackExecution was acknowledged: {}", result.wasAcknowledged());
         log.info("ClientInitializerChangeLog.rollbackExecution deleted count: {}", result.getDeletedCount());
     }
 

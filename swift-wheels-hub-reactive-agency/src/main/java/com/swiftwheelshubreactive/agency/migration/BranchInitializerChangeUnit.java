@@ -59,8 +59,7 @@ public class BranchInitializerChangeUnit {
     public void rollbackExecution(ClientSession clientSession, MongoDatabase mongoDatabase) {
         SubscriberSync<DeleteResult> subscriber = new MongoSubscriberSync<>();
 
-        mongoDatabase
-                .getCollection(COLLECTION_NAME, Branch.class)
+        mongoDatabase.getCollection(COLLECTION_NAME, Branch.class)
                 .deleteMany(clientSession, new Document())
                 .subscribe(subscriber);
 

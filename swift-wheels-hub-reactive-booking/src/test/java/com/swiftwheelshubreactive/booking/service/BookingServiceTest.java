@@ -532,26 +532,6 @@ class BookingServiceTest {
     }
 
     @Test
-    void rollbackBookingTest_success() {
-        when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.empty());
-
-        bookingService.rollbackBooking("64f361caf291ae086e179547")
-                .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
-    }
-
-    @Test
-    void rollbackBookingTest_errorWhileUpdatingBooking() {
-        when(bookingRepository.updateBookingStatus(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
-
-        bookingService.rollbackBooking("64f361caf291ae086e179547")
-                .as(StepVerifier::create)
-                .expectError()
-                .verify();
-    }
-
-    @Test
     void deleteBookingByCustomerUsernameTest_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
         booking.setStatus(BookingStatus.CLOSED);

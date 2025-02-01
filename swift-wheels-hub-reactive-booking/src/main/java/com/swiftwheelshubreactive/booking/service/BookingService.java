@@ -171,15 +171,6 @@ public class BookingService {
                 });
     }
 
-    public Mono<Void> rollbackBooking(String bookingId) {
-        return bookingRepository.updateBookingStatus(new ObjectId(bookingId))
-                .onErrorResume(e -> {
-                    log.error("Error while rollback booking: {}", e.getMessage());
-
-                    return Mono.error(new SwiftWheelsHubException(e.getMessage()));
-                });
-    }
-
     @LogActivity(
             activityDescription = "Booking deletion",
             sentParameters = "id"
