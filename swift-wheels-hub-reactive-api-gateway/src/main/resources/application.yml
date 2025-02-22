@@ -147,7 +147,7 @@ logging:
   level:
     org:
       springframework:
-        security: ERROR
+        security: DEBUG
         web:
           csrf:
             CsrfFilter: ERROR
