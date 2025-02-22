@@ -147,10 +147,8 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
-        web:
-          csrf:
-            CsrfFilter: ERROR
+        security: ERROR
+        web: DEBUG
 
 cors:
   mapping: '/**'
