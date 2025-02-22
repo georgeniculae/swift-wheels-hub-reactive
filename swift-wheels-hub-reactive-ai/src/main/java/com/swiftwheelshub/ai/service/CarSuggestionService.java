@@ -35,7 +35,6 @@ public class CarSuggestionService {
         return getAvailableCars(apikey, roles)
                 .collectList()
                 .flatMap(cars -> getCarSuggestionResponse(tripInfo, cars))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5)))
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
