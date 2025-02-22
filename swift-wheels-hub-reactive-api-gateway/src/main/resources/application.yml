@@ -109,7 +109,7 @@ resilience4j:
     instances:
       fallbackHandler:
         registerHealthIndicator: true
-        waitDurationInOpenState: 10s
+        waitDurationInOpenState: 20s
         failureRateThreshold: 50
         eventConsumerBufferSize: 10
         slidingWindowSize: 20
