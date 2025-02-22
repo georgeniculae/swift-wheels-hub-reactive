@@ -74,9 +74,7 @@ logging:
     org:
       springframework:
         security: ERROR
-        web:
-          csrf:
-            CsrfFilter: ERROR
+        web: DEBUG
 
 apikey:
   secret: ${API_KEY_SECRET}
