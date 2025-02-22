@@ -148,7 +148,7 @@ logging:
     org:
       springframework:
         security: ERROR
-        web: DEBUG
+        web: ERROR
 
 cors:
   mapping: '/**'

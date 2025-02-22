@@ -74,7 +74,7 @@ logging:
     org:
       springframework:
         security: ERROR
-        web: DEBUG
+        web: ERROR
 
 apikey:
   secret: ${API_KEY_SECRET}
