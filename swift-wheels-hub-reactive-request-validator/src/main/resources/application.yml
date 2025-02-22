@@ -45,9 +45,7 @@ logging:
     org:
       springframework:
         security: ERROR
-        web:
-          csrf:
-            CsrfFilter: ERROR
+        web: ERROR
 
 cors:
   mapping: '/**'

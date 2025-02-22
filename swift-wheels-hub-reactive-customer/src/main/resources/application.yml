@@ -82,9 +82,7 @@ logging:
     org:
       springframework:
         security: ERROR
-        web:
-          csrf:
-            CsrfFilter: ERROR
+        web: ERROR
 
 keycloak:
   serverUrl: http://localhost:8080
