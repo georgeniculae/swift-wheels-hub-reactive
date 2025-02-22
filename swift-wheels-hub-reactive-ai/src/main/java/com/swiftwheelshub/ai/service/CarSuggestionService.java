@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -34,7 +35,7 @@ public class CarSuggestionService {
         return getAvailableCars(apikey, roles)
                 .collectList()
                 .flatMap(cars -> getCarSuggestionResponse(tripInfo, cars))
-                .retryWhen(Retry.backoff(3, java.time.Duration.ofSeconds(5)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5)))
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
