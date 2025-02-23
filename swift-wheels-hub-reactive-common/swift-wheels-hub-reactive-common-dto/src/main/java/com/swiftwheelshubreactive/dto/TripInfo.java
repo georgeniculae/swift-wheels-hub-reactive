@@ -3,7 +3,6 @@ package com.swiftwheelshubreactive.dto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.NonNull;
 
 import java.time.LocalDate;
 
@@ -12,7 +11,7 @@ public record TripInfo(
         @NotEmpty
         String destination,
 
-        @NonNull
+        @NotNull
         Integer peopleCount,
 
         @NotEmpty
