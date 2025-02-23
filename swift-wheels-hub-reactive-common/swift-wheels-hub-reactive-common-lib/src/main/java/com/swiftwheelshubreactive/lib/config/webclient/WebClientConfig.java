@@ -17,17 +17,17 @@ public class WebClientConfig {
     @Bean(name = "loadBalancedWebClientBuilder")
     @LoadBalanced
     public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
-    }
-
-    @Bean
-    public WebClient webClient(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder) {
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 60000)
                 .responseTimeout(Duration.ofSeconds(60));
 
-        return webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient))
-                .build();
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient));
+    }
+
+    @Bean
+    public WebClient webClient(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder) {
+        return webClientBuilder.build();
     }
 
 }
