@@ -28,8 +28,7 @@ public class WebClientConfig {
                                 .addHandlerLast(new WriteTimeoutHandler(60))
                 );
 
-        return WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient));
+        return WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient));
     }
 
     @Bean
