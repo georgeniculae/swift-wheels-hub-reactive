@@ -109,14 +109,13 @@ resilience4j:
     instances:
       fallbackHandler:
         registerHealthIndicator: true
-        waitDurationInOpenState: 30000
+        waitDurationInOpenState: 20000
         failureRateThreshold: 50
         eventConsumerBufferSize: 10
         slidingWindowSize: 20
         minimumNumberOfCalls: 10
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
-        slowCallDurationThreshold: 35000
   timelimiter:
     instances:
       fallbackHandler:
