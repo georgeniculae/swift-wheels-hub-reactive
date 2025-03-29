@@ -87,6 +87,7 @@ public class SwaggerRequestValidatorService {
     private Mono<ValidationReport> getValidationReport(SimpleRequest simpleRequest, SwaggerFile swaggerFile) {
         return Mono.fromCallable(() -> {
                     String swaggerContent = swaggerFile.getSwaggerContent();
+
                     OpenApiInteractionValidator validator = OpenApiInteractionValidator.createForInlineApiSpecification(swaggerContent)
                             .withWhitelist(getWhitelist())
                             .build();
