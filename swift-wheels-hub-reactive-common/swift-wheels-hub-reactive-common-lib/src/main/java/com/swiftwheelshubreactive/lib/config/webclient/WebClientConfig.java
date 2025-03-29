@@ -24,7 +24,7 @@ public class WebClientConfig {
                 .responseTimeout(Duration.ofSeconds(60))
                 .doOnConnected(
                         connection -> connection
-                                .addHandlerLast(new ReadTimeoutHandler(60))
+                                .addHandlerFirst(new ReadTimeoutHandler(60))
                                 .addHandlerLast(new WriteTimeoutHandler(60))
                 );
 
