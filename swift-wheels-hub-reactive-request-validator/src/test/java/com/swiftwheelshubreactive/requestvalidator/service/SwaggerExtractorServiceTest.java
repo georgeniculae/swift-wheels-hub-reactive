@@ -5,6 +5,7 @@ import com.swiftwheelshubreactive.requestvalidator.config.RegisteredEndpoints;
 import com.swiftwheelshubreactive.requestvalidator.model.SwaggerFile;
 import com.swiftwheelshubreactive.requestvalidator.util.AssertionUtil;
 import com.swiftwheelshubreactive.requestvalidator.util.TestUtil;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,33 +50,59 @@ class SwaggerExtractorServiceTest {
     @Mock
     private RetryHandler retryHandler;
 
+    private static String agencyContent;
+
+    private static String aiContent;
+
+    private static String bookingsContent;
+
+    private static String customersContent;
+
+    private static String expenseContent;
+
+    private static SwaggerFile agencySwagger;
+
+    private static SwaggerFile aiSwagger;
+
+    private static SwaggerFile bookingsSwagger;
+
+    private static SwaggerFile customersSwagger;
+
+    private static SwaggerFile expenseSwagger;
+
+    private static List<RegisteredEndpoints.RegisteredEndpoint> endpoints;
+
+    @BeforeAll
+    static void setUp() {
+        agencyContent =
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
+        aiContent =
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAiSwagger.json", String.class);
+        bookingsContent =
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
+        customersContent =
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
+        expenseContent =
+                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
+
+        endpoints = List.of(
+                new RegisteredEndpoints.RegisteredEndpoint("agency", "agency-url"),
+                new RegisteredEndpoints.RegisteredEndpoint("ai", "ai-url"),
+                new RegisteredEndpoints.RegisteredEndpoint("bookings", "bookings-url"),
+                new RegisteredEndpoints.RegisteredEndpoint("customers", "customers-url"),
+                new RegisteredEndpoints.RegisteredEndpoint("expense", "expense-url")
+        );
+
+        agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
+        aiSwagger = SwaggerFile.builder().identifier("ai").swaggerContent(aiContent).build();
+        bookingsSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
+        customersSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
+        expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
+    }
+
     @Test
     @SuppressWarnings("all")
     void getSwaggerFilesTest_success() {
-        String agencyContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
-
-        String bookingsContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
-
-        String customersContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
-
-        String expenseContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
-
-        List<RegisteredEndpoints.RegisteredEndpoint> endpoints = List.of(
-                new RegisteredEndpoints.RegisteredEndpoint("agency", agencyContent),
-                new RegisteredEndpoints.RegisteredEndpoint("bookings", bookingsContent),
-                new RegisteredEndpoints.RegisteredEndpoint("customers", customersContent),
-                new RegisteredEndpoints.RegisteredEndpoint("expense", expenseContent)
-        );
-
-        SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
-        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
-        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
-        SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
-
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
@@ -89,8 +116,10 @@ class SwaggerExtractorServiceTest {
                 if (count == 1) {
                     return Mono.just(agencyContent);
                 } else if (count == 2) {
-                    return Mono.just(bookingsContent);
+                    return Mono.just(aiContent);
                 } else if (count == 3) {
+                    return Mono.just(bookingsContent);
+                } else if (count == 4) {
                     return Mono.just(customersContent);
                 } else {
                     return Mono.just(expenseContent);
@@ -102,8 +131,9 @@ class SwaggerExtractorServiceTest {
         swaggerExtractorService.getSwaggerFiles()
                 .as(StepVerifier::create)
                 .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(agencySwagger, swaggerFile))
-                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(bookingSwagger, swaggerFile))
-                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(customerSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(aiSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(bookingsSwagger, swaggerFile))
+                .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(customersSwagger, swaggerFile))
                 .assertNext(swaggerFile -> AssertionUtil.assertSwaggerFile(expenseSwagger, swaggerFile))
                 .verifyComplete();
     }
@@ -111,30 +141,6 @@ class SwaggerExtractorServiceTest {
     @Test
     @SuppressWarnings("all")
     void getSwaggerFileForMicroservice_success() {
-        String agencyContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
-
-        String bookingsContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
-
-        String customersContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
-
-        String expenseContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
-
-        List<RegisteredEndpoints.RegisteredEndpoint> endpoints = List.of(
-                new RegisteredEndpoints.RegisteredEndpoint("agency", agencyContent),
-                new RegisteredEndpoints.RegisteredEndpoint("bookings", bookingsContent),
-                new RegisteredEndpoints.RegisteredEndpoint("customers", customersContent),
-                new RegisteredEndpoints.RegisteredEndpoint("expense", expenseContent)
-        );
-
-        SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
-        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
-        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
-        SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
-
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
@@ -148,8 +154,10 @@ class SwaggerExtractorServiceTest {
                 if (count == 1) {
                     return Mono.just(agencyContent);
                 } else if (count == 2) {
-                    return Mono.just(bookingsContent);
+                    return Mono.just(aiContent);
                 } else if (count == 3) {
+                    return Mono.just(bookingsContent);
+                } else if (count == 4) {
                     return Mono.just(customersContent);
                 } else {
                     return Mono.just(expenseContent);
@@ -160,39 +168,15 @@ class SwaggerExtractorServiceTest {
 
         swaggerExtractorService.getSwaggerFileForMicroservice("expense")
                 .as(StepVerifier::create)
-                .expectNextMatches(actualAgencySwagger ->
-                        expenseSwagger.getIdentifier().equals(actualAgencySwagger.getIdentifier()) &&
-                                expenseSwagger.getSwaggerContent().equals(actualAgencySwagger.getSwaggerContent()))
+                .expectNextMatches(actualExpenseSwagger ->
+                        expenseSwagger.getIdentifier().equals(actualExpenseSwagger.getIdentifier()) &&
+                                expenseSwagger.getSwaggerContent().equals(actualExpenseSwagger.getSwaggerContent()))
                 .verifyComplete();
     }
 
     @Test
     @SuppressWarnings("all")
     void getSwaggerFileForMicroservice_nonexistentMicroservice_error() {
-        String agencyContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveAgencySwagger.json", String.class);
-
-        String bookingsContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveBookingsSwagger.json", String.class);
-
-        String customersContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveCustomersSwagger.json", String.class);
-
-        String expenseContent =
-                TestUtil.getResourceAsJson("/data/SwiftWheelsHubReactiveExpenseSwagger.json", String.class);
-
-        List<RegisteredEndpoints.RegisteredEndpoint> endpoints = List.of(
-                new RegisteredEndpoints.RegisteredEndpoint("agency", agencyContent),
-                new RegisteredEndpoints.RegisteredEndpoint("bookings", bookingsContent),
-                new RegisteredEndpoints.RegisteredEndpoint("customers", customersContent),
-                new RegisteredEndpoints.RegisteredEndpoint("expense", expenseContent)
-        );
-
-        SwaggerFile agencySwagger = SwaggerFile.builder().identifier("agency").swaggerContent(agencyContent).build();
-        SwaggerFile bookingSwagger = SwaggerFile.builder().identifier("bookings").swaggerContent(bookingsContent).build();
-        SwaggerFile customerSwagger = SwaggerFile.builder().identifier("customers").swaggerContent(customersContent).build();
-        SwaggerFile expenseSwagger = SwaggerFile.builder().identifier("expense").swaggerContent(expenseContent).build();
-
         when(registeredEndpoints.getEndpoints()).thenReturn(endpoints);
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
@@ -206,8 +190,10 @@ class SwaggerExtractorServiceTest {
                 if (count == 1) {
                     return Mono.just(agencyContent);
                 } else if (count == 2) {
-                    return Mono.just(bookingsContent);
+                    return Mono.just(aiContent);
                 } else if (count == 3) {
+                    return Mono.just(bookingsContent);
+                } else if (count == 4) {
                     return Mono.just(customersContent);
                 } else {
                     return Mono.just(expenseContent);

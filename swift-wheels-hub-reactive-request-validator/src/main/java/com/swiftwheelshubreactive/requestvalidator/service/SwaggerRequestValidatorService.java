@@ -42,11 +42,13 @@ public class SwaggerRequestValidatorService {
     private SimpleRequest getSimpleRequest(IncomingRequestDetails request) {
         SimpleRequest.Builder simpleRequestBuilder = new SimpleRequest.Builder(request.method(), request.path());
 
-        request.headers()
-                .forEach(simpleRequestBuilder::withHeader);
+        for (IncomingRequestDetails.Header header : request.headers()) {
+            simpleRequestBuilder.withHeader(header.name(), header.values());
+        }
 
-        request.queryParams()
-                .forEach(simpleRequestBuilder::withQueryParam);
+        for (IncomingRequestDetails.QueryParam queryParam : request.queryParams()) {
+            simpleRequestBuilder.withQueryParam(queryParam.name(), queryParam.value());
+        }
 
         simpleRequestBuilder.withBody(request.body());
 

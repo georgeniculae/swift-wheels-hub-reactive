@@ -1,24 +1,38 @@
 package com.swiftwheelshubreactive.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
-import org.springframework.lang.NonNull;
 
-import java.util.Map;
+import java.util.List;
 
 @Builder
 public record IncomingRequestDetails(
-        @NonNull
+        @NotBlank(message = "Path cannot be blank")
         String path,
 
-        @NonNull
+        @NotBlank(message = "Method cannot be blank")
         String method,
 
-        Map<String, String> headers,
+        List<Header> headers,
 
-        Map<String, String> queryParams,
+        List<QueryParam> queryParams,
 
         String body
 ) {
+
+    @Builder
+    public record Header(
+            String name,
+            List<String> values
+    ) {
+    }
+
+    @Builder
+    public record QueryParam(
+            String name,
+            List<String> value
+    ) {
+    }
 
     @Override
     public String toString() {

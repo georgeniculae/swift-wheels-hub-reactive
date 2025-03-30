@@ -1,10 +1,14 @@
 {
   "path": "/agency/cars/1",
   "method": "GET",
-  "headers": {
-    "X-API-KEY": "apikey-secret"
-  },
-  "queryParams": {
-  },
+  "headers": [
+    {
+      "name": "X-API-KEY",
+      "values": [
+        "apikey-secret"
+      ]
+    }
+  ],
+  "queryParams": [],
   "body": ""
 }

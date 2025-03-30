@@ -22,6 +22,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -87,9 +89,39 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
         return IncomingRequestDetails.builder()
                 .path(request.getPath().value())
                 .method(request.getMethod().name())
-                .headers(request.getHeaders().toSingleValueMap())
-                .queryParams(request.getQueryParams().toSingleValueMap())
+                .headers(getHeaders(request))
+                .queryParams(getQueryParams(request))
                 .body(bodyAsString)
+                .build();
+    }
+
+    private List<IncomingRequestDetails.Header> getHeaders(ServerHttpRequest request) {
+        return request.getHeaders()
+                .entrySet()
+                .stream()
+                .map(this::getHeader)
+                .toList();
+    }
+
+    private IncomingRequestDetails.Header getHeader(Map.Entry<String, List<String>> headersMap) {
+        return IncomingRequestDetails.Header.builder()
+                .name(headersMap.getKey())
+                .values(headersMap.getValue())
+                .build();
+    }
+
+    private List<IncomingRequestDetails.QueryParam> getQueryParams(ServerHttpRequest request) {
+        return request.getQueryParams()
+                .entrySet()
+                .stream()
+                .map(this::getQueryParam)
+                .toList();
+    }
+
+    private IncomingRequestDetails.QueryParam getQueryParam(Map.Entry<String, List<String>> queryParamsMap) {
+        return IncomingRequestDetails.QueryParam.builder()
+                .name(queryParamsMap.getKey())
+                .value(queryParamsMap.getValue())
                 .build();
     }
 
