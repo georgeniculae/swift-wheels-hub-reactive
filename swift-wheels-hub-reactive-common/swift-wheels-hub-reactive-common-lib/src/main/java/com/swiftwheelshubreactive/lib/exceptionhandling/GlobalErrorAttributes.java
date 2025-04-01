@@ -31,7 +31,7 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
     private String getMessage(Map<String, Object> errorAttributes, Throwable error) {
         String message = error.getMessage();
 
-        if (HttpStatus.INTERNAL_SERVER_ERROR.value() == (Integer) errorAttributes.get(STATUS) && message.length() > 500) {
+        if (HttpStatus.INTERNAL_SERVER_ERROR.value() == (Integer) errorAttributes.get(STATUS) && message.length() > 1000) {
             return UNEXPECTED_ERROR;
         }
 
