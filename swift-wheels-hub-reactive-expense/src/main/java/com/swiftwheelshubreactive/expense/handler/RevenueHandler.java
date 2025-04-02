@@ -34,7 +34,7 @@ public class RevenueHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @PreAuthorize("hasRole('admin")
+    @PreAuthorize("hasRole('admin')")
     public Mono<ServerResponse> getTotalAmount(ServerRequest serverRequest) {
         return revenueService.getTotalAmount()
                 .flatMap(totalAmount -> ServerResponse.ok().bodyValue(totalAmount));
