@@ -256,16 +256,16 @@ public class BookingService {
     private Mono<BookingResponse> processUpdatedBooking(AuthenticationInfo authenticationInfo,
                                                         BookingRequest updatedBookingRequest,
                                                         Booking existingBooking) {
-        return getCarIfIsChanged(authenticationInfo, updatedBookingRequest, existingBooking)
+        return getNewCarIfChanged(authenticationInfo, updatedBookingRequest, existingBooking)
                 .flatMap(availableCarInfo -> processNewBookingData(updatedBookingRequest, existingBooking, availableCarInfo))
                 .flatMap(pendingUpdatedBooking -> handleBookingWhenCarIsChanged(existingBooking, pendingUpdatedBooking))
                 .switchIfEmpty(handleBookingWhenCarIsNotChanged(updatedBookingRequest, existingBooking))
                 .map(bookingMapper::mapEntityToDto);
     }
 
-    private Mono<AvailableCarInfo> getCarIfIsChanged(AuthenticationInfo authenticationInfo,
-                                                     BookingRequest updatedBookingRequest,
-                                                     Booking existingBooking) {
+    private Mono<AvailableCarInfo> getNewCarIfChanged(AuthenticationInfo authenticationInfo,
+                                                      BookingRequest updatedBookingRequest,
+                                                      Booking existingBooking) {
         return Mono.just(updatedBookingRequest.carId())
                 .filter(carId -> isCarChanged(existingBooking.getActualCarId().toString(), carId))
                 .flatMap(newCarId -> carService.findAvailableCarById(authenticationInfo, newCarId))
