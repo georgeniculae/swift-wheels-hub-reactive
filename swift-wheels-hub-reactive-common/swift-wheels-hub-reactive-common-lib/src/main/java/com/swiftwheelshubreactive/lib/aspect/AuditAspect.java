@@ -89,7 +89,8 @@ public class AuditAspect {
         return new AuditLogInfoRequest(method.getName(), username, LocalDateTime.now(), parametersValues);
     }
 
-    private List<String> getParametersValues(ProceedingJoinPoint joinPoint, LogActivity logActivity,
+    private List<String> getParametersValues(ProceedingJoinPoint joinPoint,
+                                             LogActivity logActivity,
                                              MethodSignature signature) {
         return Arrays.stream(logActivity.sentParameters())
                 .map(parameter -> {
