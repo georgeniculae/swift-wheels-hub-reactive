@@ -295,11 +295,13 @@ public class BookingService {
     }
 
     private Mono<Booking> handleBookingWhenCarIsNotChanged(BookingRequest updatedBookingRequest, Booking existingBooking) {
-        return Mono.defer(
-                () -> Mono.just(getUpdatedExistingBooking(updatedBookingRequest, existingBooking))
-                        .map(bookingMapper::getSuccessfulUpdatedBooking)
-                        .flatMap(booking -> outboxService.processBookingSaving(booking, Outbox.Operation.UPDATE))
-        );
+        return Mono.defer(() -> processExistingBooking(updatedBookingRequest, existingBooking));
+    }
+
+    private Mono<Booking> processExistingBooking(BookingRequest updatedBookingRequest, Booking existingBooking) {
+        return Mono.just(getUpdatedExistingBooking(updatedBookingRequest, existingBooking))
+                .map(bookingMapper::getSuccessfulUpdatedBooking)
+                .flatMap(booking -> outboxService.processBookingSaving(booking, Outbox.Operation.UPDATE));
     }
 
     private Mono<Booking> saveBookingAfterFailedCarServiceResponse(Booking pendingUpdatedBooking) {
