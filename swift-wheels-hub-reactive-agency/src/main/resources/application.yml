@@ -38,21 +38,21 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: carUpdateAfterBookingSaveConsumer;carUpdateAfterBookingUpdateConsumer;carUpdateAfterInvoiceCloseConsumer
+      definition: updatedCarBookingSavedConsumer;updatedCarBookingUpdatedConsumer;updatedCarInvoiceClosedConsumer
     stream:
       defaultBinder: kafka
       bindings:
-        carUpdateAfterBookingSaveConsumer-in-0:
+        updatedCarBookingSavedConsumer-in-0:
           binder: kafka
           destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
           group: ${AGENCY_CONSUMER_GROUP}
-        carUpdateAfterBookingUpdateConsumer-in-0:
+        updatedCarBookingUpdatedConsumer-in-0:
           binder: kafka
           destination: ${UPDATE_BOOKING_CARS_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
           group: ${AGENCY_CONSUMER_GROUP}
-        carUpdateAfterInvoiceCloseConsumer-in-0:
+        updatedCarInvoiceClosedConsumer-in-0:
           binder: kafka
           destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
           contentType: application/json

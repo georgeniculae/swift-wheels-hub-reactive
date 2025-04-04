@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.agency.consumer;
 
 import com.swiftwheelshubreactive.agency.service.CarService;
-import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
+import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,26 +17,23 @@ import java.util.function.Function;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class CarUpdateAfterBookingUpdateMessageConsumer {
+public class UpdatedCarBookingSavedMessageConsumer {
 
     private final CarService carService;
     private final RetryHandler retryHandler;
 
     @Bean
-    public Function<Flux<Message<UpdateCarsRequest>>, Mono<Void>> carUpdateAfterBookingUpdateConsumer() {
+    public Function<Flux<Message<CarStatusUpdate>>, Mono<Void>> updatedCarBookingSavedConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processCarUpdate)
                 .then();
     }
 
-    private Mono<Void> processCarUpdate(Message<UpdateCarsRequest> message) {
-        return carService.updateCarsStatus(message.getPayload())
+    private Mono<Void> processCarUpdate(Message<CarStatusUpdate> message) {
+        return carService.updateCarStatus(message.getPayload())
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
-
-                    UpdateCarsRequest updateCarsRequest = message.getPayload();
-                    log.info("Car: {} is available", updateCarsRequest.previousCarId());
-                    log.info("Car: {} is not available", updateCarsRequest.actualCarId());
+                    log.info("Car: {} status updated", message.getPayload().carId());
                 })
                 .onErrorResume(e -> {
                     log.error("Exception during car status update: {}", e.getMessage(), e);
