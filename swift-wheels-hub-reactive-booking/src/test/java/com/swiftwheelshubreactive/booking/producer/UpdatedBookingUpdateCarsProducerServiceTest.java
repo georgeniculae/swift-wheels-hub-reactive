@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.producer;
 
 import com.swiftwheelshubreactive.booking.util.TestUtil;
-import com.swiftwheelshubreactive.dto.CarStatusUpdate;
+import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CreateBookingCarUpdateProducerServiceTest {
+class UpdatedBookingUpdateCarsProducerServiceTest {
 
     @InjectMocks
-    private CreateBookingCarUpdateProducerService createBookingCarUpdateProducerService;
+    private UpdatedBookingUpdateCarsProducerService updatedBookingUpdateCarsProducerService;
 
     @Mock
     private StreamBridge streamBridge;
@@ -35,19 +35,19 @@ class CreateBookingCarUpdateProducerServiceTest {
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(createBookingCarUpdateProducerService, "binderName", "carUpdateBinderName");
-        ReflectionTestUtils.setField(createBookingCarUpdateProducerService, "mimeType", "application/json");
+        ReflectionTestUtils.setField(updatedBookingUpdateCarsProducerService, "binderName", "carUpdateBinderName");
+        ReflectionTestUtils.setField(updatedBookingUpdateCarsProducerService, "mimeType", "application/json");
     }
 
     @Test
     void sendMessageTest_success() {
-        CarStatusUpdate carStatusUpdate =
-                TestUtil.getResourceAsJson("/data/CarStatusUpdate.json", CarStatusUpdate.class);
+        UpdateCarsRequest updateCarsRequest =
+                TestUtil.getResourceAsJson("/data/UpdateCarsRequest.json", UpdateCarsRequest.class);
 
         when(streamBridge.send(anyString(), any(Object.class), any(MimeType.class))).thenReturn(true);
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        createBookingCarUpdateProducerService.sendCarUpdateDetails(carStatusUpdate)
+        updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(updateCarsRequest)
                 .as(StepVerifier::create)
                 .expectNext(true)
                 .verifyComplete();

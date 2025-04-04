@@ -3,8 +3,8 @@ package com.swiftwheelshubreactive.booking.service;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshubreactive.booking.model.Outbox;
-import com.swiftwheelshubreactive.booking.producer.CreateBookingCarUpdateProducerService;
-import com.swiftwheelshubreactive.booking.producer.UpdateBookingUpdateCarsProducerService;
+import com.swiftwheelshubreactive.booking.producer.CreatedBookingCarUpdateProducerService;
+import com.swiftwheelshubreactive.booking.producer.UpdatedBookingUpdateCarsProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
@@ -62,10 +62,10 @@ class BookingServiceTest {
     private OutboxService outboxService;
 
     @Mock
-    private CreateBookingCarUpdateProducerService createBookingCarUpdateProducerService;
+    private CreatedBookingCarUpdateProducerService createdBookingCarUpdateProducerService;
 
     @Mock
-    private UpdateBookingUpdateCarsProducerService updateBookingUpdateCarsProducerService;
+    private UpdatedBookingUpdateCarsProducerService updatedBookingUpdateCarsProducerService;
 
     @Mock
     private ReactiveRedisOperations<String, String> redisOperations;
@@ -213,7 +213,7 @@ class BookingServiceTest {
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(availableCarInfo));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
-        when(createBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.just(true));
         when(outboxService.processBookingSaving(any(Booking.class), any(Outbox.Operation.class)))
                 .thenReturn(Mono.just(outbox.getContent()));
@@ -272,7 +272,7 @@ class BookingServiceTest {
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
                 .thenReturn(Mono.just(availableCarInfo));
-        when(createBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
@@ -412,7 +412,7 @@ class BookingServiceTest {
                 .thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
                 .thenReturn(Mono.just(availableCarInfo));
-        when(updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
+        when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
                 .thenReturn(Mono.just(true));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
@@ -486,7 +486,7 @@ class BookingServiceTest {
                 .thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
                 .thenReturn(Mono.just(availableCarInfo));
-        when(updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
+        when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
                 .thenReturn(Mono.just(false));
         when(bookingRepository.save(any(Booking.class))).thenAnswer(new Answer() {
             private int count = 0;

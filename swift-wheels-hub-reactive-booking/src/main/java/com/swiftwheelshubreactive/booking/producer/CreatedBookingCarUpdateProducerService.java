@@ -16,7 +16,7 @@ import reactor.core.scheduler.Schedulers;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CreateBookingCarUpdateProducerService {
+public class CreatedBookingCarUpdateProducerService {
 
     private final StreamBridge streamBridge;
     private final RetryHandler retryHandler;

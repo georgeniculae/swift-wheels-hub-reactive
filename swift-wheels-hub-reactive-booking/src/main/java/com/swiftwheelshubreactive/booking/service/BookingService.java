@@ -2,8 +2,8 @@ package com.swiftwheelshubreactive.booking.service;
 
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.model.Outbox;
-import com.swiftwheelshubreactive.booking.producer.CreateBookingCarUpdateProducerService;
-import com.swiftwheelshubreactive.booking.producer.UpdateBookingUpdateCarsProducerService;
+import com.swiftwheelshubreactive.booking.producer.CreatedBookingCarUpdateProducerService;
+import com.swiftwheelshubreactive.booking.producer.UpdatedBookingUpdateCarsProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.AvailableCarInfo;
@@ -52,8 +52,8 @@ public class BookingService {
     private static final String LOCKED = "locked";
     private final BookingRepository bookingRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
-    private final CreateBookingCarUpdateProducerService createBookingCarUpdateProducerService;
-    private final UpdateBookingUpdateCarsProducerService updateBookingUpdateCarsProducerService;
+    private final CreatedBookingCarUpdateProducerService createdBookingCarUpdateProducerService;
+    private final UpdatedBookingUpdateCarsProducerService updatedBookingUpdateCarsProducerService;
     private final CarService carService;
     private final OutboxService outboxService;
     private final ReactiveRedisOperations<String, String> redisOperations;
@@ -309,7 +309,7 @@ public class BookingService {
     }
 
     private Mono<Boolean> updateCarForNewBooking(Booking booking) {
-        return createBookingCarUpdateProducerService.sendCarUpdateDetails(getCarStatusUpdate(booking.getActualCarId().toString()));
+        return createdBookingCarUpdateProducerService.sendCarUpdateDetails(getCarStatusUpdate(booking.getActualCarId().toString()));
     }
 
     private CarStatusUpdate getCarStatusUpdate(String actualCarId) {
@@ -403,7 +403,7 @@ public class BookingService {
                     UpdateCarsRequest updateCarsRequest =
                             getUpdateCarsRequest(existingBookingCarId, updatedBooking.getActualCarId().toString());
 
-                    return updateBookingUpdateCarsProducerService.sendUpdateCarsRequest(updateCarsRequest);
+                    return updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(updateCarsRequest);
                 });
     }
 
