@@ -197,19 +197,23 @@ public class BookingService {
                     LocalDate currentDate = LocalDate.now();
 
                     if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
-                        sink.error(new SwiftWheelsHubResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "A date of booking cannot be in the past"
-                        ));
+                        sink.error(
+                                new SwiftWheelsHubResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "A date of booking cannot be in the past"
+                                )
+                        );
 
                         return;
                     }
 
                     if (dateFrom.isAfter(dateTo)) {
-                        sink.error(new SwiftWheelsHubResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "Date from is after date to"
-                        ));
+                        sink.error(
+                                new SwiftWheelsHubResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Date from is after date to"
+                                )
+                        );
 
                         return;
                     }

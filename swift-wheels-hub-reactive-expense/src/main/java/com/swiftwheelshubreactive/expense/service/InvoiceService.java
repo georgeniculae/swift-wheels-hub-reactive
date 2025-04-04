@@ -185,10 +185,12 @@ public class InvoiceService {
                     validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
 
                     if (Boolean.TRUE.equals(request.isVehicleDamaged()) && ObjectUtils.isEmpty(request.damageCost())) {
-                        sink.error(new SwiftWheelsHubResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "If the vehicle is damaged, the damage cost cannot be null/empty"
-                        ));
+                        sink.error(
+                                new SwiftWheelsHubResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "If the vehicle is damaged, the damage cost cannot be null/empty"
+                                )
+                        );
 
                         return;
                     }

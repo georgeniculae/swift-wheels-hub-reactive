@@ -25,10 +25,7 @@ public class BodyValidator<T> {
                         return;
                     }
 
-                    sink.error(new SwiftWheelsHubResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            errors.toString()
-                    ));
+                    sink.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, errors.toString()));
                 });
     }
 
