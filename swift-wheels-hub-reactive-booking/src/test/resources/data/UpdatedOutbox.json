@@ -1,0 +1,18 @@
+{
+  "id": "64f48612b92a3b7dfcebae07",
+  "carChanged": false,
+  "content": {
+    "id": "64f361caf291ae086e179547",
+    "dateOfBooking": "2099-02-20",
+    "status": "IN_PROGRESS",
+    "customerUsername": "admin",
+    "customerEmail": "admin@mail.com",
+    "previousCarId": "64f361caf291ae086e179547",
+    "actualCarId": "64f361caf291ae086e179547",
+    "dateFrom": "2099-02-21",
+    "dateTo": "2099-02-22",
+    "rentalCarPrice": 500,
+    "rentalBranchId": "64f361caf291ae086e179547",
+    "bookingProcessStatus": "IN_CREATION"
+  }
+}

@@ -1,6 +1,6 @@
-package com.swiftwheelshubreactive.booking.producer;
+package com.swiftwheelshubreactive.booking.producer.bookingprocessing;
 
-import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -13,29 +13,31 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-public class CreatedBookingProducerService {
+public class DeletedBookingProducerService {
 
     private final StreamBridge streamBridge;
+    private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.savedBookingProducer-out-0.destination}")
+    @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.destination}")
     private String binderName;
 
-    @Value("${spring.cloud.stream.bindings.savedBookingProducer-out-0.contentType}")
+    @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Boolean> sendMessage(BookingResponse bookingResponse) {
+    public Mono<Boolean> sendMessage(String bookingId) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
                                 binderName,
-                                buildMessage(bookingResponse),
+                                buildMessage(bookingId),
                                 MimeType.valueOf(mimeType)
                         )
                 )
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.boundedElastic())
+                .retryWhen(retryHandler.retry());
     }
 
-    private Message<BookingResponse> buildMessage(BookingResponse bookingResponse) {
-        return MessageBuilder.withPayload(bookingResponse)
+    private Message<String> buildMessage(String bookingId) {
+        return MessageBuilder.withPayload(bookingId)
                 .build();
     }
 

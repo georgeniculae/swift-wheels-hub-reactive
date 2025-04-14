@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.booking.consumer;
 
-import com.swiftwheelshubreactive.booking.service.BookingService;
+import com.swiftwheelshubreactive.booking.service.bookingprocessing.BookingService;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;

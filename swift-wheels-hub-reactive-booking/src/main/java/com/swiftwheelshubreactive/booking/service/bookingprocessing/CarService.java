@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.booking.service;
+package com.swiftwheelshubreactive.booking.service.bookingprocessing;
 
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.AvailableCarInfo;

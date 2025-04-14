@@ -11,29 +11,18 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "outbox")
+@Document(collection = "deleted_outbox")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Outbox {
+public class DeletedOutbox {
 
     @BsonProperty("_id")
     @BsonId
     private ObjectId id;
 
-    private Operation operation;
-
     private Booking content;
-
-    @Getter
-    public enum Operation {
-
-        CREATE,
-        UPDATE,
-        DELETE
-
-    }
 
 }

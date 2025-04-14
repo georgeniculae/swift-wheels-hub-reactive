@@ -1,7 +1,7 @@
 package com.swiftwheelshubreactive.booking.consumer;
 
-import com.swiftwheelshubreactive.booking.service.bookingprocessing.BookingService;
-import com.swiftwheelshubreactive.dto.BookingClosingDetails;
+import com.swiftwheelshubreactive.booking.service.dlq.CreatedBookingReprocessService;
+import com.swiftwheelshubreactive.dto.CreatedBookingReprocessRequest;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,26 +17,26 @@ import java.util.function.Function;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class BookingUpdateMessageConsumer {
+public class FailedCreatedBookingDlqMessageConsumer {
 
-    private final BookingService bookingService;
+    private final CreatedBookingReprocessService createdBookingReprocessService;
     private final RetryHandler retryHandler;
 
     @Bean
-    public Function<Flux<Message<BookingClosingDetails>>, Mono<Void>> bookingUpdateConsumer() {
-        return messageFlux -> messageFlux.concatMap(this::processBookingClosing)
+    public Function<Flux<Message<CreatedBookingReprocessRequest>>, Mono<Void>> failedCreatedBookingDlqConsumer() {
+        return messageFlux -> messageFlux.concatMap(this::reprocessUpdatedBooking)
                 .then();
     }
 
-    private Mono<Void> processBookingClosing(Message<BookingClosingDetails> message) {
-        return bookingService.closeBooking(message.getPayload())
+    public Mono<Void> reprocessUpdatedBooking(Message<CreatedBookingReprocessRequest> message) {
+        return createdBookingReprocessService.reprocessCreatedBooking(message.getPayload())
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
-                    log.info("Booking: {} closed", message.getPayload().bookingId());
+                    log.info("Booking: {} reprocessed successfully", message.getPayload().id());
                 })
                 .onErrorResume(e -> {
-                    log.error("Exception during processing saved booking message: {}", e.getMessage(), e);
+                    log.info("Error while reprocessing invoice: {}", e.getMessage());
 
                     return Mono.empty();
                 });

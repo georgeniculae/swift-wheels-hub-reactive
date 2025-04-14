@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.booking.handler;
 
-import com.swiftwheelshubreactive.booking.service.BookingService;
+import com.swiftwheelshubreactive.booking.service.bookingprocessing.BookingService;
 import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.BookingRequest;
@@ -88,7 +88,7 @@ public class BookingHandler {
                                 .build(),
                         bookingRequest)
                 )
-                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
+                .then(ServerResponse.accepted().build());
     }
 
     @PreAuthorize("hasRole('user')")
@@ -105,7 +105,7 @@ public class BookingHandler {
                                 bookingRequest
                         )
                 )
-                .flatMap(bookingResponse -> ServerResponse.ok().bodyValue(bookingResponse));
+                .then(ServerResponse.accepted().build());
     }
 
     @PreAuthorize("hasRole('user')")

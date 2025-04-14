@@ -1,6 +1,6 @@
 package com.swiftwheelshubreactive.booking.handler;
 
-import com.swiftwheelshubreactive.booking.service.BookingService;
+import com.swiftwheelshubreactive.booking.service.bookingprocessing.BookingService;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.booking.validator.BookingRequestValidator;
 import com.swiftwheelshubreactive.dto.AuthenticationInfo;
@@ -202,9 +202,6 @@ class BookingHandlerTest {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
-        BookingResponse bookingResponse =
-                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
                 .header("X-API-KEY", "apikey")
@@ -213,7 +210,7 @@ class BookingHandlerTest {
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
         when(bookingService.saveBooking(any(AuthenticationInfo.class), any(BookingRequest.class)))
-                .thenReturn(Mono.just(bookingResponse));
+                .thenReturn(Mono.empty());
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -225,9 +222,6 @@ class BookingHandlerTest {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
-        BookingResponse bookingResponse =
-                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .header("X-API-KEY", "apikey")
@@ -237,7 +231,7 @@ class BookingHandlerTest {
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
         when(bookingService.updateBooking(any(AuthenticationInfo.class), anyString(), any(BookingRequest.class)))
-                .thenReturn(Mono.just(bookingResponse));
+                .thenReturn(Mono.empty());
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

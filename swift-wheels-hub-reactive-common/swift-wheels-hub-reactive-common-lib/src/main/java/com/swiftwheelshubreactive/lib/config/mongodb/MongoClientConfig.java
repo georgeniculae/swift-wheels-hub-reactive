@@ -22,9 +22,11 @@ public class MongoClientConfig {
     public MongoClient mongoClient(@Value("${spring.data.mongodb.uri}") String connectionString) {
         CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
-                CodecRegistries.fromProviders(PojoCodecProvider.builder()
-                        .automatic(true)
-                        .build())
+                CodecRegistries.fromProviders(
+                        PojoCodecProvider.builder()
+                                .automatic(true)
+                                .build()
+                )
         );
 
         return MongoClients.create(MongoClientSettings.builder()

@@ -2,6 +2,8 @@ package com.swiftwheelshubreactive.booking.mapper;
 
 import com.swiftwheelshubreactive.dto.BookingRequest;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.dto.CreatedBookingReprocessRequest;
+import com.swiftwheelshubreactive.dto.UpdatedBookingReprocessRequest;
 import com.swiftwheelshubreactive.model.Booking;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -23,19 +25,17 @@ public interface BookingMapper {
     @Mapping(target = "actualCarId", source = "carId")
     Booking mapDtoToEntity(BookingRequest bookingRequest);
 
+    @Mapping(target = "carId", source = "actualCarId")
+    BookingResponse mapToBookingResponse(CreatedBookingReprocessRequest createdBookingReprocessRequest);
+
+    @Mapping(target = "carId", source = "actualCarId")
+    BookingResponse mapToBookingResponse(UpdatedBookingReprocessRequest createdBookingReprocessRequest);
+
     Booking getNewBookingInstance(Booking booking);
 
-    @Mapping(target = "bookingProcessStatus", constant = "SAVED_CREATED_BOOKING")
-    Booking getSuccessfulCreatedBooking(Booking booking);
+    CreatedBookingReprocessRequest getCreatedBookingReprocessRequest(Booking content);
 
-    @Mapping(target = "bookingProcessStatus", constant = "SAVED_UPDATED_BOOKING")
-    Booking getSuccessfulUpdatedBooking(Booking booking);
-
-    @Mapping(target = "bookingProcessStatus", constant = "FAILED_CREATED_BOOKING")
-    Booking getFailedCreatedBooking(Booking pendingBooking);
-
-    @Mapping(target = "bookingProcessStatus", constant = "FAILED_UPDATED_BOOKING")
-    Booking getFailedUpdatedBooking(Booking pendingBooking);
+    UpdatedBookingReprocessRequest getUpdatedBookingReprocessRequest(Booking content, boolean isCarChanged);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

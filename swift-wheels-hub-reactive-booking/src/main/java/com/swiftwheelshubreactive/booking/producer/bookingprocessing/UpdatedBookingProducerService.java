@@ -1,6 +1,6 @@
-package com.swiftwheelshubreactive.booking.producer;
+package com.swiftwheelshubreactive.booking.producer.bookingprocessing;
 
-import com.swiftwheelshubreactive.lib.retry.RetryHandler;
+import com.swiftwheelshubreactive.dto.BookingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -13,31 +13,29 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
-public class DeletedBookingProducerService {
+public class UpdatedBookingProducerService {
 
     private final StreamBridge streamBridge;
-    private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.destination}")
+    @Value("${spring.cloud.stream.bindings.updatedBookingProducer-out-0.destination}")
     private String binderName;
 
-    @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.contentType}")
+    @Value("${spring.cloud.stream.bindings.updatedBookingProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Boolean> sendMessage(String bookingId) {
+    public Mono<Boolean> sendMessage(BookingResponse bookingResponse) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
                                 binderName,
-                                buildMessage(bookingId),
+                                buildMessage(bookingResponse),
                                 MimeType.valueOf(mimeType)
                         )
                 )
-                .subscribeOn(Schedulers.boundedElastic())
-                .retryWhen(retryHandler.retry());
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Message<String> buildMessage(String bookingId) {
-        return MessageBuilder.withPayload(bookingId)
+    private Message<BookingResponse> buildMessage(BookingResponse bookingResponse) {
+        return MessageBuilder.withPayload(bookingResponse)
                 .build();
     }
 

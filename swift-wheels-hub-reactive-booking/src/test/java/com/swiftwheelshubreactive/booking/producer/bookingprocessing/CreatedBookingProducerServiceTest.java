@@ -1,4 +1,4 @@
-package com.swiftwheelshubreactive.booking.producer;
+package com.swiftwheelshubreactive.booking.producer.bookingprocessing;
 
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
@@ -18,25 +18,25 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UpdatedBookingProducerServiceTest {
+class CreatedBookingProducerServiceTest {
 
     @InjectMocks
-    private UpdatedBookingProducerService updatedBookingProducerService;
+    private CreatedBookingProducerService createdBookingProducerService;
 
     @Mock
     private StreamBridge streamBridge;
 
     @Test
     void sendMessageTest() {
-        ReflectionTestUtils.setField(updatedBookingProducerService, "binderName", "booking-producer-out-0");
-        ReflectionTestUtils.setField(updatedBookingProducerService, "mimeType", "application/json");
+        ReflectionTestUtils.setField(createdBookingProducerService, "binderName", "booking-producer-out-0");
+        ReflectionTestUtils.setField(createdBookingProducerService, "mimeType", "application/json");
 
         BookingResponse bookingResponse =
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
 
-        StepVerifier.create(updatedBookingProducerService.sendMessage(bookingResponse))
+        StepVerifier.create(createdBookingProducerService.sendMessage(bookingResponse))
                 .expectNext(true)
                 .verifyComplete();
     }

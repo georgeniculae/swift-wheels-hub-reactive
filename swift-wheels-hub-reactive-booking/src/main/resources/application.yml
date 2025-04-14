@@ -44,7 +44,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: bookingUpdateConsumer
+      definition: bookingUpdateConsumer;failedCreatedBookingConsumer;failedUpdatedBookingConsumer
     stream:
       defaultBinder: kafka
       bindings:
@@ -53,6 +53,12 @@ spring:
           contentType: application/json
         deletedBookingProducer-out-0:
           destination: ${DELETED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+        failedCreatedBookingDlqProducer-out-0:
+          destination: ${FAILED_CREATED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+        failedUpdatedBookingDlqProducer-out-0:
+          destination: ${FAILED_UPDATED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
         saveBookingCarUpdateProducer-out-0:
           destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
@@ -71,6 +77,16 @@ spring:
           destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
+        failedCreatedBookingConsumer-in-0:
+          binder: kafka
+          destination: ${FAILED_CREATED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${BOOKING_CONSUMER_GROUP}
+        failedUpdatedBookingConsumer-in-0:
+          binder: kafka
+          destination: ${FAILED_UPDATED_BOOKING_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${BOOKING_CONSUMER_GROUP}
       kafka:
         binder:
           auto-create-topics: true
@@ -82,6 +98,14 @@ spring:
             auto.offset.reset: latest
         bindings:
           bookingUpdateConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          failedCreatedBookingConsumer:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
+          failedUpdatedBookingConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
