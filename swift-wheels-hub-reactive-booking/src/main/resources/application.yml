@@ -44,7 +44,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: bookingUpdateConsumer;failedCreatedBookingConsumer;failedUpdatedBookingConsumer
+      definition: bookingUpdateConsumer;failedCreatedBookingDlqConsumer;failedUpdatedBookingDlqConsumer
     stream:
       defaultBinder: kafka
       bindings:
@@ -77,12 +77,12 @@ spring:
           destination: ${BOOKING_UPDATE_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
-        failedCreatedBookingConsumer-in-0:
+        failedCreatedBookingDlqConsumer-in-0:
           binder: kafka
           destination: ${FAILED_CREATED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
-        failedUpdatedBookingConsumer-in-0:
+        failedUpdatedBookingDlqConsumer-in-0:
           binder: kafka
           destination: ${FAILED_UPDATED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
@@ -101,11 +101,11 @@ spring:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
-          failedCreatedBookingConsumer:
+          failedCreatedBookingDlqConsumer:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
-          failedUpdatedBookingConsumer-in-0:
+          failedUpdatedBookingDlqConsumer-in-0:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
