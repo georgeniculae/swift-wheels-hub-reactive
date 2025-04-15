@@ -79,7 +79,7 @@ public class UpdatedOutboxService extends OutboxService {
         return Mono.just(updatedOutbox)
                 .filter(outbox -> !outbox.isCarChanged())
                 .switchIfEmpty(Mono.defer(() -> changeCarsStatuses(updatedOutbox)))
-                .flatMap(savedOutbox -> updatedBookingProducerService.sendMessage(getBookingResponse(savedOutbox.getContent())))
+                .flatMap(savedOutbox -> updatedBookingProducerService.sengBookingResponse(getBookingResponse(savedOutbox.getContent())))
                 .filter(Boolean.TRUE::equals)
                 .map(_ -> updatedOutbox)
                 .delayUntil(outbox -> unlockCar(outbox.getContent().getActualCarId().toString()))

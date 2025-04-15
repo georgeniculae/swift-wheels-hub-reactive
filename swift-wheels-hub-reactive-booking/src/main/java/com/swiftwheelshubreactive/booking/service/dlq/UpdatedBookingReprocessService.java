@@ -27,7 +27,7 @@ public class UpdatedBookingReprocessService {
         return Mono.just(updatedBookingReprocessRequest)
                 .filter(outbox -> !outbox.isCarChanged())
                 .switchIfEmpty(Mono.defer(() -> changeCarsStatuses(updatedBookingReprocessRequest)))
-                .flatMap(bookingReprocessRequest -> updatedBookingProducerService.sendMessage(getBookingResponse(bookingReprocessRequest)))
+                .flatMap(bookingReprocessRequest -> updatedBookingProducerService.sengBookingResponse(getBookingResponse(bookingReprocessRequest)))
                 .filter(Boolean.TRUE::equals)
                 .retryWhen(retryHandler.retry())
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking update reprocess failed")))

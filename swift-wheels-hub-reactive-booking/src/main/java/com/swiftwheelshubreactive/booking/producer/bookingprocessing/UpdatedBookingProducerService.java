@@ -23,7 +23,7 @@ public class UpdatedBookingProducerService {
     @Value("${spring.cloud.stream.bindings.updatedBookingProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Boolean> sendMessage(BookingResponse bookingResponse) {
+    public Mono<Boolean> sengBookingResponse(BookingResponse bookingResponse) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
                                 binderName,

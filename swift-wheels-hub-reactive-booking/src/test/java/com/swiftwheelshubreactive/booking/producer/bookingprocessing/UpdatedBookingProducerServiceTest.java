@@ -27,7 +27,7 @@ class UpdatedBookingProducerServiceTest {
     private StreamBridge streamBridge;
 
     @Test
-    void sendMessageTest() {
+    void sengBookingResponseTest() {
         ReflectionTestUtils.setField(updatedBookingProducerService, "binderName", "booking-producer-out-0");
         ReflectionTestUtils.setField(updatedBookingProducerService, "mimeType", "application/json");
 
@@ -36,7 +36,7 @@ class UpdatedBookingProducerServiceTest {
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
 
-        StepVerifier.create(updatedBookingProducerService.sendMessage(bookingResponse))
+        StepVerifier.create(updatedBookingProducerService.sengBookingResponse(bookingResponse))
                 .expectNext(true)
                 .verifyComplete();
     }
