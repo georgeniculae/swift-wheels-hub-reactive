@@ -55,6 +55,4 @@ public class Invoice {
 
     private String comments;
 
-    private InvoiceProcessStatus invoiceProcessStatus;
-
 }

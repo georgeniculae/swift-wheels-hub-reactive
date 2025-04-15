@@ -9,6 +9,7 @@ import com.swiftwheelshubreactive.expense.repository.RevenueRepository;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Invoice;
 import com.swiftwheelshubreactive.model.Revenue;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -96,6 +97,7 @@ class RevenueServiceTest {
     @Test
     void saveInvoiceAndRevenueTransactionalTest_success() {
         Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        invoice.setReturnBranchId(new ObjectId("64f361caf291ae086e179547"));
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
         Revenue revenue = TestUtil.getResourceAsJson("/data/Revenue.json", Revenue.class);
 

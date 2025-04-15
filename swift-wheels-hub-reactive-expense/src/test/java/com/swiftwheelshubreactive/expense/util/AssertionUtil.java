@@ -1,5 +1,6 @@
 package com.swiftwheelshubreactive.expense.util;
 
+import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.dto.RevenueResponse;
@@ -32,4 +33,12 @@ public class AssertionUtil {
         assertEquals(revenue.getAmountFromBooking(), revenueResponse.amountFromBooking());
     }
 
+    public static void assertInvoiceReprocessRequest(Invoice invoice, InvoiceReprocessRequest invoiceReprocessRequest) {
+        assertEquals(invoice.getCarReturnDate(), invoiceReprocessRequest.carReturnDate());
+        assertEquals(invoice.getIsVehicleDamaged(), invoiceReprocessRequest.isVehicleDamaged());
+        assertEquals(invoice.getDamageCost(), invoiceReprocessRequest.damageCost());
+        assertEquals(invoice.getAdditionalPayment(), invoiceReprocessRequest.additionalPayment());
+        assertEquals(invoice.getTotalAmount(), invoiceReprocessRequest.totalAmount());
+        assertEquals(invoice.getComments(), invoiceReprocessRequest.comments());
+    }
 }

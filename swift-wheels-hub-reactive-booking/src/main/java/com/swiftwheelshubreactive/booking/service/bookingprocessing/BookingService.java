@@ -17,7 +17,6 @@ import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Booking;
-import com.swiftwheelshubreactive.model.BookingProcessStatus;
 import com.swiftwheelshubreactive.model.BookingStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -233,7 +232,6 @@ public class BookingService {
 
                     updatedBooking.setStatus(BookingStatus.CLOSED);
                     updatedBooking.setReturnBranchId(MongoUtil.getObjectId(bookingClosingDetails.returnBranchId()));
-                    updatedBooking.setBookingProcessStatus(BookingProcessStatus.SAVED_CLOSED_BOOKING);
 
                     return updatedBooking;
                 });
@@ -323,7 +321,6 @@ public class BookingService {
         newBooking.setRentalBranchId(MongoUtil.getObjectId(availableCarInfo.actualBranchId()));
         newBooking.setStatus(BookingStatus.IN_PROGRESS);
         newBooking.setRentalCarPrice(amount);
-        newBooking.setBookingProcessStatus(BookingProcessStatus.IN_CREATION);
 
         return newBooking;
     }
@@ -356,7 +353,6 @@ public class BookingService {
         updatedBooking.setPreviousCarId(existingCarId);
         updatedBooking.setRentalBranchId(MongoUtil.getObjectId(availableCarInfo.actualBranchId()));
         updatedBooking.setRentalCarPrice(amount);
-        updatedBooking.setBookingProcessStatus(BookingProcessStatus.IN_UPDATE);
 
         return updatedBooking;
     }

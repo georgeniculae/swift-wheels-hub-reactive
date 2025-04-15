@@ -1,21 +1,18 @@
 package com.swiftwheelshubreactive.expense.mapper;
 
-import com.swiftwheelshubreactive.dto.InvoiceProcessState;
+import com.swiftwheelshubreactive.dto.InvoiceReprocessRequest;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.expense.util.AssertionUtil;
 import com.swiftwheelshubreactive.expense.util.TestUtil;
 import com.swiftwheelshubreactive.model.Invoice;
-import com.swiftwheelshubreactive.model.InvoiceProcessStatus;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class InvoiceMapperTest {
@@ -33,6 +30,11 @@ class InvoiceMapperTest {
     }
 
     @Test
+    void mapEntityToDtoTest_null() {
+        assertNull(invoiceMapper.mapEntityToDto(null));
+    }
+
+    @Test
     void mapDtoToEntityTest_success() {
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
@@ -44,34 +46,24 @@ class InvoiceMapperTest {
     }
 
     @Test
-    void mapToInvoiceProcessStateTest_null() {
-        assertNull(invoiceMapper.mapToInvoiceProcessState(null));
+    void mapDtoToEntityTest_null() {
+        assertNull(invoiceMapper.mapDtoToEntity(null));
     }
 
     @Test
-    void mapToInvoiceProcessStateTest_savedClosedInvoice() {
-        InvoiceProcessState invoiceProcessState =
-                invoiceMapper.mapToInvoiceProcessState(InvoiceProcessStatus.SAVED_CLOSED_INVOICE);
+    void mapToInvoiceReprocessRequestTest_success() {
+        Invoice invoice = TestUtil.getResourceAsJson("/data/Invoice.json", Invoice.class);
+        invoice.setReturnBranchId(new ObjectId("64f361caf291ae086e179547"));
 
-        assertEquals(InvoiceProcessState.SAVED_CLOSED_INVOICE.name(), invoiceProcessState.name());
+        InvoiceReprocessRequest invoiceReprocessRequest = invoiceMapper.mapToInvoiceReprocessRequest(invoice);
+
+        assertNotNull(invoiceReprocessRequest);
+        AssertionUtil.assertInvoiceReprocessRequest(invoice, invoiceReprocessRequest);
     }
 
     @Test
-    void mapToInvoiceProcessStateTest_failedClosedInvoice() {
-        InvoiceProcessState invoiceProcessState =
-                invoiceMapper.mapToInvoiceProcessState(InvoiceProcessStatus.FAILED_CLOSED_INVOICE);
-
-        assertEquals(InvoiceProcessState.FAILED_CLOSED_INVOICE.name(), invoiceProcessState.name());
-    }
-
-    @Test
-    void mapToInvoiceProcessStateTest_defaultCase() {
-        SwiftWheelsHubException swiftWheelsHubException = assertThrows(
-                SwiftWheelsHubException.class,
-                () -> invoiceMapper.mapToInvoiceProcessState(InvoiceProcessStatus.IN_CLOSING)
-        );
-
-        assertEquals("Invalid invoice process status: IN_CLOSING", swiftWheelsHubException.getMessage());
+    void mapToInvoiceReprocessRequestTest_null() {
+        assertNull(invoiceMapper.mapToInvoiceReprocessRequest(null));
     }
 
 }

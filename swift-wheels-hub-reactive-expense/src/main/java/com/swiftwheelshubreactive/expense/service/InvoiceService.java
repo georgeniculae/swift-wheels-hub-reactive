@@ -1,24 +1,17 @@
 package com.swiftwheelshubreactive.expense.service;
 
-import com.swiftwheelshubreactive.dto.BookingClosingDetails;
 import com.swiftwheelshubreactive.dto.BookingResponse;
-import com.swiftwheelshubreactive.dto.CarState;
-import com.swiftwheelshubreactive.dto.CarUpdateDetails;
 import com.swiftwheelshubreactive.dto.InvoiceRequest;
 import com.swiftwheelshubreactive.dto.InvoiceResponse;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubNotFoundException;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubResponseStatusException;
 import com.swiftwheelshubreactive.expense.mapper.InvoiceMapper;
-import com.swiftwheelshubreactive.expense.producer.BookingUpdateProducerService;
-import com.swiftwheelshubreactive.expense.producer.CarStatusUpdateProducerService;
-import com.swiftwheelshubreactive.expense.producer.FailedInvoiceDlqProducerService;
 import com.swiftwheelshubreactive.expense.repository.InvoiceRepository;
 import com.swiftwheelshubreactive.lib.aspect.LogActivity;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.lib.util.MongoUtil;
 import com.swiftwheelshubreactive.model.Invoice;
-import com.swiftwheelshubreactive.model.InvoiceProcessStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -45,9 +38,6 @@ public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final RevenueService revenueService;
-    private final BookingUpdateProducerService bookingUpdateProducerService;
-    private final CarStatusUpdateProducerService carStatusUpdateProducerService;
-    private final FailedInvoiceDlqProducerService failedInvoiceDlqProducerService;
     private final InvoiceMapper invoiceMapper;
 
     public Flux<InvoiceResponse> findAllInvoices() {
@@ -142,16 +132,15 @@ public class InvoiceService {
             sentParameters = {"id", "invoiceRequest"},
             activityDescription = "Invoice closing"
     )
-    public Mono<InvoiceResponse> closeInvoice(String id, InvoiceRequest invoiceRequest) {
+    public Mono<Void> closeInvoice(String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
                 .flatMap(request -> updateExistingInvoice(id, request))
-                .flatMap(invoiceRepository::save)
-                .flatMap(this::processInvoiceClosing)
-                .map(invoiceMapper::mapEntityToDto)
-                .onErrorResume(e -> {
+                .flatMap(revenueService::processClosing)
+                .then()
+                .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}, storing message to DLQ", e.getMessage());
 
-                    return reprocessInvoice(id, invoiceRequest);
+                    return new SwiftWheelsHubException(e.getMessage());
                 });
     }
 
@@ -171,7 +160,6 @@ public class InvoiceService {
         invoice.setDateTo(newBookingResponse.dateTo());
         invoice.setCarId(new ObjectId(newBookingResponse.carId()));
         invoice.setRentalCarPrice(newBookingResponse.rentalCarPrice());
-        invoice.setInvoiceProcessStatus(InvoiceProcessStatus.IN_PROGRESS);
 
         return invoice;
     }
@@ -245,37 +233,8 @@ public class InvoiceService {
         updatedInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
         updatedInvoice.setComments(invoiceRequest.comments());
         updatedInvoice.setTotalAmount(getTotalAmount(invoiceRequest, existingInvoice));
-        updatedInvoice.setInvoiceProcessStatus(InvoiceProcessStatus.IN_CLOSING);
 
         return updatedInvoice;
-    }
-
-    private Mono<Invoice> processInvoiceClosing(Invoice invoice) {
-        return updateCarAndBooking(invoice)
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> invoiceMapper.getSuccessfulCreatedInvoice(invoice))
-                .flatMap(revenueService::processClosing)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new SwiftWheelsHubException("Failed to process invoice closing"))))
-                .onErrorResume(e -> {
-                    log.error("Error while processing invoice closing: {}", e.getMessage());
-
-                    return invoiceRepository.save(invoiceMapper.getFailedCreatedInvoice(invoice));
-                });
-    }
-
-    private Mono<Boolean> updateCarAndBooking(Invoice invoice) {
-        return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoice))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoice)))
-                .switchIfEmpty(Mono.just(false));
-    }
-
-    private CarUpdateDetails getCarUpdateDetails(Invoice invoice) {
-        return CarUpdateDetails.builder()
-                .carId(invoice.getCarId().toString())
-                .carState(invoice.getIsVehicleDamaged() ? CarState.BROKEN : CarState.AVAILABLE)
-                .receptionistEmployeeId(invoice.getReceptionistEmployeeId().toString())
-                .build();
     }
 
     private BigDecimal getDamageCost(InvoiceRequest invoiceRequest) {
@@ -285,13 +244,6 @@ public class InvoiceService {
     private BigDecimal getAdditionalPayment(InvoiceRequest invoiceRequest) {
         return ObjectUtils.isEmpty(invoiceRequest.additionalPayment()) ?
                 BigDecimal.ZERO : invoiceRequest.additionalPayment();
-    }
-
-    private BookingClosingDetails getBookingClosingDetails(Invoice invoice) {
-        return BookingClosingDetails.builder()
-                .bookingId(invoice.getBookingId().toString())
-                .returnBranchId(invoice.getReturnBranchId().toString())
-                .build();
     }
 
     private BigDecimal getTotalAmount(InvoiceRequest invoiceRequest, Invoice existingInvoice) {
@@ -318,11 +270,6 @@ public class InvoiceService {
                                              BigDecimal carAmount) {
         return carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
                 .add(carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateTo, carReturnDate) * 2L)));
-    }
-
-    private Mono<InvoiceResponse> reprocessInvoice(String id, InvoiceRequest invoiceRequest) {
-        return failedInvoiceDlqProducerService.reprocessInvoice(invoiceMapper.mapToInvoiceReprocessRequest(id, invoiceRequest))
-                .then(Mono.empty());
     }
 
 }

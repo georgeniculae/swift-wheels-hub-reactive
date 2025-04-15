@@ -215,9 +215,6 @@ class InvoiceHandlerTest {
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
-        InvoiceResponse invoiceResponse =
-                TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
-
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .header("X-API-KEY", "apikey")
@@ -226,7 +223,7 @@ class InvoiceHandlerTest {
 
         when(invoiceRequestValidator.validateBody(any())).thenReturn(Mono.just(invoiceRequest));
         when(invoiceService.closeInvoice(anyString(), any(InvoiceRequest.class)))
-                .thenReturn(Mono.just(invoiceResponse));
+                .thenReturn(Mono.empty());
 
         StepVerifier.create(invoiceHandler.closeInvoice(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
