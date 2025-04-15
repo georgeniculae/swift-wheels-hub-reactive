@@ -33,6 +33,16 @@
                     <groupId>org.mongodb</groupId>
                     <artifactId>mongodb-driver-reactivestreams</artifactId>
                 </exclusion>
+
+                <exclusion>
+                    <groupId>net.javacrumbs.shedlock</groupId>
+                    <artifactId>shedlock-spring</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>net.javacrumbs.shedlock</groupId>
+                    <artifactId>shedlock-provider-mongo</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

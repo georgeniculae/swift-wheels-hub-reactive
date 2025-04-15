@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.expense.scheduler;
 
 import com.swiftwheelshubreactive.expense.service.OutboxService;
 import lombok.RequiredArgsConstructor;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,11 @@ public class OutboxScheduler {
     private final OutboxService outboxService;
 
     @Scheduled(fixedDelayString = "${scheduled.fixedDelay}")
+    @SchedulerLock(
+            name = "invoiceSchedulerScheduledTask",
+            lockAtLeastFor = "30s",
+            lockAtMostFor = "1m"
+    )
     public void pollOutboxCollection() {
         outboxService.handleOutboxes()
                 .subscribe();

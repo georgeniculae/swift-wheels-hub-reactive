@@ -38,6 +38,16 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-security</artifactId>
                 </exclusion>
+
+                <exclusion>
+                    <groupId>net.javacrumbs.shedlock</groupId>
+                    <artifactId>shedlock-spring</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>net.javacrumbs.shedlock</groupId>
+                    <artifactId>shedlock-provider-mongo</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
