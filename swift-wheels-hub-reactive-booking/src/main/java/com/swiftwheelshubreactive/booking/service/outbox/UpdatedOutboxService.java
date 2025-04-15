@@ -110,7 +110,7 @@ public class UpdatedOutboxService extends OutboxService {
     }
 
     private Mono<UpdatedOutbox> reprocessBooking(UpdatedOutbox updatedOutbox) {
-        return failedUpdatedBookingDlqProducerService.reprocessUpdatedBooking(
+        return failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(
                         bookingMapper.getUpdatedBookingReprocessRequest(
                                 updatedOutbox.getContent(),
                                 updatedOutbox.isCarChanged()

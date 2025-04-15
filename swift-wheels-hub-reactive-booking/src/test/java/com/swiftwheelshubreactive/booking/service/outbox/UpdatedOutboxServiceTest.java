@@ -82,7 +82,7 @@ class UpdatedOutboxServiceTest {
 
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
         when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(false));
-        when(failedUpdatedBookingDlqProducerService.reprocessUpdatedBooking(any(UpdatedBookingReprocessRequest.class)))
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
@@ -120,7 +120,7 @@ class UpdatedOutboxServiceTest {
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
                 .thenReturn(Mono.just(false));
-        when(failedUpdatedBookingDlqProducerService.reprocessUpdatedBooking(any(UpdatedBookingReprocessRequest.class)))
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
@@ -139,7 +139,7 @@ class UpdatedOutboxServiceTest {
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
                 .thenReturn(Mono.just(true));
         when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(false));
-        when(failedUpdatedBookingDlqProducerService.reprocessUpdatedBooking(any(UpdatedBookingReprocessRequest.class)))
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
@@ -159,7 +159,7 @@ class UpdatedOutboxServiceTest {
                 .thenReturn(Mono.just(true));
         when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class)))
                 .thenReturn(Mono.error(new RuntimeException()));
-        when(failedUpdatedBookingDlqProducerService.reprocessUpdatedBooking(any(UpdatedBookingReprocessRequest.class)))
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
