@@ -7,6 +7,7 @@ import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.dto.UpdatedBookingReprocessRequest;
 import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class UpdatedBookingReprocessService {
     private final UpdatedBookingProducerService updatedBookingProducerService;
     private final UpdatedBookingUpdateCarsProducerService updatedBookingUpdateCarsProducerService;
     private final BookingMapper bookingMapper;
+    private final RetryHandler retryHandler;
 
     public Mono<Void> reprocessUpdatedBooking(UpdatedBookingReprocessRequest updatedBookingReprocessRequest) {
         return Mono.just(updatedBookingReprocessRequest)
@@ -27,6 +29,7 @@ public class UpdatedBookingReprocessService {
                 .switchIfEmpty(Mono.defer(() -> changeCarsStatuses(updatedBookingReprocessRequest)))
                 .flatMap(bookingReprocessRequest -> updatedBookingProducerService.sendMessage(getBookingResponse(bookingReprocessRequest)))
                 .filter(Boolean.TRUE::equals)
+                .retryWhen(retryHandler.retry())
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking update reprocess failed")))
                 .then()
                 .onErrorResume(e -> {
