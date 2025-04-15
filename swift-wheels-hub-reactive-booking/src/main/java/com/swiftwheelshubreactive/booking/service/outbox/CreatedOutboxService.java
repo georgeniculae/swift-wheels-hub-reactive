@@ -91,7 +91,7 @@ public class CreatedOutboxService extends OutboxService {
     }
 
     private Mono<CreatedOutbox> reprocessBooking(CreatedOutbox createdOutbox) {
-        return failedCreatedBookingDlqProducerService.reprocessCreatedBooking(bookingMapper.getCreatedBookingReprocessRequest(createdOutbox.getContent()))
+        return failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(bookingMapper.getCreatedBookingReprocessRequest(createdOutbox.getContent()))
                 .then(Mono.empty());
     }
 

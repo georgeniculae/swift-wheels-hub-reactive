@@ -27,7 +27,7 @@ public class FailedCreatedBookingDlqProducerService {
     @Value("${spring.cloud.stream.bindings.failedCreatedBookingDlqProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Void> reprocessCreatedBooking(CreatedBookingReprocessRequest createBookingReprocessRequest) {
+    public Mono<Void> sendCreatedBookingReprocessRequest(CreatedBookingReprocessRequest createBookingReprocessRequest) {
         return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,

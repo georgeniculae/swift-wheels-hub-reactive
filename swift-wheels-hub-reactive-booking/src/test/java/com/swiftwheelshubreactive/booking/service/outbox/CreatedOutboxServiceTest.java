@@ -88,7 +88,7 @@ class CreatedOutboxServiceTest {
         when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.just(false));
-        when(failedCreatedBookingDlqProducerService.reprocessCreatedBooking(any(CreatedBookingReprocessRequest.class)))
+        when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         createdOutboxService.handleOutboxes()
@@ -106,7 +106,7 @@ class CreatedOutboxServiceTest {
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
         when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(false));
-        when(failedCreatedBookingDlqProducerService.reprocessCreatedBooking(any(CreatedBookingReprocessRequest.class)))
+        when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         createdOutboxService.handleOutboxes()
@@ -125,7 +125,7 @@ class CreatedOutboxServiceTest {
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
         when(createdBookingProducerService.sendMessage(any(BookingResponse.class)))
                 .thenReturn(Mono.error(new RuntimeException("Test")));
-        when(failedCreatedBookingDlqProducerService.reprocessCreatedBooking(any(CreatedBookingReprocessRequest.class)))
+        when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
         createdOutboxService.handleOutboxes()
