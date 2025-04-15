@@ -88,7 +88,7 @@ public class BookingHandler {
                                 .build(),
                         bookingRequest)
                 )
-                .then(ServerResponse.accepted().build());
+                .flatMap(bookingResponse -> ServerResponse.accepted().bodyValue(bookingResponse));
     }
 
     @PreAuthorize("hasRole('user')")
@@ -105,7 +105,7 @@ public class BookingHandler {
                                 bookingRequest
                         )
                 )
-                .then(ServerResponse.accepted().build());
+                .flatMap(bookingResponse -> ServerResponse.accepted().bodyValue(bookingResponse));
     }
 
     @PreAuthorize("hasRole('user')")

@@ -34,6 +34,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -190,6 +191,9 @@ class BookingServiceTest {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
+        BookingResponse bookingResponse =
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
         AvailableCarInfo availableCarInfo =
                 TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
 
@@ -205,12 +209,12 @@ class BookingServiceTest {
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.just(true));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.just(availableCarInfo));
-        when(createdOutboxService.processBookingSave(any(Booking.class))).thenReturn(Mono.empty());
+        when(createdOutboxService.processBookingSave(any(Booking.class))).thenReturn(Mono.just(booking));
 
         bookingService.saveBooking(authenticationInfo, bookingRequest)
                 .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
+                .assertNext(actualBookingResponse -> assertThat(actualBookingResponse).usingRecursiveComparison().isEqualTo(bookingResponse))
+                .verifyComplete();
     }
 
     @Test
@@ -228,7 +232,8 @@ class BookingServiceTest {
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(true));
 
-        StepVerifier.create(bookingService.saveBooking(authenticationInfo, bookingRequest))
+        bookingService.saveBooking(authenticationInfo, bookingRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -249,7 +254,8 @@ class BookingServiceTest {
         when(reactiveValueOperations.setIfAbsent(anyString(), anyString())).thenReturn(Mono.just(false));
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString())).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.saveBooking(authenticationInfo, bookingRequest))
+        bookingService.saveBooking(authenticationInfo, bookingRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -294,6 +300,9 @@ class BookingServiceTest {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
+        BookingResponse bookingResponse =
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
         String apikey = "apikey";
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -306,8 +315,8 @@ class BookingServiceTest {
 
         bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", bookingRequest)
                 .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
+                .assertNext(actualBookingResponse -> assertThat(actualBookingResponse).usingRecursiveComparison().isEqualTo(bookingResponse))
+                .verifyComplete();
 
         verify(carService, never()).findAvailableCarById(any(AuthenticationInfo.class), anyString());
     }
@@ -324,7 +333,8 @@ class BookingServiceTest {
 
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", bookingRequest))
+        bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", bookingRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -335,6 +345,9 @@ class BookingServiceTest {
 
         BookingRequest updatedBookingRequest =
                 TestUtil.getResourceAsJson("/data/UpdatedBookingRequest.json", BookingRequest.class);
+
+        BookingResponse bookingResponse =
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         AvailableCarInfo availableCarInfo =
                 TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
@@ -356,12 +369,12 @@ class BookingServiceTest {
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
                 .thenReturn(Mono.just(availableCarInfo));
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
-        when(updatedOutboxService.processBookingUpdate(any(Booking.class))).thenReturn(Mono.empty());
+        when(updatedOutboxService.processBookingUpdate(any(Booking.class))).thenReturn(Mono.just(booking));
 
         bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest)
                 .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
+                .assertNext(actualBookingResponse -> assertThat(actualBookingResponse).usingRecursiveComparison().isEqualTo(bookingResponse))
+                .verifyComplete();
     }
 
     @Test
@@ -391,7 +404,8 @@ class BookingServiceTest {
         when(carService.findAvailableCarById(any(AuthenticationInfo.class), anyString()))
                 .thenReturn(Mono.just(availableCarInfo));
 
-        StepVerifier.create(bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest))
+        bookingService.updateBooking(authenticationInfo, "64f361caf291ae086e179547", updatedBookingRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

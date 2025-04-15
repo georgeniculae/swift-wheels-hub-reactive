@@ -25,6 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -147,6 +148,7 @@ class CreatedOutboxServiceTest {
     @Test
     void processBookingSaveTest_success() {
         Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+
         CreatedOutbox createdOutbox = TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
 
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
@@ -154,8 +156,8 @@ class CreatedOutboxServiceTest {
 
         createdOutboxService.processBookingSave(booking)
                 .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
+                .assertNext(actualBooking -> assertThat(actualBooking).usingRecursiveComparison().isEqualTo(booking))
+                .verifyComplete();
     }
 
 }

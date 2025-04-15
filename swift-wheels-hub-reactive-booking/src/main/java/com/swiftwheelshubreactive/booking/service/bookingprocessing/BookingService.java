@@ -122,13 +122,14 @@ public class BookingService {
             activityDescription = "Booking creation",
             sentParameters = "newBookingRequest"
     )
-    public Mono<Void> saveBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest) {
+    public Mono<BookingResponse> saveBooking(AuthenticationInfo authenticationInfo, BookingRequest newBookingRequest) {
         return validateBookingDates(newBookingRequest)
                 .flatMap(bookingRequest -> lockCar(bookingRequest.carId()))
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new SwiftWheelsHubResponseStatusException(HttpStatus.BAD_REQUEST, "Car is not available")))
                 .flatMap(_ -> getNewBooking(authenticationInfo, newBookingRequest))
                 .flatMap(createdOutboxService::processBookingSave)
+                .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving booking: {}", e.getMessage());
 
@@ -140,12 +141,13 @@ public class BookingService {
             activityDescription = "Booking update",
             sentParameters = "id"
     )
-    public Mono<Void> updateBooking(AuthenticationInfo authenticationInfo,
-                                    String id,
-                                    BookingRequest updatedBookingRequest) {
+    public Mono<BookingResponse> updateBooking(AuthenticationInfo authenticationInfo,
+                                               String id,
+                                               BookingRequest updatedBookingRequest) {
         return validateBookingDates(updatedBookingRequest)
                 .flatMap(_ -> findEntityById(id))
                 .flatMap(existingBooking -> processBookingUpdate(authenticationInfo, updatedBookingRequest, existingBooking))
+                .map(bookingMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while updating booking: {}", e.getMessage());
 
@@ -164,10 +166,6 @@ public class BookingService {
                 });
     }
 
-    @LogActivity(
-            activityDescription = "Booking deletion",
-            sentParameters = "id"
-    )
     public Mono<Void> deleteBookingByCustomerUsername(String username) {
         return bookingRepository.existsByCustomerUsernameAndStatus(username, BookingStatus.IN_PROGRESS)
                 .filter(Boolean.FALSE::equals)
@@ -237,14 +235,13 @@ public class BookingService {
                 });
     }
 
-    private Mono<Void> processBookingUpdate(AuthenticationInfo authenticationInfo,
-                                            BookingRequest updatedBookingRequest,
-                                            Booking existingBooking) {
+    private Mono<Booking> processBookingUpdate(AuthenticationInfo authenticationInfo,
+                                               BookingRequest updatedBookingRequest,
+                                               Booking existingBooking) {
         return getNewCarIfChanged(authenticationInfo, updatedBookingRequest, existingBooking)
                 .flatMap(availableCarInfo -> processNewBookingData(updatedBookingRequest, existingBooking, availableCarInfo))
                 .flatMap(this::handleBookingWhenCarIsChanged)
-                .switchIfEmpty(handleBookingWhenCarIsNotChanged(updatedBookingRequest, existingBooking))
-                .then();
+                .switchIfEmpty(handleBookingWhenCarIsNotChanged(updatedBookingRequest, existingBooking));
     }
 
     private Mono<AvailableCarInfo> getNewCarIfChanged(AuthenticationInfo authenticationInfo,

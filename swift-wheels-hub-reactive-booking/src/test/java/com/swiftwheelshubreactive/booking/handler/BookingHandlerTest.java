@@ -202,6 +202,9 @@ class BookingHandlerTest {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
+        BookingResponse bookingResponse =
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.POST)
                 .header("X-API-KEY", "apikey")
@@ -210,7 +213,7 @@ class BookingHandlerTest {
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
         when(bookingService.saveBooking(any(AuthenticationInfo.class), any(BookingRequest.class)))
-                .thenReturn(Mono.empty());
+                .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.saveBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
@@ -222,6 +225,9 @@ class BookingHandlerTest {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
+        BookingResponse bookingResponse =
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
+
         MockServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.PUT)
                 .header("X-API-KEY", "apikey")
@@ -231,7 +237,7 @@ class BookingHandlerTest {
 
         when(bookingRequestValidator.validateBody(any())).thenReturn(Mono.just(bookingRequest));
         when(bookingService.updateBooking(any(AuthenticationInfo.class), anyString(), any(BookingRequest.class)))
-                .thenReturn(Mono.empty());
+                .thenReturn(Mono.just(bookingResponse));
 
         StepVerifier.create(bookingHandler.updateBooking(serverRequest))
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())

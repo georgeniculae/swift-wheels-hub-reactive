@@ -59,14 +59,14 @@ public class CreatedOutboxService extends OutboxService {
     }
 
     @Transactional
-    public Mono<Void> processBookingSave(Booking booking) {
+    public Mono<Booking> processBookingSave(Booking booking) {
         return bookingRepository.save(booking)
-                .flatMap(this::saveOutbox);
+                .flatMap(this::saveOutbox)
+                .map(CreatedOutbox::getContent);
     }
 
-    private Mono<Void> saveOutbox(Booking savedBooking) {
-        return createdOutboxRepository.save(createOutbox(savedBooking))
-                .then();
+    private Mono<CreatedOutbox> saveOutbox(Booking savedBooking) {
+        return createdOutboxRepository.save(createOutbox(savedBooking));
     }
 
     private CreatedOutbox createOutbox(Booking booking) {
