@@ -87,7 +87,7 @@ public class InvoiceHandler {
                                 invoiceRequest
                         )
                 )
-                .then(ServerResponse.accepted().build());
+                .flatMap(invoiceResponse -> ServerResponse.accepted().bodyValue(invoiceResponse));
     }
 
 }

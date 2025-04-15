@@ -22,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -237,6 +238,9 @@ class InvoiceServiceTest {
         InvoiceRequest invoiceRequest =
                 TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
 
+        InvoiceResponse invoiceResponse =
+                TestUtil.getResourceAsJson("/data/ClosedInvoiceResponse.json", InvoiceResponse.class);
+
         MockServerHttpRequest.get("/{id}", "64f361caf291ae086e179547")
                 .header("Authorization", "token")
                 .build();
@@ -246,8 +250,8 @@ class InvoiceServiceTest {
 
         invoiceService.closeInvoice("64f361caf291ae086e179547", invoiceRequest)
                 .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
+                .assertNext(actualInvoiceResponse -> assertThat(actualInvoiceResponse).usingRecursiveComparison().isEqualTo(invoiceResponse))
+                .verifyComplete();
     }
 
     @Test

@@ -132,11 +132,11 @@ public class InvoiceService {
             sentParameters = {"id", "invoiceRequest"},
             activityDescription = "Invoice closing"
     )
-    public Mono<Void> closeInvoice(String id, InvoiceRequest invoiceRequest) {
+    public Mono<InvoiceResponse> closeInvoice(String id, InvoiceRequest invoiceRequest) {
         return validateInvoice(invoiceRequest)
                 .flatMap(request -> updateExistingInvoice(id, request))
                 .flatMap(revenueService::processClosing)
-                .then()
+                .map(invoiceMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while closing invoice: {}, storing message to DLQ", e.getMessage());
 
