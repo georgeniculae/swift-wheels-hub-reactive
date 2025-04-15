@@ -3,15 +3,17 @@ package com.swiftwheelshubreactive.booking.service.outbox;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.mapper.BookingMapperImpl;
 import com.swiftwheelshubreactive.booking.model.UpdatedOutbox;
-import com.swiftwheelshubreactive.booking.producer.dlq.FailedUpdatedBookingDlqProducerService;
 import com.swiftwheelshubreactive.booking.producer.bookingprocessing.UpdatedBookingProducerService;
 import com.swiftwheelshubreactive.booking.producer.bookingprocessing.UpdatedBookingUpdateCarsProducerService;
+import com.swiftwheelshubreactive.booking.producer.dlq.FailedUpdatedBookingDlqProducerService;
+import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.UpdateOutboxRepository;
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.UpdateCarsRequest;
 import com.swiftwheelshubreactive.dto.UpdatedBookingReprocessRequest;
 import com.swiftwheelshubreactive.model.Booking;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +26,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -47,6 +50,9 @@ class UpdatedOutboxServiceTest {
 
     @Mock
     private FailedUpdatedBookingDlqProducerService failedUpdatedBookingDlqProducerService;
+
+    @Mock
+    private BookingRepository bookingRepository;
 
     @Mock
     private ReactiveRedisOperations<String, String> redisOperations;
@@ -176,6 +182,21 @@ class UpdatedOutboxServiceTest {
         StepVerifier.create(updatedOutboxService.handleOutboxes())
                 .expectError()
                 .verify();
+    }
+
+    @Test
+    void processBookingUpdateTest_success() {
+        Booking booking = TestUtil.getResourceAsJson("/data/Booking.json", Booking.class);
+        booking.setPreviousCarId(new ObjectId("64f361caf291ae086e179547"));
+        UpdatedOutbox updatedOutbox = TestUtil.getResourceAsJson("/data/UpdatedOutbox.json", UpdatedOutbox.class);
+
+        when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(booking));
+        when(updateOutboxRepository.save(any(UpdatedOutbox.class))).thenReturn(Mono.just(updatedOutbox));
+
+        updatedOutboxService.processBookingUpdate(booking)
+                .as(StepVerifier::create)
+                .assertNext(actualBooking -> assertThat(actualBooking).usingRecursiveComparison().isEqualTo(booking))
+                .verifyComplete();
     }
 
 }
