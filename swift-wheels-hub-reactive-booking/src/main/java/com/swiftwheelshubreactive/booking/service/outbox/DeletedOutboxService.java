@@ -1,11 +1,10 @@
 package com.swiftwheelshubreactive.booking.service.outbox;
 
-import com.swiftwheelshubreactive.booking.mapper.BookingMapper;
 import com.swiftwheelshubreactive.booking.model.DeletedOutbox;
 import com.swiftwheelshubreactive.booking.producer.bookingprocessing.DeletedBookingProducerService;
-import com.swiftwheelshubreactive.booking.producer.dlq.FailedCreatedBookingDlqProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.DeletedOutboxRepository;
+import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.model.Booking;
 import lombok.extern.slf4j.Slf4j;
@@ -22,21 +21,15 @@ public class DeletedOutboxService extends OutboxService {
     private final DeletedOutboxRepository deletedOutboxRepository;
     private final BookingRepository bookingRepository;
     private final DeletedBookingProducerService deletedBookingProducerService;
-    private final FailedCreatedBookingDlqProducerService failedCreatedBookingDlqProducerService;
-    private final BookingMapper bookingMapper;
 
     public DeletedOutboxService(ReactiveRedisOperations<String, String> redisOperations,
                                 DeletedOutboxRepository deletedOutboxRepository,
                                 BookingRepository bookingRepository,
-                                DeletedBookingProducerService deletedBookingProducerService,
-                                FailedCreatedBookingDlqProducerService failedCreatedBookingDlqProducerService,
-                                BookingMapper bookingMapper) {
+                                DeletedBookingProducerService deletedBookingProducerService) {
         super(redisOperations);
         this.deletedOutboxRepository = deletedOutboxRepository;
         this.bookingRepository = bookingRepository;
         this.deletedBookingProducerService = deletedBookingProducerService;
-        this.failedCreatedBookingDlqProducerService = failedCreatedBookingDlqProducerService;
-        this.bookingMapper = bookingMapper;
     }
 
     @Override
@@ -71,7 +64,8 @@ public class DeletedOutboxService extends OutboxService {
     private Mono<DeletedOutbox> processBooking(DeletedOutbox deletedOutbox) {
         return deletedBookingProducerService.sendMessage(deletedOutbox.getContent().getId().toString())
                 .filter(Boolean.TRUE::equals)
-                .map(_ -> deletedOutbox);
+                .map(_ -> deletedOutbox)
+                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Failed to send booking id for deletion")));
     }
 
 }
