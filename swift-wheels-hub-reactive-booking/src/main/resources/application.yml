@@ -55,10 +55,10 @@ spring:
           destination: ${DELETED_BOOKING_REACTIVE_TOPIC}
           contentType: application/json
         failedCreatedBookingDlqProducer-out-0:
-          destination: ${FAILED_CREATED_BOOKING_REACTIVE_TOPIC}
+          destination: ${FAILED_CREATED_BOOKING_DLQ_REACTIVE_TOPIC}
           contentType: application/json
         failedUpdatedBookingDlqProducer-out-0:
-          destination: ${FAILED_UPDATED_BOOKING_REACTIVE_TOPIC}
+          destination: ${FAILED_UPDATED_BOOKING_DLQ_REACTIVE_TOPIC}
           contentType: application/json
         saveBookingCarUpdateProducer-out-0:
           destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}

@@ -76,12 +76,12 @@ public class CreatedOutboxService extends OutboxService {
     }
 
     private Mono<CreatedOutbox> processBooking(CreatedOutbox createdOutbox) {
-        return createdBookingProducerService.sendMessage(getBookingResponse(createdOutbox.getContent()))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> updateCarForNewBooking(createdOutbox.getContent()))
+        return updateCarForNewBooking(createdOutbox.getContent())
+                .filter(aBoolean -> aBoolean)
+                .delayUntil(_ -> unlockCar(createdOutbox.getContent().getActualCarId().toString()))
+                .flatMap(_ -> createdBookingProducerService.sendMessage(getBookingResponse(createdOutbox.getContent())))
                 .filter(Boolean.TRUE::equals)
                 .map(_ -> createdOutbox)
-                .delayUntil(outbox -> unlockCar(outbox.getContent().getActualCarId().toString()))
                 .switchIfEmpty(Mono.defer(() -> reprocessBooking(createdOutbox)))
                 .onErrorResume(e -> {
                     log.error("Error while processing booking: {}", e.getMessage());

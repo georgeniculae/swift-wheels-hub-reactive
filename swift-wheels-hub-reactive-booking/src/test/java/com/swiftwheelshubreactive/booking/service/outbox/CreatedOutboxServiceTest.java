@@ -67,9 +67,9 @@ class CreatedOutboxServiceTest {
                 TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.just(true));
+        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
@@ -86,8 +86,11 @@ class CreatedOutboxServiceTest {
                 TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+                .thenReturn(Mono.just(true));
+        when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
+        when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
+        when(createdBookingProducerService.sendMessage(any(BookingResponse.class)))
                 .thenReturn(Mono.just(false));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
@@ -106,7 +109,8 @@ class CreatedOutboxServiceTest {
                 TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(false));
+        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+                .thenReturn(Mono.just(false));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
 
@@ -124,6 +128,10 @@ class CreatedOutboxServiceTest {
                 TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
+        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
+                .thenReturn(Mono.just(true));
+        when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
+        when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(createdBookingProducerService.sendMessage(any(BookingResponse.class)))
                 .thenReturn(Mono.error(new RuntimeException("Test")));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
