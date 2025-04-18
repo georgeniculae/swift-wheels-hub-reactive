@@ -92,7 +92,8 @@ class UpdatedOutboxServiceTest {
                 .thenReturn(Mono.empty());
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
+        updatedOutboxService.handleOutboxes()
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
 
