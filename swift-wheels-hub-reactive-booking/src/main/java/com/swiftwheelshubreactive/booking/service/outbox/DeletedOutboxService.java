@@ -4,7 +4,6 @@ import com.swiftwheelshubreactive.booking.model.DeletedOutbox;
 import com.swiftwheelshubreactive.booking.producer.bookingprocessing.DeletedBookingProducerService;
 import com.swiftwheelshubreactive.booking.repository.BookingRepository;
 import com.swiftwheelshubreactive.booking.repository.DeletedOutboxRepository;
-import com.swiftwheelshubreactive.exception.SwiftWheelsHubException;
 import com.swiftwheelshubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.swiftwheelshubreactive.model.Booking;
 import lombok.extern.slf4j.Slf4j;
@@ -63,9 +62,7 @@ public class DeletedOutboxService extends OutboxService {
 
     private Mono<DeletedOutbox> processBooking(DeletedOutbox deletedOutbox) {
         return deletedBookingProducerService.sendMessage(deletedOutbox.getContent().getId().toString())
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> deletedOutbox)
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Failed to send booking id for deletion")));
+                .map(_ -> deletedOutbox);
     }
 
 }

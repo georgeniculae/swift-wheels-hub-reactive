@@ -116,7 +116,7 @@ public class UpdatedOutboxService extends OutboxService {
                                 updatedOutbox.isCarChanged()
                         )
                 )
-                .then(Mono.empty());
+                .thenReturn(updatedOutbox);
     }
 
     private BookingResponse getBookingResponse(Booking booking) {

@@ -94,6 +94,7 @@ class CreatedOutboxServiceTest {
                 .thenReturn(Mono.just(false));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
 
         createdOutboxService.handleOutboxes()
                 .as(StepVerifier::create)
@@ -113,6 +114,7 @@ class CreatedOutboxServiceTest {
                 .thenReturn(Mono.just(false));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
 
         createdOutboxService.handleOutboxes()
                 .as(StepVerifier::create)
@@ -136,6 +138,7 @@ class CreatedOutboxServiceTest {
                 .thenReturn(Mono.error(new RuntimeException("Test")));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
 
         createdOutboxService.handleOutboxes()
                 .as(StepVerifier::create)

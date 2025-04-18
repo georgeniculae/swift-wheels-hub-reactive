@@ -90,6 +90,7 @@ class UpdatedOutboxServiceTest {
         when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(false));
         when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
                 .expectComplete()
@@ -128,6 +129,7 @@ class UpdatedOutboxServiceTest {
                 .thenReturn(Mono.just(false));
         when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
                 .expectComplete()
@@ -147,6 +149,7 @@ class UpdatedOutboxServiceTest {
         when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(false));
         when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
                 .expectComplete()
@@ -167,6 +170,7 @@ class UpdatedOutboxServiceTest {
                 .thenReturn(Mono.error(new RuntimeException()));
         when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(updatedOutboxService.handleOutboxes())
                 .expectComplete()
