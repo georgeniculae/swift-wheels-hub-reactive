@@ -172,7 +172,7 @@ public class InvoiceService {
 
                     validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
 
-                    if (Boolean.TRUE.equals(request.isVehicleDamaged()) && ObjectUtils.isEmpty(request.damageCost())) {
+                    if (request.isVehicleDamaged() && ObjectUtils.isEmpty(request.damageCost())) {
                         sink.error(
                                 new SwiftWheelsHubResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
