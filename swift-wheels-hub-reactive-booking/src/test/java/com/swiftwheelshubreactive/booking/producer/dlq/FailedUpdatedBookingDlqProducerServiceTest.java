@@ -47,7 +47,7 @@ class FailedUpdatedBookingDlqProducerServiceTest {
         when(streamBridge.send(anyString(), any(Object.class), any(MimeType.class))).thenReturn(true);
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(updatedBookingReprocessRequest)
+        failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessRequest(updatedBookingReprocessRequest)
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();

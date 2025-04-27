@@ -50,9 +50,9 @@ class UpdatedBookingReprocessServiceTest {
                 TestUtil.getResourceAsJson("/data/UpdatedBookingReprocessRequestCarChanged.json", UpdatedBookingReprocessRequest.class);
 
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(true));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
+        when(updatedBookingProducerService.sendBookingResponse(any(BookingResponse.class)))
+                .thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
 
         updatedBookingReprocessService.reprocessUpdatedBooking(updatedBookingReprocessRequest)
@@ -69,7 +69,7 @@ class UpdatedBookingReprocessServiceTest {
                 TestUtil.getResourceAsJson("/data/UpdatedBookingReprocessRequestCarChanged.json", UpdatedBookingReprocessRequest.class);
 
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(false));
+                .thenReturn(Mono.error(new RuntimeException("Test")));
         when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
 
         updatedBookingReprocessService.reprocessUpdatedBooking(updatedBookingReprocessRequest)
@@ -77,24 +77,7 @@ class UpdatedBookingReprocessServiceTest {
                 .expectError()
                 .verify();
 
-        verify(updatedBookingProducerService, never()).sengBookingResponse(any(BookingResponse.class));
-    }
-
-    @Test
-    void reprocessUpdatedBookingTest_bookingSendFailed() {
-        UpdatedBookingReprocessRequest updatedBookingReprocessRequest =
-                TestUtil.getResourceAsJson("/data/UpdatedBookingReprocessRequestCarChanged.json", UpdatedBookingReprocessRequest.class);
-
-        when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(true));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class)))
-                .thenReturn(Mono.just(false));
-        when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
-
-        updatedBookingReprocessService.reprocessUpdatedBooking(updatedBookingReprocessRequest)
-                .as(StepVerifier::create)
-                .expectError()
-                .verify();
+        verify(updatedBookingProducerService, never()).sendBookingResponse(any(BookingResponse.class));
     }
 
     @Test

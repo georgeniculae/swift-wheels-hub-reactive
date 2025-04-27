@@ -2,6 +2,7 @@ package com.swiftwheelshubreactive.booking.producer.bookingprocessing;
 
 import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
+import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,9 @@ import org.springframework.messaging.Message;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MimeType;
 import reactor.test.StepVerifier;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -26,8 +30,11 @@ class CreatedBookingProducerServiceTest {
     @Mock
     private StreamBridge streamBridge;
 
+    @Mock
+    private RetryHandler retryHandler;
+
     @Test
-    void sendMessageTest() {
+    void sendCreatedBookingTest() {
         ReflectionTestUtils.setField(createdBookingProducerService, "binderName", "booking-producer-out-0");
         ReflectionTestUtils.setField(createdBookingProducerService, "mimeType", "application/json");
 
@@ -35,10 +42,12 @@ class CreatedBookingProducerServiceTest {
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
         when(streamBridge.send(anyString(), any(Message.class), any(MimeType.class))).thenReturn(true);
+        when(retryHandler.retry()).thenReturn(Retry.backoff(0, Duration.ZERO));
 
-        StepVerifier.create(createdBookingProducerService.sendMessage(bookingResponse))
-                .expectNext(true)
-                .verifyComplete();
+        createdBookingProducerService.sendCreatedBooking(bookingResponse)
+                .as(StepVerifier::create)
+                .expectComplete()
+                .verify();
     }
 
 }

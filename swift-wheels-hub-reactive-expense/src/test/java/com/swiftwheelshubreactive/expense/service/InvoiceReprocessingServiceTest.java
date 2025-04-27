@@ -35,29 +35,13 @@ class InvoiceReprocessingServiceTest {
                 TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
 
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
 
         invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
                 .as(StepVerifier::create)
                 .expectComplete()
-                .verify();
-    }
-
-    @Test
-    void reprocessInvoiceTest_updateBookingFailed() {
-        InvoiceReprocessRequest invoiceReprocessRequest =
-                TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
-
-        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(true));
-        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(false));
-
-        invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
-                .as(StepVerifier::create)
-                .expectError()
                 .verify();
     }
 
@@ -67,7 +51,23 @@ class InvoiceReprocessingServiceTest {
                 TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
 
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(false));
+                .thenReturn(Mono.error(new RuntimeException("Test")));
+
+        invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
+                .as(StepVerifier::create)
+                .expectError()
+                .verify();
+    }
+
+    @Test
+    void reprocessInvoiceTest_updateBookingFailed() {
+        InvoiceReprocessRequest invoiceReprocessRequest =
+                TestUtil.getResourceAsJson("/data/InvoiceReprocessRequest.json", InvoiceReprocessRequest.class);
+
+        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
+                .thenReturn(Mono.empty());
+        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
+                .thenReturn(Mono.error(new RuntimeException("Test")));
 
         invoiceReprocessingService.reprocessInvoice(invoiceReprocessRequest)
                 .as(StepVerifier::create)

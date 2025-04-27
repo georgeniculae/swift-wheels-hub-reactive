@@ -34,7 +34,7 @@ public class DeletedOutboxService extends OutboxService {
     @Override
     public Flux<Void> handleOutboxes() {
         return deletedOutboxRepository.findAll()
-                .concatMap(this::processBooking)
+                .delayUntil(this::processBooking)
                 .concatMap(deletedOutboxRepository::delete)
                 .onErrorMap(e -> {
                     log.error("Error while processing/sending booking: {}", e.getMessage());
@@ -60,9 +60,8 @@ public class DeletedOutboxService extends OutboxService {
                 .build();
     }
 
-    private Mono<DeletedOutbox> processBooking(DeletedOutbox deletedOutbox) {
-        return deletedBookingProducerService.sendMessage(deletedOutbox.getContent().getId().toString())
-                .map(_ -> deletedOutbox);
+    private Mono<Void> processBooking(DeletedOutbox deletedOutbox) {
+        return deletedBookingProducerService.sendMessage(deletedOutbox.getContent().getId().toString());
     }
 
 }

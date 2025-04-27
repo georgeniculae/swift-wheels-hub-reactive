@@ -44,8 +44,8 @@ class DeletedBookingProducerServiceTest {
 
         deletedBookingProducerService.sendMessage("id")
                 .as(StepVerifier::create)
-                .expectNext(true)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
 }

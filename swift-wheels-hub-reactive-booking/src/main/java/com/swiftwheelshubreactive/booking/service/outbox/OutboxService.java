@@ -12,8 +12,10 @@ public abstract class OutboxService {
 
     public abstract Flux<Void> handleOutboxes();
 
-    protected Mono<Boolean> unlockCar(String carId) {
-        return redisOperations.opsForValue().delete(carId);
+    protected Mono<Void> unlockCar(String carId) {
+        return redisOperations.opsForValue()
+                .delete(carId)
+                .then();
     }
 
 }

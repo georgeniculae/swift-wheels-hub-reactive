@@ -49,8 +49,8 @@ class CarStatusUpdateProducerServiceTest {
 
         carStatusUpdateProducerService.sendCarUpdateDetails(carUpdateDetails)
                 .as(StepVerifier::create)
-                .expectNext(true)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
 }

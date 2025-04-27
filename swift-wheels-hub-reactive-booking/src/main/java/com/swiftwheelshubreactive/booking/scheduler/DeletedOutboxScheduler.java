@@ -15,8 +15,8 @@ public class DeletedOutboxScheduler {
     @Scheduled(fixedDelayString = "${scheduled.fixedDelay}")
     @SchedulerLock(
             name = "deletedOutboxSchedulerScheduledTask",
-            lockAtLeastFor = "30s",
-            lockAtMostFor = "1m"
+            lockAtLeastFor = "5s",
+            lockAtMostFor = "30m"
     )
     public void pollOutboxCollection() {
         deletedOutboxService.handleOutboxes()

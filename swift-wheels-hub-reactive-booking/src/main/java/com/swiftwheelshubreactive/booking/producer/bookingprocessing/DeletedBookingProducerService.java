@@ -24,7 +24,7 @@ public class DeletedBookingProducerService {
     @Value("${spring.cloud.stream.bindings.deletedBookingProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Boolean> sendMessage(String bookingId) {
+    public Mono<Void> sendMessage(String bookingId) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
                                 binderName,
@@ -33,7 +33,8 @@ public class DeletedBookingProducerService {
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
-                .retryWhen(retryHandler.retry());
+                .retryWhen(retryHandler.retry())
+                .then();
     }
 
     private Message<String> buildMessage(String bookingId) {

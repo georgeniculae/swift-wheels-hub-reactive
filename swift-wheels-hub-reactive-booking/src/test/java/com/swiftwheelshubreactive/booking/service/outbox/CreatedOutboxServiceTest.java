@@ -68,8 +68,8 @@ class CreatedOutboxServiceTest {
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
-                .thenReturn(Mono.just(true));
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
+        when(createdBookingProducerService.sendCreatedBooking(any(BookingResponse.class))).thenReturn(Mono.empty());
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
@@ -78,20 +78,18 @@ class CreatedOutboxServiceTest {
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
+
+        verify(bookingMapper).mapEntityToDto(any(Booking.class));
     }
 
     @Test
-    void handleOutboxesTest_bookingSendFailed() {
+    void handleOutboxesTest_errorOnUpdatingCar() {
         CreatedOutbox createdOutbox =
                 TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
-                .thenReturn(Mono.just(true));
-        when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
-        when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class)))
-                .thenReturn(Mono.just(false));
+                .thenReturn(Mono.error(new RuntimeException("Test")));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
         when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
@@ -100,28 +98,6 @@ class CreatedOutboxServiceTest {
                 .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
-
-        verify(bookingMapper).getCreatedBookingReprocessRequest(any(Booking.class));
-    }
-
-    @Test
-    void handleOutboxesTest_carUpdateFailed() {
-        CreatedOutbox createdOutbox =
-                TestUtil.getResourceAsJson("/data/CreatedOutbox.json", CreatedOutbox.class);
-
-        when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
-        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
-                .thenReturn(Mono.just(false));
-        when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
-                .thenReturn(Mono.empty());
-        when(createdOutboxRepository.delete(any(CreatedOutbox.class))).thenReturn(Mono.empty());
-
-        createdOutboxService.handleOutboxes()
-                .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
-
-        verify(bookingMapper).getCreatedBookingReprocessRequest(any(Booking.class));
     }
 
     @Test
@@ -131,10 +107,10 @@ class CreatedOutboxServiceTest {
 
         when(createdOutboxRepository.findAll()).thenReturn(Flux.just(createdOutbox));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class)))
+        when(createdBookingProducerService.sendCreatedBooking(any(BookingResponse.class)))
                 .thenReturn(Mono.error(new RuntimeException("Test")));
         when(failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(any(CreatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());

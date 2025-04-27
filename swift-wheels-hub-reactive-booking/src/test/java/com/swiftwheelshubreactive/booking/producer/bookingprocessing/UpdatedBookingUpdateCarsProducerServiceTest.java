@@ -49,8 +49,8 @@ class UpdatedBookingUpdateCarsProducerServiceTest {
 
         updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(updateCarsRequest)
                 .as(StepVerifier::create)
-                .expectNext(true)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
 }

@@ -22,11 +22,7 @@ public class InvoiceReprocessingService {
 
     public Mono<Void> reprocessInvoice(InvoiceReprocessRequest invoiceReprocessRequest) {
         return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(invoiceReprocessRequest))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceReprocessRequest)))
-                .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Invoice reprocessing failed")))
-                .then()
+                .then(Mono.defer(() -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(invoiceReprocessRequest))))
                 .onErrorResume(e -> {
                     log.error("Error while trying to reprocess invoice: {}", e.getMessage());
 

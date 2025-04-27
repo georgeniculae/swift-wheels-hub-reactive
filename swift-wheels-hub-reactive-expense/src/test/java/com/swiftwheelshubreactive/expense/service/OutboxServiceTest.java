@@ -58,11 +58,11 @@ class OutboxServiceTest {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(invoiceProducerService.sendInvoice(any(InvoiceResponse.class))).thenReturn(Mono.just(true));
+        when(invoiceProducerService.sendInvoice(any(InvoiceResponse.class))).thenReturn(Mono.empty());
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
         when(outboxRepository.delete(outbox)).thenReturn(Mono.empty());
 
         outboxService.handleOutboxes()
@@ -74,59 +74,18 @@ class OutboxServiceTest {
     }
 
     @Test
-    void handleOutboxesTest_carUpdateFailed_error() {
-        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
-
-        when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(invoiceProducerService.sendInvoice(any(InvoiceResponse.class))).thenReturn(Mono.just(true));
-        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(false));
-        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceReprocessRequest.class)))
-                .thenReturn(Mono.empty());
-
-        outboxService.handleOutboxes()
-                .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
-
-        verify(invoiceMapper).mapToInvoiceReprocessRequest(any(Invoice.class));
-        verify(bookingUpdateProducerService, never()).sendBookingClosingDetails(any(BookingClosingDetails.class));
-    }
-
-    @Test
-    void handleOutboxesTest_bookingUpdateFailed_error() {
-        Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
-
-        when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(invoiceProducerService.sendInvoice(any(InvoiceResponse.class))).thenReturn(Mono.just(true));
-        when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(true));
-        when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
-                .thenReturn(Mono.just(false));
-        when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceReprocessRequest.class)))
-                .thenReturn(Mono.empty());
-
-        outboxService.handleOutboxes()
-                .as(StepVerifier::create)
-                .expectComplete()
-                .verify();
-
-        verify(invoiceMapper).mapToInvoiceReprocessRequest(any(Invoice.class));
-        verify(outboxRepository, never()).delete(any(Outbox.class));
-    }
-
-    @Test
     void handleOutboxesTest_errorOnBookingUpdateFailed() {
         Outbox outbox = TestUtil.getResourceAsJson("/data/Outbox.json", Outbox.class);
 
         when(outboxRepository.findAll()).thenReturn(Flux.just(outbox));
-        when(invoiceProducerService.sendInvoice(any(InvoiceResponse.class))).thenReturn(Mono.just(true));
+        when(invoiceProducerService.sendInvoice(any(InvoiceResponse.class))).thenReturn(Mono.empty());
         when(carStatusUpdateProducerService.sendCarUpdateDetails(any(CarUpdateDetails.class)))
-                .thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
         when(bookingUpdateProducerService.sendBookingClosingDetails(any(BookingClosingDetails.class)))
                 .thenReturn(Mono.error(new RuntimeException("Test")));
         when(failedInvoiceDlqProducerService.reprocessInvoice(any(InvoiceReprocessRequest.class)))
                 .thenReturn(Mono.empty());
+        when(outboxRepository.delete(outbox)).thenReturn(Mono.empty());
 
         outboxService.handleOutboxes()
                 .as(StepVerifier::create)

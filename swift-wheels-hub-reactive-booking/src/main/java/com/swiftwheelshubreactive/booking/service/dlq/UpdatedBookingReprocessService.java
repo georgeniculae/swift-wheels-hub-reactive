@@ -27,11 +27,8 @@ public class UpdatedBookingReprocessService {
         return Mono.just(updatedBookingReprocessRequest)
                 .filter(outbox -> !outbox.isCarChanged())
                 .switchIfEmpty(Mono.defer(() -> changeCarsStatuses(updatedBookingReprocessRequest)))
-                .flatMap(bookingReprocessRequest -> updatedBookingProducerService.sengBookingResponse(getBookingResponse(bookingReprocessRequest)))
-                .filter(Boolean.TRUE::equals)
+                .flatMap(bookingReprocessRequest -> updatedBookingProducerService.sendBookingResponse(getBookingResponse(bookingReprocessRequest)))
                 .retryWhen(retryHandler.retry())
-                .switchIfEmpty(Mono.error(new SwiftWheelsHubException("Booking update reprocess failed")))
-                .then()
                 .onErrorResume(e -> {
                     log.error("Error while trying to reprocess booking update: {}", e.getMessage());
 
@@ -46,8 +43,7 @@ public class UpdatedBookingReprocessService {
                                 updatedBookingReprocessRequest.actualCarId()
                         )
                 )
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> updatedBookingReprocessRequest);
+                .thenReturn(updatedBookingReprocessRequest);
     }
 
     private UpdateCarsRequest getUpdateCarsRequest(String existingCarId, String newCarId) {
@@ -57,8 +53,8 @@ public class UpdatedBookingReprocessService {
                 .build();
     }
 
-    private BookingResponse getBookingResponse(UpdatedBookingReprocessRequest booking) {
-        return bookingMapper.mapToBookingResponse(booking);
+    private BookingResponse getBookingResponse(UpdatedBookingReprocessRequest updatedBookingReprocessRequest) {
+        return bookingMapper.mapToBookingResponse(updatedBookingReprocessRequest);
     }
 
 }

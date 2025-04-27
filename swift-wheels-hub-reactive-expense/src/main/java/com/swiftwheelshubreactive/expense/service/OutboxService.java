@@ -32,8 +32,8 @@ public class OutboxService {
 
     public Flux<Void> handleOutboxes() {
         return outboxRepository.findAll()
-                .flatMap(this::processInvoice)
-                .flatMap(outboxRepository::delete)
+                .delayUntil(this::processInvoice)
+                .concatMap(outboxRepository::delete)
                 .onErrorMap(e -> {
                     log.error("Error while processing outbox: {}", e.getMessage());
 
@@ -45,15 +45,10 @@ public class OutboxService {
         return outboxRepository.save(createOutbox(savedInvoice));
     }
 
-    private Mono<Outbox> processInvoice(Outbox outbox) {
-        return invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(outbox.getContent())))
-                .filter(Boolean.TRUE::equals)
-                .flatMap(_ -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(outbox.getContent())))
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> outbox)
-                .switchIfEmpty(Mono.defer(() -> reprocessInvoice(outbox)))
+    private Mono<Void> processInvoice(Outbox outbox) {
+        return carStatusUpdateProducerService.sendCarUpdateDetails(getCarUpdateDetails(outbox.getContent()))
+                .then(Mono.defer(() -> invoiceProducerService.sendInvoice(invoiceMapper.mapEntityToDto(outbox.getContent()))))
+                .then(Mono.defer(() -> bookingUpdateProducerService.sendBookingClosingDetails(getBookingClosingDetails(outbox.getContent()))))
                 .onErrorResume(e -> {
                     log.error("Error while processing invoice: {}", e.getMessage());
 
@@ -82,9 +77,8 @@ public class OutboxService {
                 .build();
     }
 
-    private Mono<Outbox> reprocessInvoice(Outbox outbox) {
-        return failedInvoiceDlqProducerService.reprocessInvoice(invoiceMapper.mapToInvoiceReprocessRequest(outbox.getContent()))
-                .then(Mono.empty());
+    private Mono<Void> reprocessInvoice(Outbox outbox) {
+        return failedInvoiceDlqProducerService.reprocessInvoice(invoiceMapper.mapToInvoiceReprocessRequest(outbox.getContent()));
     }
 
 }

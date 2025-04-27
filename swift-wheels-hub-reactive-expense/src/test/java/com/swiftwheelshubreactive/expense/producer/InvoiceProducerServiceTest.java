@@ -49,8 +49,8 @@ class InvoiceProducerServiceTest {
 
         invoiceProducerService.sendInvoice(invoiceResponse)
                 .as(StepVerifier::create)
-                .expectNext(true)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
 }

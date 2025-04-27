@@ -8,7 +8,6 @@ import com.swiftwheelshubreactive.booking.util.TestUtil;
 import com.swiftwheelshubreactive.dto.BookingResponse;
 import com.swiftwheelshubreactive.dto.CarStatusUpdate;
 import com.swiftwheelshubreactive.dto.CreatedBookingReprocessRequest;
-import com.swiftwheelshubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,9 +16,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -38,9 +34,6 @@ class CreatedBookingReprocessServiceTest {
     @Mock
     private CreatedBookingCarUpdateProducerService createdBookingCarUpdateProducerService;
 
-    @Mock
-    private RetryHandler retryHandler;
-
     @Spy
     private BookingMapper bookingMapper = new BookingMapperImpl();
 
@@ -49,10 +42,9 @@ class CreatedBookingReprocessServiceTest {
         CreatedBookingReprocessRequest createdBookingReprocessRequest =
                 TestUtil.getResourceAsJson("/data/CreatedBookingReprocessRequest.json", CreatedBookingReprocessRequest.class);
 
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
         when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
-                .thenReturn(Mono.just(true));
-        when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
+                .thenReturn(Mono.empty());
+        when(createdBookingProducerService.sendCreatedBooking(any(BookingResponse.class))).thenReturn(Mono.empty());
 
         createdBookingReprocessService.reprocessCreatedBooking(createdBookingReprocessRequest)
                 .as(StepVerifier::create)
@@ -63,50 +55,19 @@ class CreatedBookingReprocessServiceTest {
     }
 
     @Test
-    void reprocessCreatedBookingTest_bookingSendFailed() {
-        CreatedBookingReprocessRequest createdBookingReprocessRequest =
-                TestUtil.getResourceAsJson("/data/CreatedBookingReprocessRequest.json", CreatedBookingReprocessRequest.class);
-
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(false));
-        when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
-
-        createdBookingReprocessService.reprocessCreatedBooking(createdBookingReprocessRequest)
-                .as(StepVerifier::create)
-                .expectError()
-                .verify();
-
-        verify(createdBookingCarUpdateProducerService, never()).sendCarUpdateDetails(any(CarStatusUpdate.class));
-    }
-
-    @Test
-    void reprocessCreatedBookingTest_carUpdateSendFailed() {
-        CreatedBookingReprocessRequest createdBookingReprocessRequest =
-                TestUtil.getResourceAsJson("/data/CreatedBookingReprocessRequest.json", CreatedBookingReprocessRequest.class);
-
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class))).thenReturn(Mono.just(true));
-        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
-                .thenReturn(Mono.just(false));
-        when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
-
-        createdBookingReprocessService.reprocessCreatedBooking(createdBookingReprocessRequest)
-                .as(StepVerifier::create)
-                .expectError()
-                .verify();
-    }
-
-    @Test
     void reprocessCreatedBookingTest_errorOnBookingSending() {
         CreatedBookingReprocessRequest createdBookingReprocessRequest =
                 TestUtil.getResourceAsJson("/data/CreatedBookingReprocessRequest.json", CreatedBookingReprocessRequest.class);
 
-        when(createdBookingProducerService.sendMessage(any(BookingResponse.class)))
+        when(createdBookingCarUpdateProducerService.sendCarUpdateDetails(any(CarStatusUpdate.class)))
                 .thenReturn(Mono.error(new RuntimeException("Test")));
-        when(retryHandler.retry()).thenReturn(Retry.fixedDelay(0, Duration.ZERO));
 
         createdBookingReprocessService.reprocessCreatedBooking(createdBookingReprocessRequest)
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();
+
+        verify(createdBookingProducerService, never()).sendCreatedBooking(any(BookingResponse.class));
     }
 
 }

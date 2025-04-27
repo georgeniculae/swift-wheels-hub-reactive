@@ -41,25 +41,12 @@ class DeletedOutboxServiceTest {
         DeletedOutbox deletedOutbox = TestUtil.getResourceAsJson("/data/DeletedOutbox.json", DeletedOutbox.class);
 
         when(deletedOutboxRepository.findAll()).thenReturn(Flux.just(deletedOutbox));
-        when(deletedBookingProducerService.sendMessage(anyString())).thenReturn(Mono.just(true));
+        when(deletedBookingProducerService.sendMessage(anyString())).thenReturn(Mono.empty());
         when(deletedOutboxRepository.delete(deletedOutbox)).thenReturn(Mono.empty());
 
         deletedOutboxService.handleOutboxes()
                 .as(StepVerifier::create)
                 .expectComplete()
-                .verify();
-    }
-
-    @Test
-    void handleOutboxesTest_bookingIdSendFailed() {
-        DeletedOutbox deletedOutbox = TestUtil.getResourceAsJson("/data/DeletedOutbox.json", DeletedOutbox.class);
-
-        when(deletedOutboxRepository.findAll()).thenReturn(Flux.just(deletedOutbox));
-        when(deletedBookingProducerService.sendMessage(anyString())).thenReturn(Mono.just(false));
-
-        deletedOutboxService.handleOutboxes()
-                .as(StepVerifier::create)
-                .expectError()
                 .verify();
     }
 

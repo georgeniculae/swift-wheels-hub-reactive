@@ -49,7 +49,7 @@ public class CreatedOutboxService extends OutboxService {
     @Override
     public Flux<Void> handleOutboxes() {
         return createdOutboxRepository.findAll()
-                .concatMap(this::processBooking)
+                .delayUntil(this::processBooking)
                 .concatMap(createdOutboxRepository::delete)
                 .onErrorMap(e -> {
                     log.error("Error while creating booking: {}", e.getMessage());
@@ -75,14 +75,10 @@ public class CreatedOutboxService extends OutboxService {
                 .build();
     }
 
-    private Mono<CreatedOutbox> processBooking(CreatedOutbox createdOutbox) {
+    private Mono<Void> processBooking(CreatedOutbox createdOutbox) {
         return updateCarForNewBooking(createdOutbox.getContent())
-                .filter(aBoolean -> aBoolean)
-                .delayUntil(_ -> unlockCar(createdOutbox.getContent().getActualCarId().toString()))
-                .flatMap(_ -> createdBookingProducerService.sendMessage(getBookingResponse(createdOutbox.getContent())))
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> createdOutbox)
-                .switchIfEmpty(Mono.defer(() -> reprocessBooking(createdOutbox)))
+                .then(Mono.defer(() -> unlockCar(createdOutbox.getContent().getActualCarId().toString())))
+                .then(Mono.defer(() -> createdBookingProducerService.sendCreatedBooking(getBookingResponse(createdOutbox.getContent()))))
                 .onErrorResume(e -> {
                     log.error("Error while processing booking: {}", e.getMessage());
 
@@ -90,12 +86,11 @@ public class CreatedOutboxService extends OutboxService {
                 });
     }
 
-    private Mono<CreatedOutbox> reprocessBooking(CreatedOutbox createdOutbox) {
-        return failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(bookingMapper.getCreatedBookingReprocessRequest(createdOutbox.getContent()))
-                .thenReturn(createdOutbox);
+    private Mono<Void> reprocessBooking(CreatedOutbox createdOutbox) {
+        return failedCreatedBookingDlqProducerService.sendCreatedBookingReprocessRequest(bookingMapper.getCreatedBookingReprocessRequest(createdOutbox.getContent()));
     }
 
-    private Mono<Boolean> updateCarForNewBooking(Booking booking) {
+    private Mono<Void> updateCarForNewBooking(Booking booking) {
         return createdBookingCarUpdateProducerService.sendCarUpdateDetails(getCarStatusUpdate(booking.getActualCarId().toString()));
     }
 

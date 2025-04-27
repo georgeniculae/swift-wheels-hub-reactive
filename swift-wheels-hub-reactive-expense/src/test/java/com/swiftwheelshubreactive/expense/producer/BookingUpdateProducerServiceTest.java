@@ -49,8 +49,8 @@ class BookingUpdateProducerServiceTest {
 
         bookingUpdateProducerService.sendBookingClosingDetails(bookingClosingDetails)
                 .as(StepVerifier::create)
-                .expectNext(true)
-                .verifyComplete();
+                .expectComplete()
+                .verify();
     }
 
 }

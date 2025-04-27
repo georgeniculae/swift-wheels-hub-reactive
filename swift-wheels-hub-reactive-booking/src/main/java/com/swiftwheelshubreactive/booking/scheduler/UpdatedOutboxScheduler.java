@@ -15,8 +15,8 @@ public class UpdatedOutboxScheduler {
     @Scheduled(fixedDelayString = "${scheduled.fixedDelay}")
     @SchedulerLock(
             name = "updatedOutboxSchedulerScheduledTask",
-            lockAtLeastFor = "30s",
-            lockAtMostFor = "1m"
+            lockAtLeastFor = "5s",
+            lockAtMostFor = "30m"
     )
     public void pollOutboxCollection() {
         updatedOutboxService.handleOutboxes()

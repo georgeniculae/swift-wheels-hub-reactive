@@ -48,7 +48,7 @@ public class UpdatedOutboxService extends OutboxService {
     @Override
     public Flux<Void> handleOutboxes() {
         return updateOutboxRepository.findAll()
-                .concatMap(this::processBooking)
+                .delayUntil(this::processBooking)
                 .concatMap(updateOutboxRepository::delete)
                 .onErrorMap(e -> {
                     log.error("Error while processing/sending booking: {}", e.getMessage());
@@ -75,15 +75,12 @@ public class UpdatedOutboxService extends OutboxService {
                 .build();
     }
 
-    public Mono<UpdatedOutbox> processBooking(UpdatedOutbox updatedOutbox) {
+    public Mono<Void> processBooking(UpdatedOutbox updatedOutbox) {
         return Mono.just(updatedOutbox)
                 .filter(outbox -> !outbox.isCarChanged())
                 .switchIfEmpty(Mono.defer(() -> changeCarsStatuses(updatedOutbox)))
-                .flatMap(savedOutbox -> updatedBookingProducerService.sengBookingResponse(getBookingResponse(savedOutbox.getContent())))
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> updatedOutbox)
-                .delayUntil(outbox -> unlockCar(outbox.getContent().getActualCarId().toString()))
-                .switchIfEmpty(Mono.defer(() -> reprocessBooking(updatedOutbox)))
+                .delayUntil(outbox -> updatedBookingProducerService.sendBookingResponse(getBookingResponse(outbox.getContent())))
+                .flatMap(outbox -> unlockCar(outbox.getContent().getActualCarId().toString()))
                 .onErrorResume(e -> {
                     log.error("Error while processing booking: {}", e.getMessage());
 
@@ -98,8 +95,7 @@ public class UpdatedOutboxService extends OutboxService {
                                 updatedOutbox.getContent().getActualCarId().toString()
                         )
                 )
-                .filter(Boolean.TRUE::equals)
-                .map(_ -> updatedOutbox);
+                .thenReturn(updatedOutbox);
     }
 
     private UpdateCarsRequest getUpdateCarsRequest(String existingCarId, String newCarId) {
@@ -109,14 +105,13 @@ public class UpdatedOutboxService extends OutboxService {
                 .build();
     }
 
-    private Mono<UpdatedOutbox> reprocessBooking(UpdatedOutbox updatedOutbox) {
-        return failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(
-                        bookingMapper.getUpdatedBookingReprocessRequest(
-                                updatedOutbox.getContent(),
-                                updatedOutbox.isCarChanged()
-                        )
+    private Mono<Void> reprocessBooking(UpdatedOutbox updatedOutbox) {
+        return failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessRequest(
+                bookingMapper.getUpdatedBookingReprocessRequest(
+                        updatedOutbox.getContent(),
+                        updatedOutbox.isCarChanged()
                 )
-                .thenReturn(updatedOutbox);
+        );
     }
 
     private BookingResponse getBookingResponse(Booking booking) {

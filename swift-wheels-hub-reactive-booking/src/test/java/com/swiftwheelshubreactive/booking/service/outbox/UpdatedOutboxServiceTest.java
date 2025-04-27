@@ -29,7 +29,6 @@ import reactor.test.StepVerifier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +68,7 @@ class UpdatedOutboxServiceTest {
                 TestUtil.getResourceAsJson("/data/UpdatedOutbox.json", UpdatedOutbox.class);
 
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(true));
+        when(updatedBookingProducerService.sendBookingResponse(any(BookingResponse.class))).thenReturn(Mono.empty());
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
@@ -87,8 +86,8 @@ class UpdatedOutboxServiceTest {
                 TestUtil.getResourceAsJson("/data/UpdatedOutbox.json", UpdatedOutbox.class);
 
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(false));
-        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
+        when(updatedBookingProducerService.sendBookingResponse(any(BookingResponse.class))).thenReturn(Mono.empty());
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessRequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
@@ -107,8 +106,8 @@ class UpdatedOutboxServiceTest {
 
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(true));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(true));
+                .thenReturn(Mono.empty());
+        when(updatedBookingProducerService.sendBookingResponse(any(BookingResponse.class))).thenReturn(Mono.empty());
         when(redisOperations.opsForValue()).thenReturn(reactiveValueOperations);
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
@@ -121,34 +120,15 @@ class UpdatedOutboxServiceTest {
     }
 
     @Test
-    void handleOutboxesTest_carChangeFailed() {
-        UpdatedOutbox updatedOutbox =
-                TestUtil.getResourceAsJson("/data/UpdatedOutboxCarChanged.json", UpdatedOutbox.class);
-
-        when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
-        when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(false));
-        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
-                .thenReturn(Mono.empty());
-        when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
-
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
-                .expectComplete()
-                .verify();
-
-        verify(bookingMapper, never()).mapEntityToDto(any(Booking.class));
-    }
-
-    @Test
     void handleOutboxesTest_bookingUpdateFailed() {
         UpdatedOutbox updatedOutbox =
                 TestUtil.getResourceAsJson("/data/UpdatedOutboxCarChanged.json", UpdatedOutbox.class);
 
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(true));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class))).thenReturn(Mono.just(false));
-        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
+                .thenReturn(Mono.empty());
+        when(updatedBookingProducerService.sendBookingResponse(any(BookingResponse.class))).thenReturn(Mono.empty());
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessRequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
@@ -166,10 +146,10 @@ class UpdatedOutboxServiceTest {
 
         when(updateOutboxRepository.findAll()).thenReturn(Flux.just(updatedOutbox));
         when(updatedBookingUpdateCarsProducerService.sendUpdateCarsRequest(any(UpdateCarsRequest.class)))
-                .thenReturn(Mono.just(true));
-        when(updatedBookingProducerService.sengBookingResponse(any(BookingResponse.class)))
+                .thenReturn(Mono.empty());
+        when(updatedBookingProducerService.sendBookingResponse(any(BookingResponse.class)))
                 .thenReturn(Mono.error(new RuntimeException()));
-        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessrequest(any(UpdatedBookingReprocessRequest.class)))
+        when(failedUpdatedBookingDlqProducerService.sendUpdatedBookingReprocessRequest(any(UpdatedBookingReprocessRequest.class)))
                 .thenReturn(Mono.empty());
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 

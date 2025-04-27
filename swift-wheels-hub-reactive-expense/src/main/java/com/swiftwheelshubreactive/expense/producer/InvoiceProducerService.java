@@ -25,7 +25,7 @@ public class InvoiceProducerService {
     @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Boolean> sendInvoice(InvoiceResponse invoiceResponse) {
+    public Mono<Void> sendInvoice(InvoiceResponse invoiceResponse) {
         return Mono.fromCallable(
                         () -> streamBridge.send(
                                 binderName,
@@ -34,7 +34,8 @@ public class InvoiceProducerService {
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
-                .retryWhen(retryHandler.retry());
+                .retryWhen(retryHandler.retry())
+                .then();
     }
 
     private Message<InvoiceResponse> buildMessage(InvoiceResponse invoiceResponse) {

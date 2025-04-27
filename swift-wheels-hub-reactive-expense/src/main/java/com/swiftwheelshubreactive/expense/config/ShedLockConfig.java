@@ -1,8 +1,8 @@
 package com.swiftwheelshubreactive.expense.config;
 
-import com.mongodb.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClient;
 import net.javacrumbs.shedlock.core.LockProvider;
-import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
+import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ public class ShedLockConfig {
 
     @Bean
     public LockProvider lockProvider(MongoClient mongoClient) {
-        return new MongoLockProvider(mongoClient.getDatabase(databaseName).getCollection(SHEDLOCK));
+        return new ReactiveStreamsMongoLockProvider(mongoClient.getDatabase(databaseName).getCollection(SHEDLOCK));
     }
 
 }
