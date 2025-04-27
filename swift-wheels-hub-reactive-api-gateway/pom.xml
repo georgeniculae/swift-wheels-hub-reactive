@@ -38,16 +38,6 @@
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-stream</artifactId>
                 </exclusion>
-
-                <exclusion>
-                    <groupId>net.javacrumbs.shedlock</groupId>
-                    <artifactId>shedlock-spring</artifactId>
-                </exclusion>
-
-                <exclusion>
-                    <groupId>net.javacrumbs.shedlock</groupId>
-                    <artifactId>shedlock-provider-mongo</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
