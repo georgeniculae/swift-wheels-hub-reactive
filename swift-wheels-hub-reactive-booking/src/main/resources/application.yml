@@ -44,7 +44,7 @@ spring:
         hostname: localhost
         failFast: false
     function:
-      definition: bookingUpdateConsumer;failedCreatedBookingDlqConsumer;failedUpdatedBookingDlqConsumer
+      definition: bookingUpdateConsumer;failedCreatedBookingDlqConsumer;failedUpdatedBookingDlqConsumer;usernameConsumer
     stream:
       defaultBinder: kafka
       bindings:
@@ -85,6 +85,11 @@ spring:
         failedUpdatedBookingDlqConsumer-in-0:
           binder: kafka
           destination: ${FAILED_UPDATED_BOOKING_DLQ_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${BOOKING_CONSUMER_GROUP}
+        usernameConsumer-in-0:
+          binder: kafka
+          destination: ${USERNAME_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
       kafka:

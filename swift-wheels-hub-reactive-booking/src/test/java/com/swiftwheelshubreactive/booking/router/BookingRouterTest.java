@@ -371,48 +371,4 @@ class BookingRouterTest {
                 .isForbidden();
     }
 
-    @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    void deleteBookingByIdTest_success() {
-        BookingResponse bookingResponse =
-                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
-
-        when(bookingHandler.deleteBookingByCustomerUsername(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        Flux<Void> responseBody = webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .delete()
-                .uri("/{id}", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .returnResult(Void.class)
-                .getResponseBody();
-
-        StepVerifier.create(responseBody)
-                .expectComplete()
-                .verify();
-    }
-
-    @Test
-    @WithAnonymousUser
-    void deleteBookingByIdTest_forbidden() {
-        BookingResponse bookingResponse =
-                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(bookingResponse);
-
-        when(bookingHandler.deleteBookingByCustomerUsername(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        webTestClient.mutateWith(SecurityMockServerConfigurers.csrf())
-                .delete()
-                .uri("/{id}", "64f361caf291ae086e179547")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isUnauthorized();
-    }
-
 }

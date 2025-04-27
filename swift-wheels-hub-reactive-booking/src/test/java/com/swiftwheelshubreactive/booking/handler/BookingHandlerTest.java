@@ -244,19 +244,4 @@ class BookingHandlerTest {
                 .verifyComplete();
     }
 
-    @Test
-    void deleteBookingByIdTest_success() {
-        MockServerRequest serverRequest = MockServerRequest.builder()
-                .method(HttpMethod.DELETE)
-                .header("X-API-KEY", "apiKey")
-                .pathVariable("username", "user")
-                .build();
-
-        when(bookingService.deleteBookingByCustomerUsername(anyString())).thenReturn(Mono.empty());
-
-        StepVerifier.create(bookingHandler.deleteBookingByCustomerUsername(serverRequest))
-                .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
-                .verifyComplete();
-    }
-
 }

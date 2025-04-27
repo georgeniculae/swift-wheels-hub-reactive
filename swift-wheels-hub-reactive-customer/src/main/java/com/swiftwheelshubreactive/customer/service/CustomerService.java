@@ -1,6 +1,5 @@
 package com.swiftwheelshubreactive.customer.service;
 
-import com.swiftwheelshubreactive.dto.AuthenticationInfo;
 import com.swiftwheelshubreactive.dto.RegisterRequest;
 import com.swiftwheelshubreactive.dto.RegistrationResponse;
 import com.swiftwheelshubreactive.dto.UserInfo;
@@ -21,7 +20,7 @@ import reactor.core.scheduler.Schedulers;
 public class CustomerService {
 
     private final KeycloakUserService keycloakUserService;
-    private final BookingService bookingService;
+    private final UsernameProducerService usernameProducerService;
 
     public Flux<UserInfo> findAllUsers() {
         return Mono.fromCallable(keycloakUserService::findAllUsers)
@@ -97,10 +96,10 @@ public class CustomerService {
             sentParameters = "username",
             activityDescription = "User deletion"
     )
-    public Mono<Void> deleteUserByUsername(AuthenticationInfo authenticationInfo, String username) {
+    public Mono<Void> deleteUserByUsername(String username) {
         return Mono.fromRunnable(() -> keycloakUserService.deleteUserByUsername(username))
                 .subscribeOn(Schedulers.boundedElastic())
-                .then(Mono.defer(() -> bookingService.deleteBookingsByUsername(authenticationInfo, username)))
+                .then(Mono.defer(() -> usernameProducerService.sendUsername(username)))
                 .onErrorMap(e -> {
                     log.error("Error while deleting user: {}", e.getMessage());
 

@@ -388,38 +388,6 @@ import java.time.LocalDate;
                                         content = @Content(schema = @Schema(implementation = String.class))
                                 )
                         )
-                ),
-                @RouterOperation(
-                        method = RequestMethod.DELETE,
-                        path = "/bookings/{username}",
-                        beanClass = BookingHandler.class,
-                        beanMethod = "deleteBookingByCustomerUsername",
-                        operation = @Operation(
-                                operationId = "deleteBookingByCustomerUsername",
-                                responses = {
-                                        @ApiResponse(
-                                                responseCode = "200",
-                                                description = "Successful",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "400",
-                                                description = "Bad Request",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                        @ApiResponse(
-                                                responseCode = "500",
-                                                description = "Internal Server Error",
-                                                content = @Content(schema = @Schema())
-                                        ),
-                                },
-                                parameters = @Parameter(
-                                        in = ParameterIn.PATH,
-                                        required = true,
-                                        name = "username",
-                                        content = @Content(schema = @Schema(implementation = String.class))
-                                )
-                        )
                 )
         }
 )

@@ -40,6 +40,9 @@ spring:
         customerInfoProducer-out-0:
           destination: ${CUSTOMER_INFO_REACTIVE_TOPIC}
           contentType: application/json
+        usernameProducer-out-0:
+          destination: ${USERNAME_REACTIVE_TOPIC}
+          contentType: application/json
   kafka:
     bootstrap-servers: localhost:9092
     producer:

@@ -16,7 +16,8 @@ public class BookingRouter {
     @Bean
     @SwaggerBookingRouterOperations
     public RouterFunction<ServerResponse> routeBooking(BookingHandler bookingHandler) {
-        return RouterFunctions.nest(RequestPredicates.path("").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
+        return RouterFunctions.nest(
+                RequestPredicates.path("").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET("/list"), bookingHandler::findAllBookings)
                         .andRoute(RequestPredicates.GET("/date/{date}"), bookingHandler::findBookingsByDateOfBooking)
                         .andRoute(RequestPredicates.GET("/count"), bookingHandler::countBookings)
@@ -26,7 +27,7 @@ public class BookingRouter {
                         .andRoute(RequestPredicates.GET("/{id}"), bookingHandler::findBookingById)
                         .andRoute(RequestPredicates.POST("/new"), bookingHandler::saveBooking)
                         .andRoute(RequestPredicates.PUT("/{id}"), bookingHandler::updateBooking)
-                        .andRoute(RequestPredicates.DELETE("/{username}"), bookingHandler::deleteBookingByCustomerUsername));
+        );
     }
 
 }

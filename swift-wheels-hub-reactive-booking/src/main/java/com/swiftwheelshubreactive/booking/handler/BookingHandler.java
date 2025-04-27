@@ -19,7 +19,6 @@ public class BookingHandler {
 
     private static final String ID = "id";
     private static final String DATE = "date";
-    private static final String USERNAME = "username";
     private final BookingService bookingService;
     private final BookingRequestValidator bookingRequestValidator;
 
@@ -106,12 +105,6 @@ public class BookingHandler {
                         )
                 )
                 .flatMap(bookingResponse -> ServerResponse.accepted().bodyValue(bookingResponse));
-    }
-
-    @PreAuthorize("hasRole('user')")
-    public Mono<ServerResponse> deleteBookingByCustomerUsername(ServerRequest serverRequest) {
-        return bookingService.deleteBookingByCustomerUsername(serverRequest.pathVariable(USERNAME))
-                .then(ServerResponse.noContent().build());
     }
 
 }
