@@ -27,50 +27,34 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SwaggerExtractorServiceTest {
 
+    private static String agencyContent;
+    private static String aiContent;
+    private static String bookingsContent;
+    private static String customersContent;
+    private static String expenseContent;
+    private static SwaggerFile agencySwagger;
+    private static SwaggerFile aiSwagger;
+    private static SwaggerFile bookingsSwagger;
+    private static SwaggerFile customersSwagger;
+    private static SwaggerFile expenseSwagger;
+    private static List<RegisteredEndpoints.RegisteredEndpoint> endpoints;
+
     @InjectMocks
     private SwaggerExtractorService swaggerExtractorService;
-
     @Mock
     private WebClient webClient;
-
     @Mock
     @SuppressWarnings("rawtypes")
     private WebClient.RequestHeadersUriSpec requestHeadersUriSpec;
-
     @Mock
     @SuppressWarnings("rawtypes")
     private WebClient.RequestHeadersSpec requestHeadersSpec;
-
     @Mock
     private WebClient.ResponseSpec responseSpec;
-
     @Mock
     private RegisteredEndpoints registeredEndpoints;
-
     @Mock
     private RetryHandler retryHandler;
-
-    private static String agencyContent;
-
-    private static String aiContent;
-
-    private static String bookingsContent;
-
-    private static String customersContent;
-
-    private static String expenseContent;
-
-    private static SwaggerFile agencySwagger;
-
-    private static SwaggerFile aiSwagger;
-
-    private static SwaggerFile bookingsSwagger;
-
-    private static SwaggerFile customersSwagger;
-
-    private static SwaggerFile expenseSwagger;
-
-    private static List<RegisteredEndpoints.RegisteredEndpoint> endpoints;
 
     @BeforeAll
     static void setUp() {

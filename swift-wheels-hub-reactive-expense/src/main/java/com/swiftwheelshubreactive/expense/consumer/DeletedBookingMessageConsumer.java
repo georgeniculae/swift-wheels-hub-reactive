@@ -1,8 +1,8 @@
 package com.swiftwheelshubreactive.expense.consumer;
 
 import com.swiftwheelshubreactive.expense.service.InvoiceService;
-import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import com.swiftwheelshubreactive.lib.retry.RetryHandler;
+import com.swiftwheelshubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

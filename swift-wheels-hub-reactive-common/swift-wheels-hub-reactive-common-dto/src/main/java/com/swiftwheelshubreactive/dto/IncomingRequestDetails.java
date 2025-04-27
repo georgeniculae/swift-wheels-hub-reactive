@@ -20,6 +20,17 @@ public record IncomingRequestDetails(
         String body
 ) {
 
+    @Override
+    public String toString() {
+        return "IncomingRequestDetails{" + "\n" +
+                "path=" + path + "\n" +
+                "method=" + method + "\n" +
+                "headers=" + headers + "\n" +
+                "queryParams=" + queryParams + "\n" +
+                "body=" + body + "\n" +
+                "}";
+    }
+
     @Builder
     public record Header(
             String name,
@@ -32,17 +43,6 @@ public record IncomingRequestDetails(
             String name,
             List<String> value
     ) {
-    }
-
-    @Override
-    public String toString() {
-        return "IncomingRequestDetails{" + "\n" +
-                "path=" + path + "\n" +
-                "method=" + method + "\n" +
-                "headers=" + headers + "\n" +
-                "queryParams=" + queryParams + "\n" +
-                "body=" + body + "\n" +
-                "}";
     }
 
 }
