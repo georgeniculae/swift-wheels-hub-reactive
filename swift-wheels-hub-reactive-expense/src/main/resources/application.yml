@@ -169,7 +169,7 @@ mongo-operations:
   enabled: true
 
 scheduled:
-  fixedDelay: 5000
+  fixedDelay: 3000
 
 audit:
   enabled: true
