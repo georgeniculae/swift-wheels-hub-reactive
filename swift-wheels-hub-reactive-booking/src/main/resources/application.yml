@@ -79,12 +79,12 @@ spring:
           group: ${BOOKING_CONSUMER_GROUP}
         failedCreatedBookingDlqConsumer-in-0:
           binder: kafka
-          destination: ${FAILED_CREATED_BOOKING_REACTIVE_TOPIC}
+          destination: ${FAILED_CREATED_BOOKING_DLQ_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
         failedUpdatedBookingDlqConsumer-in-0:
           binder: kafka
-          destination: ${FAILED_UPDATED_BOOKING_REACTIVE_TOPIC}
+          destination: ${FAILED_UPDATED_BOOKING_DLQ_REACTIVE_TOPIC}
           contentType: application/json
           group: ${BOOKING_CONSUMER_GROUP}
       kafka:
