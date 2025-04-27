@@ -114,6 +114,10 @@ spring:
             consumer:
               ack-mode: MANUAL_IMMEDIATE
               standard-headers: both
+          usernameConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+              standard-headers: both
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
