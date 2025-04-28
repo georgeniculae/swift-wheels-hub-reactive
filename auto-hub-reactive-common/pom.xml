@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.autohub</groupId>
+        <artifactId>auto-hub-reactive</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>auto-hub-reactive-common</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Auto Hub Reactive Common Parent</name>
+    <description>Auto Hub Reactive Common Parent</description>
+
+    <modules>
+        <module>auto-hub-reactive-common-model</module>
+        <module>auto-hub-reactive-common-dto</module>
+        <module>auto-hub-reactive-common-exception</module>
+        <module>auto-hub-reactive-common-lib</module>
+    </modules>
+
+</project>

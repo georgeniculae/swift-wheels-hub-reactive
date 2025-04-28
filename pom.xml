@@ -4,29 +4,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.swiftwheelshub</groupId>
-        <artifactId>swift-wheels-hub-reactive-parent</artifactId>
-        <version>0.0.19-SNAPSHOT</version>
+        <groupId>com.autohub</groupId>
+        <artifactId>auto-hub-reactive-parent</artifactId>
+        <version>0.0.20-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
-    <artifactId>swift-wheels-hub-reactive</artifactId>
+    <artifactId>auto-hub-reactive</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Swift Wheels Hub Reactive</name>
+    <name>Auto Hub Reactive</name>
 
     <modules>
-        <module>swift-wheels-hub-reactive-common</module>
-        <module>swift-wheels-hub-reactive-api-gateway</module>
-        <module>swift-wheels-hub-reactive-agency</module>
-        <module>swift-wheels-hub-reactive-ai</module>
-        <module>swift-wheels-hub-reactive-audit</module>
-        <module>swift-wheels-hub-reactive-booking</module>
-        <module>swift-wheels-hub-reactive-customer</module>
-        <module>swift-wheels-hub-reactive-email-notification</module>
-        <module>swift-wheels-hub-reactive-expense</module>
-        <module>swift-wheels-hub-reactive-request-validator</module>
+        <module>auto-hub-reactive-common</module>
+        <module>auto-hub-reactive-api-gateway</module>
+        <module>auto-hub-reactive-agency</module>
+        <module>auto-hub-reactive-ai</module>
+        <module>auto-hub-reactive-audit</module>
+        <module>auto-hub-reactive-booking</module>
+        <module>auto-hub-reactive-customer</module>
+        <module>auto-hub-reactive-email-notification</module>
+        <module>auto-hub-reactive-expense</module>
+        <module>auto-hub-reactive-request-validator</module>
     </modules>
 
     <repositories>
@@ -38,7 +38,7 @@
 
     <scm>
         <developerConnection>
-            scm:git:https://github.com/georgeniculae/swift-wheels-hub-reactive-parent
+            scm:git:https://github.com/georgeniculae/auto-hub-reactive-parent
         </developerConnection>
         <tag>HEAD</tag>
     </scm>
@@ -46,8 +46,8 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>swift-wheels-hub-reactive</name>
-            <url>https://maven.pkg.github.com/georgeniculae/swift-wheels-hub-reactive-parent</url>
+            <name>auto-hub-reactive</name>
+            <url>https://maven.pkg.github.com/georgeniculae/auto-hub-reactive-parent</url>
         </repository>
     </distributionManagement>
 
