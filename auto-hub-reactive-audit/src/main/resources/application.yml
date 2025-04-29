@@ -14,7 +14,7 @@ spring:
       database: auto_hub_audit
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubaudit.hnpvjeh.mongodb.net
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubaudit.xi9hxud.mongodb.net/?retryWrites=true&w=majority&appName=AutoHubAudit
   codec:
     max-in-memory-size: 20MB
   cloud:

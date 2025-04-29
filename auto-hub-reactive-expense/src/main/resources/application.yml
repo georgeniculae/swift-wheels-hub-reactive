@@ -16,7 +16,7 @@ spring:
       database: auto_hub_expense
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubexpense.qfupkzh.mongodb.net
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubexpense.m0uogrw.mongodb.net/?retryWrites=true&w=majority&appName=AutoHubExpense
   codec:
     max-in-memory-size: 20MB
   cloud:

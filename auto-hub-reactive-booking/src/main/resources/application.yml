@@ -18,7 +18,7 @@ spring:
       database: auto_hub_booking
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
-      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubbooking.vegjl42.mongodb.net
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubbooking.bdrqo9h.mongodb.net/?retryWrites=true&w=majority&appName=AutoHubBooking
     redis:
       database: 0
   redis:
