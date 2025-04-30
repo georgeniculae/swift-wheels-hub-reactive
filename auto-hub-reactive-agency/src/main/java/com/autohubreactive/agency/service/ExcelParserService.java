@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class ExcelParserService {
             excelCarRequests.add(generateExcelCarRequest(values));
         }
 
-        return Collections.unmodifiableList(excelCarRequests);
+        return List.copyOf(excelCarRequests);
     }
 
     private List<Object> getCellValues(Row currentRow, List<Picture> sheetPictures, DataFormatter dataFormatter) {
@@ -68,7 +67,7 @@ public class ExcelParserService {
 
         values.add(getCarPictureData(sheetPictures, currentRow));
 
-        return Collections.unmodifiableList(values);
+        return List.copyOf(values);
     }
 
     private List<Picture> getSheetPictures(Sheet sheet) {
