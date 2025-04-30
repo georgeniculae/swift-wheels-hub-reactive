@@ -2,6 +2,7 @@ package com.autohubreactive.agency.mapper;
 
 import com.autohubreactive.dto.EmployeeRequest;
 import com.autohubreactive.dto.EmployeeResponse;
+import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Employee;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
@@ -22,7 +23,12 @@ public interface EmployeeMapper {
 
     Employee mapDtoToEntity(EmployeeRequest employeeRequest);
 
-    Employee getNewEmployeeInstance(Employee existingEmployee);
+    @Mapping(target = "id", expression = "java(existingEmployee.getId())")
+    @Mapping(target = "firstName", expression = "java(updatedEmployeeRequest.firstName())")
+    @Mapping(target = "lastName", expression = "java(updatedEmployeeRequest.lastName())")
+    @Mapping(target = "jobPosition", expression = "java(updatedEmployeeRequest.jobPosition())")
+    @Mapping(target = "workingBranch", source = "workingBranch")
+    Employee getUpdatedEmployee(Employee existingEmployee, EmployeeRequest updatedEmployeeRequest, Branch workingBranch);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

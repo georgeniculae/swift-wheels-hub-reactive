@@ -3,6 +3,7 @@ package com.autohubreactive.agency.mapper;
 import com.autohubreactive.dto.BranchRequest;
 import com.autohubreactive.dto.BranchResponse;
 import com.autohubreactive.model.Branch;
+import com.autohubreactive.model.RentalOffice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
@@ -22,7 +23,11 @@ public interface BranchMapper {
 
     Branch mapDtoToEntity(BranchRequest branchRequest);
 
-    Branch getNewBranchInstance(Branch existingBranch);
+    @Mapping(target = "id", expression = "java(existingBranch.getId())")
+    @Mapping(target = "name", expression = "java(branchRequest.name())")
+    @Mapping(target = "address", expression = "java(branchRequest.address())")
+    @Mapping(target = "rentalOffice", source = "rentalOffice")
+    Branch getUpdatedBranch(Branch existingBranch, BranchRequest branchRequest, RentalOffice rentalOffice);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

@@ -65,16 +65,7 @@ public class EmployeeService {
         return Mono.zip(
                         findEntityById(id),
                         branchService.findEntityById(updatedEmployeeRequest.workingBranchId()),
-                        (existingEmployee, workingBranch) -> {
-                            Employee updatedEmployee = employeeMapper.getNewEmployeeInstance(existingEmployee);
-
-                            updatedEmployee.setFirstName(updatedEmployeeRequest.firstName());
-                            updatedEmployee.setLastName(updatedEmployeeRequest.lastName());
-                            updatedEmployee.setJobPosition(updatedEmployeeRequest.jobPosition());
-                            updatedEmployee.setWorkingBranch(workingBranch);
-
-                            return updatedEmployee;
-                        }
+                        (existingEmployee, workingBranch) -> employeeMapper.getUpdatedEmployee(existingEmployee, updatedEmployeeRequest, workingBranch)
                 )
                 .flatMap(employeeRepository::save)
                 .map(employeeMapper::mapEntityToDto)

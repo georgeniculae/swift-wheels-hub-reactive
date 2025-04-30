@@ -86,15 +86,7 @@ public class BranchService {
         return Mono.zip(
                         findEntityById(id),
                         rentalOfficeService.findEntityById(branchRequest.rentalOfficeId()),
-                        (existingBranch, rentalOffice) -> {
-                            Branch updatedBranch = branchMapper.getNewBranchInstance(existingBranch);
-
-                            updatedBranch.setName(branchRequest.name());
-                            updatedBranch.setAddress(branchRequest.address());
-                            updatedBranch.setRentalOffice(rentalOffice);
-
-                            return updatedBranch;
-                        }
+                        (existingBranch, rentalOffice) -> branchMapper.getUpdatedBranch(existingBranch, branchRequest, rentalOffice)
                 )
                 .flatMap(branchRepository::save)
                 .map(branchMapper::mapEntityToDto)

@@ -7,6 +7,7 @@ import com.autohubreactive.dto.CarResponse;
 import com.autohubreactive.dto.CarState;
 import com.autohubreactive.dto.ExcelCarRequest;
 import com.autohubreactive.model.BodyType;
+import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Car;
 import com.autohubreactive.model.CarStatus;
 import org.apache.commons.lang3.ObjectUtils;
@@ -37,10 +38,29 @@ public interface CarMapper {
     @Mapping(target = "carStatus", source = "carState")
     Car mapExcelCarRequestToEntity(ExcelCarRequest excelCarRequest);
 
+    @Mapping(target = "carStatus", source = "carStatus")
+    Car getUpdatedCarWithStatus(Car existingCar, CarStatus carStatus);
+
     @Mapping(target = "actualBranchId", expression = "java(mapObjectIdToString(car.getActualBranch().getId()))")
     AvailableCarInfo mapToAvailableCarInfo(Car car);
 
-    Car getNewCarInstance(Car existingCar);
+    @Mapping(target = "id", expression = "java(existingCarId)")
+    @Mapping(target = "make", expression = "java(updatedCarRequest.make())")
+    @Mapping(target = "model", expression = "java(updatedCarRequest.model())")
+    @Mapping(target = "bodyType", expression = "java(mapToBodyType(updatedCarRequest.bodyCategory()))")
+    @Mapping(target = "yearOfProduction", expression = "java(updatedCarRequest.yearOfProduction())")
+    @Mapping(target = "color", expression = "java(updatedCarRequest.color())")
+    @Mapping(target = "mileage", expression = "java(updatedCarRequest.mileage())")
+    @Mapping(target = "amount", expression = "java(updatedCarRequest.amount())")
+    @Mapping(target = "carStatus", expression = "java(mapToCarStatus(updatedCarRequest.carState()))")
+    @Mapping(target = "originalBranch", expression = "java(originalBranch)")
+    @Mapping(target = "actualBranch", expression = "java(actualBranch)")
+    Car getUpdatedCar(ObjectId existingCarId, CarRequest updatedCarRequest, Branch originalBranch, Branch actualBranch);
+
+    @Mapping(target = "id", expression = "java(car.getId())")
+    @Mapping(target = "actualBranch", expression = "java(workingBranch)")
+    @Mapping(target = "carStatus", source = "carStatus")
+    Car getCarAfterBookingClosing(Car car, Branch workingBranch, CarStatus carStatus);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

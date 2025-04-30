@@ -68,7 +68,7 @@ public class RentalOfficeService {
     public Mono<RentalOfficeResponse> updateRentalOffice(String id, RentalOfficeRequest updatedRentalOfficeRequest) {
         return findEntityById(id)
                 .flatMap(existingRentalOffice -> {
-                    RentalOffice updatedRentalOffice = rentalOfficeMapper.getNewRentalOfficeInstance(existingRentalOffice);
+                    RentalOffice updatedRentalOffice = rentalOfficeMapper.getUpdatedRentalOffice(existingRentalOffice, updatedRentalOfficeRequest);
 
                     updatedRentalOffice.setName(updatedRentalOfficeRequest.name());
                     updatedRentalOffice.setContactAddress(updatedRentalOfficeRequest.contactAddress());

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -20,7 +21,10 @@ public interface RentalOfficeMapper {
 
     RentalOffice mapDtoToEntity(RentalOfficeRequest rentalOfficeRequest);
 
-    RentalOffice getNewRentalOfficeInstance(RentalOffice existingRentalOffice);
+    @Mapping(target = "name", expression = "java(updatedRentalOfficeRequest.name())")
+    @Mapping(target = "contactAddress", expression = "java(updatedRentalOfficeRequest.contactAddress())")
+    @Mapping(target = "phoneNumber", expression = "java(updatedRentalOfficeRequest.phoneNumber())")
+    RentalOffice getUpdatedRentalOffice(RentalOffice existingRentalOffice, RentalOfficeRequest updatedRentalOfficeRequest);
 
     default String mapObjectIdToString(ObjectId id) {
         return ObjectUtils.isEmpty(id) ? null : id.toString();

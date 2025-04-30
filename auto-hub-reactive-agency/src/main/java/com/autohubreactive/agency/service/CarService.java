@@ -16,7 +16,6 @@ import com.autohubreactive.exception.AutoHubNotFoundException;
 import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.MongoUtil;
-import com.autohubreactive.model.BodyType;
 import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Car;
 import com.autohubreactive.model.CarStatus;
@@ -192,10 +191,9 @@ public class CarService {
     public Mono<Void> updateCarStatus(CarStatusUpdate carStatusUpdate) {
         return findEntityById(carStatusUpdate.carId())
                 .map(existingCar -> {
-                    Car car = carMapper.getNewCarInstance(existingCar);
-                    car.setCarStatus(CarStatus.valueOf(carStatusUpdate.carState().name()));
+                    CarStatus carStatus = CarStatus.valueOf(carStatusUpdate.carState().name());
 
-                    return car;
+                    return carMapper.getUpdatedCarWithStatus(existingCar, carStatus);
                 })
                 .flatMap(carRepository::save)
                 .then()
@@ -314,10 +312,9 @@ public class CarService {
     }
 
     private Car getUpdatedCar(UpdateCarsRequest updateCarsRequests, Car existingCar) {
-        Car car = carMapper.getNewCarInstance(existingCar);
-        car.setCarStatus(getUpdatedCarStatus(updateCarsRequests, existingCar));
+        CarStatus updatedCarStatus = getUpdatedCarStatus(updateCarsRequests, existingCar);
 
-        return car;
+        return carMapper.getUpdatedCarWithStatus(existingCar, updatedCarStatus);
     }
 
     private CarStatus getUpdatedCarStatus(UpdateCarsRequest updateCarsRequest, Car existingCar) {
@@ -349,20 +346,7 @@ public class CarService {
         Branch originalBranch = (Branch) carDetails[1];
         Branch actualBranch = (Branch) carDetails[2];
 
-        Car updatedCar = carMapper.getNewCarInstance(existingCar);
-
-        updatedCar.setMake(updatedCarRequest.make());
-        updatedCar.setModel(updatedCarRequest.model());
-        updatedCar.setBodyType(BodyType.valueOf(updatedCarRequest.bodyCategory().name()));
-        updatedCar.setYearOfProduction(updatedCarRequest.yearOfProduction());
-        updatedCar.setColor(updatedCarRequest.color());
-        updatedCar.setMileage(updatedCarRequest.mileage());
-        updatedCar.setAmount(updatedCarRequest.amount());
-        updatedCar.setCarStatus(CarStatus.valueOf(updatedCarRequest.carState().name()));
-        updatedCar.setOriginalBranch(originalBranch);
-        updatedCar.setActualBranch(actualBranch);
-
-        return updatedCar;
+        return carMapper.getUpdatedCar(existingCar.getId(), updatedCarRequest, originalBranch, actualBranch);
     }
 
     private Mono<Car> updateCarAfterClosingBooking(CarUpdateDetails carUpdateDetails) {
@@ -377,11 +361,7 @@ public class CarService {
         CarState carState = carUpdateDetails.carState();
         CarStatus carStatus = CarStatus.valueOf(carState.name());
 
-        Car updatedCar = carMapper.getNewCarInstance(car);
-        updatedCar.setActualBranch(employee.getWorkingBranch());
-        updatedCar.setCarStatus(carStatus);
-
-        return updatedCar;
+        return carMapper.getCarAfterBookingClosing(car, employee.getWorkingBranch(), carStatus);
     }
 
     private Mono<ObjectId> saveCarImage(Flux<DataBuffer> dataBufferFlux, String carId) {
