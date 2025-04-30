@@ -375,10 +375,11 @@ public class CarService {
 
     private Car updateCarDetails(CarUpdateDetails carUpdateDetails, Car car, Employee employee) {
         CarState carState = carUpdateDetails.carState();
+        CarStatus carStatus = CarStatus.valueOf(carState.name());
 
         Car updatedCar = carMapper.getNewCarInstance(car);
         updatedCar.setActualBranch(employee.getWorkingBranch());
-        updatedCar.setCarStatus(CarStatus.valueOf(carState.name()));
+        updatedCar.setCarStatus(carStatus);
 
         return updatedCar;
     }
