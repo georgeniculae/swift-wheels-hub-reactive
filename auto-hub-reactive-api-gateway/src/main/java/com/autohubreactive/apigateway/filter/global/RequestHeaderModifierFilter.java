@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
@@ -53,9 +54,10 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
                     log.error("Error while trying to mutate headers: {}", e.getMessage());
 
                     HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
-                    exchange.getResponse().setStatusCode(statusCode);
+                    ServerHttpResponse response = exchange.getResponse();
+                    response.setStatusCode(statusCode);
 
-                    return exchange.getResponse().setComplete();
+                    return response.setComplete();
                 });
     }
 

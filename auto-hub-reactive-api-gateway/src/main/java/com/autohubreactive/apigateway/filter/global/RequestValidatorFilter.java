@@ -16,6 +16,7 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -47,9 +48,10 @@ public class RequestValidatorFilter implements GlobalFilter, Ordered {
                     log.error("Error while validating request: {}", e.getMessage());
 
                     HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
-                    exchange.getResponse().setStatusCode(statusCode);
+                    ServerHttpResponse response = exchange.getResponse();
+                    response.setStatusCode(statusCode);
 
-                    return exchange.getResponse().setComplete();
+                    return response.setComplete();
                 });
     }
 
