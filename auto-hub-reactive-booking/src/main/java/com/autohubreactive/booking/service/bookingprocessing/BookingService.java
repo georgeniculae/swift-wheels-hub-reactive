@@ -188,23 +188,13 @@ public class BookingService {
                     LocalDate currentDate = LocalDate.now();
 
                     if (dateFrom.isBefore(currentDate) || dateTo.isBefore(currentDate)) {
-                        sink.error(
-                                new AutoHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "A date of booking cannot be in the past"
-                                )
-                        );
+                        sink.error(getPastBookingException());
 
                         return;
                     }
 
                     if (dateFrom.isAfter(dateTo)) {
-                        sink.error(
-                                new AutoHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Date from is after date to"
-                                )
-                        );
+                        sink.error(getDateAfterException());
 
                         return;
                     }
@@ -215,6 +205,14 @@ public class BookingService {
 
     private Mono<Boolean> lockCar(String carId) {
         return redisOperations.opsForValue().setIfAbsent(carId, LOCKED, Duration.ofSeconds(30));
+    }
+
+    private AutoHubResponseStatusException getPastBookingException() {
+        return new AutoHubResponseStatusException(HttpStatus.BAD_REQUEST, "A date of booking cannot be in the past");
+    }
+
+    private AutoHubResponseStatusException getDateAfterException() {
+        return new AutoHubResponseStatusException(HttpStatus.BAD_REQUEST, "Date from is after date to");
     }
 
     private Mono<Booking> getNewBooking(AuthenticationInfo authenticationInfo,

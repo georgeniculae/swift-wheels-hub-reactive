@@ -49,12 +49,12 @@ public class BranchService {
     public Flux<BranchResponse> findBranchesByFilterInsensitiveCase(String filter) {
         return branchRepository.findAllByFilterInsensitiveCase(filter)
                 .map(branchMapper::mapEntityToDto)
+                .switchIfEmpty(Mono.error(new AutoHubNotFoundException("Branch with filter: " + filter + " does not exist")))
                 .onErrorMap(e -> {
                     log.error("Error while finding branch by filter: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
-                })
-                .switchIfEmpty(Mono.error(new AutoHubNotFoundException("Branch with filter: " + filter + " does not exist")));
+                });
     }
 
     public Mono<Long> countBranches() {

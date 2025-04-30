@@ -1,7 +1,5 @@
 package com.autohubreactive.agency.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.autohubreactive.agency.mapper.CarMapper;
 import com.autohubreactive.agency.repository.CarRepository;
 import com.autohubreactive.agency.validator.CarRequestValidator;
@@ -23,6 +21,8 @@ import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Car;
 import com.autohubreactive.model.CarStatus;
 import com.autohubreactive.model.Employee;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -125,12 +125,12 @@ public class CarService {
     public Flux<CarResponse> findCarsByFilterInsensitiveCase(String filter) {
         return carRepository.findAllByFilterInsensitiveCase(filter)
                 .map(carMapper::mapEntityToDto)
+                .switchIfEmpty(Mono.error(new AutoHubNotFoundException("No matching car for filter: " + filter)))
                 .onErrorMap(e -> {
                     log.error("Error while searching car by criteria: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
-                })
-                .switchIfEmpty(Mono.error(new AutoHubNotFoundException("No matching car for filter: " + filter)));
+                });
     }
 
     public Mono<byte[]> getCarImage(String id) {

@@ -6,13 +6,11 @@ import com.autohubreactive.agency.repository.RentalOfficeRepository;
 import com.autohubreactive.dto.RentalOfficeRequest;
 import com.autohubreactive.dto.RentalOfficeResponse;
 import com.autohubreactive.exception.AutoHubNotFoundException;
-import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.MongoUtil;
 import com.autohubreactive.model.RentalOffice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,19 +47,12 @@ public class RentalOfficeService {
     public Flux<RentalOfficeResponse> findRentalOfficesByFilterInsensitiveCase(String name) {
         return rentalOfficeRepository.findAllByFilterInsensitiveCase(name)
                 .map(rentalOfficeMapper::mapEntityToDto)
+                .switchIfEmpty(Mono.error(new AutoHubNotFoundException("Rental office with name: " + name + " does not exist")))
                 .onErrorMap(e -> {
                     log.error("Error while finding rental office by name: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
-                })
-                .switchIfEmpty(
-                        Mono.error(
-                                new AutoHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Rental office with name: " + name + " does not exist"
-                                )
-                        )
-                );
+                });
     }
 
     public Mono<RentalOfficeResponse> saveRentalOffice(RentalOfficeRequest rentalOfficeRequest) {
