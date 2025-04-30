@@ -34,7 +34,6 @@ public class InvoiceMessageConsumer {
                 .retryWhen(retryHandler.retry())
                 .doOnNext(response -> {
                     log.info("Invoice processed with status: {}{}", response.statusCode(), response.body());
-
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
                 })
                 .onErrorResume(e -> {
