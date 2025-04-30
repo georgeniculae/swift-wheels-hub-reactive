@@ -20,7 +20,6 @@ import com.autohubreactive.model.Booking;
 import com.autohubreactive.model.BookingStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -223,14 +222,7 @@ public class BookingService {
 
     private Mono<Booking> updatedBookingWithClosingDetails(BookingClosingDetails bookingClosingDetails) {
         return findEntityById(bookingClosingDetails.bookingId())
-                .map(existingBooking -> {
-                    Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
-
-                    updatedBooking.setStatus(BookingStatus.CLOSED);
-                    updatedBooking.setReturnBranchId(MongoUtil.getObjectId(bookingClosingDetails.returnBranchId()));
-
-                    return updatedBooking;
-                });
+                .map(existingBooking -> bookingMapper.getClosedBooking(existingBooking, bookingClosingDetails.returnBranchId()));
     }
 
     private Mono<Booking> processBookingUpdate(AuthenticationInfo authenticationInfo,
@@ -324,32 +316,13 @@ public class BookingService {
         LocalDate dateFrom = updatedBookingRequest.dateFrom();
         LocalDate dateTo = updatedBookingRequest.dateTo();
 
-        Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
-
-        updatedBooking.setDateFrom(dateFrom);
-        updatedBooking.setDateTo(dateTo);
-
-        return updatedBooking;
+        return bookingMapper.getUpdatedBooking(existingBooking, dateFrom, dateTo);
     }
 
     private Booking updateBookingWithNewData(BookingRequest updatedBookingRequest,
                                              Booking existingBooking,
                                              AvailableCarInfo availableCarInfo) {
-        LocalDate dateFrom = updatedBookingRequest.dateFrom();
-        LocalDate dateTo = updatedBookingRequest.dateTo();
-
-        final ObjectId existingCarId = existingBooking.getActualCarId();
-        Booking updatedBooking = bookingMapper.getNewBookingInstance(existingBooking);
-        BigDecimal amount = availableCarInfo.amount();
-
-        updatedBooking.setDateFrom(dateFrom);
-        updatedBooking.setDateTo(dateTo);
-        updatedBooking.setActualCarId(MongoUtil.getObjectId(availableCarInfo.id()));
-        updatedBooking.setPreviousCarId(existingCarId);
-        updatedBooking.setRentalBranchId(MongoUtil.getObjectId(availableCarInfo.actualBranchId()));
-        updatedBooking.setRentalCarPrice(amount);
-
-        return updatedBooking;
+        return bookingMapper.getUpdatedBookingWithNewData(existingBooking, updatedBookingRequest, availableCarInfo);
     }
 
     private Mono<AvailableCarInfo> checkIfCarIsFromRightBranch(BookingRequest updatedBookingRequest,

@@ -1,5 +1,6 @@
 package com.autohubreactive.booking.mapper;
 
+import com.autohubreactive.dto.AvailableCarInfo;
 import com.autohubreactive.dto.BookingRequest;
 import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.CreatedBookingReprocessRequest;
@@ -11,6 +12,8 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+
+import java.time.LocalDate;
 
 @Mapper(
         componentModel = "spring",
@@ -31,7 +34,23 @@ public interface BookingMapper {
     @Mapping(target = "carId", source = "actualCarId")
     BookingResponse mapToBookingResponse(UpdatedBookingReprocessRequest createdBookingReprocessRequest);
 
-    Booking getNewBookingInstance(Booking booking);
+    @Mapping(target = "returnBranchId", source = "returnBranchId")
+    @Mapping(target = "status", constant = "CLOSED")
+    Booking getClosedBooking(Booking existingBooking, String returnBranchId);
+
+    @Mapping(target = "dateFrom", source = "dateFrom")
+    @Mapping(target = "dateTo", source = "dateTo")
+    Booking getUpdatedBooking(Booking existingBooking, LocalDate dateFrom, LocalDate dateTo);
+
+    @Mapping(target = "id", expression = "java(existingBooking.getId())")
+    @Mapping(target = "dateOfBooking", expression = "java(existingBooking.getDateOfBooking())")
+    @Mapping(target = "dateFrom", expression = "java(updatedBookingRequest.dateFrom())")
+    @Mapping(target = "dateTo", expression = "java(updatedBookingRequest.dateTo())")
+    @Mapping(target = "actualCarId", expression = "java(mapStringToObjectId(availableCarInfo.id()))")
+    @Mapping(target = "previousCarId", expression = "java(existingBooking.getActualCarId())")
+    @Mapping(target = "rentalCarPrice", expression = "java(availableCarInfo.amount())")
+    @Mapping(target = "rentalBranchId", expression = "java(mapStringToObjectId(availableCarInfo.actualBranchId()))")
+    Booking getUpdatedBookingWithNewData(Booking existingBooking, BookingRequest updatedBookingRequest, AvailableCarInfo availableCarInfo);
 
     CreatedBookingReprocessRequest getCreatedBookingReprocessRequest(Booking content);
 
