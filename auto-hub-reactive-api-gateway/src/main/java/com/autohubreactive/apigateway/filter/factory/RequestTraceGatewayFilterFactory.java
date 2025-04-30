@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -31,9 +32,10 @@ public class RequestTraceGatewayFilterFactory extends AbstractGatewayFilterFacto
                     log.error("Error while trying to add request tracing information: {}", e.getMessage());
 
                     HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
-                    exchange.getResponse().setStatusCode(statusCode);
+                    ServerHttpResponse response = exchange.getResponse();
+                    response.setStatusCode(statusCode);
 
-                    return exchange.getResponse().setComplete();
+                    return response.setComplete();
                 });
     }
 
