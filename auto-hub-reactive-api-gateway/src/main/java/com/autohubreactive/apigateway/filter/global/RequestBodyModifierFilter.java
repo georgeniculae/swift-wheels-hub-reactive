@@ -8,6 +8,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyRequestBodyGatewayFilterFactory;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -27,9 +28,10 @@ public class RequestBodyModifierFilter implements GlobalFilter, Ordered {
                     log.error("Error while trying to modify body: {}", e.getMessage());
 
                     HttpStatusCode statusCode = ExceptionUtil.extractExceptionStatusCode(e);
-                    exchange.getResponse().setStatusCode(statusCode);
+                    ServerHttpResponse response = exchange.getResponse();
+                    response.setStatusCode(statusCode);
 
-                    return exchange.getResponse().setComplete();
+                    return response.setComplete();
                 });
 
     }
