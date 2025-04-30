@@ -1,6 +1,7 @@
 package com.autohubreactive.booking.producer.bookingprocessing;
 
 import com.autohubreactive.dto.BookingResponse;
+import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -16,6 +17,7 @@ import reactor.core.scheduler.Schedulers;
 public class UpdatedBookingProducerService {
 
     private final StreamBridge streamBridge;
+    private final RetryHandler retryHandler;
 
     @Value("${spring.cloud.stream.bindings.updatedBookingProducer-out-0.destination}")
     private String binderName;
@@ -32,6 +34,7 @@ public class UpdatedBookingProducerService {
                         )
                 )
                 .subscribeOn(Schedulers.boundedElastic())
+                .retryWhen(retryHandler.retry())
                 .then();
     }
 
