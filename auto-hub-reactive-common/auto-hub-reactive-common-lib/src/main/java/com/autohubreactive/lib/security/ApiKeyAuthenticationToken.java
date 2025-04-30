@@ -17,6 +17,12 @@ public final class ApiKeyAuthenticationToken extends AbstractAuthenticationToken
         this.apiKey = apiKey;
     }
 
+    public ApiKeyAuthenticationToken(ApiKeyAuthenticationToken apiKeyAuthenticationToken) {
+        super(apiKeyAuthenticationToken.getAuthorities());
+        super.setAuthenticated(true);
+        this.apiKey = apiKeyAuthenticationToken.getPrincipal().toString();
+    }
+
     @Override
     public Object getCredentials() {
         return null;

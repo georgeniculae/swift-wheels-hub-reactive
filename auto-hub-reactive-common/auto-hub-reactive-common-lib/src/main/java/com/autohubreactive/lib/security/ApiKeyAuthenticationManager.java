@@ -20,20 +20,18 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
     public Mono<Authentication> authenticate(Authentication authentication) {
         return Mono.just(authentication)
                 .filter(this::isValidAuthentication)
-                .doOnNext(auth -> auth.setAuthenticated(true))
-                .switchIfEmpty(
-                        Mono.error(
-                                new AutoHubResponseStatusException(
-                                        HttpStatus.UNAUTHORIZED,
-                                        "No matching API Key"
-                                )
-                        )
-                );
+                .switchIfEmpty(Mono.defer(() -> Mono.error(getUnauthorizedException())))
+                .cast(ApiKeyAuthenticationToken.class)
+                .map(ApiKeyAuthenticationToken::new);
     }
 
     private boolean isValidAuthentication(Authentication authentication) {
         return authentication instanceof ApiKeyAuthenticationToken apiKeyAuthenticationToken &&
                 apikeySecret.equals(apiKeyAuthenticationToken.getPrincipal().toString());
+    }
+
+    private AutoHubResponseStatusException getUnauthorizedException() {
+        return new AutoHubResponseStatusException(HttpStatus.UNAUTHORIZED, "No matching API Key");
     }
 
 }
