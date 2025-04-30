@@ -131,7 +131,8 @@ public class RequestHeaderModifierFilter implements GlobalFilter, Ordered {
 
     private String getAuthorizationToken(ServerHttpRequest request) {
         return Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-                .orElseThrow(() -> new AutoHubResponseStatusException(
+                .orElseThrow(
+                        () -> new AutoHubResponseStatusException(
                                 HttpStatus.BAD_REQUEST,
                                 "Authorization header is missing"
                         )
