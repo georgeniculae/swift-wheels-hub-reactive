@@ -104,19 +104,18 @@ public class CustomerService {
                     log.error("Error while deleting user: {}", e.getMessage());
 
                     return ExceptionUtil.handleException(e);
-                })
-                .then();
+                });
     }
 
     public Mono<Void> signOut(String id) {
         return Mono.fromRunnable(() -> keycloakUserService.signOut(id))
                 .subscribeOn(Schedulers.boundedElastic())
+                .then()
                 .onErrorMap(e -> {
                     log.error("Error while signing out user: {}", e.getMessage());
 
                     return new AutoHubException(e.getMessage());
-                })
-                .then();
+                });
     }
 
 }
