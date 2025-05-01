@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Optional;
 
 @Service
@@ -119,9 +117,9 @@ public class InvoiceService {
     public Mono<InvoiceResponse> updateInvoiceAfterBookingUpdate(BookingResponse newBookingResponse) {
         return invoiceRepository.findByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .flatMap(invoice -> {
-                    Invoice updatedInvoice = invoiceMapper.getNewInvoiceInstance(invoice);
-                    updatedInvoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
-                    updatedInvoice.setRentalCarPrice(newBookingResponse.rentalCarPrice());
+                    Invoice updatedInvoice = invoiceMapper.getInvoiceAfterBookingUpdate(invoice, newBookingResponse);
+//                    updatedInvoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
+//                    updatedInvoice.setRentalCarPrice(newBookingResponse.rentalCarPrice());
 
                     return invoiceRepository.save(updatedInvoice);
                 })
@@ -219,57 +217,7 @@ public class InvoiceService {
 
     private Mono<Invoice> updateExistingInvoice(String id, InvoiceRequest invoiceRequest) {
         return findEntityById(id)
-                .map(existingInvoice -> getUpdatedInvoice(existingInvoice, invoiceRequest));
-    }
-
-    private Invoice getUpdatedInvoice(Invoice existingInvoice, InvoiceRequest invoiceRequest) {
-        Invoice updatedInvoice = invoiceMapper.getNewInvoiceInstance(existingInvoice);
-
-        updatedInvoice.setCarReturnDate(invoiceRequest.carReturnDate());
-        updatedInvoice.setReceptionistEmployeeId(MongoUtil.getObjectId(invoiceRequest.receptionistEmployeeId()));
-        updatedInvoice.setReturnBranchId(MongoUtil.getObjectId(invoiceRequest.returnBranchId()));
-        updatedInvoice.setIsVehicleDamaged(invoiceRequest.isVehicleDamaged());
-        updatedInvoice.setDamageCost(getDamageCost(invoiceRequest));
-        updatedInvoice.setAdditionalPayment(getAdditionalPayment(invoiceRequest));
-        updatedInvoice.setComments(invoiceRequest.comments());
-        updatedInvoice.setTotalAmount(getTotalAmount(invoiceRequest, existingInvoice));
-
-        return updatedInvoice;
-    }
-
-    private BigDecimal getDamageCost(InvoiceRequest invoiceRequest) {
-        return ObjectUtils.isEmpty(invoiceRequest.damageCost()) ? BigDecimal.ZERO : invoiceRequest.damageCost();
-    }
-
-    private BigDecimal getAdditionalPayment(InvoiceRequest invoiceRequest) {
-        return ObjectUtils.isEmpty(invoiceRequest.additionalPayment()) ?
-                BigDecimal.ZERO : invoiceRequest.additionalPayment();
-    }
-
-    private BigDecimal getTotalAmount(InvoiceRequest invoiceRequest, Invoice existingInvoice) {
-        LocalDate carReturnDate = invoiceRequest.carReturnDate();
-        LocalDate bookingDateTo = existingInvoice.getDateTo();
-        LocalDate bookingDateFrom = existingInvoice.getDateFrom();
-        BigDecimal rentalCarPrice = existingInvoice.getRentalCarPrice();
-
-        boolean isReturnDatePassed = carReturnDate.isAfter(bookingDateTo);
-
-        if (isReturnDatePassed) {
-            return getMoneyForLateReturn(carReturnDate, bookingDateTo, bookingDateFrom, rentalCarPrice);
-        }
-
-        return rentalCarPrice.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
-                .add(getDamageCost(invoiceRequest));
-    }
-
-    private int getDaysPeriod(LocalDate bookingDateFrom, LocalDate bookingDateTo) {
-        return Period.between(bookingDateFrom, bookingDateTo).getDays();
-    }
-
-    private BigDecimal getMoneyForLateReturn(LocalDate carReturnDate, LocalDate bookingDateTo, LocalDate bookingDateFrom,
-                                             BigDecimal carAmount) {
-        return carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateFrom, bookingDateTo)))
-                .add(carAmount.multiply(BigDecimal.valueOf(getDaysPeriod(bookingDateTo, carReturnDate) * 2L)));
+                .map(existingInvoice -> invoiceMapper.getUpdatedInstance(existingInvoice, invoiceRequest));
     }
 
 }
