@@ -15,7 +15,6 @@ import com.autohubreactive.model.Invoice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -110,7 +109,7 @@ public class InvoiceService {
     public Mono<InvoiceResponse> saveInvoice(BookingResponse newBookingResponse) {
         return invoiceRepository.existsByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .filter(Boolean.FALSE::equals)
-                .flatMap(_ -> invoiceRepository.save(getInvoice(newBookingResponse)))
+                .flatMap(_ -> invoiceRepository.save(invoiceMapper.getNewInvoice(newBookingResponse)))
                 .map(invoiceMapper::mapEntityToDto);
     }
 
@@ -118,8 +117,6 @@ public class InvoiceService {
         return invoiceRepository.findByBookingId(MongoUtil.getObjectId(newBookingResponse.id()))
                 .flatMap(invoice -> {
                     Invoice updatedInvoice = invoiceMapper.getInvoiceAfterBookingUpdate(invoice, newBookingResponse);
-//                    updatedInvoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
-//                    updatedInvoice.setRentalCarPrice(newBookingResponse.rentalCarPrice());
 
                     return invoiceRepository.save(updatedInvoice);
                 })
@@ -147,36 +144,19 @@ public class InvoiceService {
                 .flatMap(invoice -> invoiceRepository.deleteById(invoice.getId()));
     }
 
-    private Invoice getInvoice(BookingResponse newBookingResponse) {
-        Invoice invoice = new Invoice();
-
-        invoice.setCustomerUsername(newBookingResponse.customerUsername());
-        invoice.setCustomerEmail(newBookingResponse.customerEmail());
-        invoice.setCarId(MongoUtil.getObjectId(newBookingResponse.carId()));
-        invoice.setBookingId(MongoUtil.getObjectId(newBookingResponse.id()));
-        invoice.setDateFrom(newBookingResponse.dateFrom());
-        invoice.setDateTo(newBookingResponse.dateTo());
-        invoice.setCarId(new ObjectId(newBookingResponse.carId()));
-        invoice.setRentalCarPrice(newBookingResponse.rentalCarPrice());
-
-        return invoice;
-    }
-
     private Mono<InvoiceRequest> validateInvoice(InvoiceRequest invoiceRequest) {
         return Mono.just(invoiceRequest)
                 .handle((request, sink) -> {
-                    LocalDate dateOfReturnOfTheCar = Optional.ofNullable((request.carReturnDate()))
-                            .orElseThrow(() -> new AutoHubException("Car return date is null"));
+                    LocalDate carReturnDate = getCarReturnDate(request);
 
-                    validateDateOfReturnOfTheCar(dateOfReturnOfTheCar);
+                    if (carReturnDate.isBefore(LocalDate.now())) {
+                        sink.error(getReturnDateException());
+
+                        return;
+                    }
 
                     if (request.isVehicleDamaged() && ObjectUtils.isEmpty(request.damageCost())) {
-                        sink.error(
-                                new AutoHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "If the vehicle is damaged, the damage cost cannot be null/empty"
-                                )
-                        );
+                        sink.error(getDamageCostException());
 
                         return;
                     }
@@ -204,20 +184,28 @@ public class InvoiceService {
         return reactiveMongoTemplate.count(query, Long.class);
     }
 
-    private void validateDateOfReturnOfTheCar(LocalDate dateOfReturnOfTheCar) {
-        LocalDate currentDate = LocalDate.now();
-
-        if (dateOfReturnOfTheCar.isBefore(currentDate)) {
-            throw new AutoHubResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Date of return of the car cannot be in the past"
-            );
-        }
-    }
-
     private Mono<Invoice> updateExistingInvoice(String id, InvoiceRequest invoiceRequest) {
         return findEntityById(id)
                 .map(existingInvoice -> invoiceMapper.getUpdatedInstance(existingInvoice, invoiceRequest));
+    }
+
+    private LocalDate getCarReturnDate(InvoiceRequest request) {
+        return Optional.ofNullable((request.carReturnDate()))
+                .orElseThrow(() -> new AutoHubException("Car return date is null"));
+    }
+
+    private AutoHubResponseStatusException getReturnDateException() {
+        return new AutoHubResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Date of return of the car cannot be in the past"
+        );
+    }
+
+    private static AutoHubResponseStatusException getDamageCostException() {
+        return new AutoHubResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "If the vehicle is damaged, the damage cost cannot be null/empty"
+        );
     }
 
 }

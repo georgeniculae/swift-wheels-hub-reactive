@@ -27,6 +27,10 @@ public interface InvoiceMapper {
 
     Invoice mapDtoToEntity(InvoiceRequest invoiceRequest);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "bookingId", source = "id")
+    Invoice getNewInvoice(BookingResponse bookingResponse);
+
     @Mapping(target = "id", expression = "java(invoice.getId())")
     @Mapping(target = "customerUsername", expression = "java(invoice.getCustomerUsername())")
     @Mapping(target = "customerEmail", expression = "java(invoice.getCustomerEmail())")
