@@ -1,7 +1,7 @@
 package com.autohubreactive.expense.util;
 
+import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.InvoiceReprocessRequest;
-import com.autohubreactive.dto.InvoiceRequest;
 import com.autohubreactive.dto.InvoiceResponse;
 import com.autohubreactive.dto.RevenueResponse;
 import com.autohubreactive.model.Invoice;
@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssertionUtil {
 
-    public static void assertInvoiceRequest(Invoice invoice, InvoiceRequest invoiceRequest) {
-        assertEquals(invoice.getCarReturnDate(), invoiceRequest.carReturnDate());
-        assertEquals(invoice.getIsVehicleDamaged(), invoiceRequest.isVehicleDamaged());
-        assertEquals(invoice.getDamageCost(), invoiceRequest.damageCost());
-        assertEquals(invoice.getAdditionalPayment(), invoiceRequest.additionalPayment());
-        assertEquals(invoice.getComments(), invoiceRequest.comments());
+    public static void assertInvoiceRequest(Invoice invoice, BookingResponse bookingResponse) {
+        assertEquals(bookingResponse.customerUsername(), invoice.getCustomerUsername());
+        assertEquals(bookingResponse.customerEmail(), invoice.getCustomerEmail());
+        assertEquals(bookingResponse.carId(), invoice.getCarId().toString());
+        assertEquals(bookingResponse.returnBranchId(), invoice.getReturnBranchId().toString());
+        assertEquals(bookingResponse.dateFrom(), invoice.getDateFrom());
+        assertEquals(bookingResponse.dateTo(), invoice.getDateTo());
     }
 
     public static void assertInvoiceResponse(Invoice invoice, InvoiceResponse invoiceResponse) {

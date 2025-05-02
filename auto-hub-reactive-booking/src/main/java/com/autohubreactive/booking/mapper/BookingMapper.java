@@ -1,5 +1,6 @@
 package com.autohubreactive.booking.mapper;
 
+import com.autohubreactive.dto.AuthenticationInfo;
 import com.autohubreactive.dto.AvailableCarInfo;
 import com.autohubreactive.dto.BookingRequest;
 import com.autohubreactive.dto.BookingResponse;
@@ -25,8 +26,15 @@ public interface BookingMapper {
     @Mapping(target = "carId", source = "actualCarId")
     BookingResponse mapEntityToDto(Booking booking);
 
-    @Mapping(target = "actualCarId", source = "carId")
-    Booking mapDtoToEntity(BookingRequest bookingRequest);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "customerUsername", expression = "java(authenticationInfo.username())")
+    @Mapping(target = "customerEmail", expression = "java(authenticationInfo.email())")
+    @Mapping(target = "actualCarId", expression = "java(mapStringToObjectId(availableCarInfo.id()))")
+    @Mapping(target = "dateOfBooking", expression = "java(getDateOfBooking())")
+    @Mapping(target = "rentalBranchId", expression = "java(mapStringToObjectId(availableCarInfo.actualBranchId()))")
+    @Mapping(target = "status", constant = "IN_PROGRESS")
+    @Mapping(target = "rentalCarPrice", expression = "java(availableCarInfo.amount())")
+    Booking getNewBooking(BookingRequest bookingRequest, AvailableCarInfo availableCarInfo, AuthenticationInfo authenticationInfo);
 
     @Mapping(target = "carId", source = "actualCarId")
     BookingResponse mapToBookingResponse(CreatedBookingReprocessRequest createdBookingReprocessRequest);
@@ -62,6 +70,10 @@ public interface BookingMapper {
 
     default ObjectId mapStringToObjectId(String id) {
         return ObjectUtils.isEmpty(id) ? null : new ObjectId(id);
+    }
+
+    default LocalDate getDateOfBooking() {
+        return LocalDate.now();
     }
 
 }

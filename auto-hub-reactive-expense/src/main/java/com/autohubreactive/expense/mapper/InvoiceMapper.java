@@ -25,8 +25,6 @@ public interface InvoiceMapper {
 
     InvoiceResponse mapEntityToDto(Invoice invoice);
 
-    Invoice mapDtoToEntity(InvoiceRequest invoiceRequest);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "bookingId", source = "id")
     Invoice getNewInvoice(BookingResponse bookingResponse);

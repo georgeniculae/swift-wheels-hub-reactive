@@ -96,14 +96,7 @@ public class CarService {
         return findEntityById(id)
                 .filter(car -> CarStatus.AVAILABLE.equals(car.getCarStatus()))
                 .map(carMapper::mapToAvailableCarInfo)
-                .switchIfEmpty(
-                        Mono.error(
-                                new AutoHubResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Selected car is not available"
-                                )
-                        )
-                )
+                .switchIfEmpty(Mono.error(getCarNotAvailableException()))
                 .onErrorMap(e -> {
                     log.error("Error while getting available car: {}", e.getMessage());
 
@@ -383,6 +376,10 @@ public class CarService {
         car.setActualBranch(actualBranch);
 
         return car;
+    }
+
+    private AutoHubResponseStatusException getCarNotAvailableException() {
+        return new AutoHubResponseStatusException(HttpStatus.BAD_REQUEST, "Selected car is not available");
     }
 
 }

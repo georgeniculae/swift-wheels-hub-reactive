@@ -1,7 +1,7 @@
 package com.autohubreactive.expense.mapper;
 
+import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.InvoiceReprocessRequest;
-import com.autohubreactive.dto.InvoiceRequest;
 import com.autohubreactive.dto.InvoiceResponse;
 import com.autohubreactive.expense.util.AssertionUtil;
 import com.autohubreactive.expense.util.TestUtil;
@@ -35,19 +35,19 @@ class InvoiceMapperTest {
     }
 
     @Test
-    void mapDtoToEntityTest_success() {
-        InvoiceRequest invoiceRequest =
-                TestUtil.getResourceAsJson("/data/InvoiceRequest.json", InvoiceRequest.class);
+    void getNewInvoiceTest_success() {
+        BookingResponse bookingResponse =
+                TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
 
-        Invoice invoice = invoiceMapper.mapDtoToEntity(invoiceRequest);
+        Invoice invoice = invoiceMapper.getNewInvoice(bookingResponse);
 
         assertNotNull(invoice);
-        AssertionUtil.assertInvoiceRequest(invoice, invoiceRequest);
+        AssertionUtil.assertInvoiceRequest(invoice, bookingResponse);
     }
 
     @Test
-    void mapDtoToEntityTest_null() {
-        assertNull(invoiceMapper.mapDtoToEntity(null));
+    void getNewInvoiceTest_null() {
+        assertNull(invoiceMapper.getNewInvoice(null));
     }
 
     @Test

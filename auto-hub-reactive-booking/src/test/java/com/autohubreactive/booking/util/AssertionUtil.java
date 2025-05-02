@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AssertionUtil {
 
     public static void assertBookingRequest(Booking booking, BookingRequest bookingRequest) {
-        assertEquals(booking.getDateOfBooking(), bookingRequest.dateOfBooking());
         assertEquals(booking.getDateFrom(), bookingRequest.dateFrom());
         assertEquals(booking.getDateTo(), bookingRequest.dateTo());
     }

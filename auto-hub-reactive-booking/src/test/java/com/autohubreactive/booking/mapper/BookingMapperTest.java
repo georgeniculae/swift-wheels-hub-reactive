@@ -2,12 +2,16 @@ package com.autohubreactive.booking.mapper;
 
 import com.autohubreactive.booking.util.AssertionUtil;
 import com.autohubreactive.booking.util.TestUtil;
+import com.autohubreactive.dto.AuthenticationInfo;
+import com.autohubreactive.dto.AvailableCarInfo;
 import com.autohubreactive.dto.BookingRequest;
 import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static com.mongodb.assertions.Assertions.assertNull;
 
@@ -31,18 +35,28 @@ class BookingMapperTest {
     }
 
     @Test
-    void mapDtoToEntityTest_success() {
+    void getNewBookingTest_success() {
         BookingRequest bookingRequest =
                 TestUtil.getResourceAsJson("/data/BookingRequest.json", BookingRequest.class);
 
-        Booking actualBooking = bookingMapper.mapDtoToEntity(bookingRequest);
+        AvailableCarInfo availableCarInfo =
+                TestUtil.getResourceAsJson("/data/AvailableCarInfo.json", AvailableCarInfo.class);
+
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
+                .apikey("apikey")
+                .username("user")
+                .email("user@mail.com")
+                .roles(List.of("admin"))
+                .build();
+
+        Booking actualBooking = bookingMapper.getNewBooking(bookingRequest, availableCarInfo, authenticationInfo);
 
         AssertionUtil.assertBookingRequest(actualBooking, bookingRequest);
     }
 
     @Test
-    void mapDtoToEntityTest_null() {
-        assertNull(bookingMapper.mapDtoToEntity(null));
+    void getNewBookingTest_null() {
+        assertNull(bookingMapper.getNewBooking(null, null, null));
     }
 
 }

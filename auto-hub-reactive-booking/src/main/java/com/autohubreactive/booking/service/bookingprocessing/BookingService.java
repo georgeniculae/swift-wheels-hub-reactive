@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -217,7 +216,7 @@ public class BookingService {
     private Mono<Booking> getNewBooking(AuthenticationInfo authenticationInfo,
                                         BookingRequest newBookingRequest) {
         return carService.findAvailableCarById(authenticationInfo, newBookingRequest.carId())
-                .map(availableCarInfo -> setupNewBooking(newBookingRequest, availableCarInfo, authenticationInfo));
+                .map(availableCarInfo -> bookingMapper.getNewBooking(newBookingRequest, availableCarInfo, authenticationInfo));
     }
 
     private Mono<Booking> updatedBookingWithClosingDetails(BookingClosingDetails bookingClosingDetails) {
@@ -269,19 +268,13 @@ public class BookingService {
     }
 
     private Query getQuery(String dateOfBooking) {
-        Date dateOfBookingAsDate;
-        Date dayAfterDateOfBookingAsDate;
+        Date dateOfBookingAsDate = formatDate(dateOfBooking);
 
-        try {
-            dateOfBookingAsDate = new SimpleDateFormat(DATE_FORMAT).parse(dateOfBooking);
+        String format = LocalDate.parse(dateOfBooking)
+                .plusDays(1)
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
 
-            dayAfterDateOfBookingAsDate = new SimpleDateFormat(DATE_FORMAT)
-                    .parse(LocalDate.parse(dateOfBooking)
-                            .plusDays(1)
-                            .format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
-        } catch (ParseException e) {
-            throw new AutoHubException(e.getMessage());
-        }
+        Date dayAfterDateOfBookingAsDate = formatDate(format);
 
         Criteria dateOfBookingCriteria = Criteria.where(DATE_OF_BOOKING)
                 .gte(dateOfBookingAsDate)
@@ -290,26 +283,17 @@ public class BookingService {
         return new Query().addCriteria(dateOfBookingCriteria);
     }
 
+    private Date formatDate(String dateOfBooking) {
+        try {
+            return new SimpleDateFormat(DATE_FORMAT).parse(dateOfBooking);
+        } catch (ParseException e) {
+            throw new AutoHubException(e.getMessage());
+        }
+    }
+
     private Mono<Booking> findEntityById(String id) {
         return bookingRepository.findById(MongoUtil.getObjectId(id))
                 .switchIfEmpty(Mono.error(new AutoHubNotFoundException("Booking with id " + id + " does not exist")));
-    }
-
-    private Booking setupNewBooking(BookingRequest newBookingRequest,
-                                    AvailableCarInfo availableCarInfo,
-                                    AuthenticationInfo authenticationInfo) {
-        Booking newBooking = bookingMapper.mapDtoToEntity(newBookingRequest);
-        BigDecimal amount = availableCarInfo.amount();
-
-        newBooking.setCustomerUsername(authenticationInfo.username());
-        newBooking.setCustomerEmail(authenticationInfo.email());
-        newBooking.setActualCarId(MongoUtil.getObjectId(availableCarInfo.id()));
-        newBooking.setDateOfBooking(LocalDate.now());
-        newBooking.setRentalBranchId(MongoUtil.getObjectId(availableCarInfo.actualBranchId()));
-        newBooking.setStatus(BookingStatus.IN_PROGRESS);
-        newBooking.setRentalCarPrice(amount);
-
-        return newBooking;
     }
 
     private Booking getUpdatedExistingBooking(BookingRequest updatedBookingRequest, Booking existingBooking) {
