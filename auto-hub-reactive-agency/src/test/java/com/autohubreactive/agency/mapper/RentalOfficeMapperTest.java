@@ -33,19 +33,19 @@ class RentalOfficeMapperTest {
     }
 
     @Test
-    void mapDtoToEntityTest_success() {
+    void getNewRentalOfficeTest_success() {
         RentalOfficeRequest rentalOfficeDto =
                 TestUtil.getResourceAsJson("/data/RentalOfficeRequest.json", RentalOfficeRequest.class);
 
-        RentalOffice rentalOffice = rentalOfficeMapper.mapDtoToEntity(rentalOfficeDto);
+        RentalOffice rentalOffice = rentalOfficeMapper.getNewRentalOffice(rentalOfficeDto);
 
         assertNotNull(rentalOffice);
         AssertionUtil.assertRentalOfficeRequest(rentalOffice, rentalOfficeDto);
     }
 
     @Test
-    void mapDtoToEntityTest_null() {
-        assertNull(rentalOfficeMapper.mapDtoToEntity(null));
+    void getNewRentalOfficeTest_null() {
+        assertNull(rentalOfficeMapper.getNewRentalOffice(null));
     }
 
 }

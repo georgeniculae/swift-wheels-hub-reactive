@@ -4,6 +4,7 @@ import com.autohubreactive.agency.util.AssertionUtil;
 import com.autohubreactive.agency.util.TestUtil;
 import com.autohubreactive.dto.CarRequest;
 import com.autohubreactive.dto.CarResponse;
+import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Car;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,18 +34,20 @@ class CarMapperTest {
     }
 
     @Test
-    void mapDtoToEntityTest_success() {
+    void getNewCarTest_success() {
         CarRequest carRequest = TestUtil.getResourceAsJson("/data/CarRequest.json", CarRequest.class);
+        Branch originalBranch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
+        Branch actualBranch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
 
-        Car car = carMapper.mapDtoToEntity(carRequest);
+        Car car = carMapper.getNewCar(carRequest, originalBranch, actualBranch);
 
         assertNotNull(car);
         AssertionUtil.assertCarRequest(car, carRequest);
     }
 
     @Test
-    void mapDtoToEntityTest_null() {
-        assertNull(carMapper.mapDtoToEntity(null));
+    void getNewCarTest_null() {
+        assertNull(carMapper.getNewCar(null, null, null));
     }
 
 }

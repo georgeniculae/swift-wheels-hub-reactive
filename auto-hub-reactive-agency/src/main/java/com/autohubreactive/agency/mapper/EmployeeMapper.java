@@ -21,7 +21,8 @@ public interface EmployeeMapper {
     @Mapping(target = "workingBranchId", expression = "java(mapObjectIdToString(employee.getWorkingBranch().getId()))")
     EmployeeResponse mapEntityToDto(Employee employee);
 
-    Employee mapDtoToEntity(EmployeeRequest employeeRequest);
+    @Mapping(target = "workingBranch", expression = "java(workingBranch)")
+    Employee getNewEmployee(EmployeeRequest employeeRequest, Branch workingBranch);
 
     @Mapping(target = "id", expression = "java(existingEmployee.getId())")
     @Mapping(target = "firstName", expression = "java(updatedEmployeeRequest.firstName())")

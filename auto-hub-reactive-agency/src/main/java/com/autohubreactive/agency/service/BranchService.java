@@ -69,8 +69,7 @@ public class BranchService {
     public Mono<BranchResponse> saveBranch(BranchRequest branchRequest) {
         return rentalOfficeService.findEntityById(branchRequest.rentalOfficeId())
                 .flatMap(rentalOffice -> {
-                    Branch newBranch = branchMapper.mapDtoToEntity(branchRequest);
-                    newBranch.setRentalOffice(rentalOffice);
+                    Branch newBranch = branchMapper.getNewBranch(branchRequest, rentalOffice);
 
                     return branchRepository.save(newBranch);
                 })

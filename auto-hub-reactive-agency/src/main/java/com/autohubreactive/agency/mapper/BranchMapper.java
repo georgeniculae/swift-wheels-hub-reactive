@@ -21,7 +21,9 @@ public interface BranchMapper {
     @Mapping(target = "rentalOfficeId", expression = "java(mapObjectIdToString(branch.getRentalOffice().getId()))")
     BranchResponse mapEntityToDto(Branch branch);
 
-    Branch mapDtoToEntity(BranchRequest branchRequest);
+    @Mapping(target = "rentalOffice", expression = "java(rentalOffice)")
+    @Mapping(target = "name", expression = "java(branchRequest.name())")
+    Branch getNewBranch(BranchRequest branchRequest, RentalOffice rentalOffice);
 
     @Mapping(target = "id", expression = "java(existingBranch.getId())")
     @Mapping(target = "name", expression = "java(branchRequest.name())")

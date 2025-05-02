@@ -30,9 +30,12 @@ public interface CarMapper {
     @Mapping(target = "carState", source = "carStatus")
     CarResponse mapEntityToDto(Car car);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "bodyType", expression = "java(mapToBodyType(carRequest.bodyCategory()))")
     @Mapping(target = "carStatus", expression = "java(mapToCarStatus(carRequest.carState()))")
-    Car mapDtoToEntity(CarRequest carRequest);
+    @Mapping(target = "originalBranch", expression = "java(originalBranch)")
+    @Mapping(target = "actualBranch", expression = "java(actualBranch)")
+    Car getNewCar(CarRequest carRequest, Branch originalBranch, Branch actualBranch);
 
     @Mapping(target = "bodyType", source = "bodyCategory")
     @Mapping(target = "carStatus", source = "carState")

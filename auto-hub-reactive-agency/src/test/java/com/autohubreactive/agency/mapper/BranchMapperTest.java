@@ -5,6 +5,7 @@ import com.autohubreactive.agency.util.TestUtil;
 import com.autohubreactive.dto.BranchRequest;
 import com.autohubreactive.dto.BranchResponse;
 import com.autohubreactive.model.Branch;
+import com.autohubreactive.model.RentalOffice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,19 +35,22 @@ class BranchMapperTest {
     }
 
     @Test
-    void mapDtoToEntityTest_success() {
+    void getNewBranchTest_success() {
         BranchRequest branchRequest =
                 TestUtil.getResourceAsJson("/data/BranchRequest.json", BranchRequest.class);
 
-        Branch branch = Assertions.assertDoesNotThrow(() -> branchMapper.mapDtoToEntity(branchRequest));
+        RentalOffice rentalOffice =
+                TestUtil.getResourceAsJson("/data/RentalOffice.json", RentalOffice.class);
+
+        Branch branch = Assertions.assertDoesNotThrow(() -> branchMapper.getNewBranch(branchRequest, rentalOffice));
 
         assertNotNull(branch);
         AssertionUtil.assertBranchRequest(branch, branchRequest);
     }
 
     @Test
-    void mapDtoToEntityTest_null() {
-        assertNull(branchMapper.mapDtoToEntity(null));
+    void getNewBranchTest_null() {
+        assertNull(branchMapper.getNewBranch(null, null));
     }
 
 }

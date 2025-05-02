@@ -4,6 +4,7 @@ import com.autohubreactive.agency.util.AssertionUtil;
 import com.autohubreactive.agency.util.TestUtil;
 import com.autohubreactive.dto.EmployeeRequest;
 import com.autohubreactive.dto.EmployeeResponse;
+import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Employee;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,19 +35,21 @@ class EmployeeMapperTest {
     }
 
     @Test
-    void mapDtoToEntityTest_success() {
+    void getNewEmployeeTest_success() {
         EmployeeRequest employeeRequest =
                 TestUtil.getResourceAsJson("/data/EmployeeRequest.json", EmployeeRequest.class);
 
-        Employee employee = Assertions.assertDoesNotThrow(() -> employeeMapper.mapDtoToEntity(employeeRequest));
+        Branch workingBranch = TestUtil.getResourceAsJson("/data/Branch.json", Branch.class);
+
+        Employee employee = Assertions.assertDoesNotThrow(() -> employeeMapper.getNewEmployee(employeeRequest, workingBranch));
 
         assertNotNull(employeeRequest);
         AssertionUtil.assertEmployeeRequest(employee, employeeRequest);
     }
 
     @Test
-    void mapDtoToEntityTest_null() {
-        assertNull(employeeMapper.mapDtoToEntity(null));
+    void getNewEmployeeTest_null() {
+        assertNull(employeeMapper.getNewEmployee(null, null));
     }
 
 }

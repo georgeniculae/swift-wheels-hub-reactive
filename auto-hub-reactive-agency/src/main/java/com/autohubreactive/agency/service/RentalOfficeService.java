@@ -56,7 +56,7 @@ public class RentalOfficeService {
     }
 
     public Mono<RentalOfficeResponse> saveRentalOffice(RentalOfficeRequest rentalOfficeRequest) {
-        return rentalOfficeRepository.save(rentalOfficeMapper.mapDtoToEntity(rentalOfficeRequest))
+        return rentalOfficeRepository.save(rentalOfficeMapper.getNewRentalOffice(rentalOfficeRequest))
                 .map(rentalOfficeMapper::mapEntityToDto)
                 .onErrorMap(e -> {
                     log.error("Error while saving rental office: {}", e.getMessage());
@@ -69,10 +69,6 @@ public class RentalOfficeService {
         return findEntityById(id)
                 .flatMap(existingRentalOffice -> {
                     RentalOffice updatedRentalOffice = rentalOfficeMapper.getUpdatedRentalOffice(existingRentalOffice, updatedRentalOfficeRequest);
-
-                    updatedRentalOffice.setName(updatedRentalOfficeRequest.name());
-                    updatedRentalOffice.setContactAddress(updatedRentalOfficeRequest.contactAddress());
-                    updatedRentalOffice.setPhoneNumber(updatedRentalOfficeRequest.phoneNumber());
 
                     return rentalOfficeRepository.save(updatedRentalOffice);
                 })

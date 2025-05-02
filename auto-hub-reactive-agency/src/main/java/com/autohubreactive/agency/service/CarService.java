@@ -299,16 +299,8 @@ public class CarService {
         return Mono.zip(
                 branchService.findEntityById(carRequest.originalBranchId()),
                 branchService.findEntityById(carRequest.actualBranchId()),
-                (originalBranch, actualBranch) -> getNewCarInstance(originalBranch, actualBranch, carRequest)
+                (originalBranch, actualBranch) -> carMapper.getNewCar(carRequest, originalBranch, actualBranch)
         );
-    }
-
-    private Car getNewCarInstance(Branch originalBranch, Branch actualBranch, CarRequest carRequest) {
-        Car car = carMapper.mapDtoToEntity(carRequest);
-        car.setOriginalBranch(originalBranch);
-        car.setActualBranch(actualBranch);
-
-        return car;
     }
 
     private Car getUpdatedCar(UpdateCarsRequest updateCarsRequests, Car existingCar) {

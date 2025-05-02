@@ -19,7 +19,7 @@ public interface RentalOfficeMapper {
 
     RentalOfficeResponse mapEntityToDto(RentalOffice rentalOffice);
 
-    RentalOffice mapDtoToEntity(RentalOfficeRequest rentalOfficeRequest);
+    RentalOffice getNewRentalOffice(RentalOfficeRequest rentalOfficeRequest);
 
     @Mapping(target = "name", expression = "java(updatedRentalOfficeRequest.name())")
     @Mapping(target = "contactAddress", expression = "java(updatedRentalOfficeRequest.contactAddress())")

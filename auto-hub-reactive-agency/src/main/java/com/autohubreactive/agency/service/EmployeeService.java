@@ -48,8 +48,7 @@ public class EmployeeService {
     public Mono<EmployeeResponse> saveEmployee(EmployeeRequest employeeRequest) {
         return branchService.findEntityById(employeeRequest.workingBranchId())
                 .flatMap(workingBranch -> {
-                    Employee newEmployee = employeeMapper.mapDtoToEntity(employeeRequest);
-                    newEmployee.setWorkingBranch(workingBranch);
+                    Employee newEmployee = employeeMapper.getNewEmployee(employeeRequest, workingBranch);
 
                     return employeeRepository.save(newEmployee);
                 })
