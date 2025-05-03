@@ -46,7 +46,8 @@ class BookingHandlerTest {
 
         when(bookingService.findAllBookings()).thenReturn(Flux.just(bookingResponse));
 
-        StepVerifier.create(bookingHandler.findAllBookings(serverRequest))
+        bookingHandler.findAllBookings(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -59,7 +60,8 @@ class BookingHandlerTest {
 
         when(bookingService.findAllBookings()).thenReturn(Flux.empty());
 
-        StepVerifier.create(bookingHandler.findAllBookings(serverRequest))
+        bookingHandler.findAllBookings(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -76,7 +78,8 @@ class BookingHandlerTest {
 
         when(bookingService.findBookingById(anyString())).thenReturn(Mono.just(bookingResponse));
 
-        StepVerifier.create(bookingHandler.findBookingById(serverRequest))
+        bookingHandler.findBookingById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -90,7 +93,8 @@ class BookingHandlerTest {
 
         when(bookingService.findBookingById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(bookingHandler.findBookingById(serverRequest))
+        bookingHandler.findBookingById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -107,7 +111,8 @@ class BookingHandlerTest {
 
         when(bookingService.findBookingsByDateOfBooking(anyString())).thenReturn(Flux.just(bookingResponse));
 
-        StepVerifier.create(bookingHandler.findBookingsByDateOfBooking(serverRequest))
+        bookingHandler.findBookingsByDateOfBooking(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -121,7 +126,8 @@ class BookingHandlerTest {
 
         when(bookingService.findBookingsByDateOfBooking(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(bookingHandler.findBookingsByDateOfBooking(serverRequest))
+        bookingHandler.findBookingsByDateOfBooking(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -138,7 +144,8 @@ class BookingHandlerTest {
 
         when(bookingService.findBookingsByLoggedInUser(anyString())).thenReturn(Flux.just(bookingResponse));
 
-        StepVerifier.create(bookingHandler.findBookingsByLoggedInUser(serverRequest))
+        bookingHandler.findBookingsByLoggedInUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -152,7 +159,8 @@ class BookingHandlerTest {
 
         when(bookingService.findBookingsByLoggedInUser(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(bookingHandler.findBookingsByLoggedInUser(serverRequest))
+        bookingHandler.findBookingsByLoggedInUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -165,7 +173,8 @@ class BookingHandlerTest {
 
         when(bookingService.countBookings()).thenReturn(Mono.just(4L));
 
-        StepVerifier.create(bookingHandler.countBookings(serverRequest))
+        bookingHandler.countBookings(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -179,7 +188,8 @@ class BookingHandlerTest {
 
         when(bookingService.countBookingsOfLoggedInUser(anyString())).thenReturn(Mono.just(4L));
 
-        StepVerifier.create(bookingHandler.countBookingsOfLoggedInUser(serverRequest))
+        bookingHandler.countBookingsOfLoggedInUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -192,7 +202,8 @@ class BookingHandlerTest {
 
         when(bookingService.getCurrentDate()).thenReturn(Mono.just(LocalDate.now()));
 
-        StepVerifier.create(bookingHandler.getCurrentDate(serverRequest))
+        bookingHandler.getCurrentDate(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -215,7 +226,8 @@ class BookingHandlerTest {
         when(bookingService.saveBooking(any(AuthenticationInfo.class), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
-        StepVerifier.create(bookingHandler.saveBooking(serverRequest))
+        bookingHandler.saveBooking(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -239,7 +251,8 @@ class BookingHandlerTest {
         when(bookingService.updateBooking(any(AuthenticationInfo.class), anyString(), any(BookingRequest.class)))
                 .thenReturn(Mono.just(bookingResponse));
 
-        StepVerifier.create(bookingHandler.updateBooking(serverRequest))
+        bookingHandler.updateBooking(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

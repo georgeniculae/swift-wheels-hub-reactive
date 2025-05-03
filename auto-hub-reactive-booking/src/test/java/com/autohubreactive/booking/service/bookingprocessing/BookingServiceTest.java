@@ -84,7 +84,8 @@ class BookingServiceTest {
 
         when(bookingRepository.findAll()).thenReturn(Flux.just(booking));
 
-        StepVerifier.create(bookingService.findAllBookings())
+        bookingService.findAllBookings()
+                .as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
 
@@ -95,7 +96,8 @@ class BookingServiceTest {
     void findAllBookingTest_errorOnFindingAll() {
         when(bookingRepository.findAll()).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(bookingService.findAllBookings())
+        bookingService.findAllBookings()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -107,7 +109,8 @@ class BookingServiceTest {
                 TestUtil.getResourceAsJson("/data/BookingResponse.json", BookingResponse.class);
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
 
-        StepVerifier.create(bookingService.findBookingById("64f361caf291ae086e179547"))
+        bookingService.findBookingById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -120,7 +123,8 @@ class BookingServiceTest {
 
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(booking));
 
-        StepVerifier.create(bookingService.findBookingsByLoggedInUser("admin"))
+        bookingService.findBookingsByLoggedInUser("admin")
+                .as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -129,7 +133,8 @@ class BookingServiceTest {
     void findBookingsByLoggedInUserTest_errorOnFindingBookingByCustomerUsername() {
         when(bookingRepository.findByCustomerUsername(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(bookingService.findBookingsByLoggedInUser("admin"))
+        bookingService.findBookingsByLoggedInUser("admin")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -138,7 +143,8 @@ class BookingServiceTest {
     void countBookingsTest_success() {
         when(bookingRepository.count()).thenReturn(Mono.just(3L));
 
-        StepVerifier.create(bookingService.countBookings())
+        bookingService.countBookings()
+                .as(StepVerifier::create)
                 .expectNext(3L)
                 .verifyComplete();
     }
@@ -147,7 +153,8 @@ class BookingServiceTest {
     void countBookingsTest_errorOnCount() {
         when(bookingRepository.count()).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.countBookings())
+        bookingService.countBookings()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -156,7 +163,8 @@ class BookingServiceTest {
     void countBookingsOfLoggedInUserTest_success() {
         when(bookingRepository.countByCustomerUsername(anyString())).thenReturn(Mono.just(3L));
 
-        StepVerifier.create(bookingService.countBookingsOfLoggedInUser("admin"))
+        bookingService.countBookingsOfLoggedInUser("admin")
+                .as(StepVerifier::create)
                 .expectNext(3L)
                 .verifyComplete();
     }
@@ -165,14 +173,16 @@ class BookingServiceTest {
     void countBookingsOfLoggedInUserTest_errorOnCountingByCustomerUsername() {
         when(bookingRepository.countByCustomerUsername(anyString())).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.countBookingsOfLoggedInUser("admin"))
+        bookingService.countBookingsOfLoggedInUser("admin")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
 
     @Test
     void getCurrentDateTest_success() {
-        StepVerifier.create(bookingService.getCurrentDate())
+        bookingService.getCurrentDate()
+                .as(StepVerifier::create)
                 .expectNext(LocalDate.now())
                 .verifyComplete();
     }
@@ -181,7 +191,8 @@ class BookingServiceTest {
     void findBookingByIdTest_errorOnFindingById() {
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.findBookingById("64f361caf291ae086e179547"))
+        bookingService.findBookingById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -275,7 +286,8 @@ class BookingServiceTest {
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.just(updatedClosedBooking));
 
-        StepVerifier.create(bookingService.closeBooking(bookingClosingDetails))
+        bookingService.closeBooking(bookingClosingDetails)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -290,7 +302,8 @@ class BookingServiceTest {
         when(bookingRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(bookingService.closeBooking(bookingClosingDetails))
+        bookingService.closeBooking(bookingClosingDetails)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -421,7 +434,8 @@ class BookingServiceTest {
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.just(booking));
 
-        StepVerifier.create(bookingService.findBookingsByDateOfBooking("2099-02-20"))
+        bookingService.findBookingsByDateOfBooking("2099-02-20")
+                .as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -430,7 +444,8 @@ class BookingServiceTest {
     void findBookingByDateOfBookingTest_errorOnFindingByDateOfBooking() {
         when(reactiveMongoTemplate.find(any(Query.class), eq(Booking.class))).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(bookingService.findBookingsByDateOfBooking("2099-02-20"))
+        bookingService.findBookingsByDateOfBooking("2099-02-20")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

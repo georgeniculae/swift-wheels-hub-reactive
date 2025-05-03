@@ -46,7 +46,8 @@ class DeletedBookingMessageConsumerTest {
         when(invoiceService.deleteInvoiceByBookingId(anyString())).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(deletedBookingMessageConsumer.deletedBookingConsumer().apply(Flux.just(message)))
+        deletedBookingMessageConsumer.deletedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -58,7 +59,8 @@ class DeletedBookingMessageConsumerTest {
         when(invoiceService.deleteInvoiceByBookingId(anyString())).thenReturn(Mono.error(new Throwable()));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(deletedBookingMessageConsumer.deletedBookingConsumer().apply(Flux.just(message)))
+        deletedBookingMessageConsumer.deletedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

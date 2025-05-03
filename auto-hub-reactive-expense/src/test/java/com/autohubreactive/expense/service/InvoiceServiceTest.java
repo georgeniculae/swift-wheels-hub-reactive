@@ -56,7 +56,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findAll()).thenReturn(Flux.just(invoice));
 
-        StepVerifier.create(invoiceService.findAllInvoices())
+        invoiceService.findAllInvoices()
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
 
@@ -67,7 +68,8 @@ class InvoiceServiceTest {
     void findAllInvoicesTest_errorOnFindingAll() {
         when(invoiceRepository.findAll()).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.findAllInvoices())
+        invoiceService.findAllInvoices()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -81,7 +83,8 @@ class InvoiceServiceTest {
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Invoice.class))).thenReturn(Flux.just(invoice));
 
-        StepVerifier.create(invoiceService.findAllActiveInvoices())
+        invoiceService.findAllActiveInvoices()
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -90,7 +93,8 @@ class InvoiceServiceTest {
     void findAllActiveInvoicesTest_errorOnFindingAllActiveInvoices() {
         when(reactiveMongoTemplate.find(any(Query.class), eq(Invoice.class))).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.findAllActiveInvoices())
+        invoiceService.findAllActiveInvoices()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -104,7 +108,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findByCustomerUsername(anyString())).thenReturn(Flux.just(invoice));
 
-        StepVerifier.create(invoiceService.findAllInvoicesByCustomerUsername("64f361caf291ae086e179547"))
+        invoiceService.findAllInvoicesByCustomerUsername("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -113,7 +118,8 @@ class InvoiceServiceTest {
     void findAllInvoicesByCustomerIdTest_errorOnFindingByCustomerUsername() {
         when(invoiceRepository.findByCustomerUsername(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.findAllInvoicesByCustomerUsername("64f361caf291ae086e179547"))
+        invoiceService.findAllInvoicesByCustomerUsername("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -127,7 +133,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(invoice));
 
-        StepVerifier.create(invoiceService.findInvoiceById("64f361caf291ae086e179547"))
+        invoiceService.findInvoiceById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -136,7 +143,8 @@ class InvoiceServiceTest {
     void findInvoiceByIdTest_errorOnFindingById() {
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(invoiceService.findInvoiceById("64f361caf291ae086e179547"))
+        invoiceService.findInvoiceById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -150,7 +158,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findByComments(anyString())).thenReturn(Flux.just(invoice));
 
-        StepVerifier.create(invoiceService.findInvoicesByComments("comment"))
+        invoiceService.findInvoicesByComments("comment")
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -159,7 +168,8 @@ class InvoiceServiceTest {
     void findInvoiceByFilterTest_errorOnFindingByComments() {
         when(invoiceRepository.findByComments(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(invoiceService.findInvoicesByComments("comment"))
+        invoiceService.findInvoicesByComments("comment")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -168,7 +178,8 @@ class InvoiceServiceTest {
     void countInvoicesTest_success() {
         when(invoiceRepository.count()).thenReturn(Mono.just(3L));
 
-        StepVerifier.create(invoiceService.countInvoices())
+        invoiceService.countInvoices()
+                .as(StepVerifier::create)
                 .expectNext(3L)
                 .verifyComplete();
     }
@@ -177,7 +188,8 @@ class InvoiceServiceTest {
     void countInvoicesTest_errorOnCounting() {
         when(invoiceRepository.count()).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.countInvoices())
+        invoiceService.countInvoices()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -186,7 +198,8 @@ class InvoiceServiceTest {
     void countAllActiveInvoicesTest_success() {
         when(reactiveMongoTemplate.count(any(Query.class), eq(Long.class))).thenReturn(Mono.just(3L));
 
-        StepVerifier.create(invoiceService.countAllActiveInvoices())
+        invoiceService.countAllActiveInvoices()
+                .as(StepVerifier::create)
                 .expectNext(3L)
                 .verifyComplete();
     }
@@ -195,7 +208,8 @@ class InvoiceServiceTest {
     void countAllActiveInvoicesTest_errorOnCountingAllActiveInvoices() {
         when(reactiveMongoTemplate.count(any(Query.class), eq(Long.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.countAllActiveInvoices())
+        invoiceService.countAllActiveInvoices()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -213,7 +227,8 @@ class InvoiceServiceTest {
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
-        StepVerifier.create(invoiceService.saveInvoice(bookingResponse))
+        invoiceService.saveInvoice(bookingResponse)
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -226,7 +241,8 @@ class InvoiceServiceTest {
         when(invoiceRepository.existsByBookingId(any(ObjectId.class))).thenReturn(Mono.just(false));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.saveInvoice(bookingResponse))
+        invoiceService.saveInvoice(bookingResponse)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -265,7 +281,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.closeInvoice("64f361caf291ae086e179547", invoiceRequest))
+        invoiceService.closeInvoice("64f361caf291ae086e179547", invoiceRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -283,7 +300,8 @@ class InvoiceServiceTest {
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(Mono.just(invoice));
 
-        StepVerifier.create(invoiceService.updateInvoiceAfterBookingUpdate(bookingResponse))
+        invoiceService.updateInvoiceAfterBookingUpdate(bookingResponse)
+                .as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -295,7 +313,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.updateInvoiceAfterBookingUpdate(bookingResponse))
+        invoiceService.updateInvoiceAfterBookingUpdate(bookingResponse)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -307,7 +326,8 @@ class InvoiceServiceTest {
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
         when(invoiceRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(invoiceService.deleteInvoiceByBookingId("64f361caf291ae086e179547"))
+        invoiceService.deleteInvoiceByBookingId("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -318,7 +338,8 @@ class InvoiceServiceTest {
 
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.just(invoice));
 
-        StepVerifier.create(invoiceService.deleteInvoiceByBookingId("64f361caf291ae086e179547"))
+        invoiceService.deleteInvoiceByBookingId("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -327,7 +348,8 @@ class InvoiceServiceTest {
     void deleteInvoiceByBookingIdTest_errorOnFindingByBookingId() {
         when(invoiceRepository.findByBookingId(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(invoiceService.deleteInvoiceByBookingId("64f361caf291ae086e179547"))
+        invoiceService.deleteInvoiceByBookingId("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

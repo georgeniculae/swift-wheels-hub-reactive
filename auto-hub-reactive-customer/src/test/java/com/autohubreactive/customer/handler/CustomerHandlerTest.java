@@ -51,7 +51,8 @@ class CustomerHandlerTest {
 
         when(customerService.findAllUsers()).thenReturn(Flux.just(userInfo));
 
-        StepVerifier.create(customerHandler.findAllUsers(serverRequest))
+        customerHandler.findAllUsers(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -68,7 +69,8 @@ class CustomerHandlerTest {
 
         when(customerService.getCurrentUser(anyString())).thenReturn(Mono.just(userInfo));
 
-        StepVerifier.create(customerHandler.getCurrentUser(serverRequest))
+        customerHandler.getCurrentUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -82,7 +84,8 @@ class CustomerHandlerTest {
 
         when(customerService.getCurrentUser(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.getCurrentUser(serverRequest))
+        customerHandler.getCurrentUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -99,7 +102,8 @@ class CustomerHandlerTest {
 
         when(customerService.findUserByUsername(anyString())).thenReturn(Mono.just(userInfo));
 
-        StepVerifier.create(customerHandler.findUserByUsername(serverRequest))
+        customerHandler.findUserByUsername(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -113,7 +117,8 @@ class CustomerHandlerTest {
 
         when(customerService.findUserByUsername(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.findUserByUsername(serverRequest))
+        customerHandler.findUserByUsername(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -127,7 +132,8 @@ class CustomerHandlerTest {
 
         when(customerService.countUsers()).thenReturn(Mono.just(5L));
 
-        StepVerifier.create(customerHandler.countUsers(serverRequest))
+        customerHandler.countUsers(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -147,7 +153,8 @@ class CustomerHandlerTest {
         when(registerRequestValidator.validateBody(any())).thenReturn(Mono.just(registerRequest));
         when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.just(registrationResponse));
 
-        StepVerifier.create(customerHandler.registerUser(serverRequest))
+        customerHandler.registerUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -164,7 +171,8 @@ class CustomerHandlerTest {
         when(registerRequestValidator.validateBody(any())).thenReturn(Mono.just(registerRequest));
         when(customerService.registerUser(any(RegisterRequest.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.registerUser(serverRequest))
+        customerHandler.registerUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -185,7 +193,8 @@ class CustomerHandlerTest {
         when(userUpdateRequestValidator.validateBody(any())).thenReturn(Mono.just(userUpdateRequest));
         when(customerService.updateUser(anyString(), any(UserUpdateRequest.class))).thenReturn(Mono.just(userInfo));
 
-        StepVerifier.create(customerHandler.updateUser(serverRequest))
+        customerHandler.updateUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -200,7 +209,8 @@ class CustomerHandlerTest {
 
         when(customerService.deleteUserByUsername(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.deleteCurrentUser(serverRequest))
+        customerHandler.deleteCurrentUser(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -215,7 +225,8 @@ class CustomerHandlerTest {
 
         when(customerService.deleteUserByUsername(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.deleteUserByUsername(serverRequest))
+        customerHandler.deleteUserByUsername(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -229,7 +240,8 @@ class CustomerHandlerTest {
 
         when(customerService.signOut(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerHandler.signOut(serverRequest))
+        customerHandler.signOut(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

@@ -53,7 +53,8 @@ class CarSuggestionHandlerTest {
         when(carSuggestionService.getChatOutput(anyString(), anyList(), any(TripInfo.class)))
                 .thenReturn(Mono.just(carSuggestionResponse));
 
-        StepVerifier.create(carSuggestionHandler.getChatOutput(serverRequest))
+        carSuggestionHandler.getChatOutput(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

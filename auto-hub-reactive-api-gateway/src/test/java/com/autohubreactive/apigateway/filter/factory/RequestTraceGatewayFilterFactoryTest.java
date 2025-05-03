@@ -27,6 +27,7 @@ class RequestTraceGatewayFilterFactoryTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue)
                 .build();
+
         MockServerWebExchange.builder(request).build();
 
         RequestTraceGatewayFilterFactory.ServiceIdConfig serviceIdConfig =

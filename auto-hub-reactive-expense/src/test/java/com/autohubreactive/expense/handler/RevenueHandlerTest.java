@@ -40,7 +40,8 @@ class RevenueHandlerTest {
 
         when(revenueService.findAllRevenues()).thenReturn(Flux.just(revenueResponse));
 
-        StepVerifier.create(revenueHandler.findAllRevenues(serverRequest))
+        revenueHandler.findAllRevenues(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -53,7 +54,8 @@ class RevenueHandlerTest {
 
         when(revenueService.findAllRevenues()).thenReturn(Flux.empty());
 
-        StepVerifier.create(revenueHandler.findAllRevenues(serverRequest))
+        revenueHandler.findAllRevenues(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -70,7 +72,8 @@ class RevenueHandlerTest {
 
         when(revenueService.findRevenuesByDate(anyString())).thenReturn(Flux.just(revenueResponse));
 
-        StepVerifier.create(revenueHandler.findRevenuesByDate(serverRequest))
+        revenueHandler.findRevenuesByDate(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -84,7 +87,8 @@ class RevenueHandlerTest {
 
         when(revenueService.findRevenuesByDate(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(revenueHandler.findRevenuesByDate(serverRequest))
+        revenueHandler.findRevenuesByDate(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -97,7 +101,8 @@ class RevenueHandlerTest {
 
         when(revenueService.getTotalAmount()).thenReturn(Mono.just(BigDecimal.valueOf(500)));
 
-        StepVerifier.create(revenueHandler.getTotalAmount(serverRequest))
+        revenueHandler.getTotalAmount(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

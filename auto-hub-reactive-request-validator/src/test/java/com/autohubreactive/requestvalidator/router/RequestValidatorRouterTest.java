@@ -47,7 +47,7 @@ class RequestValidatorRouterTest {
                 .returnResult(RequestValidationReport.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(validationReport)
                 .verifyComplete();
     }
@@ -81,7 +81,7 @@ class RequestValidatorRouterTest {
                 .returnResult(Boolean.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(true)
                 .verifyComplete();
     }

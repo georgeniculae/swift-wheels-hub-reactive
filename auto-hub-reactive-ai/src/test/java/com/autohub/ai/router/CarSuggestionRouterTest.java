@@ -48,7 +48,7 @@ class CarSuggestionRouterTest {
                 .returnResult(String.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(output)
                 .verifyComplete();
     }

@@ -73,7 +73,8 @@ class UpdatedOutboxServiceTest {
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
+        updatedOutboxService.handleOutboxes()
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
 
@@ -112,7 +113,8 @@ class UpdatedOutboxServiceTest {
         when(reactiveValueOperations.delete(anyString())).thenReturn(Mono.just(true));
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
+        updatedOutboxService.handleOutboxes()
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
 
@@ -132,7 +134,8 @@ class UpdatedOutboxServiceTest {
                 .thenReturn(Mono.empty());
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
+        updatedOutboxService.handleOutboxes()
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
 
@@ -153,7 +156,8 @@ class UpdatedOutboxServiceTest {
                 .thenReturn(Mono.empty());
         when(updateOutboxRepository.delete(any(UpdatedOutbox.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
+        updatedOutboxService.handleOutboxes()
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
 
@@ -164,7 +168,8 @@ class UpdatedOutboxServiceTest {
     void handleOutboxesTest_errorOnFindingAll() {
         when(updateOutboxRepository.findAll()).thenReturn(Flux.error(new RuntimeException()));
 
-        StepVerifier.create(updatedOutboxService.handleOutboxes())
+        updatedOutboxService.handleOutboxes()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

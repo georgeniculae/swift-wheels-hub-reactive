@@ -44,7 +44,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findAllInvoices()).thenReturn(Flux.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.findAllInvoices(serverRequest))
+        invoiceHandler.findAllInvoices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -57,7 +58,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findAllInvoices()).thenReturn(Flux.empty());
 
-        StepVerifier.create(invoiceHandler.findAllInvoices(serverRequest))
+        invoiceHandler.findAllInvoices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -73,7 +75,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findAllActiveInvoices()).thenReturn(Flux.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.findAllActiveInvoices(serverRequest))
+        invoiceHandler.findAllActiveInvoices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -86,7 +89,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findAllActiveInvoices()).thenReturn(Flux.empty());
 
-        StepVerifier.create(invoiceHandler.findAllActiveInvoices(serverRequest))
+        invoiceHandler.findAllActiveInvoices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -103,7 +107,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findAllInvoicesByCustomerUsername(anyString())).thenReturn(Flux.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.findAllInvoicesByCustomerUsername(serverRequest))
+        invoiceHandler.findAllInvoicesByCustomerUsername(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -117,7 +122,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findAllInvoicesByCustomerUsername(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(invoiceHandler.findAllInvoicesByCustomerUsername(serverRequest))
+        invoiceHandler.findAllInvoicesByCustomerUsername(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -134,7 +140,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findInvoiceById(anyString())).thenReturn(Mono.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.findInvoiceById(serverRequest))
+        invoiceHandler.findInvoiceById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -148,7 +155,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findInvoiceById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(invoiceHandler.findInvoiceById(serverRequest))
+        invoiceHandler.findInvoiceById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -165,7 +173,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findInvoicesByComments(anyString())).thenReturn(Flux.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.findInvoicesByComments(serverRequest))
+        invoiceHandler.findInvoicesByComments(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -179,7 +188,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.findInvoicesByComments(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(invoiceHandler.findInvoicesByComments(serverRequest))
+        invoiceHandler.findInvoicesByComments(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -192,7 +202,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.countInvoices()).thenReturn(Mono.just(1L));
 
-        StepVerifier.create(invoiceHandler.countInvoices(serverRequest))
+        invoiceHandler.countInvoices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -205,7 +216,8 @@ class InvoiceHandlerTest {
 
         when(invoiceService.countAllActiveInvoices()).thenReturn(Mono.just(1L));
 
-        StepVerifier.create(invoiceHandler.countAllActiveInvoices(serverRequest))
+        invoiceHandler.countAllActiveInvoices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -228,7 +240,8 @@ class InvoiceHandlerTest {
         when(invoiceService.closeInvoice(anyString(), any(InvoiceRequest.class)))
                 .thenReturn(Mono.just(invoiceResponse));
 
-        StepVerifier.create(invoiceHandler.closeInvoice(serverRequest))
+        invoiceHandler.closeInvoice(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

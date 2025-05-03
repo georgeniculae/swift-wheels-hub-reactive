@@ -48,7 +48,8 @@ class BranchHandlerTest {
 
         when(branchService.findAllBranches()).thenReturn(Flux.fromIterable(branchResponses));
 
-        StepVerifier.create(branchHandler.findAllBranches(serverRequest))
+        branchHandler.findAllBranches(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -61,7 +62,8 @@ class BranchHandlerTest {
 
         when(branchService.findAllBranches()).thenReturn(Flux.empty());
 
-        StepVerifier.create(branchHandler.findAllBranches(serverRequest))
+        branchHandler.findAllBranches(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -78,7 +80,8 @@ class BranchHandlerTest {
 
         when(branchService.findBranchById(anyString())).thenReturn(Mono.just(branchResponse));
 
-        StepVerifier.create(branchHandler.findBranchById(serverRequest))
+        branchHandler.findBranchById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -92,7 +95,8 @@ class BranchHandlerTest {
 
         when(branchService.findBranchById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(branchHandler.findBranchById(serverRequest))
+        branchHandler.findBranchById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -109,7 +113,8 @@ class BranchHandlerTest {
 
         when(branchService.findBranchesByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branchResponse));
 
-        StepVerifier.create(branchHandler.findBranchesByFilterInsensitiveCase(serverRequest))
+        branchHandler.findBranchesByFilterInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -122,7 +127,8 @@ class BranchHandlerTest {
 
         when(branchService.countBranches()).thenReturn(Mono.just(5L));
 
-        StepVerifier.create(branchHandler.countBranches(serverRequest))
+        branchHandler.countBranches(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

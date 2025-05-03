@@ -50,7 +50,7 @@ class FallbackRouterTest {
                 .returnResult(String.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(serviceUnavailableMessage)
                 .verifyComplete();
     }

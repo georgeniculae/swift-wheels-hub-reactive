@@ -60,6 +60,7 @@ class RequestValidatorFilterTest {
         MockServerHttpRequest request = MockServerHttpRequest.get("/agency/rental-offices/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
+
         ServerWebExchange exchange = MockServerWebExchange.builder(request).build();
 
         RequestValidationReport requestValidationReport = new RequestValidationReport("");
@@ -86,6 +87,7 @@ class RequestValidatorFilterTest {
         MockServerHttpRequest request = MockServerHttpRequest.get("/agency/rental-offices/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
+
         ServerWebExchange exchange = MockServerWebExchange.builder(request).build();
 
         RequestValidationReport requestValidationReport = new RequestValidationReport("error");
@@ -107,6 +109,7 @@ class RequestValidatorFilterTest {
         MockServerHttpRequest request = MockServerHttpRequest.get("/agency/definition/swagger-ui.html")
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
+
         ServerWebExchange exchange = MockServerWebExchange.builder(request).build();
 
         when(chain.filter(any(ServerWebExchange.class))).thenReturn(Mono.empty());

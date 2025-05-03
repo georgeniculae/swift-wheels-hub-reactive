@@ -56,7 +56,7 @@ class InvoiceRouterTest {
                 .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -100,7 +100,7 @@ class InvoiceRouterTest {
                 .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -144,7 +144,7 @@ class InvoiceRouterTest {
                 .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -185,7 +185,7 @@ class InvoiceRouterTest {
                 .returnResult(Long.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(1L)
                 .verifyComplete();
     }
@@ -223,7 +223,7 @@ class InvoiceRouterTest {
                 .returnResult(Long.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(1L)
                 .verifyComplete();
     }
@@ -264,7 +264,7 @@ class InvoiceRouterTest {
                 .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -308,7 +308,7 @@ class InvoiceRouterTest {
                 .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }
@@ -352,7 +352,7 @@ class InvoiceRouterTest {
                 .returnResult(InvoiceResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(invoiceResponse)
                 .verifyComplete();
     }

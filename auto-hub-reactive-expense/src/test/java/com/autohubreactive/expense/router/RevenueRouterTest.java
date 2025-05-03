@@ -56,7 +56,7 @@ class RevenueRouterTest {
                 .returnResult(RevenueResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(revenueResponse)
                 .verifyComplete();
     }
@@ -100,7 +100,7 @@ class RevenueRouterTest {
                 .returnResult(RevenueResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(revenueResponse)
                 .verifyComplete();
     }
@@ -144,7 +144,7 @@ class RevenueRouterTest {
                 .returnResult(RevenueResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(revenueResponse)
                 .verifyComplete();
     }

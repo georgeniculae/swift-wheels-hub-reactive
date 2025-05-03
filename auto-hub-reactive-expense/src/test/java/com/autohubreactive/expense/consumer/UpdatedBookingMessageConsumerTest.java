@@ -56,7 +56,8 @@ class UpdatedBookingMessageConsumerTest {
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
+        updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -74,7 +75,8 @@ class UpdatedBookingMessageConsumerTest {
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
+        updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -92,7 +94,8 @@ class UpdatedBookingMessageConsumerTest {
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
+        updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -108,7 +111,8 @@ class UpdatedBookingMessageConsumerTest {
         when(invoiceService.updateInvoiceAfterBookingUpdate(any(BookingResponse.class))).thenReturn(Mono.error(new Throwable()));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message)))
+        updatedBookingMessageConsumer.updatedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

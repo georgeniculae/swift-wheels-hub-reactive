@@ -56,7 +56,8 @@ class CreatedBookingMessageConsumerTest {
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -74,7 +75,8 @@ class CreatedBookingMessageConsumerTest {
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -92,7 +94,8 @@ class CreatedBookingMessageConsumerTest {
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.just(invoiceResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -108,7 +111,8 @@ class CreatedBookingMessageConsumerTest {
         when(invoiceService.saveInvoice(any(BookingResponse.class))).thenReturn(Mono.error(new Throwable()));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message)))
+        createdBookingMessageConsumer.savedBookingConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

@@ -50,7 +50,8 @@ class FailedInvoiceDlqMessageConsumerTest {
         when(invoiceReprocessingService.reprocessInvoice(any(InvoiceReprocessRequest.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        StepVerifier.create(failedInvoiceDlqMessageConsumer.failedInvoiceDlqConsumer().apply(Flux.just(message)))
+        failedInvoiceDlqMessageConsumer.failedInvoiceDlqConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -66,7 +67,8 @@ class FailedInvoiceDlqMessageConsumerTest {
         when(invoiceReprocessingService.reprocessInvoice(any(InvoiceReprocessRequest.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
-        StepVerifier.create(failedInvoiceDlqMessageConsumer.failedInvoiceDlqConsumer().apply(Flux.just(message)))
+        failedInvoiceDlqMessageConsumer.failedInvoiceDlqConsumer().apply(Flux.just(message))
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

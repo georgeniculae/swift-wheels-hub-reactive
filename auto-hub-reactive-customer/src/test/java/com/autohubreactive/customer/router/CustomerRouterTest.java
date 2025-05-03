@@ -56,7 +56,7 @@ class CustomerRouterTest {
                 .returnResult(UserInfo.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(userInfo)
                 .verifyComplete();
     }
@@ -100,7 +100,7 @@ class CustomerRouterTest {
                 .returnResult(UserInfo.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(userInfo)
                 .verifyComplete();
     }
@@ -149,7 +149,7 @@ class CustomerRouterTest {
                 .returnResult(RegistrationResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(registrationResponse)
                 .verifyComplete();
     }
@@ -221,7 +221,7 @@ class CustomerRouterTest {
                 .returnResult(UserInfo.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(userInfo)
                 .verifyComplete();
     }
@@ -285,7 +285,7 @@ class CustomerRouterTest {
                 .returnResult(UserInfo.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(userInfo)
                 .verifyComplete();
     }
@@ -326,7 +326,7 @@ class CustomerRouterTest {
                 .returnResult(Long.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(1L)
                 .verifyComplete();
     }
@@ -364,7 +364,7 @@ class CustomerRouterTest {
                 .returnResult(Void.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -402,7 +402,7 @@ class CustomerRouterTest {
                 .returnResult(Void.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

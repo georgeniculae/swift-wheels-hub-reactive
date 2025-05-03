@@ -46,7 +46,8 @@ class ExpenseBookingAuditLogInfoConsumerMessageTest {
 
         when(auditService.saveExpenseAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoRequest));
 
-        StepVerifier.create(expenseAuditLogInfoConsumerMessage.expenseAuditLogInfoConsumer().apply(messageFlux))
+        expenseAuditLogInfoConsumerMessage.expenseAuditLogInfoConsumer().apply(messageFlux)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -61,7 +62,8 @@ class ExpenseBookingAuditLogInfoConsumerMessageTest {
 
         when(auditService.saveExpenseAuditLogInfo(any(AuditLogInfoRequest.class))).thenReturn(Mono.just(auditLogInfoDto));
 
-        StepVerifier.create(expenseAuditLogInfoConsumerMessage.expenseAuditLogInfoConsumer().apply(messageFlux))
+        expenseAuditLogInfoConsumerMessage.expenseAuditLogInfoConsumer().apply(messageFlux)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

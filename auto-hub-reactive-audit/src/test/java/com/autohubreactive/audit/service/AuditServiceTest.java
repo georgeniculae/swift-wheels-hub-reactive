@@ -60,7 +60,8 @@ class AuditServiceTest {
 
         when(bookingAuditLogInfoRepository.save(any(BookingAuditLogInfo.class))).thenReturn(Mono.just(bookingAuditLogInfo));
 
-        StepVerifier.create(auditService.saveBookingAuditLogInfo(auditLogInfoRequest))
+        auditService.saveBookingAuditLogInfo(auditLogInfoRequest)
+                .as(StepVerifier::create)
                 .expectNext(auditLogInfoRequest)
                 .verifyComplete();
 
@@ -74,7 +75,8 @@ class AuditServiceTest {
 
         when(bookingAuditLogInfoRepository.save(any(BookingAuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(auditService.saveBookingAuditLogInfo(auditLogInfoRequest))
+        auditService.saveBookingAuditLogInfo(auditLogInfoRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -88,7 +90,8 @@ class AuditServiceTest {
 
         when(customerAuditLogInfoRepository.save(any(CustomerAuditLogInfo.class))).thenReturn(Mono.just(customerAuditLogInfo));
 
-        StepVerifier.create(auditService.saveCustomerAuditLogInfo(auditLogInfoRequest))
+        auditService.saveCustomerAuditLogInfo(auditLogInfoRequest)
+                .as(StepVerifier::create)
                 .expectNext(auditLogInfoRequest)
                 .verifyComplete();
 
@@ -102,7 +105,8 @@ class AuditServiceTest {
 
         when(customerAuditLogInfoRepository.save(any(CustomerAuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(auditService.saveCustomerAuditLogInfo(auditLogInfoRequest))
+        auditService.saveCustomerAuditLogInfo(auditLogInfoRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -116,7 +120,8 @@ class AuditServiceTest {
 
         when(expenseAuditLogInfoRepository.save(any(ExpenseAuditLogInfo.class))).thenReturn(Mono.just(expenseAuditLogInfo));
 
-        StepVerifier.create(auditService.saveExpenseAuditLogInfo(auditLogInfoRequest))
+        auditService.saveExpenseAuditLogInfo(auditLogInfoRequest)
+                .as(StepVerifier::create)
                 .expectNext(auditLogInfoRequest)
                 .verifyComplete();
 
@@ -130,7 +135,8 @@ class AuditServiceTest {
 
         when(expenseAuditLogInfoRepository.save(any(ExpenseAuditLogInfo.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(auditService.saveExpenseAuditLogInfo(auditLogInfoRequest))
+        auditService.saveExpenseAuditLogInfo(auditLogInfoRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

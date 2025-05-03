@@ -1,11 +1,11 @@
 package com.autohubreactive.emailnotification.consumer;
 
-import com.sendgrid.Response;
 import com.autohubreactive.dto.EmailResponse;
 import com.autohubreactive.dto.InvoiceResponse;
 import com.autohubreactive.emailnotification.service.EmailProcessorService;
 import com.autohubreactive.emailnotification.util.TestUtil;
 import com.autohubreactive.lib.retry.RetryHandler;
+import com.sendgrid.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -62,7 +62,8 @@ class InvoiceMessageConsumerTest {
         when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
+        invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -80,7 +81,8 @@ class InvoiceMessageConsumerTest {
         when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
-        StepVerifier.create(invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux))
+        invoiceMessageConsumer.emailNotificationConsumer().apply(messageFlux)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

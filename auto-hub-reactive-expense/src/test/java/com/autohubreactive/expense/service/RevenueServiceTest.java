@@ -60,7 +60,8 @@ class RevenueServiceTest {
 
         when(revenueRepository.findAll()).thenReturn(Flux.just(revenue));
 
-        StepVerifier.create(revenueService.findAllRevenues())
+        revenueService.findAllRevenues()
+                .as(StepVerifier::create)
                 .expectNext(revenueResponse)
                 .verifyComplete();
 
@@ -71,7 +72,8 @@ class RevenueServiceTest {
     void findAllRevenuesTest_errorOnFindingAllRevenues() {
         when(revenueRepository.findAll()).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(revenueService.findAllRevenues())
+        revenueService.findAllRevenues()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -80,7 +82,8 @@ class RevenueServiceTest {
     void getTotalAmountTest_success() {
         when(revenueRepository.getTotalAmount()).thenReturn(Mono.just(500D));
 
-        StepVerifier.create(revenueService.getTotalAmount())
+        revenueService.getTotalAmount()
+                .as(StepVerifier::create)
                 .expectNext(BigDecimal.valueOf(500D))
                 .verifyComplete();
     }
@@ -89,7 +92,8 @@ class RevenueServiceTest {
     void getTotalAmountTest_errorOnGettingTotalAmount() {
         when(revenueRepository.getTotalAmount()).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(revenueService.getTotalAmount())
+        revenueService.getTotalAmount()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -105,7 +109,8 @@ class RevenueServiceTest {
         when(outboxService.saveOutbox(any(Invoice.class))).thenReturn(Mono.just(outbox));
         when(revenueRepository.save(any(Revenue.class))).thenReturn(Mono.just(revenue));
 
-        StepVerifier.create(revenueService.processClosing(invoice))
+        revenueService.processClosing(invoice)
+                .as(StepVerifier::create)
                 .assertNext(actualInvoice -> assertThat(invoice).usingRecursiveComparison().isEqualTo(actualInvoice))
                 .verifyComplete();
     }
@@ -119,7 +124,8 @@ class RevenueServiceTest {
         when(outboxService.saveOutbox(any(Invoice.class))).thenReturn(Mono.just(outbox));
         when(revenueRepository.save(any(Revenue.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(revenueService.processClosing(invoice))
+        revenueService.processClosing(invoice)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -133,7 +139,8 @@ class RevenueServiceTest {
 
         when(reactiveMongoTemplate.find(any(Query.class), eq(Revenue.class))).thenReturn(Flux.just(revenue));
 
-        StepVerifier.create(revenueService.findRevenuesByDate("2023-09-25"))
+        revenueService.findRevenuesByDate("2023-09-25")
+                .as(StepVerifier::create)
                 .expectNext(revenueResponse)
                 .verifyComplete();
 
@@ -144,7 +151,8 @@ class RevenueServiceTest {
     void findRevenueByDateTest_errorOnFindingByDateOfRevenue() {
         when(reactiveMongoTemplate.find(any(Query.class), eq(Revenue.class))).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(revenueService.findRevenuesByDate("2023-09-25"))
+        revenueService.findRevenuesByDate("2023-09-25")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

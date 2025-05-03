@@ -55,7 +55,7 @@ class BookingRouterTest {
                 .returnResult(BookingResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -99,7 +99,7 @@ class BookingRouterTest {
                 .returnResult(BookingResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -143,7 +143,7 @@ class BookingRouterTest {
                 .returnResult(BookingResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -184,7 +184,7 @@ class BookingRouterTest {
                 .returnResult(BookingResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -267,7 +267,7 @@ class BookingRouterTest {
                 .returnResult(BookingResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
@@ -329,7 +329,7 @@ class BookingRouterTest {
                 .returnResult(BookingResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(bookingResponse)
                 .verifyComplete();
     }
