@@ -98,27 +98,27 @@ public class RevenueService {
     }
 
     private Query getDateOfRevenueQuery(String dateOfRevenue) {
-        Date dateOfBookingAsDate;
-        Date dayAfterDateOfBookingAsDate;
+        Date dateOfBookingAsDate = formatDate(dateOfRevenue);
 
-        try {
-            dateOfBookingAsDate = new SimpleDateFormat(DATE_FORMAT).parse(dateOfRevenue);
+        String format = LocalDate.parse(dateOfRevenue)
+                .plusDays(1)
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
 
-            dayAfterDateOfBookingAsDate = new SimpleDateFormat(DATE_FORMAT)
-                    .parse(
-                            LocalDate.parse(dateOfRevenue)
-                                    .plusDays(1)
-                                    .format(DateTimeFormatter.ofPattern(DATE_FORMAT))
-                    );
-        } catch (ParseException e) {
-            throw new AutoHubException(e.getMessage());
-        }
+        Date dayAfterDateOfBookingAsDate = formatDate(format);
 
         Criteria dateOfBookingCriteria = Criteria.where(DATE_OF_REVENUE)
                 .gte(dateOfBookingAsDate)
                 .lt(dayAfterDateOfBookingAsDate);
 
         return new Query().addCriteria(dateOfBookingCriteria);
+    }
+
+    private Date formatDate(String dateOfRevenue) {
+        try {
+            return new SimpleDateFormat(DATE_FORMAT).parse(dateOfRevenue);
+        } catch (ParseException e) {
+            throw new AutoHubException(e.getMessage());
+        }
     }
 
 }
