@@ -53,7 +53,8 @@ class CarHandlerTest {
 
         when(carService.findAllCars()).thenReturn(Flux.fromIterable(carDtoList));
 
-        StepVerifier.create(carHandler.findAllCars(serverRequest))
+        carHandler.findAllCars(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -66,7 +67,8 @@ class CarHandlerTest {
 
         when(carService.findAllCars()).thenReturn(Flux.empty());
 
-        StepVerifier.create(carHandler.findAllCars(serverRequest))
+        carHandler.findAllCars(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -82,7 +84,8 @@ class CarHandlerTest {
 
         when(carService.findCarById(anyString())).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(carHandler.findCarById(serverRequest))
+        carHandler.findCarById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -96,7 +99,8 @@ class CarHandlerTest {
 
         when(carService.findCarById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(carHandler.findCarById(serverRequest))
+        carHandler.findCarById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -113,7 +117,8 @@ class CarHandlerTest {
 
         when(carService.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.fromIterable(carDtoList));
 
-        StepVerifier.create(carHandler.findCarsByMakeInsensitiveCase(serverRequest))
+        carHandler.findCarsByMakeInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -127,7 +132,8 @@ class CarHandlerTest {
 
         when(carService.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(carHandler.findCarsByMakeInsensitiveCase(serverRequest))
+        carHandler.findCarsByMakeInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -144,7 +150,8 @@ class CarHandlerTest {
 
         when(carService.findCarsByFilterInsensitiveCase(anyString())).thenReturn(Flux.fromIterable(carDtoList));
 
-        StepVerifier.create(carHandler.findCarsByFilterInsensitiveCase(serverRequest))
+        carHandler.findCarsByFilterInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -158,7 +165,8 @@ class CarHandlerTest {
 
         when(carService.findCarsByFilterInsensitiveCase(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(carHandler.findCarsByFilterInsensitiveCase(serverRequest))
+        carHandler.findCarsByFilterInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -175,7 +183,8 @@ class CarHandlerTest {
 
         when(carService.getAvailableCar(anyString())).thenReturn(Mono.just(availableCarInfo));
 
-        StepVerifier.create(carHandler.getAvailableCar(serverRequest))
+        carHandler.getAvailableCar(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -190,7 +199,8 @@ class CarHandlerTest {
 
         when(carService.getAllAvailableCars()).thenReturn(Flux.just(carResponse));
 
-        StepVerifier.create(carHandler.getAllAvailableCars(serverRequest))
+        carHandler.getAllAvailableCars(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -204,7 +214,8 @@ class CarHandlerTest {
 
         when(carService.getCarImage(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(carHandler.getCarImage(serverRequest))
+        carHandler.getCarImage(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -218,7 +229,8 @@ class CarHandlerTest {
 
         when(carService.getCarImage(anyString())).thenReturn(Mono.just(new byte[]{}));
 
-        StepVerifier.create(carHandler.getCarImage(serverRequest))
+        carHandler.getCarImage(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -231,7 +243,8 @@ class CarHandlerTest {
 
         when(carService.countCars()).thenReturn(Mono.just(5L));
 
-        StepVerifier.create(carHandler.countCars(serverRequest))
+        carHandler.countCars(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -247,7 +260,8 @@ class CarHandlerTest {
 
         when(carService.saveCar(any())).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(carHandler.saveCar(serverRequest))
+        carHandler.saveCar(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -266,7 +280,8 @@ class CarHandlerTest {
 
         when(carService.uploadCars(any(FilePart.class))).thenReturn(Flux.just(carResponse));
 
-        StepVerifier.create(carHandler.uploadCars(serverRequest))
+        carHandler.uploadCars(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -283,7 +298,8 @@ class CarHandlerTest {
 
         when(carService.updateCar(anyString(), any())).thenReturn(Mono.just(carResponse));
 
-        StepVerifier.create(carHandler.updateCar(serverRequest))
+        carHandler.updateCar(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -297,7 +313,8 @@ class CarHandlerTest {
 
         when(carService.deleteCarById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(carHandler.deleteCarById(serverRequest))
+        carHandler.deleteCarById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

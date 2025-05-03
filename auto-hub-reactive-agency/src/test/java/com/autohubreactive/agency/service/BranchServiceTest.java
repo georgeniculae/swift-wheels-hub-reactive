@@ -67,7 +67,8 @@ class BranchServiceTest {
     void findAllBranchesTest_errorOnFindingBranches() {
         when(branchRepository.findAll()).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(branchService.findAllBranches())
+        branchService.findAllBranches()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -81,7 +82,8 @@ class BranchServiceTest {
 
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
 
-        StepVerifier.create(branchService.findBranchById("64f361caf291ae086e179547"))
+        branchService.findBranchById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
 
@@ -92,7 +94,8 @@ class BranchServiceTest {
     void findBranchByIdTest_errorOnFindingById() {
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.findBranchById("64f361caf291ae086e179547"))
+        branchService.findBranchById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
 
@@ -108,7 +111,8 @@ class BranchServiceTest {
 
         when(branchRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(branch));
 
-        StepVerifier.create(branchService.findBranchesByFilterInsensitiveCase("search"))
+        branchService.findBranchesByFilterInsensitiveCase("search")
+                .as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -117,7 +121,8 @@ class BranchServiceTest {
     void findBranchByFilterTest_errorOnFindingByFilter() {
         when(branchRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(branchService.findBranchesByFilterInsensitiveCase("search"))
+        branchService.findBranchesByFilterInsensitiveCase("search")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -126,7 +131,8 @@ class BranchServiceTest {
     void countBranchesTest_success() {
         when(branchRepository.count()).thenReturn(Mono.just(2L));
 
-        StepVerifier.create(branchService.countBranches())
+        branchService.countBranches()
+                .as(StepVerifier::create)
                 .expectNext(2L)
                 .verifyComplete();
     }
@@ -135,7 +141,8 @@ class BranchServiceTest {
     void countBranchesTest_errorOnCounting() {
         when(branchRepository.count()).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.countBranches())
+        branchService.countBranches()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -155,7 +162,8 @@ class BranchServiceTest {
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.just(branch));
 
-        StepVerifier.create(branchService.saveBranch(branchRequest))
+        branchService.saveBranch(branchRequest)
+                .as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -171,7 +179,8 @@ class BranchServiceTest {
         when(rentalOfficeService.findEntityById(anyString())).thenReturn(Mono.just(rentalOffice));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.saveBranch(branchRequest))
+        branchService.saveBranch(branchRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -192,7 +201,8 @@ class BranchServiceTest {
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
         when(branchRepository.save(any(Branch.class))).thenReturn(Mono.just(branch));
 
-        StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchRequest))
+        branchService.updateBranch("64f361caf291ae086e179547", branchRequest)
+                .as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -210,7 +220,8 @@ class BranchServiceTest {
         when(branchRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(branch));
         when(branchRepository.save(branch)).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.updateBranch("64f361caf291ae086e179547", branchRequest))
+        branchService.updateBranch("64f361caf291ae086e179547", branchRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -220,7 +231,8 @@ class BranchServiceTest {
         when(branchRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
         when(employeeRepository.deleteByBranchId(any(ObjectId.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(branchService.deleteBranchById("64f361caf291ae086e179547"))
+        branchService.deleteBranchById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -229,7 +241,8 @@ class BranchServiceTest {
     void deleteBranchByIdTest_errorOnDeletingById() {
         when(branchRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(branchService.deleteBranchById("64f361caf291ae086e179547"))
+        branchService.deleteBranchById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

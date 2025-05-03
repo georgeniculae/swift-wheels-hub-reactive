@@ -58,7 +58,7 @@ class BranchRouterTest {
                 .returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -104,7 +104,7 @@ class BranchRouterTest {
                 .returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -147,7 +147,7 @@ class BranchRouterTest {
                 .returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -172,7 +172,7 @@ class BranchRouterTest {
                 .returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -194,7 +194,7 @@ class BranchRouterTest {
                 .returnResult(Long.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(5L)
                 .verifyComplete();
     }
@@ -236,7 +236,7 @@ class BranchRouterTest {
                 .returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -298,7 +298,7 @@ class BranchRouterTest {
                 .returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(branchResponse)
                 .verifyComplete();
     }
@@ -338,7 +338,7 @@ class BranchRouterTest {
                 .isNoContent().returnResult(BranchResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

@@ -53,7 +53,8 @@ class EmployeeServiceTest {
 
         when(employeeRepository.findAll()).thenReturn(Flux.fromIterable(employees));
 
-        StepVerifier.create(employeeService.findAllEmployees())
+        employeeService.findAllEmployees()
+                .as(StepVerifier::create)
                 .expectNext(employeeResponse)
                 .verifyComplete();
     }
@@ -62,7 +63,8 @@ class EmployeeServiceTest {
     void findAllEmployeesTest_errorOnFindAll() {
         when(employeeRepository.findAll()).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(employeeService.findAllEmployees())
+        employeeService.findAllEmployees()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -76,7 +78,8 @@ class EmployeeServiceTest {
 
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
 
-        StepVerifier.create(employeeService.findEmployeeById("64f361caf291ae086e179547"))
+        employeeService.findEmployeeById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(employeeResponse)
                 .verifyComplete();
     }
@@ -85,7 +88,8 @@ class EmployeeServiceTest {
     void findEmployeeByIdTest_errorOnFindingById() {
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.findEmployeeById("64f361caf291ae086e179547"))
+        employeeService.findEmployeeById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -94,7 +98,8 @@ class EmployeeServiceTest {
     void countEmployeesTest_success() {
         when(employeeRepository.count()).thenReturn(Mono.just(3L));
 
-        StepVerifier.create(employeeService.countEmployees())
+        employeeService.countEmployees()
+                .as(StepVerifier::create)
                 .expectNext(3L)
                 .verifyComplete();
     }
@@ -103,7 +108,8 @@ class EmployeeServiceTest {
     void countEmployeesTest_errorOnCounting() {
         when(employeeRepository.count()).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.countEmployees())
+        employeeService.countEmployees()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -123,7 +129,8 @@ class EmployeeServiceTest {
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.just(employee));
 
-        StepVerifier.create(employeeService.saveEmployee(employeeRequest))
+        employeeService.saveEmployee(employeeRequest)
+                .as(StepVerifier::create)
                 .expectNext(employeeResponse)
                 .verifyComplete();
 
@@ -140,7 +147,8 @@ class EmployeeServiceTest {
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.saveEmployee(employeeRequest))
+        employeeService.saveEmployee(employeeRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
 
@@ -163,7 +171,8 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.just(employee));
 
-        StepVerifier.create(employeeService.updateEmployee("64f361caf291ae086e179547", employeeRequest))
+        employeeService.updateEmployee("64f361caf291ae086e179547", employeeRequest)
+                .as(StepVerifier::create)
                 .expectNext(employeeResponse)
                 .verifyComplete();
     }
@@ -181,7 +190,8 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.updateEmployee("64f361caf291ae086e179547", employeeRequest))
+        employeeService.updateEmployee("64f361caf291ae086e179547", employeeRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -197,7 +207,8 @@ class EmployeeServiceTest {
 
         when(employeeRepository.findAllEmployeesByBranchId(any(ObjectId.class))).thenReturn(Flux.fromIterable(employees));
 
-        StepVerifier.create(employeeService.findEmployeesByBranchId("64f361caf291ae086e179547"))
+        employeeService.findEmployeesByBranchId("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(employeeResponse)
                 .verifyComplete();
     }
@@ -206,7 +217,8 @@ class EmployeeServiceTest {
     void findEmployeesByBranchIdTest_errorOnFindingByBranchId() {
         when(employeeRepository.findAllEmployeesByBranchId(any(ObjectId.class))).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(employeeService.findEmployeesByBranchId("64f361caf291ae086e179547"))
+        employeeService.findEmployeesByBranchId("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -220,7 +232,8 @@ class EmployeeServiceTest {
 
         when(employeeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(employee));
 
-        StepVerifier.create(employeeService.findEmployeeByFilterInsensitiveCase("search"))
+        employeeService.findEmployeeByFilterInsensitiveCase("search")
+                .as(StepVerifier::create)
                 .expectNext(employeeResponse)
                 .verifyComplete();
     }
@@ -229,7 +242,8 @@ class EmployeeServiceTest {
     void findEmployeeByFilterTest_errorWhileFindingByFilter() {
         when(employeeRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(employeeService.findEmployeeByFilterInsensitiveCase("search"))
+        employeeService.findEmployeeByFilterInsensitiveCase("search")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -238,7 +252,8 @@ class EmployeeServiceTest {
     void deleteEmployeeByIdTest_success() {
         when(employeeRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(employeeService.deleteEmployeeById("64f361caf291ae086e179547"))
+        employeeService.deleteEmployeeById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -247,7 +262,8 @@ class EmployeeServiceTest {
     void deleteEmployeeByIdTest_errorOnDeletingById() {
         when(employeeRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(employeeService.deleteEmployeeById("64f361caf291ae086e179547"))
+        employeeService.deleteEmployeeById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

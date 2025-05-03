@@ -59,7 +59,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -100,7 +100,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -139,7 +139,7 @@ class CarRouterTest {
                 .isOk().returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -180,7 +180,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -221,7 +221,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -259,7 +259,7 @@ class CarRouterTest {
                 .returnResult(byte[].class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNextMatches(bytes -> bytes.length == body.length)
                 .verifyComplete();
     }
@@ -295,7 +295,7 @@ class CarRouterTest {
                 .returnResult(Long.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(5L)
                 .verifyComplete();
     }
@@ -335,7 +335,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -398,7 +398,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -466,7 +466,7 @@ class CarRouterTest {
                 .returnResult(CarResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -523,7 +523,7 @@ class CarRouterTest {
                 .returnResult(Void.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

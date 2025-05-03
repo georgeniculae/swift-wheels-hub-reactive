@@ -1,7 +1,5 @@
 package com.autohubreactive.agency.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.autohubreactive.agency.mapper.CarMapper;
 import com.autohubreactive.agency.mapper.CarMapperImpl;
 import com.autohubreactive.agency.repository.CarRepository;
@@ -21,6 +19,8 @@ import com.autohubreactive.model.Branch;
 import com.autohubreactive.model.Car;
 import com.autohubreactive.model.CarStatus;
 import com.autohubreactive.model.Employee;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -92,7 +92,8 @@ class CarServiceTest {
 
         when(carRepository.findAll()).thenReturn(Flux.fromIterable(cars));
 
-        StepVerifier.create(carService.findAllCars())
+        carService.findAllCars()
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
 
@@ -103,7 +104,8 @@ class CarServiceTest {
     void findAllCarsTest_errorOnFindingAll() {
         when(carRepository.findAll()).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(carService.findAllCars())
+        carService.findAllCars()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -115,7 +117,8 @@ class CarServiceTest {
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.findCarById("64f361caf291ae086e179547"))
+        carService.findCarById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -124,7 +127,8 @@ class CarServiceTest {
     void findCarByIdTest_errorOnFindingById() {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.findCarById("64f361caf291ae086e179547"))
+        carService.findCarById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -133,7 +137,8 @@ class CarServiceTest {
     void findCarByIdTest_notFound() {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(carService.findCarById("64f361caf291ae086e179547"))
+        carService.findCarById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError(AutoHubNotFoundException.class)
                 .verify();
     }
@@ -146,7 +151,8 @@ class CarServiceTest {
 
         when(carRepository.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.fromIterable(cars));
 
-        StepVerifier.create(carService.findCarsByMakeInsensitiveCase("Volkswagen"))
+        carService.findCarsByMakeInsensitiveCase("Volkswagen")
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -155,7 +161,8 @@ class CarServiceTest {
     void findCarsByMakeTest_errorOnFindingByMake() {
         when(carRepository.findCarsByMakeInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(carService.findCarsByMakeInsensitiveCase("Volkswagen"))
+        carService.findCarsByMakeInsensitiveCase("Volkswagen")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -167,7 +174,8 @@ class CarServiceTest {
 
         when(carRepository.findAllAvailableCars()).thenReturn(Flux.just(car));
 
-        StepVerifier.create(carService.getAllAvailableCars())
+        carService.getAllAvailableCars()
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -176,7 +184,8 @@ class CarServiceTest {
     void getAllAvailableCarTest_errorOnFindingCars() {
         when(carRepository.findAllAvailableCars()).thenReturn(Flux.error(new RuntimeException()));
 
-        StepVerifier.create(carService.getAllAvailableCars())
+        carService.getAllAvailableCars()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -190,7 +199,8 @@ class CarServiceTest {
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.getAvailableCar("64f361caf291ae086e179547"))
+        carService.getAvailableCar("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectNext(availableCarInfo)
                 .verifyComplete();
     }
@@ -202,7 +212,8 @@ class CarServiceTest {
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.getAvailableCar("64f361caf291ae086e179547"))
+        carService.getAvailableCar("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -211,7 +222,8 @@ class CarServiceTest {
     void getAvailableCarTest_errorOnFindingById() {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.getAvailableCar("64f361caf291ae086e179547"))
+        carService.getAvailableCar("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -223,7 +235,8 @@ class CarServiceTest {
 
         when(carRepository.findAllAvailableCars()).thenReturn(Flux.just(car));
 
-        StepVerifier.create(carService.getAllAvailableCars())
+        carService.getAllAvailableCars()
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -235,7 +248,8 @@ class CarServiceTest {
 
         when(carRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(car));
 
-        StepVerifier.create(carService.findCarsByFilterInsensitiveCase("search"))
+        carService.findCarsByFilterInsensitiveCase("search")
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -244,7 +258,8 @@ class CarServiceTest {
     void findCarByFilterTest_errorOnFindingByFilter() {
         when(carRepository.findAllByFilterInsensitiveCase(anyString())).thenReturn(Flux.error(new Throwable()));
 
-        StepVerifier.create(carService.findCarsByFilterInsensitiveCase("search"))
+        carService.findCarsByFilterInsensitiveCase("search")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -253,7 +268,8 @@ class CarServiceTest {
     void countCarsTest_success() {
         when(carRepository.count()).thenReturn(Mono.just(3L));
 
-        StepVerifier.create(carService.countCars())
+        carService.countCars()
+                .as(StepVerifier::create)
                 .expectNext(3L)
                 .verifyComplete();
     }
@@ -262,7 +278,8 @@ class CarServiceTest {
     void countCarsTest_errorOnCounting() {
         when(carRepository.count()).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.countCars())
+        carService.countCars()
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -283,7 +300,8 @@ class CarServiceTest {
         when(reactiveGridFsTemplate.store(any(), anyString()))
                 .thenReturn(Mono.just(new ObjectId("65e8cf871b2c27702941b7a1")));
 
-        StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
+        carService.saveCar(multivalueMap.toSingleValueMap())
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -302,7 +320,8 @@ class CarServiceTest {
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
+        carService.saveCar(multivalueMap.toSingleValueMap())
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -318,7 +337,8 @@ class CarServiceTest {
         when(branchService.findEntityById(anyString())).thenReturn(Mono.just(branch));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.saveCar(multivalueMap.toSingleValueMap()))
+        carService.saveCar(multivalueMap.toSingleValueMap())
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -344,7 +364,8 @@ class CarServiceTest {
         when(reactiveGridFsTemplate.store(any(), anyString()))
                 .thenReturn(Mono.just(new ObjectId("65e8cf871b2c27702941b7a1")));
 
-        StepVerifier.create(carService.uploadCars(filePart))
+        carService.uploadCars(filePart)
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -362,7 +383,8 @@ class CarServiceTest {
         when(excelParserService.extractDataFromExcel(any(InputStream.class))).thenReturn(List.of(excelCarRequest));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new AutoHubException("error")));
 
-        StepVerifier.create(carService.uploadCars(filePart))
+        carService.uploadCars(filePart)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -383,7 +405,8 @@ class CarServiceTest {
         when(reactiveGridFsTemplate.store(any(), anyString()))
                 .thenReturn(Mono.just(new ObjectId("65e8cf871b2c27702941b7a1")));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap()))
+        carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap())
+                .as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
     }
@@ -401,7 +424,8 @@ class CarServiceTest {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap()))
+        carService.updateCar("64f361caf291ae086e179547", multivalueMap.toSingleValueMap())
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -416,7 +440,8 @@ class CarServiceTest {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCarStatus(carStatusUpdate))
+        carService.updateCarStatus(carStatusUpdate)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -431,7 +456,8 @@ class CarServiceTest {
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCarStatus(carStatusUpdate))
+        carService.updateCarStatus(carStatusUpdate)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -448,7 +474,8 @@ class CarServiceTest {
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
 
-        StepVerifier.create(carService.updateCarsStatus(updateCarsRequest))
+        carService.updateCarsStatus(updateCarsRequest)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -465,7 +492,8 @@ class CarServiceTest {
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.error(new RuntimeException()));
 
-        StepVerifier.create(carService.updateCarsStatus(updateCarsRequest))
+        carService.updateCarsStatus(updateCarsRequest)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -483,7 +511,8 @@ class CarServiceTest {
         when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
+        carService.updateCarWhenBookingIsClosed(carUpdateDetails)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -498,7 +527,8 @@ class CarServiceTest {
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
         when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
+        carService.updateCarWhenBookingIsClosed(carUpdateDetails)
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -516,7 +546,8 @@ class CarServiceTest {
         when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.updateCarWhenBookingIsClosed(carUpdateDetails))
+        carService.updateCarWhenBookingIsClosed(carUpdateDetails)
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }
@@ -525,7 +556,8 @@ class CarServiceTest {
     void deleteCarByIdTest_success() {
         when(carRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
 
-        StepVerifier.create(carService.deleteCarById("64f361caf291ae086e179547"))
+        carService.deleteCarById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }
@@ -534,7 +566,8 @@ class CarServiceTest {
     void deleteCarByIdTest_errorOnDeletingById() {
         when(carRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.error(new Throwable()));
 
-        StepVerifier.create(carService.deleteCarById("64f361caf291ae086e179547"))
+        carService.deleteCarById("64f361caf291ae086e179547")
+                .as(StepVerifier::create)
                 .expectError()
                 .verify();
     }

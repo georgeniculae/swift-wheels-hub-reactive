@@ -58,7 +58,7 @@ class RentalOfficeRouterTest {
                 .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
@@ -104,7 +104,7 @@ class RentalOfficeRouterTest {
                 .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
@@ -148,7 +148,7 @@ class RentalOfficeRouterTest {
                 .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
@@ -189,7 +189,7 @@ class RentalOfficeRouterTest {
                 .returnResult(Long.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(5L)
                 .verifyComplete();
     }
@@ -230,7 +230,7 @@ class RentalOfficeRouterTest {
                 .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
@@ -292,7 +292,7 @@ class RentalOfficeRouterTest {
                 .returnResult(RentalOfficeResponse.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectNext(rentalOfficeResponse)
                 .verifyComplete();
     }
@@ -350,7 +350,7 @@ class RentalOfficeRouterTest {
                 .returnResult(Void.class)
                 .getResponseBody();
 
-        StepVerifier.create(responseBody)
+        responseBody.as(StepVerifier::create)
                 .expectComplete()
                 .verify();
     }

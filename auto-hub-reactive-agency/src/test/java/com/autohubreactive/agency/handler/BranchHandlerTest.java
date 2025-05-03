@@ -142,7 +142,8 @@ class BranchHandlerTest {
         when(branchRequestValidator.validateBody(any())).thenReturn(Mono.just(branchRequest));
         when(branchService.saveBranch(any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
-        StepVerifier.create(branchHandler.saveBranch(serverRequest))
+        branchHandler.saveBranch(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -163,7 +164,8 @@ class BranchHandlerTest {
         when(branchRequestValidator.validateBody(any())).thenReturn(Mono.just(branchRequest));
         when(branchService.updateBranch(anyString(), any(BranchRequest.class))).thenReturn(Mono.just(branchResponse));
 
-        StepVerifier.create(branchHandler.updateBranch(serverRequest))
+        branchHandler.updateBranch(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -177,7 +179,8 @@ class BranchHandlerTest {
 
         when(branchService.deleteBranchById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(branchHandler.deleteBranchById(serverRequest))
+        branchHandler.deleteBranchById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

@@ -48,7 +48,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findAllEmployees()).thenReturn(Flux.fromIterable(employeeDtoList));
 
-        StepVerifier.create(employeeHandler.findAllEmployees(serverRequest))
+        employeeHandler.findAllEmployees(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -61,7 +62,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findAllEmployees()).thenReturn(Flux.empty());
 
-        StepVerifier.create(employeeHandler.findAllEmployees(serverRequest))
+        employeeHandler.findAllEmployees(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -78,7 +80,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findEmployeeById(anyString())).thenReturn(Mono.just(employeeDto));
 
-        StepVerifier.create(employeeHandler.findEmployeeById(serverRequest))
+        employeeHandler.findEmployeeById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -95,7 +98,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findEmployeeByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(employeeDto));
 
-        StepVerifier.create(employeeHandler.findEmployeeByFilterInsensitiveCase(serverRequest))
+        employeeHandler.findEmployeeByFilterInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -109,7 +113,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findEmployeeById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(employeeHandler.findEmployeeById(serverRequest))
+        employeeHandler.findEmployeeById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -128,7 +133,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findEmployeesByBranchId(anyString())).thenReturn(Flux.fromIterable(employeeDtoList));
 
-        StepVerifier.create(employeeHandler.findEmployeesByBranchId(serverRequest))
+        employeeHandler.findEmployeesByBranchId(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -142,7 +148,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.findEmployeesByBranchId(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(employeeHandler.findEmployeesByBranchId(serverRequest))
+        employeeHandler.findEmployeesByBranchId(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -155,7 +162,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.countEmployees()).thenReturn(Mono.just(5L));
 
-        StepVerifier.create(employeeHandler.countEmployees(serverRequest))
+        employeeHandler.countEmployees(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -175,7 +183,8 @@ class EmployeeHandlerTest {
         when(employeeRequestValidator.validateBody(any())).thenReturn(Mono.just(employeeRequest));
         when(employeeService.saveEmployee(any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
-        StepVerifier.create(employeeHandler.saveEmployee(serverRequest))
+        employeeHandler.saveEmployee(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -196,7 +205,8 @@ class EmployeeHandlerTest {
         when(employeeRequestValidator.validateBody(any())).thenReturn(Mono.just(employeeRequest));
         when(employeeService.updateEmployee(anyString(), any(EmployeeRequest.class))).thenReturn(Mono.just(employeeResponse));
 
-        StepVerifier.create(employeeHandler.updateEmployee(serverRequest))
+        employeeHandler.updateEmployee(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -210,7 +220,8 @@ class EmployeeHandlerTest {
 
         when(employeeService.deleteEmployeeById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(employeeHandler.deleteEmployeeById(serverRequest))
+        employeeHandler.deleteEmployeeById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }

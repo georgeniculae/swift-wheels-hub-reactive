@@ -48,7 +48,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.findAllRentalOffices()).thenReturn(Flux.fromIterable(rentalOfficeResponses));
 
-        StepVerifier.create(rentalOfficeHandler.findAllRentalOffices(serverRequest))
+        rentalOfficeHandler.findAllRentalOffices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -61,7 +62,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.findAllRentalOffices()).thenReturn(Flux.empty());
 
-        StepVerifier.create(rentalOfficeHandler.findAllRentalOffices(serverRequest))
+        rentalOfficeHandler.findAllRentalOffices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -78,7 +80,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.findRentalOfficeById(anyString())).thenReturn(Mono.just(rentalOfficeResponse));
 
-        StepVerifier.create(rentalOfficeHandler.findRentalOfficeById(serverRequest))
+        rentalOfficeHandler.findRentalOfficeById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -92,7 +95,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.findRentalOfficeById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(rentalOfficeHandler.findRentalOfficeById(serverRequest))
+        rentalOfficeHandler.findRentalOfficeById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -109,7 +113,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.findRentalOfficesByFilterInsensitiveCase(anyString())).thenReturn(Flux.just(rentalOfficeResponse));
 
-        StepVerifier.create(rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(serverRequest))
+        rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -123,7 +128,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.findRentalOfficesByFilterInsensitiveCase(anyString())).thenReturn(Flux.empty());
 
-        StepVerifier.create(rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(serverRequest))
+        rentalOfficeHandler.findRentalOfficesByFilterInsensitiveCase(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is4xxClientError())
                 .verifyComplete();
     }
@@ -136,7 +142,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.countRentalOffices()).thenReturn(Mono.just(2L));
 
-        StepVerifier.create(rentalOfficeHandler.countRentalOffices(serverRequest))
+        rentalOfficeHandler.countRentalOffices(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -156,7 +163,8 @@ class RentalOfficeHandlerTest {
         when(rentalOfficeRequestValidator.validateBody(any())).thenReturn(Mono.just(rentalOfficeRequest));
         when(rentalOfficeService.saveRentalOffice(any(RentalOfficeRequest.class))).thenReturn(Mono.just(rentalOfficeResponse));
 
-        StepVerifier.create(rentalOfficeHandler.saveRentalOffice(serverRequest))
+        rentalOfficeHandler.saveRentalOffice(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -178,7 +186,8 @@ class RentalOfficeHandlerTest {
         when(rentalOfficeService.updateRentalOffice(anyString(), any(RentalOfficeRequest.class)))
                 .thenReturn(Mono.just(rentalOfficeResponse));
 
-        StepVerifier.create(rentalOfficeHandler.updateRentalOffice(serverRequest))
+        rentalOfficeHandler.updateRentalOffice(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
@@ -192,7 +201,8 @@ class RentalOfficeHandlerTest {
 
         when(rentalOfficeService.deleteRentalOfficeById(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(rentalOfficeHandler.deleteRentalOfficeById(serverRequest))
+        rentalOfficeHandler.deleteRentalOfficeById(serverRequest)
+                .as(StepVerifier::create)
                 .expectNextMatches(serverResponse -> serverResponse.statusCode().is2xxSuccessful())
                 .verifyComplete();
     }
