@@ -82,11 +82,7 @@ public class InvoiceHandler {
     public Mono<ServerResponse> closeInvoice(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(InvoiceRequest.class)
                 .flatMap(invoiceRequestValidator::validateBody)
-                .flatMap(invoiceRequest -> invoiceService.closeInvoice(
-                                serverRequest.pathVariable(ID),
-                                invoiceRequest
-                        )
-                )
+                .flatMap(invoiceRequest -> invoiceService.closeInvoice(serverRequest.pathVariable(ID), invoiceRequest))
                 .flatMap(invoiceResponse -> ServerResponse.accepted().bodyValue(invoiceResponse));
     }
 
