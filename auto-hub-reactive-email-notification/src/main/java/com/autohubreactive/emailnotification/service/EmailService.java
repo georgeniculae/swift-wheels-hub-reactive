@@ -1,5 +1,8 @@
 package com.autohubreactive.emailnotification.service;
 
+import com.autohubreactive.dto.EmailResponse;
+import com.autohubreactive.emailnotification.mapper.EmailResponseMapper;
+import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.sendgrid.Method;
@@ -9,9 +12,6 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import com.autohubreactive.dto.EmailResponse;
-import com.autohubreactive.emailnotification.mapper.EmailResponseMapper;
-import com.autohubreactive.exception.AutoHubResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -80,8 +80,8 @@ public class EmailService {
 
     private String getMailBody(Object object) {
         StringWriter stringWriter = new StringWriter();
-
         Mustache mustache = mustacheFactory.compile(MAIL_TEMPLATE_FOLDER + FILE_NAME + MUSTACHE_FORMAT);
+
         try {
             mustache.execute(stringWriter, object).flush();
         } catch (Exception e) {

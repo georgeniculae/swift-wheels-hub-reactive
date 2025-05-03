@@ -9,7 +9,6 @@ import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "updated_outbox")
@@ -22,7 +21,6 @@ public class UpdatedOutbox {
 
     @BsonProperty("_id")
     @BsonId
-    @Version
     private ObjectId id;
 
     private Booking content;

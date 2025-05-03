@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableSchedulerLock(defaultLockAtMostFor = "1m")
+@EnableSchedulerLock(defaultLockAtMostFor = "15s")
 public class ShedLockConfig {
 
     public static final String SHEDLOCK = "shedlock";
