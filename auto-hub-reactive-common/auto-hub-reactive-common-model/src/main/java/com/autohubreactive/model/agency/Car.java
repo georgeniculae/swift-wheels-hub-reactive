@@ -1,4 +1,4 @@
-package com.autohubreactive.model;
+package com.autohubreactive.model.agency;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,20 +11,27 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-@Document(collection = "revenue")
+@Document(collection = "car")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Revenue {
+public class Car {
 
     @BsonProperty("_id")
     @BsonId
     private ObjectId id;
-    private LocalDate dateOfRevenue;
-    private BigDecimal amountFromBooking;
+    private String make;
+    private String model;
+    private BodyType bodyType;
+    private Integer yearOfProduction;
+    private String color;
+    private Integer mileage;
+    private CarStatus carStatus;
+    private BigDecimal amount;
+    private Branch originalBranch;
+    private Branch actualBranch;
 
 }

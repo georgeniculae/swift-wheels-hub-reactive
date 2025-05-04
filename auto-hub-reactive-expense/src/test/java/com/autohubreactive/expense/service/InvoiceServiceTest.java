@@ -7,7 +7,7 @@ import com.autohubreactive.expense.mapper.InvoiceMapper;
 import com.autohubreactive.expense.mapper.InvoiceMapperImpl;
 import com.autohubreactive.expense.repository.InvoiceRepository;
 import com.autohubreactive.expense.util.TestUtil;
-import com.autohubreactive.model.Invoice;
+import com.autohubreactive.model.invoice.Invoice;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

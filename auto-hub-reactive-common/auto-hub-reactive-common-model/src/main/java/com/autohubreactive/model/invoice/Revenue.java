@@ -1,4 +1,4 @@
-package com.autohubreactive.model;
+package com.autohubreactive.model.invoice;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,19 +10,21 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "branch")
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Document(collection = "revenue")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Branch {
+public class Revenue {
 
     @BsonProperty("_id")
     @BsonId
     private ObjectId id;
-    private String name;
-    private String address;
-    private RentalOffice rentalOffice;
+    private LocalDate dateOfRevenue;
+    private BigDecimal amountFromBooking;
 
 }

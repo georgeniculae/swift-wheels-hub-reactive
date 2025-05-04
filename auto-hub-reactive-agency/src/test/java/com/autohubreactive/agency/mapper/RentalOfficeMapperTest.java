@@ -4,7 +4,7 @@ import com.autohubreactive.agency.util.AssertionUtil;
 import com.autohubreactive.agency.util.TestUtil;
 import com.autohubreactive.dto.RentalOfficeRequest;
 import com.autohubreactive.dto.RentalOfficeResponse;
-import com.autohubreactive.model.RentalOffice;
+import com.autohubreactive.model.agency.RentalOffice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

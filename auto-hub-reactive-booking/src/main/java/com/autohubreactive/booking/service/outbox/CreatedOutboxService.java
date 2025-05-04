@@ -11,7 +11,7 @@ import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.CarState;
 import com.autohubreactive.dto.CarStatusUpdate;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
-import com.autohubreactive.model.Booking;
+import com.autohubreactive.model.booking.Booking;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Service;

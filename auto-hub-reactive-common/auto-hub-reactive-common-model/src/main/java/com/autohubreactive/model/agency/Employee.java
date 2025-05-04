@@ -1,4 +1,4 @@
-package com.autohubreactive.model;
+package com.autohubreactive.model.agency;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,29 +9,29 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.NonNull;
 
-import java.math.BigDecimal;
-
-@Document(collection = "car")
+@Document(collection = "employee")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Car {
+public class Employee {
 
     @BsonProperty("_id")
     @BsonId
     private ObjectId id;
-    private String make;
-    private String model;
-    private BodyType bodyType;
-    private Integer yearOfProduction;
-    private String color;
-    private Integer mileage;
-    private CarStatus carStatus;
-    private BigDecimal amount;
-    private Branch originalBranch;
-    private Branch actualBranch;
+
+    @NonNull
+    private String firstName;
+
+    @NonNull
+    private String lastName;
+
+    @NonNull
+    private String jobPosition;
+
+    private Branch workingBranch;
 
 }

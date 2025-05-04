@@ -1,6 +1,6 @@
 package com.autohubreactive.audit.repository;
 
-import com.autohubreactive.model.CustomerAuditLogInfo;
+import com.autohubreactive.model.audit.CustomerAuditLogInfo;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 

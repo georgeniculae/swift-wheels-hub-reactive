@@ -1,7 +1,7 @@
 package com.autohubreactive.agency.repository;
 
-import com.autohubreactive.model.Car;
-import com.autohubreactive.model.CarStatus;
+import com.autohubreactive.model.agency.Car;
+import com.autohubreactive.model.agency.CarStatus;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

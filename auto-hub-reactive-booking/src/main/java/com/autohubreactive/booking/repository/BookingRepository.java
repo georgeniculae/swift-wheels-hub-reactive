@@ -1,7 +1,7 @@
 package com.autohubreactive.booking.repository;
 
-import com.autohubreactive.model.Booking;
-import com.autohubreactive.model.BookingStatus;
+import com.autohubreactive.model.booking.Booking;
+import com.autohubreactive.model.booking.BookingStatus;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

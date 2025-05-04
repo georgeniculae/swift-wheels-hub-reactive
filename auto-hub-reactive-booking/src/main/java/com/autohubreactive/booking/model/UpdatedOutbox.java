@@ -1,6 +1,6 @@
 package com.autohubreactive.booking.model;
 
-import com.autohubreactive.model.Booking;
+import com.autohubreactive.model.booking.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

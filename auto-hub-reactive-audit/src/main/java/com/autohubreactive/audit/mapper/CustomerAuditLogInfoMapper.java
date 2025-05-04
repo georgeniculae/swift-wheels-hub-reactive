@@ -1,7 +1,7 @@
 package com.autohubreactive.audit.mapper;
 
 import com.autohubreactive.dto.AuditLogInfoRequest;
-import com.autohubreactive.model.CustomerAuditLogInfo;
+import com.autohubreactive.model.audit.CustomerAuditLogInfo;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

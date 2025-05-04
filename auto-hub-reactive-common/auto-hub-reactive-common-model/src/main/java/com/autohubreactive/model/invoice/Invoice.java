@@ -1,4 +1,4 @@
-package com.autohubreactive.model;
+package com.autohubreactive.model.invoice;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

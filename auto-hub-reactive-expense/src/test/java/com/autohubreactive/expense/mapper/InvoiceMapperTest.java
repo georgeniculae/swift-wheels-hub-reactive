@@ -5,7 +5,7 @@ import com.autohubreactive.dto.InvoiceReprocessRequest;
 import com.autohubreactive.dto.InvoiceResponse;
 import com.autohubreactive.expense.util.AssertionUtil;
 import com.autohubreactive.expense.util.TestUtil;
-import com.autohubreactive.model.Invoice;
+import com.autohubreactive.model.invoice.Invoice;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

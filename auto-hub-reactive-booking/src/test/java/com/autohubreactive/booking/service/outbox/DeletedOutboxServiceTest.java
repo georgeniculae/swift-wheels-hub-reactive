@@ -5,7 +5,7 @@ import com.autohubreactive.booking.producer.bookingprocessing.DeletedBookingProd
 import com.autohubreactive.booking.repository.BookingRepository;
 import com.autohubreactive.booking.repository.DeletedOutboxRepository;
 import com.autohubreactive.booking.util.TestUtil;
-import com.autohubreactive.model.Booking;
+import com.autohubreactive.model.booking.Booking;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

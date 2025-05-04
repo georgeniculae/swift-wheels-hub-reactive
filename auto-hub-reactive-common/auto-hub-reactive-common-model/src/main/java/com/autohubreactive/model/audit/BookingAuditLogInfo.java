@@ -1,4 +1,4 @@
-package com.autohubreactive.model;
+package com.autohubreactive.model.audit;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Document(collection = "customer_audit_log_info")
+@Document(collection = "booking_audit_log_info")
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
-public class CustomerAuditLogInfo {
+public class BookingAuditLogInfo {
 
     @BsonProperty("_id")
     @BsonId
@@ -29,22 +29,22 @@ public class CustomerAuditLogInfo {
     @NonNull
     private String methodName;
 
-    private String username;
-
     private LocalDateTime timestamp;
+
+    private String username;
 
     @Builder.Default
     private List<String> parametersValues = new ArrayList<>();
 
-    public CustomerAuditLogInfo(ObjectId id,
-                                @NonNull String methodName,
-                                String username,
-                                LocalDateTime timestamp,
-                                List<String> parametersValues) {
+    public BookingAuditLogInfo(ObjectId id,
+                               @NonNull String methodName,
+                               LocalDateTime timestamp,
+                               String username,
+                               List<String> parametersValues) {
         this.id = id;
         this.methodName = methodName;
-        this.username = username;
         this.timestamp = timestamp;
+        this.username = username;
         this.parametersValues = Objects.requireNonNullElseGet(parametersValues, ArrayList::new);
     }
 

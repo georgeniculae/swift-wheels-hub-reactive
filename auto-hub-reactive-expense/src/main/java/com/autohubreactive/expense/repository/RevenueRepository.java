@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.repository;
 
-import com.autohubreactive.model.Revenue;
+import com.autohubreactive.model.invoice.Revenue;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

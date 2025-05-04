@@ -2,8 +2,8 @@ package com.autohubreactive.agency.mapper;
 
 import com.autohubreactive.dto.BranchRequest;
 import com.autohubreactive.dto.BranchResponse;
-import com.autohubreactive.model.Branch;
-import com.autohubreactive.model.RentalOffice;
+import com.autohubreactive.model.agency.Branch;
+import com.autohubreactive.model.agency.RentalOffice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

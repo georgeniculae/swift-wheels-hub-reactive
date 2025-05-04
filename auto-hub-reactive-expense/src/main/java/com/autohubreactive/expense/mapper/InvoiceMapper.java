@@ -4,7 +4,7 @@ import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.InvoiceReprocessRequest;
 import com.autohubreactive.dto.InvoiceRequest;
 import com.autohubreactive.dto.InvoiceResponse;
-import com.autohubreactive.model.Invoice;
+import com.autohubreactive.model.invoice.Invoice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

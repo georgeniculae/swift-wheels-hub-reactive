@@ -1,6 +1,6 @@
 package com.autohubreactive.agency.repository;
 
-import com.autohubreactive.model.Employee;
+import com.autohubreactive.model.agency.Employee;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

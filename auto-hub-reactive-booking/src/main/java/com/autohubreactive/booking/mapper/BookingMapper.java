@@ -6,7 +6,7 @@ import com.autohubreactive.dto.BookingRequest;
 import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.CreatedBookingReprocessRequest;
 import com.autohubreactive.dto.UpdatedBookingReprocessRequest;
-import com.autohubreactive.model.Booking;
+import com.autohubreactive.model.booking.Booking;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

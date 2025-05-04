@@ -3,7 +3,7 @@ package com.autohubreactive.expense.mapper;
 import com.autohubreactive.dto.RevenueResponse;
 import com.autohubreactive.expense.util.AssertionUtil;
 import com.autohubreactive.expense.util.TestUtil;
-import com.autohubreactive.model.Revenue;
+import com.autohubreactive.model.invoice.Revenue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

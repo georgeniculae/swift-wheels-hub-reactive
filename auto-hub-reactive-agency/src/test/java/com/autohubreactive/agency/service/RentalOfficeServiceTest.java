@@ -7,7 +7,7 @@ import com.autohubreactive.agency.repository.RentalOfficeRepository;
 import com.autohubreactive.agency.util.TestUtil;
 import com.autohubreactive.dto.RentalOfficeRequest;
 import com.autohubreactive.dto.RentalOfficeResponse;
-import com.autohubreactive.model.RentalOffice;
+import com.autohubreactive.model.agency.RentalOffice;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

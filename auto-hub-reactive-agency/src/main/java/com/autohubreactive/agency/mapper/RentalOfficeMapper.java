@@ -2,7 +2,7 @@ package com.autohubreactive.agency.mapper;
 
 import com.autohubreactive.dto.RentalOfficeRequest;
 import com.autohubreactive.dto.RentalOfficeResponse;
-import com.autohubreactive.model.RentalOffice;
+import com.autohubreactive.model.agency.RentalOffice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.mapstruct.InjectionStrategy;

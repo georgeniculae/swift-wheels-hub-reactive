@@ -11,7 +11,7 @@ import com.autohubreactive.expense.repository.InvoiceRepository;
 import com.autohubreactive.lib.aspect.LogActivity;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.MongoUtil;
-import com.autohubreactive.model.Invoice;
+import com.autohubreactive.model.invoice.Invoice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;

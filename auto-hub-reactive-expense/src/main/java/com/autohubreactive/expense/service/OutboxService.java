@@ -11,7 +11,7 @@ import com.autohubreactive.expense.producer.CarStatusUpdateProducerService;
 import com.autohubreactive.expense.producer.FailedInvoiceDlqProducerService;
 import com.autohubreactive.expense.producer.InvoiceProducerService;
 import com.autohubreactive.expense.repository.OutboxRepository;
-import com.autohubreactive.model.Invoice;
+import com.autohubreactive.model.invoice.Invoice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

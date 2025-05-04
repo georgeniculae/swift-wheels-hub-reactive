@@ -8,7 +8,7 @@ import com.autohubreactive.exception.AutoHubException;
 import com.autohubreactive.exception.AutoHubNotFoundException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.MongoUtil;
-import com.autohubreactive.model.Employee;
+import com.autohubreactive.model.agency.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

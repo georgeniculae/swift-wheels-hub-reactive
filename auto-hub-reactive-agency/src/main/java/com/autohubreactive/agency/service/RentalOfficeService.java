@@ -8,7 +8,7 @@ import com.autohubreactive.dto.RentalOfficeResponse;
 import com.autohubreactive.exception.AutoHubNotFoundException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.MongoUtil;
-import com.autohubreactive.model.RentalOffice;
+import com.autohubreactive.model.agency.RentalOffice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

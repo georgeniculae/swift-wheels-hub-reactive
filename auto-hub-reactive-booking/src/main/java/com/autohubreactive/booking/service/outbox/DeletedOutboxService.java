@@ -5,7 +5,7 @@ import com.autohubreactive.booking.producer.bookingprocessing.DeletedBookingProd
 import com.autohubreactive.booking.repository.BookingRepository;
 import com.autohubreactive.booking.repository.DeletedOutboxRepository;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
-import com.autohubreactive.model.Booking;
+import com.autohubreactive.model.booking.Booking;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Service;

@@ -12,7 +12,7 @@ import com.autohubreactive.booking.util.TestUtil;
 import com.autohubreactive.dto.BookingResponse;
 import com.autohubreactive.dto.UpdateCarsRequest;
 import com.autohubreactive.dto.UpdatedBookingReprocessRequest;
-import com.autohubreactive.model.Booking;
+import com.autohubreactive.model.booking.Booking;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
