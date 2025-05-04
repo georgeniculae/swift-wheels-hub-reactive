@@ -26,7 +26,7 @@ public class UpdatedBookingProducerService {
     private String mimeType;
 
     public Mono<Void> sendBookingResponse(BookingResponse bookingResponse) {
-        return Mono.fromCallable(
+        return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
                                 buildMessage(bookingResponse),

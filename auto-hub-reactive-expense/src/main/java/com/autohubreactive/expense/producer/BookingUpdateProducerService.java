@@ -28,7 +28,7 @@ public class BookingUpdateProducerService {
     private String mimeType;
 
     public Mono<Void> sendBookingClosingDetails(BookingClosingDetails bookingClosingDetails) {
-        return Mono.fromCallable(
+        return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
                                 buildMessage(bookingClosingDetails),

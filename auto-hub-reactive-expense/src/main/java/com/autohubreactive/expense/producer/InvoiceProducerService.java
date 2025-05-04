@@ -26,7 +26,7 @@ public class InvoiceProducerService {
     private String mimeType;
 
     public Mono<Void> sendInvoice(InvoiceResponse invoiceResponse) {
-        return Mono.fromCallable(
+        return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
                                 buildMessage(invoiceResponse),

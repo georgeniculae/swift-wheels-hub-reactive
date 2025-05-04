@@ -25,7 +25,7 @@ public class DeletedBookingProducerService {
     private String mimeType;
 
     public Mono<Void> sendMessage(String bookingId) {
-        return Mono.fromCallable(
+        return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
                                 buildMessage(bookingId),

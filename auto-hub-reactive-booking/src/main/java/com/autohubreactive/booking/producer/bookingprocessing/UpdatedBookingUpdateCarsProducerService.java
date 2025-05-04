@@ -28,7 +28,7 @@ public class UpdatedBookingUpdateCarsProducerService {
     private String mimeType;
 
     public Mono<Void> sendUpdateCarsRequest(UpdateCarsRequest updateCarsRequest) {
-        return Mono.fromCallable(
+        return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
                                 buildMessage(updateCarsRequest),

@@ -27,7 +27,7 @@ public class UsernameProducerService {
     private String mimeType;
 
     public Mono<Void> sendUsername(String username) {
-        return Mono.fromCallable(
+        return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
                                 buildMessage(username),
