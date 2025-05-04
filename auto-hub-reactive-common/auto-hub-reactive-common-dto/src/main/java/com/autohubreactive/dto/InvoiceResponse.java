@@ -42,9 +42,7 @@ public record InvoiceResponse(
 
         BigDecimal rentalCarPrice,
 
-        String comments,
-
-        InvoiceProcessState invoiceProcessState
+        String comments
 ) {
 
     @Override
@@ -65,8 +63,7 @@ public record InvoiceResponse(
                 ", additionalPayment=" + additionalPayment +
                 ", totalAmount=" + totalAmount +
                 ", rentalCarPrice=" + rentalCarPrice +
-                ", comments='" + comments + '\'' +
-                ", invoiceProcessState=" + invoiceProcessState +
+                ", comments='" + comments +
                 '}';
     }
 
