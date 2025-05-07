@@ -1,0 +1,144 @@
+server:
+  port: ${random.int(8189,9090)}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: auto-hub-reactive-agency
+  webflux:
+    base-path: /agency
+  data:
+    mongodb:
+      database: auto_hub_agency
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubagency.okteugn.mongodb.net/?retryWrites=true&w=majority&appName=AutoHubAgency
+  codec:
+    max-in-memory-size: 20MB
+  cloud:
+    loadbalancer:
+      enabled: true
+      cache:
+        enabled: true
+    consul:
+      enabled: true
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        prefer-ip-address: true
+        instanceId: ${spring.application.name}-id
+        serviceName: ${spring.application.name}
+        healthCheckPath: /actuator/health
+        healthCheckInterval: 5s
+        hostname: localhost
+        failFast: false
+    function:
+      definition: updatedCarBookingSavedConsumer;updatedCarBookingUpdatedConsumer;updatedCarInvoiceClosedConsumer
+    stream:
+      defaultBinder: kafka
+      bindings:
+        updatedCarBookingSavedConsumer-in-0:
+          binder: kafka
+          destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AGENCY_CONSUMER_GROUP}
+        updatedCarBookingUpdatedConsumer-in-0:
+          binder: kafka
+          destination: ${UPDATE_BOOKING_CARS_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AGENCY_CONSUMER_GROUP}
+        updatedCarInvoiceClosedConsumer-in-0:
+          binder: kafka
+          destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AGENCY_CONSUMER_GROUP}
+      kafka:
+        binder:
+          auto-create-topics: true
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: true
+            auto.offset.reset: latest
+        bindings:
+          updatedCarBookingSavedConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          updatedCarBookingUpdatedConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          updatedCarInvoiceClosedConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      enable-auto-commit: false
+  web:
+    resources:
+      add-mappings: false
+  docker:
+    compose:
+      enabled: false
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /definition/swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /definition/v3/api-docs
+
+management:
+  server:
+    port: ${server.port}
+  endpoint:
+    health:
+      group:
+        custom:
+          show-components: always
+          show-details: always
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: ERROR
+        web: ERROR
+        data:
+          mongodb:
+            core:
+              ReactiveMongoTemplate: ERROR
+
+apikey:
+  secret: ${API_KEY_SECRET}
+
+cors:
+  mapping: '/**'
+  allowedOrigins: '*'
+  allowedMethods: '*'
+  allowedHeaders: '*'
+  codecMaxInMemorySizeInMb: 20
+
+mongo-operations:
+  enabled: true
+
+migration:
+  packageScan: com.autohubreactive.agency.migration

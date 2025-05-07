@@ -1,0 +1,12 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "dateOfBooking": "2099-02-20",
+  "status": "IN_PROGRESS",
+  "customerUsername": "admin",
+  "customerEmail": "admin@mail.com",
+  "actualCarId": "64f361caf291ae086e179547",
+  "dateFrom": "2099-02-21",
+  "dateTo": "2099-02-22",
+  "rentalCarPrice": 500,
+  "rentalBranchId": "64f361caf291ae086e179547"
+}

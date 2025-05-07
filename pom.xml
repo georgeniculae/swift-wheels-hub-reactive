@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.autohub</groupId>
+        <artifactId>auto-hub-reactive-parent</artifactId>
+        <version>0.0.20-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>auto-hub-reactive</artifactId>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>Auto Hub Reactive</name>
+
+    <modules>
+        <module>auto-hub-reactive-common</module>
+        <module>auto-hub-reactive-api-gateway</module>
+        <module>auto-hub-reactive-agency</module>
+        <module>auto-hub-reactive-ai</module>
+        <module>auto-hub-reactive-audit</module>
+        <module>auto-hub-reactive-booking</module>
+        <module>auto-hub-reactive-customer</module>
+        <module>auto-hub-reactive-email-notification</module>
+        <module>auto-hub-reactive-expense</module>
+        <module>auto-hub-reactive-request-validator</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/georgeniculae/*</url>
+        </repository>
+    </repositories>
+
+    <scm>
+        <developerConnection>
+            scm:git:https://github.com/georgeniculae/auto-hub-reactive-parent
+        </developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>auto-hub-reactive</name>
+            <url>https://maven.pkg.github.com/georgeniculae/auto-hub-reactive-parent</url>
+        </repository>
+    </distributionManagement>
+
+</project>

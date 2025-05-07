@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      - 'MONGODB_DATABASE=auto_hub_agency'
+      - 'MONGODB_USERNAME=admin'
+      - 'MONGODB_PASSWORD=password'
+      - 'MONGODB_URI=mongodb://localhost:27017/auto_hub_agency'
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb:/data/auto_hub_agency
+
+volumes:
+  mongodb:
+    driver: local

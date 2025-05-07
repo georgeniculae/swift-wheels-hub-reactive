@@ -1,0 +1,13 @@
+{
+  "id": "64f361caf291ae086e179547",
+  "make": "Volkswagen",
+  "model": "Golf",
+  "bodyCategory": "HATCHBACK",
+  "yearOfProduction": 2010,
+  "color": "black",
+  "mileage": 270000,
+  "carState": "AVAILABLE",
+  "amount": 500,
+  "originalBranchId": "64f361caf291ae086e179547",
+  "actualBranchId": "64f361caf291ae086e179547"
+}
