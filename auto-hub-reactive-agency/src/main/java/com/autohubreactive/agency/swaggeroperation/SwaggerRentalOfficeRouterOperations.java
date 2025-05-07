@@ -1,8 +1,8 @@
 package com.autohubreactive.agency.swaggeroperation;
 
 import com.autohubreactive.agency.handler.RentalOfficeHandler;
-import com.autohubreactive.dto.RentalOfficeRequest;
-import com.autohubreactive.dto.RentalOfficeResponse;
+import com.autohubreactive.dto.agency.RentalOfficeRequest;
+import com.autohubreactive.dto.agency.RentalOfficeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

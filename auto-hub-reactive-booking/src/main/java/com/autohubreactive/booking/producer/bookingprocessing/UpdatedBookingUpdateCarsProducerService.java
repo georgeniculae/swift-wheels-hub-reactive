@@ -1,6 +1,6 @@
 package com.autohubreactive.booking.producer.bookingprocessing;
 
-import com.autohubreactive.dto.UpdateCarsRequest;
+import com.autohubreactive.dto.common.UpdateCarsRequest;
 import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

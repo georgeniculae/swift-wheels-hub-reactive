@@ -1,8 +1,8 @@
 package com.autohubreactive.expense.mapper;
 
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.InvoiceReprocessRequest;
-import com.autohubreactive.dto.InvoiceResponse;
+import com.autohubreactive.dto.common.BookingResponse;
+import com.autohubreactive.dto.invoice.InvoiceReprocessRequest;
+import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.expense.util.AssertionUtil;
 import com.autohubreactive.expense.util.TestUtil;
 import com.autohubreactive.model.invoice.Invoice;

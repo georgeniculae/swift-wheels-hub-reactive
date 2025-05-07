@@ -1,6 +1,6 @@
 package com.autohubreactive.lib.service;
 
-import com.autohubreactive.dto.AuditLogInfoRequest;
+import com.autohubreactive.dto.common.AuditLogInfoRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

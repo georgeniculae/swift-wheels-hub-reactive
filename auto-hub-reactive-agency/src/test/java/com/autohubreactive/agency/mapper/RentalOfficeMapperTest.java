@@ -2,8 +2,8 @@ package com.autohubreactive.agency.mapper;
 
 import com.autohubreactive.agency.util.AssertionUtil;
 import com.autohubreactive.agency.util.TestUtil;
-import com.autohubreactive.dto.RentalOfficeRequest;
-import com.autohubreactive.dto.RentalOfficeResponse;
+import com.autohubreactive.dto.agency.RentalOfficeRequest;
+import com.autohubreactive.dto.agency.RentalOfficeResponse;
 import com.autohubreactive.model.agency.RentalOffice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

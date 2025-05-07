@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.handler;
 
-import com.autohubreactive.dto.InvoiceRequest;
+import com.autohubreactive.dto.invoice.InvoiceRequest;
 import com.autohubreactive.expense.service.InvoiceService;
 import com.autohubreactive.expense.validator.InvoiceRequestValidator;
 import lombok.RequiredArgsConstructor;

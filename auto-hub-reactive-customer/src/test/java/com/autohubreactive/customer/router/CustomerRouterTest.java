@@ -2,9 +2,9 @@ package com.autohubreactive.customer.router;
 
 import com.autohubreactive.customer.handler.CustomerHandler;
 import com.autohubreactive.customer.util.TestUtil;
-import com.autohubreactive.dto.RegisterRequest;
-import com.autohubreactive.dto.RegistrationResponse;
-import com.autohubreactive.dto.UserInfo;
+import com.autohubreactive.dto.customer.RegisterRequest;
+import com.autohubreactive.dto.customer.RegistrationResponse;
+import com.autohubreactive.dto.customer.UserInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

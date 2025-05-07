@@ -3,7 +3,7 @@ package com.autohubreactive.agency.router;
 import com.autohubreactive.agency.handler.CarHandler;
 import com.autohubreactive.agency.util.TestData;
 import com.autohubreactive.agency.util.TestUtil;
-import com.autohubreactive.dto.CarResponse;
+import com.autohubreactive.dto.agency.CarResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

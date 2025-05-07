@@ -1,8 +1,8 @@
 package com.autohubreactive.agency.util;
 
-import com.autohubreactive.dto.BodyCategory;
-import com.autohubreactive.dto.CarState;
-import com.autohubreactive.dto.ExcelCarRequest;
+import com.autohubreactive.dto.agency.BodyCategory;
+import com.autohubreactive.dto.agency.CarState;
+import com.autohubreactive.dto.agency.ExcelCarRequest;
 import org.bson.types.Binary;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;

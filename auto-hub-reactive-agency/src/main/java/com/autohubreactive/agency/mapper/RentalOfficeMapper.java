@@ -1,7 +1,7 @@
 package com.autohubreactive.agency.mapper;
 
-import com.autohubreactive.dto.RentalOfficeRequest;
-import com.autohubreactive.dto.RentalOfficeResponse;
+import com.autohubreactive.dto.agency.RentalOfficeRequest;
+import com.autohubreactive.dto.agency.RentalOfficeResponse;
 import com.autohubreactive.model.agency.RentalOffice;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;

@@ -1,8 +1,8 @@
 package com.autohub.ai.service;
 
-import com.autohubreactive.dto.CarResponse;
-import com.autohubreactive.dto.CarSuggestionResponse;
-import com.autohubreactive.dto.TripInfo;
+import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.CarSuggestionResponse;
+import com.autohubreactive.dto.ai.TripInfo;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

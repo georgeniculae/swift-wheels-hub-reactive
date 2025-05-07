@@ -1,13 +1,13 @@
 package com.autohubreactive.agency.util;
 
-import com.autohubreactive.dto.BranchRequest;
-import com.autohubreactive.dto.BranchResponse;
-import com.autohubreactive.dto.CarRequest;
-import com.autohubreactive.dto.CarResponse;
-import com.autohubreactive.dto.EmployeeRequest;
-import com.autohubreactive.dto.EmployeeResponse;
-import com.autohubreactive.dto.RentalOfficeRequest;
-import com.autohubreactive.dto.RentalOfficeResponse;
+import com.autohubreactive.dto.agency.BranchRequest;
+import com.autohubreactive.dto.agency.BranchResponse;
+import com.autohubreactive.dto.agency.CarRequest;
+import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.agency.EmployeeRequest;
+import com.autohubreactive.dto.agency.EmployeeResponse;
+import com.autohubreactive.dto.agency.RentalOfficeRequest;
+import com.autohubreactive.dto.agency.RentalOfficeResponse;
 import com.autohubreactive.model.agency.Branch;
 import com.autohubreactive.model.agency.Car;
 import com.autohubreactive.model.agency.Employee;

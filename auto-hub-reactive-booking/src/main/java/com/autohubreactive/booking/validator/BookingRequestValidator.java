@@ -1,6 +1,6 @@
 package com.autohubreactive.booking.validator;
 
-import com.autohubreactive.dto.BookingRequest;
+import com.autohubreactive.dto.booking.BookingRequest;
 import com.autohubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

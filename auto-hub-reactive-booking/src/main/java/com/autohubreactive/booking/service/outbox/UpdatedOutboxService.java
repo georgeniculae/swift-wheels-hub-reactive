@@ -7,8 +7,8 @@ import com.autohubreactive.booking.producer.bookingprocessing.UpdatedBookingUpda
 import com.autohubreactive.booking.producer.dlq.FailedUpdatedBookingDlqProducerService;
 import com.autohubreactive.booking.repository.BookingRepository;
 import com.autohubreactive.booking.repository.UpdateOutboxRepository;
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.UpdateCarsRequest;
+import com.autohubreactive.dto.common.BookingResponse;
+import com.autohubreactive.dto.common.UpdateCarsRequest;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.model.booking.Booking;
 import lombok.extern.slf4j.Slf4j;

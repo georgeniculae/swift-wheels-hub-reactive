@@ -1,8 +1,8 @@
 package com.autohubreactive.agency.swaggeroperation;
 
 import com.autohubreactive.agency.handler.EmployeeHandler;
-import com.autohubreactive.dto.EmployeeRequest;
-import com.autohubreactive.dto.EmployeeResponse;
+import com.autohubreactive.dto.agency.EmployeeRequest;
+import com.autohubreactive.dto.agency.EmployeeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

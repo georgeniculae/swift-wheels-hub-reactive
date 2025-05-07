@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.producer;
 
-import com.autohubreactive.dto.BookingClosingDetails;
+import com.autohubreactive.dto.common.BookingClosingDetails;
 import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

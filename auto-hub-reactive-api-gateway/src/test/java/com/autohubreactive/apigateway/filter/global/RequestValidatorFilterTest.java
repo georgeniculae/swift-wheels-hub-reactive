@@ -1,6 +1,6 @@
 package com.autohubreactive.apigateway.filter.global;
 
-import com.autohubreactive.dto.RequestValidationReport;
+import com.autohubreactive.dto.common.RequestValidationReport;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.handler;
 
-import com.autohubreactive.dto.RevenueResponse;
+import com.autohubreactive.dto.invoice.RevenueResponse;
 import com.autohubreactive.expense.service.RevenueService;
 import com.autohubreactive.expense.util.TestUtil;
 import org.junit.jupiter.api.Test;

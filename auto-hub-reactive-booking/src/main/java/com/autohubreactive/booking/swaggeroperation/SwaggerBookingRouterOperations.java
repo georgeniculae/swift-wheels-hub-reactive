@@ -1,10 +1,9 @@
 package com.autohubreactive.booking.swaggeroperation;
 
 import com.autohubreactive.booking.handler.BookingHandler;
-import com.autohubreactive.dto.BookingClosingDetails;
-import com.autohubreactive.dto.BookingRequest;
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.BookingUpdateResponse;
+import com.autohubreactive.dto.booking.BookingRequest;
+import com.autohubreactive.dto.common.BookingClosingDetails;
+import com.autohubreactive.dto.common.BookingResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -335,7 +334,7 @@ import java.time.LocalDate;
                                         @ApiResponse(
                                                 responseCode = "200",
                                                 description = "Successful",
-                                                content = @Content(schema = @Schema(implementation = BookingUpdateResponse.class))
+                                                content = @Content(schema = @Schema())
                                         ),
                                         @ApiResponse(
                                                 responseCode = "400",

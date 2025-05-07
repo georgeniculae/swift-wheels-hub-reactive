@@ -1,6 +1,6 @@
 package com.autohubreactive.requestvalidator.router;
 
-import com.autohubreactive.dto.RequestValidationReport;
+import com.autohubreactive.dto.common.RequestValidationReport;
 import com.autohubreactive.requestvalidator.handler.RequestValidatorHandler;
 import com.autohubreactive.requestvalidator.util.TestUtil;
 import org.junit.jupiter.api.Test;

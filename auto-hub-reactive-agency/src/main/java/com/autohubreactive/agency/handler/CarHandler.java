@@ -1,7 +1,7 @@
 package com.autohubreactive.agency.handler;
 
 import com.autohubreactive.agency.service.CarService;
-import com.autohubreactive.dto.CarResponse;
+import com.autohubreactive.dto.agency.CarResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.codec.multipart.FilePart;

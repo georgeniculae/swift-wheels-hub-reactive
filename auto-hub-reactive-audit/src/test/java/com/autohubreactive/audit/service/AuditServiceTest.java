@@ -10,7 +10,7 @@ import com.autohubreactive.audit.repository.BookingAuditLogInfoRepository;
 import com.autohubreactive.audit.repository.CustomerAuditLogInfoRepository;
 import com.autohubreactive.audit.repository.ExpenseAuditLogInfoRepository;
 import com.autohubreactive.audit.util.TestUtil;
-import com.autohubreactive.dto.AuditLogInfoRequest;
+import com.autohubreactive.dto.common.AuditLogInfoRequest;
 import com.autohubreactive.model.audit.BookingAuditLogInfo;
 import com.autohubreactive.model.audit.CustomerAuditLogInfo;
 import com.autohubreactive.model.audit.ExpenseAuditLogInfo;

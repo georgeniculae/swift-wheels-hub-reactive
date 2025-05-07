@@ -1,7 +1,7 @@
 package com.autohub.ai.swaggerannotation;
 
 import com.autohub.ai.handler.CarSuggestionHandler;
-import com.autohubreactive.dto.CarSuggestionResponse;
+import com.autohubreactive.dto.ai.CarSuggestionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

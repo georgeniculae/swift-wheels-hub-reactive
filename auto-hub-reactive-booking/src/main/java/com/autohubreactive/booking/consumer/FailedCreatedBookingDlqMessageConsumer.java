@@ -1,7 +1,7 @@
 package com.autohubreactive.booking.consumer;
 
 import com.autohubreactive.booking.service.dlq.CreatedBookingReprocessService;
-import com.autohubreactive.dto.CreatedBookingReprocessRequest;
+import com.autohubreactive.dto.booking.CreatedBookingReprocessRequest;
 import com.autohubreactive.lib.retry.RetryHandler;
 import com.autohubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;

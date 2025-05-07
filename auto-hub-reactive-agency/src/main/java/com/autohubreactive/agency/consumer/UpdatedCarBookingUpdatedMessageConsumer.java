@@ -1,7 +1,7 @@
 package com.autohubreactive.agency.consumer;
 
 import com.autohubreactive.agency.service.CarService;
-import com.autohubreactive.dto.UpdateCarsRequest;
+import com.autohubreactive.dto.common.UpdateCarsRequest;
 import com.autohubreactive.lib.retry.RetryHandler;
 import com.autohubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;

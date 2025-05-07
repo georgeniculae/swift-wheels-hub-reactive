@@ -2,7 +2,7 @@ package com.autohubreactive.agency.router;
 
 import com.autohubreactive.agency.handler.RentalOfficeHandler;
 import com.autohubreactive.agency.util.TestUtil;
-import com.autohubreactive.dto.RentalOfficeResponse;
+import com.autohubreactive.dto.agency.RentalOfficeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

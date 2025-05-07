@@ -2,8 +2,8 @@ package com.autohubreactive.booking.handler;
 
 import com.autohubreactive.booking.service.bookingprocessing.BookingService;
 import com.autohubreactive.booking.validator.BookingRequestValidator;
-import com.autohubreactive.dto.AuthenticationInfo;
-import com.autohubreactive.dto.BookingRequest;
+import com.autohubreactive.dto.common.AuthenticationInfo;
+import com.autohubreactive.dto.booking.BookingRequest;
 import com.autohubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;

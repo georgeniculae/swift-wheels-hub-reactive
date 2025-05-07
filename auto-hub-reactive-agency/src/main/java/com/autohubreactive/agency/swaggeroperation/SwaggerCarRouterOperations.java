@@ -1,9 +1,9 @@
 package com.autohubreactive.agency.swaggeroperation;
 
 import com.autohubreactive.agency.handler.CarHandler;
-import com.autohubreactive.dto.AvailableCarInfo;
-import com.autohubreactive.dto.CarRequest;
-import com.autohubreactive.dto.CarResponse;
+import com.autohubreactive.dto.common.AvailableCarInfo;
+import com.autohubreactive.dto.agency.CarRequest;
+import com.autohubreactive.dto.agency.CarResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

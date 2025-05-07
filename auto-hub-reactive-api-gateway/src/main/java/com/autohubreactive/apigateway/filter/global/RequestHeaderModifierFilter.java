@@ -1,7 +1,7 @@
 package com.autohubreactive.apigateway.filter.global;
 
 import com.autohubreactive.apigateway.security.JwtAuthenticationTokenConverter;
-import com.autohubreactive.dto.AuthenticationInfo;
+import com.autohubreactive.dto.common.AuthenticationInfo;
 import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;

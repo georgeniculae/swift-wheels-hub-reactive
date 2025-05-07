@@ -1,6 +1,6 @@
 package com.autohubreactive.booking.producer.bookingprocessing;
 
-import com.autohubreactive.dto.BookingResponse;
+import com.autohubreactive.dto.common.BookingResponse;
 import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.consumer;
 
-import com.autohubreactive.dto.InvoiceReprocessRequest;
+import com.autohubreactive.dto.invoice.InvoiceReprocessRequest;
 import com.autohubreactive.expense.service.InvoiceReprocessingService;
 import com.autohubreactive.lib.retry.RetryHandler;
 import com.autohubreactive.lib.util.KafkaUtil;

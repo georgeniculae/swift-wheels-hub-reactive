@@ -1,6 +1,6 @@
 package com.autohub.ai.service;
 
-import com.autohubreactive.dto.CarResponse;
+import com.autohubreactive.dto.agency.CarResponse;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;

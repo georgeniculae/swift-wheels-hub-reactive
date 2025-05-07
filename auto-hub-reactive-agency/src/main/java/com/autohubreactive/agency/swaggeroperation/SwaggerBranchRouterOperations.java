@@ -1,8 +1,8 @@
 package com.autohubreactive.agency.swaggeroperation;
 
 import com.autohubreactive.agency.handler.BranchHandler;
-import com.autohubreactive.dto.BranchRequest;
-import com.autohubreactive.dto.BranchResponse;
+import com.autohubreactive.dto.agency.BranchRequest;
+import com.autohubreactive.dto.agency.BranchResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

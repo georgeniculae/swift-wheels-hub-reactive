@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.producer;
 
-import com.autohubreactive.dto.CarUpdateDetails;
+import com.autohubreactive.dto.common.CarUpdateDetails;
 import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

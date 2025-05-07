@@ -2,7 +2,7 @@ package com.autohubreactive.agency.handler;
 
 import com.autohubreactive.agency.service.EmployeeService;
 import com.autohubreactive.agency.validator.EmployeeRequestValidator;
-import com.autohubreactive.dto.EmployeeRequest;
+import com.autohubreactive.dto.agency.EmployeeRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;

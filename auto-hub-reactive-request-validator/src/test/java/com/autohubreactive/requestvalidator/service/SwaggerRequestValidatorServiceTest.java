@@ -1,7 +1,7 @@
 package com.autohubreactive.requestvalidator.service;
 
-import com.autohubreactive.dto.IncomingRequestDetails;
-import com.autohubreactive.dto.RequestValidationReport;
+import com.autohubreactive.dto.common.IncomingRequestDetails;
+import com.autohubreactive.dto.common.RequestValidationReport;
 import com.autohubreactive.requestvalidator.model.SwaggerFile;
 import com.autohubreactive.requestvalidator.util.TestUtil;
 import org.junit.jupiter.api.Test;

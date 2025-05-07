@@ -2,7 +2,7 @@ package com.autohubreactive.agency.handler;
 
 import com.autohubreactive.agency.service.BranchService;
 import com.autohubreactive.agency.validator.BranchRequestValidator;
-import com.autohubreactive.dto.BranchRequest;
+import com.autohubreactive.dto.agency.BranchRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;

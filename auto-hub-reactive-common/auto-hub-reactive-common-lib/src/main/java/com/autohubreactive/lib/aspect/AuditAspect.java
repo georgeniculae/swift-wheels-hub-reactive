@@ -1,6 +1,6 @@
 package com.autohubreactive.lib.aspect;
 
-import com.autohubreactive.dto.AuditLogInfoRequest;
+import com.autohubreactive.dto.common.AuditLogInfoRequest;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.service.AuditLogProducerService;
 import lombok.RequiredArgsConstructor;

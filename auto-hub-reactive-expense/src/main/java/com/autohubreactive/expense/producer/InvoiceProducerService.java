@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.producer;
 
-import com.autohubreactive.dto.InvoiceResponse;
+import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

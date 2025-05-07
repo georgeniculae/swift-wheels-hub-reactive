@@ -2,7 +2,7 @@ package com.autohub.ai.handler;
 
 import com.autohub.ai.service.CarSuggestionService;
 import com.autohub.ai.validator.TripInfoValidator;
-import com.autohubreactive.dto.TripInfo;
+import com.autohubreactive.dto.ai.TripInfo;
 import com.autohubreactive.lib.util.ServerRequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

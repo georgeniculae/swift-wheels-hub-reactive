@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.swaggeroperation;
 
-import com.autohubreactive.dto.RevenueResponse;
+import com.autohubreactive.dto.invoice.RevenueResponse;
 import com.autohubreactive.expense.handler.RevenueHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

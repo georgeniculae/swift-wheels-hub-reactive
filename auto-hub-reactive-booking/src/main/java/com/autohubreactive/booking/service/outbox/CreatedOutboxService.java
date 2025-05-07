@@ -7,9 +7,9 @@ import com.autohubreactive.booking.producer.bookingprocessing.CreatedBookingProd
 import com.autohubreactive.booking.producer.dlq.FailedCreatedBookingDlqProducerService;
 import com.autohubreactive.booking.repository.BookingRepository;
 import com.autohubreactive.booking.repository.CreatedOutboxRepository;
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.CarState;
-import com.autohubreactive.dto.CarStatusUpdate;
+import com.autohubreactive.dto.common.BookingResponse;
+import com.autohubreactive.dto.agency.CarState;
+import com.autohubreactive.dto.common.CarStatusUpdate;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.model.booking.Booking;
 import lombok.extern.slf4j.Slf4j;

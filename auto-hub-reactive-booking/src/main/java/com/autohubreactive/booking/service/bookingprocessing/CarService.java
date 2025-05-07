@@ -1,7 +1,7 @@
 package com.autohubreactive.booking.service.bookingprocessing;
 
-import com.autohubreactive.dto.AuthenticationInfo;
-import com.autohubreactive.dto.AvailableCarInfo;
+import com.autohubreactive.dto.common.AuthenticationInfo;
+import com.autohubreactive.dto.common.AvailableCarInfo;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;

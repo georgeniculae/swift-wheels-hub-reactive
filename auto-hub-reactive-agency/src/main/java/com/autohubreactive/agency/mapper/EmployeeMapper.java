@@ -1,7 +1,7 @@
 package com.autohubreactive.agency.mapper;
 
-import com.autohubreactive.dto.EmployeeRequest;
-import com.autohubreactive.dto.EmployeeResponse;
+import com.autohubreactive.dto.agency.EmployeeRequest;
+import com.autohubreactive.dto.agency.EmployeeResponse;
 import com.autohubreactive.model.agency.Branch;
 import com.autohubreactive.model.agency.Employee;
 import org.apache.commons.lang3.ObjectUtils;

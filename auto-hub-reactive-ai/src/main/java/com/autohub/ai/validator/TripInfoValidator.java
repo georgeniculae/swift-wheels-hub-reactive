@@ -1,6 +1,6 @@
 package com.autohub.ai.validator;
 
-import com.autohubreactive.dto.TripInfo;
+import com.autohubreactive.dto.ai.TripInfo;
 import com.autohubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

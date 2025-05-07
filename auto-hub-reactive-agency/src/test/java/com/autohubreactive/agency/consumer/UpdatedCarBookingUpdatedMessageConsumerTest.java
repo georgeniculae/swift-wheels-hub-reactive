@@ -2,7 +2,7 @@ package com.autohubreactive.agency.consumer;
 
 import com.autohubreactive.agency.service.CarService;
 import com.autohubreactive.agency.util.TestUtil;
-import com.autohubreactive.dto.UpdateCarsRequest;
+import com.autohubreactive.dto.common.UpdateCarsRequest;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -2,8 +2,8 @@ package com.autohubreactive.agency.service;
 
 import com.autohubreactive.agency.mapper.EmployeeMapper;
 import com.autohubreactive.agency.repository.EmployeeRepository;
-import com.autohubreactive.dto.EmployeeRequest;
-import com.autohubreactive.dto.EmployeeResponse;
+import com.autohubreactive.dto.agency.EmployeeRequest;
+import com.autohubreactive.dto.agency.EmployeeResponse;
 import com.autohubreactive.exception.AutoHubException;
 import com.autohubreactive.exception.AutoHubNotFoundException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;

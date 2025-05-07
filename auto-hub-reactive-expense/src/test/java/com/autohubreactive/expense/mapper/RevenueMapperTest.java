@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.mapper;
 
-import com.autohubreactive.dto.RevenueResponse;
+import com.autohubreactive.dto.invoice.RevenueResponse;
 import com.autohubreactive.expense.util.AssertionUtil;
 import com.autohubreactive.expense.util.TestUtil;
 import com.autohubreactive.model.invoice.Revenue;

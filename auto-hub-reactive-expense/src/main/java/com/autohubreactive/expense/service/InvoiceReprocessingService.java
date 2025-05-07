@@ -1,9 +1,9 @@
 package com.autohubreactive.expense.service;
 
-import com.autohubreactive.dto.BookingClosingDetails;
-import com.autohubreactive.dto.CarState;
-import com.autohubreactive.dto.CarUpdateDetails;
-import com.autohubreactive.dto.InvoiceReprocessRequest;
+import com.autohubreactive.dto.common.BookingClosingDetails;
+import com.autohubreactive.dto.agency.CarState;
+import com.autohubreactive.dto.common.CarUpdateDetails;
+import com.autohubreactive.dto.invoice.InvoiceReprocessRequest;
 import com.autohubreactive.exception.AutoHubException;
 import com.autohubreactive.expense.producer.BookingUpdateProducerService;
 import com.autohubreactive.expense.producer.CarStatusUpdateProducerService;

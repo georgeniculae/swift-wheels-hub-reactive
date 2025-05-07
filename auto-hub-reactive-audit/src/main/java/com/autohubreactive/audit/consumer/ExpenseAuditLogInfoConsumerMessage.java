@@ -1,7 +1,7 @@
 package com.autohubreactive.audit.consumer;
 
 import com.autohubreactive.audit.service.AuditService;
-import com.autohubreactive.dto.AuditLogInfoRequest;
+import com.autohubreactive.dto.common.AuditLogInfoRequest;
 import com.autohubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

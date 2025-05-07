@@ -6,7 +6,7 @@ import com.autohubreactive.audit.mapper.ExpenseAuditLogInfoMapper;
 import com.autohubreactive.audit.repository.BookingAuditLogInfoRepository;
 import com.autohubreactive.audit.repository.CustomerAuditLogInfoRepository;
 import com.autohubreactive.audit.repository.ExpenseAuditLogInfoRepository;
-import com.autohubreactive.dto.AuditLogInfoRequest;
+import com.autohubreactive.dto.common.AuditLogInfoRequest;
 import com.autohubreactive.exception.AutoHubException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

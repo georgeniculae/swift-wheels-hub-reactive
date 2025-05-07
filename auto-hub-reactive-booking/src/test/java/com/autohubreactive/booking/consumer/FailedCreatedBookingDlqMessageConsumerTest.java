@@ -2,7 +2,7 @@ package com.autohubreactive.booking.consumer;
 
 import com.autohubreactive.booking.service.dlq.CreatedBookingReprocessService;
 import com.autohubreactive.booking.util.TestUtil;
-import com.autohubreactive.dto.CreatedBookingReprocessRequest;
+import com.autohubreactive.dto.booking.CreatedBookingReprocessRequest;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,7 @@
 package com.autohubreactive.apigateway.filter.global;
 
-import com.autohubreactive.dto.IncomingRequestDetails;
-import com.autohubreactive.dto.RequestValidationReport;
+import com.autohubreactive.dto.common.IncomingRequestDetails;
+import com.autohubreactive.dto.common.RequestValidationReport;
 import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.retry.RetryHandler;

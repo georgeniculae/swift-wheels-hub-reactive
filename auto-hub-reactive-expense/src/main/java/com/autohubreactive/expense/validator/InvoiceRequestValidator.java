@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.validator;
 
-import com.autohubreactive.dto.InvoiceRequest;
+import com.autohubreactive.dto.invoice.InvoiceRequest;
 import com.autohubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.autohub.ai.service;
 
-import com.autohubreactive.dto.CarSuggestionResponse;
+import com.autohubreactive.dto.ai.CarSuggestionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;

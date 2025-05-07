@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.service;
 
-import com.autohubreactive.dto.RevenueResponse;
+import com.autohubreactive.dto.invoice.RevenueResponse;
 import com.autohubreactive.exception.AutoHubException;
 import com.autohubreactive.exception.AutoHubNotFoundException;
 import com.autohubreactive.expense.mapper.RevenueMapper;

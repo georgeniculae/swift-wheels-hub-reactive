@@ -1,7 +1,7 @@
 package com.autohubreactive.emailnotification.mapper;
 
 import com.sendgrid.Response;
-import com.autohubreactive.dto.EmailResponse;
+import com.autohubreactive.dto.emailnotification.EmailResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

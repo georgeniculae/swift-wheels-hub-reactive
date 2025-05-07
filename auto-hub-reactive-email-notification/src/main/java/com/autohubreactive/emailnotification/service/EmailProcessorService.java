@@ -1,7 +1,7 @@
 package com.autohubreactive.emailnotification.service;
 
-import com.autohubreactive.dto.EmailResponse;
-import com.autohubreactive.dto.InvoiceResponse;
+import com.autohubreactive.dto.emailnotification.EmailResponse;
+import com.autohubreactive.dto.common.InvoiceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

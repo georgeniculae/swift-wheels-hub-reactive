@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.service;
 
-import com.autohubreactive.dto.RevenueResponse;
+import com.autohubreactive.dto.invoice.RevenueResponse;
 import com.autohubreactive.expense.mapper.RevenueMapper;
 import com.autohubreactive.expense.mapper.RevenueMapperImpl;
 import com.autohubreactive.expense.model.Outbox;

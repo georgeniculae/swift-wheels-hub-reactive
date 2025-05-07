@@ -1,6 +1,6 @@
 package com.autohubreactive.agency.validator;
 
-import com.autohubreactive.dto.BranchRequest;
+import com.autohubreactive.dto.agency.BranchRequest;
 import com.autohubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

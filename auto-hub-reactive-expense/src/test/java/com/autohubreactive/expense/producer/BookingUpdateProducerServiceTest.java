@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.producer;
 
-import com.autohubreactive.dto.BookingClosingDetails;
+import com.autohubreactive.dto.common.BookingClosingDetails;
 import com.autohubreactive.expense.util.TestUtil;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.BeforeEach;

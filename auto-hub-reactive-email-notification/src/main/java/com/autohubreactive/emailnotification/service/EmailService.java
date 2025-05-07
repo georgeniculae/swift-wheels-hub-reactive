@@ -1,6 +1,6 @@
 package com.autohubreactive.emailnotification.service;
 
-import com.autohubreactive.dto.EmailResponse;
+import com.autohubreactive.dto.emailnotification.EmailResponse;
 import com.autohubreactive.emailnotification.mapper.EmailResponseMapper;
 import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.github.mustachejava.Mustache;

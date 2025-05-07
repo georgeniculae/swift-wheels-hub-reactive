@@ -9,9 +9,9 @@ import com.autohubreactive.booking.producer.dlq.FailedCreatedBookingDlqProducerS
 import com.autohubreactive.booking.repository.BookingRepository;
 import com.autohubreactive.booking.repository.CreatedOutboxRepository;
 import com.autohubreactive.booking.util.TestUtil;
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.CarStatusUpdate;
-import com.autohubreactive.dto.CreatedBookingReprocessRequest;
+import com.autohubreactive.dto.common.BookingResponse;
+import com.autohubreactive.dto.common.CarStatusUpdate;
+import com.autohubreactive.dto.booking.CreatedBookingReprocessRequest;
 import com.autohubreactive.model.booking.Booking;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

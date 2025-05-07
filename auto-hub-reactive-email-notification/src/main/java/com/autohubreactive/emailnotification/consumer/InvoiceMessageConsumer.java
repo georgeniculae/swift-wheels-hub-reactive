@@ -1,7 +1,7 @@
 package com.autohubreactive.emailnotification.consumer;
 
-import com.autohubreactive.dto.EmailResponse;
-import com.autohubreactive.dto.InvoiceResponse;
+import com.autohubreactive.dto.emailnotification.EmailResponse;
+import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.emailnotification.service.EmailProcessorService;
 import com.autohubreactive.lib.retry.RetryHandler;
 import com.autohubreactive.lib.util.KafkaUtil;

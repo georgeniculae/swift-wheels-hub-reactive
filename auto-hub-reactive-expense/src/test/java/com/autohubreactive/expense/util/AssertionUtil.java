@@ -1,9 +1,9 @@
 package com.autohubreactive.expense.util;
 
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.InvoiceReprocessRequest;
-import com.autohubreactive.dto.InvoiceResponse;
-import com.autohubreactive.dto.RevenueResponse;
+import com.autohubreactive.dto.common.BookingResponse;
+import com.autohubreactive.dto.invoice.InvoiceReprocessRequest;
+import com.autohubreactive.dto.common.InvoiceResponse;
+import com.autohubreactive.dto.invoice.RevenueResponse;
 import com.autohubreactive.model.invoice.Invoice;
 import com.autohubreactive.model.invoice.Revenue;
 

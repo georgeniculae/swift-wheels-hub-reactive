@@ -1,7 +1,7 @@
 package com.autohubreactive.expense.consumer;
 
-import com.autohubreactive.dto.BookingResponse;
-import com.autohubreactive.dto.InvoiceResponse;
+import com.autohubreactive.dto.common.BookingResponse;
+import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.expense.service.InvoiceService;
 import com.autohubreactive.expense.util.TestUtil;
 import com.autohubreactive.lib.retry.RetryHandler;

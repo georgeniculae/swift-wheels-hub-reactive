@@ -1,6 +1,6 @@
 package com.autohubreactive.customer.validator;
 
-import com.autohubreactive.dto.RegisterRequest;
+import com.autohubreactive.dto.customer.RegisterRequest;
 import com.autohubreactive.lib.validator.BodyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

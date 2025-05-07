@@ -1,10 +1,10 @@
 package com.autohubreactive.customer.swaggeroperation;
 
 import com.autohubreactive.customer.handler.CustomerHandler;
-import com.autohubreactive.dto.RegisterRequest;
-import com.autohubreactive.dto.RegistrationResponse;
-import com.autohubreactive.dto.UserInfo;
-import com.autohubreactive.dto.UserUpdateRequest;
+import com.autohubreactive.dto.customer.RegisterRequest;
+import com.autohubreactive.dto.customer.RegistrationResponse;
+import com.autohubreactive.dto.customer.UserInfo;
+import com.autohubreactive.dto.customer.UserUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

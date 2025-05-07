@@ -1,7 +1,7 @@
 package com.autohubreactive.booking.producer.dlq;
 
 import com.autohubreactive.booking.util.TestUtil;
-import com.autohubreactive.dto.CreatedBookingReprocessRequest;
+import com.autohubreactive.dto.booking.CreatedBookingReprocessRequest;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

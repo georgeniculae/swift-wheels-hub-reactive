@@ -1,9 +1,9 @@
 package com.autohub.ai.service;
 
 import com.autohub.ai.util.TestUtil;
-import com.autohubreactive.dto.CarResponse;
-import com.autohubreactive.dto.CarSuggestionResponse;
-import com.autohubreactive.dto.TripInfo;
+import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.CarSuggestionResponse;
+import com.autohubreactive.dto.ai.TripInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

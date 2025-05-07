@@ -2,7 +2,7 @@ package com.autohubreactive.agency.router;
 
 import com.autohubreactive.agency.handler.EmployeeHandler;
 import com.autohubreactive.agency.util.TestUtil;
-import com.autohubreactive.dto.EmployeeResponse;
+import com.autohubreactive.dto.agency.EmployeeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

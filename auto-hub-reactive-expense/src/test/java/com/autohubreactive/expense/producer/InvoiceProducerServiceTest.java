@@ -1,6 +1,6 @@
 package com.autohubreactive.expense.producer;
 
-import com.autohubreactive.dto.InvoiceResponse;
+import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.expense.util.TestUtil;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.BeforeEach;

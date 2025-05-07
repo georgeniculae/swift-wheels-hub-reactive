@@ -2,7 +2,7 @@ package com.autohubreactive.agency.handler;
 
 import com.autohubreactive.agency.service.RentalOfficeService;
 import com.autohubreactive.agency.validator.RentalOfficeRequestValidator;
-import com.autohubreactive.dto.RentalOfficeRequest;
+import com.autohubreactive.dto.agency.RentalOfficeRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;

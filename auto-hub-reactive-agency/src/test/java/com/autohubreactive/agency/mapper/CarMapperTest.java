@@ -2,8 +2,8 @@ package com.autohubreactive.agency.mapper;
 
 import com.autohubreactive.agency.util.AssertionUtil;
 import com.autohubreactive.agency.util.TestUtil;
-import com.autohubreactive.dto.CarRequest;
-import com.autohubreactive.dto.CarResponse;
+import com.autohubreactive.dto.agency.CarRequest;
+import com.autohubreactive.dto.agency.CarResponse;
 import com.autohubreactive.model.agency.Branch;
 import com.autohubreactive.model.agency.Car;
 import org.junit.jupiter.api.Test;

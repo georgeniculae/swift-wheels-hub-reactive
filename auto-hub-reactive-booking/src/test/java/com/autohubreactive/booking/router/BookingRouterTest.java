@@ -2,7 +2,7 @@ package com.autohubreactive.booking.router;
 
 import com.autohubreactive.booking.handler.BookingHandler;
 import com.autohubreactive.booking.util.TestUtil;
-import com.autohubreactive.dto.BookingResponse;
+import com.autohubreactive.dto.common.BookingResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

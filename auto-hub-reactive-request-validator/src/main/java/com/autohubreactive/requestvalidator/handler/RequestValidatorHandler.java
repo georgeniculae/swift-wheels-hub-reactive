@@ -1,6 +1,6 @@
 package com.autohubreactive.requestvalidator.handler;
 
-import com.autohubreactive.dto.IncomingRequestDetails;
+import com.autohubreactive.dto.common.IncomingRequestDetails;
 import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.requestvalidator.service.RedisService;
 import com.autohubreactive.requestvalidator.service.SwaggerRequestValidatorService;
