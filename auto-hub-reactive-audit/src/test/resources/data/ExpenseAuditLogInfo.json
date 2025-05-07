@@ -1,9 +1,0 @@
-{
-  "methodName": "closeInvoice",
-  "username": "admin",
-  "timestamp": "2099-10-06T10:34",
-  "parametersValues": [
-    "6544a86efa5527679dfb0512",
-    "class InvoiceDto {\n    customerEmail: admin@email.com\n    customerUsername: admin\n    carId: 65072052d5d4531e66a0c00c\n    receptionistEmployeeId: 653eb7a8d8c16f76bea0267b\n    bookingId: 6544a86c1847da6cfb06feb1\n    carReturnDate: 2099-02-22\n    isVehicleDamaged: false\n    damageCost: 0.0\n    additionalPayment: 0.0\n    totalAmount: 500.0\n    comments: comment\n    id: null\n}"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "methodName": "saveBooking",
-  "username": "admin",
-  "timestamp": "2099-10-06T10:34",
-  "parametersValues": [
-    "class BookingDto {\n    dateOfBooking: 2099-02-21\n    status: In progress\n    customerUsername: admin\n    customerEmail: admin@email.com\n    carId: 65072052d5d4531e66a0c00c\n    dateFrom: 2099-02-23\n    dateTo: 2099-02-24\n    amount: 500\n    rentalCarPrice: 500\n    rentalBranchId: 65072051d5d4531e66a0c00a\n    returnBranchId: null\n    id: null\n}"
-  ]
-}
