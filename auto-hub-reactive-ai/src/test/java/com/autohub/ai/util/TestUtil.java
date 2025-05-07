@@ -1,9 +1,9 @@
 package com.autohub.ai.util;
 
+import com.autohubreactive.exception.AutoHubException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.autohubreactive.exception.AutoHubException;
 import lombok.experimental.UtilityClass;
 
 import java.net.URL;

@@ -1,15 +1,15 @@
 package com.autohubreactive.emailnotification.service;
 
+import com.autohubreactive.dto.common.InvoiceResponse;
+import com.autohubreactive.dto.emailnotification.EmailResponse;
+import com.autohubreactive.emailnotification.mapper.EmailResponseMapper;
+import com.autohubreactive.emailnotification.mapper.EmailResponseMapperImpl;
+import com.autohubreactive.emailnotification.util.TestUtil;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import com.autohubreactive.dto.emailnotification.EmailResponse;
-import com.autohubreactive.dto.common.InvoiceResponse;
-import com.autohubreactive.emailnotification.mapper.EmailResponseMapper;
-import com.autohubreactive.emailnotification.mapper.EmailResponseMapperImpl;
-import com.autohubreactive.emailnotification.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

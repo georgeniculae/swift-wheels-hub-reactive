@@ -1,11 +1,11 @@
 package com.autohubreactive.agency.mapper;
 
-import com.autohubreactive.dto.common.AvailableCarInfo;
 import com.autohubreactive.dto.agency.BodyCategory;
 import com.autohubreactive.dto.agency.CarRequest;
 import com.autohubreactive.dto.agency.CarResponse;
-import com.autohubreactive.dto.common.CarState;
 import com.autohubreactive.dto.agency.ExcelCarRequest;
+import com.autohubreactive.dto.common.AvailableCarInfo;
+import com.autohubreactive.dto.common.CarState;
 import com.autohubreactive.model.agency.BodyType;
 import com.autohubreactive.model.agency.Branch;
 import com.autohubreactive.model.agency.Car;

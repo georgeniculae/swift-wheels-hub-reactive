@@ -1,7 +1,7 @@
 package com.autohubreactive.agency.migration;
 
-import com.mongodb.reactivestreams.client.MongoClient;
 import com.autohubreactive.agency.config.MongoMigrationProperties;
+import com.mongodb.reactivestreams.client.MongoClient;
 import io.mongock.driver.mongodb.reactive.driver.MongoReactiveDriver;
 import io.mongock.runner.springboot.MongockSpringboot;
 import io.mongock.runner.springboot.base.MongockInitializingBeanRunner;

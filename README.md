@@ -1,6 +1,8 @@
 # Auto Hub Reactive
 
-Auto Hub Reactive is a reactive microservices-based application built using Spring WebFlux. The project is designed to handle various aspects of a car rental service, including car management, booking, customer management, email notifications, and more.
+Auto Hub Reactive is a reactive microservices-based application built using Spring WebFlux. The project is designed to
+handle various aspects of a car rental service, including car management, booking, customer management, email
+notifications, and more.
 
 ## Project Structure
 
@@ -30,15 +32,19 @@ The project is organized into multiple modules, each responsible for a specific 
 
 ### Car Management
 
-The `CarHandler` class handles various car-related operations such as finding, saving, updating, and deleting cars. It uses the `CarService` to perform these operations and returns `Mono<ServerResponse>` for reactive handling.
+The `CarHandler` class handles various car-related operations such as finding, saving, updating, and deleting cars. It
+uses the `CarService` to perform these operations and returns `Mono<ServerResponse>` for reactive handling.
 
 ### Booking Management
 
-The `BookingUpdateProducerService` class is responsible for sending booking update messages to Kafka using `StreamBridge`. It builds messages with necessary headers and sends them asynchronously.
+The `BookingUpdateProducerService` class is responsible for sending booking update messages to Kafka using
+`StreamBridge`. It builds messages with necessary headers and sends them asynchronously.
 
 ### Kafka Consumers
 
-There are multiple Kafka consumers, such as `BookingCarStatusUpdateConsumer` and `BookingCarStatusSaveConsumer`, which listen to specific topics and process messages accordingly. They use the `Acknowledgment` interface to acknowledge message processing.
+There are multiple Kafka consumers, such as `BookingCarStatusUpdateConsumer` and `BookingCarStatusSaveConsumer`, which
+listen to specific topics and process messages accordingly. They use the `Acknowledgment` interface to acknowledge
+message processing.
 
 ### Email Notifications
 
@@ -49,6 +55,8 @@ The email notification module handles sending email notifications related to var
 To run the project, use the following Maven command:
 
 ### Installation
+
 Clone the repository:
+
 ```sh
    git clone https://github.com/georgeniculae/auto-hub-reactive.git

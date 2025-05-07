@@ -1,10 +1,10 @@
 package com.autohubreactive.agency.migration;
 
+import com.autohubreactive.model.agency.Branch;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.reactivestreams.client.ClientSession;
 import com.mongodb.reactivestreams.client.MongoDatabase;
-import com.autohubreactive.model.agency.Branch;
 import io.mongock.api.annotations.BeforeExecution;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;

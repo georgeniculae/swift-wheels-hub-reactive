@@ -2,9 +2,9 @@ package com.autohubreactive.booking.mapper;
 
 import com.autohubreactive.booking.util.AssertionUtil;
 import com.autohubreactive.booking.util.TestUtil;
+import com.autohubreactive.dto.booking.BookingRequest;
 import com.autohubreactive.dto.common.AuthenticationInfo;
 import com.autohubreactive.dto.common.AvailableCarInfo;
-import com.autohubreactive.dto.booking.BookingRequest;
 import com.autohubreactive.dto.common.BookingResponse;
 import com.autohubreactive.model.booking.Booking;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
 package com.autohubreactive.expense.service;
 
 import com.autohubreactive.dto.common.BookingResponse;
-import com.autohubreactive.dto.invoice.InvoiceRequest;
 import com.autohubreactive.dto.common.InvoiceResponse;
+import com.autohubreactive.dto.invoice.InvoiceRequest;
 import com.autohubreactive.exception.AutoHubException;
 import com.autohubreactive.exception.AutoHubNotFoundException;
 import com.autohubreactive.exception.AutoHubResponseStatusException;
@@ -36,6 +36,13 @@ public class InvoiceService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final RevenueService revenueService;
     private final InvoiceMapper invoiceMapper;
+
+    private static AutoHubResponseStatusException getDamageCostException() {
+        return new AutoHubResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "If the vehicle is damaged, the damage cost cannot be null/empty"
+        );
+    }
 
     public Flux<InvoiceResponse> findAllInvoices() {
         return invoiceRepository.findAll()
@@ -198,13 +205,6 @@ public class InvoiceService {
         return new AutoHubResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Date of return of the car cannot be in the past"
-        );
-    }
-
-    private static AutoHubResponseStatusException getDamageCostException() {
-        return new AutoHubResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "If the vehicle is damaged, the damage cost cannot be null/empty"
         );
     }
 
