@@ -1,6 +1,5 @@
 package com.autohubreactive.dto.common;
 
-import com.autohubreactive.dto.agency.CarState;
 import lombok.Builder;
 import org.springframework.lang.NonNull;
 

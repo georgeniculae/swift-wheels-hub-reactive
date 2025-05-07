@@ -4,7 +4,7 @@ import com.autohubreactive.booking.mapper.BookingMapper;
 import com.autohubreactive.booking.producer.bookingprocessing.CreatedBookingCarUpdateProducerService;
 import com.autohubreactive.booking.producer.bookingprocessing.CreatedBookingProducerService;
 import com.autohubreactive.dto.common.BookingResponse;
-import com.autohubreactive.dto.agency.CarState;
+import com.autohubreactive.dto.common.CarState;
 import com.autohubreactive.dto.common.CarStatusUpdate;
 import com.autohubreactive.dto.booking.CreatedBookingReprocessRequest;
 import com.autohubreactive.exception.AutoHubException;

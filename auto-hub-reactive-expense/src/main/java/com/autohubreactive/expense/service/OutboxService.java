@@ -1,7 +1,7 @@
 package com.autohubreactive.expense.service;
 
 import com.autohubreactive.dto.common.BookingClosingDetails;
-import com.autohubreactive.dto.agency.CarState;
+import com.autohubreactive.dto.common.CarState;
 import com.autohubreactive.dto.common.CarUpdateDetails;
 import com.autohubreactive.exception.AutoHubException;
 import com.autohubreactive.expense.mapper.InvoiceMapper;

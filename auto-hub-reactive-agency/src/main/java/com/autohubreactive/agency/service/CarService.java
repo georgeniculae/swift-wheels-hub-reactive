@@ -6,7 +6,7 @@ import com.autohubreactive.agency.validator.CarRequestValidator;
 import com.autohubreactive.dto.common.AvailableCarInfo;
 import com.autohubreactive.dto.agency.CarRequest;
 import com.autohubreactive.dto.agency.CarResponse;
-import com.autohubreactive.dto.agency.CarState;
+import com.autohubreactive.dto.common.CarState;
 import com.autohubreactive.dto.common.CarStatusUpdate;
 import com.autohubreactive.dto.common.CarUpdateDetails;
 import com.autohubreactive.dto.agency.ExcelCarRequest;

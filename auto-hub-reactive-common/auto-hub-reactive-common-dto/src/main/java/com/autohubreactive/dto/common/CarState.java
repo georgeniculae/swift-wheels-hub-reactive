@@ -1,4 +1,4 @@
-package com.autohubreactive.dto.agency;
+package com.autohubreactive.dto.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
