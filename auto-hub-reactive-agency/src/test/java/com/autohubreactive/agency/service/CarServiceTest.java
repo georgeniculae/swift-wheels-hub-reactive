@@ -14,6 +14,7 @@ import com.autohubreactive.agency.validator.CarRequestValidator;
 import com.autohubreactive.dto.agency.CarRequest;
 import com.autohubreactive.dto.agency.CarResponse;
 import com.autohubreactive.dto.agency.ExcelCarRequest;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.dto.common.AvailableCarInfo;
 import com.autohubreactive.dto.common.CarStatusUpdate;
 import com.autohubreactive.dto.common.CarUpdateDetails;
@@ -173,13 +174,14 @@ class CarServiceTest {
     @Test
     void getAllAvailableCarTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car1.json", Car.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
         when(carRepository.findAllAvailableCars()).thenReturn(Flux.just(car));
 
         carService.getAllAvailableCars()
                 .as(StepVerifier::create)
-                .expectNext(carResponse)
+                .expectNext(availableCarDetails)
                 .verifyComplete();
     }
 
@@ -234,13 +236,14 @@ class CarServiceTest {
     @Test
     void findAllAvailableCarsTest_success() {
         Car car = TestUtil.getResourceAsJson("/data/Car1.json", Car.class);
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
         when(carRepository.findAllAvailableCars()).thenReturn(Flux.just(car));
 
         carService.getAllAvailableCars()
                 .as(StepVerifier::create)
-                .expectNext(carResponse)
+                .expectNext(availableCarDetails)
                 .verifyComplete();
     }
 
@@ -442,7 +445,7 @@ class CarServiceTest {
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
-        when(carAvailableProducerService.sendCarAvailable(any(CarResponse.class))).thenReturn(Mono.empty());
+        when(carAvailableProducerService.sendCarAvailable(any(AvailableCarDetails.class))).thenReturn(Mono.empty());
 
         carService.updateCarStatus(carStatusUpdate)
                 .as(StepVerifier::create)
@@ -477,7 +480,8 @@ class CarServiceTest {
 
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
-        when(carAvailableProducerService.sendCarAvailable(any(CarResponse.class))).thenReturn(Mono.empty());
+        when(carAvailableProducerService.sendCarAvailable(any(AvailableCarDetails.class)))
+                .thenReturn(Mono.empty());
 
         carService.updateCarsStatus(updateCarsRequest)
                 .as(StepVerifier::create)
@@ -515,7 +519,7 @@ class CarServiceTest {
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
         when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
-        when(carAvailableProducerService.sendCarAvailable(any(CarResponse.class))).thenReturn(Mono.empty());
+        when(carAvailableProducerService.sendCarAvailable(any(AvailableCarDetails.class))).thenReturn(Mono.empty());
 
         carService.updateCarWhenBookingIsClosed(carUpdateDetails)
                 .as(StepVerifier::create)

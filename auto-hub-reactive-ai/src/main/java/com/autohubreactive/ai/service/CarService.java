@@ -1,7 +1,7 @@
 package com.autohubreactive.ai.service;
 
 import com.autohubreactive.ai.util.Constants;
-import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import com.autohubreactive.lib.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +24,12 @@ public class CarService {
     @Value("${webclient.url.auto-hub-agency-cars}")
     private String url;
 
-    public Flux<CarResponse> getAllAvailableCars(String apikey, List<String> roles) {
+    public Flux<AvailableCarDetails> getAllAvailableCars(String apikey, List<String> roles) {
         return webClient.get()
                 .uri(url + Constants.SEPARATOR + "availability")
                 .headers(WebClientUtil.setHttpHeaders(apikey, roles))
                 .retrieve()
-                .bodyToFlux(CarResponse.class)
+                .bodyToFlux(AvailableCarDetails.class)
                 .subscribeOn(Schedulers.boundedElastic())
                 .onErrorMap(e -> {
                     log.error("Error while sending request to: {}, error: {}", url, e.getMessage());

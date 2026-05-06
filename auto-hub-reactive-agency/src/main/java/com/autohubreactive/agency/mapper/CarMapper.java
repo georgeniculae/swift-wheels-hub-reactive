@@ -8,6 +8,7 @@ import com.autohubreactive.dto.agency.BodyCategory;
 import com.autohubreactive.dto.agency.CarRequest;
 import com.autohubreactive.dto.agency.CarResponse;
 import com.autohubreactive.dto.agency.ExcelCarRequest;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.dto.common.AvailableCarInfo;
 import com.autohubreactive.dto.common.CarState;
 import org.apache.commons.lang3.ObjectUtils;
@@ -26,9 +27,14 @@ public interface CarMapper {
 
     @Mapping(target = "initialRentalOfficeId", expression = "java(mapObjectIdToString(car.initialRentalOffice().id()))")
     @Mapping(target = "actualRentalOfficeId", expression = "java(mapObjectIdToString(car.actualRentalOffice().id()))")
+    @Mapping(target = "carLocation", expression = "java(car.actualRentalOffice().city())")
     @Mapping(target = "bodyCategory", source = "bodyType")
     @Mapping(target = "carState", source = "carStatus")
     CarResponse mapEntityToDto(Car car);
+
+    @Mapping(target = "carLocation", expression = "java(car.actualRentalOffice().city())")
+    @Mapping(target = "bodyCategory", source = "bodyType")
+    AvailableCarDetails mapEntityToAvailableCarDetails(Car car);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "bodyType", expression = "java(mapToBodyType(carRequest.bodyCategory()))")

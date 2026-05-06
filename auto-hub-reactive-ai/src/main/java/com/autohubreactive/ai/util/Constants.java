@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Constants {
 
+    public static final String START_LOCATION = "startLocation";
     public static final String DESTINATION = "destination";
     public static final String PEOPLE_COUNT = "peopleCount";
     public static final String TRIP_KIND = "tripKind";

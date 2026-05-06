@@ -1,6 +1,6 @@
 package com.autohubreactive.agency.producer;
 
-import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.lib.retry.RetryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class CarAvailableProducerService {
     @Value("${spring.cloud.stream.bindings.carAvailableProducer-out-0.contentType}")
     private String mimeType;
 
-    public Mono<Void> sendCarAvailable(CarResponse carResponse) {
+    public Mono<Void> sendCarAvailable(AvailableCarDetails carResponse) {
         return Mono.fromRunnable(
                         () -> streamBridge.send(
                                 binderName,
@@ -41,7 +41,7 @@ public class CarAvailableProducerService {
                 .then();
     }
 
-    private Message<CarResponse> buildMessage(CarResponse carResponse) {
+    private Message<AvailableCarDetails> buildMessage(AvailableCarDetails carResponse) {
         return MessageBuilder.withPayload(carResponse).build();
     }
 

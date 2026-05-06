@@ -1,7 +1,7 @@
 package com.autohubreactive.ai.consumer;
 
 import com.autohubreactive.ai.service.CarVectorStoreService;
-import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.lib.retry.RetryHandler;
 import com.autohubreactive.lib.util.KafkaUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,11 @@ public class CarAvailableMessageConsumer {
     private final RetryHandler retryHandler;
 
     @Bean
-    public Function<Flux<Message<CarResponse>>, Mono<Void>> carAvailableConsumer() {
+    public Function<Flux<Message<AvailableCarDetails>>, Mono<Void>> carAvailableConsumer() {
         return messageFlux -> messageFlux.concatMap(this::processMessage).then();
     }
 
-    private Mono<Void> processMessage(Message<CarResponse> message) {
+    private Mono<Void> processMessage(Message<AvailableCarDetails> message) {
         return carVectorStoreService.addCar(message.getPayload())
                 .retryWhen(retryHandler.retry())
                 .doOnSuccess(_ -> {

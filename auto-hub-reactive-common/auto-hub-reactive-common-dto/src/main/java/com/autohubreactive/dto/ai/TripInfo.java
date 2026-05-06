@@ -9,6 +9,9 @@ import java.time.LocalDate;
 @Builder(toBuilder = true)
 public record TripInfo(
         @NotEmpty
+        String startLocation,
+
+        @NotEmpty
         String destination,
 
         @NotNull

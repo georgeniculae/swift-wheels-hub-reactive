@@ -1,4 +1,5 @@
 {
+  "startLocation": "Ploiesti",
   "destination": "Sinaia",
   "peopleCount": 3,
   "tripKind": "city",

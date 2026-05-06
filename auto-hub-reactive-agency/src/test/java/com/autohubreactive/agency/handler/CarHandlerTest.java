@@ -4,6 +4,7 @@ import com.autohubreactive.agency.service.CarService;
 import com.autohubreactive.agency.util.TestData;
 import com.autohubreactive.agency.util.TestUtil;
 import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.dto.common.AvailableCarInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -190,13 +191,14 @@ class CarHandlerTest {
 
     @Test
     void findAllAvailableCarsTest_success() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
         ServerRequest serverRequest = MockServerRequest.builder()
                 .method(HttpMethod.GET)
                 .build();
 
-        when(carService.getAllAvailableCars()).thenReturn(Flux.just(carResponse));
+        when(carService.getAllAvailableCars()).thenReturn(Flux.just(availableCarDetails));
 
         carHandler.getAllAvailableCars(serverRequest)
                 .as(StepVerifier::create)

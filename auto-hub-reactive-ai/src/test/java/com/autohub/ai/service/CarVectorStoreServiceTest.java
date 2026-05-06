@@ -2,7 +2,7 @@ package com.autohub.ai.service;
 
 import com.autohub.ai.util.TestUtil;
 import com.autohubreactive.ai.service.CarVectorStoreService;
-import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,24 +32,24 @@ class CarVectorStoreServiceTest {
 
     @Test
     void addCarTest_success() {
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
         doNothing().when(vectorStore).add(anyList());
 
-        carVectorStoreService.addCar(carResponse)
+        carVectorStoreService.addCar(availableCarDetails)
                 .as(StepVerifier::create)
                 .verifyComplete();
     }
 
     @Test
     void addCarTest_error() {
-        CarResponse carResponse =
-                TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
         doThrow(new RuntimeException("Connection error")).when(vectorStore).add(anyList());
 
-        carVectorStoreService.addCar(carResponse)
+        carVectorStoreService.addCar(availableCarDetails)
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();

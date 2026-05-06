@@ -9,5 +9,6 @@
   "carState": "AVAILABLE",
   "amount": 1000,
   "initialRentalOfficeId": "64f361caf291ae086e179518",
-  "actualRentalOfficeId": "64f361caf291ae086e179518"
+  "actualRentalOfficeId": "64f361caf291ae086e179518",
+  "carLocation": "Ploiesti"
 }

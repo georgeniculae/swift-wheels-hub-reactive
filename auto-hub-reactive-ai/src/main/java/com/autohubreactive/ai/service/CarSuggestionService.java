@@ -26,7 +26,7 @@ public class CarSuggestionService {
     private final ChatService chatService;
     private final CarVectorStoreService carVectorStoreService;
 
-    public Mono<CarSuggestionResponse> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
+    public Mono<CarSuggestionResponse> getChatOutput(TripInfo tripInfo) {
         return carVectorStoreService.searchSimilarCars(buildQueryText(tripInfo), TOP_K)
                 .flatMap(documents -> getCarSuggestionResponse(tripInfo, documents))
                 .onErrorMap(e -> {
@@ -46,8 +46,9 @@ public class CarSuggestionService {
 
     private String buildQueryText(TripInfo tripInfo) {
         return String.format(
-                "Car rental for %d people traveling to %s, Romania in %s for a %s trip",
+                "Car rental for %d people starting from %s traveling to %s, Romania in %s for a %s trip",
                 tripInfo.peopleCount(),
+                tripInfo.startLocation(),
                 tripInfo.destination(),
                 getMonth(tripInfo.tripDate()),
                 tripInfo.tripKind());
@@ -56,13 +57,15 @@ public class CarSuggestionService {
     private String getText() {
         return """
                 Which car from the following list {cars} is more suitable for rental from a rental car
-                agency for a trip for {peopleCount} people to {destination}, Romania in {month}?
-                The car will be used for {tripKind}.""";
+                agency for a trip for {peopleCount} people starting from {startLocation} to {destination},
+                Romania in {month}? The car will be used for {tripKind}.
+                Please prefer cars available at rental offices close to {startLocation}.""";
     }
 
     private Map<String, Object> getParams(TripInfo tripInfo, List<String> cars) {
         return Map.of(
                 Constants.CARS, cars,
+                Constants.START_LOCATION, tripInfo.startLocation(),
                 Constants.DESTINATION, tripInfo.destination(),
                 Constants.PEOPLE_COUNT, tripInfo.peopleCount(),
                 Constants.MONTH, getMonth(tripInfo.tripDate()),

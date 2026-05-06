@@ -17,8 +17,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,8 +49,7 @@ class CarSuggestionHandlerTest {
                 .build();
 
         when(tripInfoValidator.validateBody(any(TripInfo.class))).thenReturn(Mono.just(tripInfo));
-        when(carSuggestionService.getChatOutput(anyString(), anyList(), any(TripInfo.class)))
-                .thenReturn(Mono.just(carSuggestionResponse));
+        when(carSuggestionService.getChatOutput(any(TripInfo.class))).thenReturn(Mono.just(carSuggestionResponse));
 
         carSuggestionHandler.getChatOutput(serverRequest)
                 .as(StepVerifier::create)

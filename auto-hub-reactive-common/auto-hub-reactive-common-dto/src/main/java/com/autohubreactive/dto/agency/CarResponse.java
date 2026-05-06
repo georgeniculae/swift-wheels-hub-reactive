@@ -38,7 +38,10 @@ public record CarResponse(
         String initialRentalOfficeId,
 
         @NonNull
-        String actualRentalOfficeId
+        String actualRentalOfficeId,
+
+        @NonNull
+        String carLocation
 ) {
 
     @Override
@@ -56,6 +59,7 @@ public record CarResponse(
                 "amount=" + amount + "\n" +
                 "initialRentalOfficeId=" + initialRentalOfficeId + "\n" +
                 "actualRentalOfficeId=" + actualRentalOfficeId + "\n" +
+                "carLocation=" + carLocation + "\n" +
                 "}";
     }
 

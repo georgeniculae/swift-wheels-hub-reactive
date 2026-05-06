@@ -40,14 +40,13 @@ class CarSuggestionServiceTest {
                 TestUtil.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
         CarSuggestionResponse carSuggestionResponse =
                 TestUtil.getResourceAsJson("/data/CarSuggestionResponse.json", CarSuggestionResponse.class);
-        String apikey = "apikey";
         Document document = new Document("Toyota RAV4 SUV from 2022, white, 15000 km, price 200 per day");
 
         when(carVectorStoreService.searchSimilarCars(anyString(), anyInt()))
                 .thenReturn(Mono.just(List.of(document)));
         when(chatService.getChatReply(anyString(), anyMap())).thenReturn(Mono.just(carSuggestionResponse));
 
-        carSuggestionService.getChatOutput(apikey, List.of("admin"), tripInfo)
+        carSuggestionService.getChatOutput(tripInfo)
                 .as(StepVerifier::create)
                 .expectNext(carSuggestionResponse)
                 .verifyComplete();
@@ -56,12 +55,11 @@ class CarSuggestionServiceTest {
     @Test
     void getChatOutputTest_errorOnVectorSearch() {
         TripInfo tripInfo = TestUtil.getResourceAsJson("/data/TripInfo.json", TripInfo.class);
-        String apikey = "apikey";
 
         when(carVectorStoreService.searchSimilarCars(anyString(), anyInt()))
                 .thenReturn(Mono.error(new Throwable()));
 
-        carSuggestionService.getChatOutput(apikey, List.of("admin"), tripInfo)
+        carSuggestionService.getChatOutput(tripInfo)
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();

@@ -1,6 +1,6 @@
 package com.autohubreactive.ai.service;
 
-import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class CarVectorStoreService {
 
     private final VectorStore vectorStore;
 
-    public Mono<Void> addCar(CarResponse car) {
+    public Mono<Void> addCar(AvailableCarDetails car) {
         return Mono.fromRunnable(() -> vectorStore.add(List.of(buildDocument(car))))
                 .subscribeOn(Schedulers.boundedElastic())
                 .doOnSuccess(_ -> log.info("Car with id {} added to vector store", car.id()))
@@ -61,7 +61,7 @@ public class CarVectorStoreService {
                 .build();
     }
 
-    private Document buildDocument(CarResponse car) {
+    private Document buildDocument(AvailableCarDetails car) {
         return Document.builder()
                 .id(car.id())
                 .text(buildCarText(car))
@@ -72,20 +72,22 @@ public class CarVectorStoreService {
                         "bodyCategory", car.bodyCategory().name(),
                         "yearOfProduction", car.yearOfProduction(),
                         "color", car.color(),
-                        "amount", car.amount().toString()
+                        "amount", car.amount().toString(),
+                        "carLocation", car.carLocation()
                 ))
                 .build();
     }
 
-    private String buildCarText(CarResponse car) {
-        return String.format("%s %s %s from %d, %s, %d km, price %s per day",
+    private String buildCarText(AvailableCarDetails car) {
+        return String.format("%s %s %s from %d, %s, %d km, price %s per day, located in %s",
                 car.make(),
                 car.model(),
                 car.bodyCategory().getDisplayName(),
                 car.yearOfProduction(),
                 car.color(),
                 car.mileage(),
-                car.amount());
+                car.amount(),
+                car.carLocation());
     }
 
 }

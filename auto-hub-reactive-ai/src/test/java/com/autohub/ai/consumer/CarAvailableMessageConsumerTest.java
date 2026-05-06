@@ -3,7 +3,7 @@ package com.autohub.ai.consumer;
 import com.autohub.ai.util.TestUtil;
 import com.autohubreactive.ai.consumer.CarAvailableMessageConsumer;
 import com.autohubreactive.ai.service.CarVectorStoreService;
-import com.autohubreactive.dto.agency.CarResponse;
+import com.autohubreactive.dto.ai.AvailableCarDetails;
 import com.autohubreactive.lib.retry.RetryHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,13 +41,14 @@ class CarAvailableMessageConsumerTest {
 
     @Test
     void carAvailableConsumerTest_success() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
-        Message<CarResponse> message = MessageBuilder.withPayload(carResponse)
+        Message<AvailableCarDetails> message = MessageBuilder.withPayload(availableCarDetails)
                 .setHeader(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment)
                 .build();
 
-        when(carVectorStoreService.addCar(any(CarResponse.class))).thenReturn(Mono.empty());
+        when(carVectorStoreService.addCar(any(AvailableCarDetails.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
         carAvailableMessageConsumer.carAvailableConsumer().apply(Flux.just(message))
@@ -58,11 +59,12 @@ class CarAvailableMessageConsumerTest {
 
     @Test
     void carAvailableConsumerTest_noAcknowledgement() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
+        AvailableCarDetails availableCarDetails =
+                TestUtil.getResourceAsJson("/data/AvailableCarDetails.json", AvailableCarDetails.class);
 
-        Message<CarResponse> message = MessageBuilder.withPayload(carResponse).build();
+        Message<AvailableCarDetails> message = MessageBuilder.withPayload(availableCarDetails).build();
 
-        when(carVectorStoreService.addCar(any(CarResponse.class))).thenReturn(Mono.empty());
+        when(carVectorStoreService.addCar(any(AvailableCarDetails.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofMinutes(0)));
 
         carAvailableMessageConsumer.carAvailableConsumer().apply(Flux.just(message))
