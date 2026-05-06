@@ -1,14 +1,13 @@
 package com.autohubreactive.ai.service;
 
 import com.autohubreactive.ai.util.Constants;
-import com.autohubreactive.dto.agency.CarResponse;
 import com.autohubreactive.dto.ai.CarSuggestionResponse;
 import com.autohubreactive.dto.ai.TripInfo;
 import com.autohubreactive.lib.exceptionhandling.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -22,13 +21,14 @@ import java.util.Map;
 @Slf4j
 public class CarSuggestionService {
 
+    private static final int TOP_K = 10;
+
     private final ChatService chatService;
-    private final CarService carService;
+    private final CarVectorStoreService carVectorStoreService;
 
     public Mono<CarSuggestionResponse> getChatOutput(String apikey, List<String> roles, TripInfo tripInfo) {
-        return getAvailableCars(apikey, roles)
-                .collectList()
-                .flatMap(cars -> getCarSuggestionResponse(tripInfo, cars))
+        return carVectorStoreService.searchSimilarCars(buildQueryText(tripInfo), TOP_K)
+                .flatMap(documents -> getCarSuggestionResponse(tripInfo, documents))
                 .onErrorMap(e -> {
                     log.error("Error while getting chat response: {}", e.getMessage());
 
@@ -36,17 +36,21 @@ public class CarSuggestionService {
                 });
     }
 
-    private Mono<CarSuggestionResponse> getCarSuggestionResponse(TripInfo tripInfo, List<String> cars) {
+    private Mono<CarSuggestionResponse> getCarSuggestionResponse(TripInfo tripInfo, List<Document> documents) {
+        List<String> cars = documents.stream()
+                .map(Document::getText)
+                .toList();
+
         return chatService.getChatReply(getText(), getParams(tripInfo, cars));
     }
 
-    private Flux<String> getAvailableCars(String apikey, List<String> roles) {
-        return carService.getAllAvailableCars(apikey, roles)
-                .map(this::getCarDetails);
-    }
-
-    private String getCarDetails(CarResponse carResponse) {
-        return carResponse.make() + " " + carResponse.model() + " from " + carResponse.yearOfProduction();
+    private String buildQueryText(TripInfo tripInfo) {
+        return String.format(
+                "Car rental for %d people traveling to %s, Romania in %s for a %s trip",
+                tripInfo.peopleCount(),
+                tripInfo.destination(),
+                getMonth(tripInfo.tripDate()),
+                tripInfo.tripKind());
     }
 
     private String getText() {

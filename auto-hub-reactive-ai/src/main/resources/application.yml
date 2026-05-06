@@ -6,6 +6,11 @@ spring:
     name: auto-hub-reactive-ai
   webflux:
     base-path: /ai
+  mongodb:
+    database: auto_hub_ai
+    username: ${MONGODB_USERNAME}
+    password: ${MONGODB_PASSWORD}
+    uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubai.gnfkdzp.mongodb.net/?appName=AutoHubAi
   ai:
     ollama:
       base-url: http://localhost:11434
@@ -13,11 +18,72 @@ spring:
         options:
           model: mistral
           temperature: 0.0F
+      embedding:
+        options:
+          model: nomic-embed-text
+    vectorstore:
+      mongodb:
+        collection-name: car-vector
+        initialize-schema: true
+        index-name: car-vector-index
+        path-name: embedding
+        num-candidates: 200
   cloud:
     loadbalancer:
       enabled: true
       cache:
         enabled: true
+    function:
+      definition: carStatusUpdateConsumer;updateCarsConsumer;carUpdateDetailsConsumer;carAvailableConsumer
+    stream:
+      defaultBinder: kafka
+      bindings:
+        carStatusUpdateConsumer-in-0:
+          binder: kafka
+          destination: ${SAVE_BOOKING_CAR_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AI_CONSUMER_GROUP}
+        updateCarsConsumer-in-0:
+          binder: kafka
+          destination: ${UPDATE_BOOKING_CARS_UPDATE_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AI_CONSUMER_GROUP}
+        carUpdateDetailsConsumer-in-0:
+          binder: kafka
+          destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AI_CONSUMER_GROUP}
+        carAvailableConsumer-in-0:
+          binder: kafka
+          destination: ${CAR_AVAILABLE_AI_REACTIVE_TOPIC}
+          contentType: application/json
+          group: ${AI_CONSUMER_GROUP}
+      kafka:
+        binder:
+          auto-create-topics: true
+          auto-add-partitions: false
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            allow.auto.create.topics: true
+            auto.offset.reset: latest
+        bindings:
+          carStatusUpdateConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          updateCarsConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          carUpdateDetailsConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+          carAvailableConsumer-in-0:
+            consumer:
+              ack-mode: MANUAL_IMMEDIATE
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      enable-auto-commit: false
   http:
     codecs:
       max-in-memory-size: 20MB
@@ -70,6 +136,8 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+    mongodb:
+      enabled: false
 
 logging:
   level:
@@ -91,3 +159,6 @@ cors:
   allowedMethods: '*'
   allowedHeaders: '*'
   codecMaxInMemorySizeInMb: 20
+
+vector-store:
+  system-roles: ROLE_admin

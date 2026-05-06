@@ -26,7 +26,7 @@ public class CarService {
 
     public Flux<CarResponse> getAllAvailableCars(String apikey, List<String> roles) {
         return webClient.get()
-                .uri(url + Constants.SEPARATOR + "available")
+                .uri(url + Constants.SEPARATOR + "availability")
                 .headers(WebClientUtil.setHttpHeaders(apikey, roles))
                 .retrieve()
                 .bodyToFlux(CarResponse.class)

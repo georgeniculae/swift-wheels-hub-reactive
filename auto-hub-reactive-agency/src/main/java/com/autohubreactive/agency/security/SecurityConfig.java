@@ -35,7 +35,7 @@ public class SecurityConfig {
                         request -> request.pathMatchers(
                                         "/actuator/**",
                                         "/definition/**",
-                                        "/cars/availability/location/**"
+                                        "/cars/availability/**"
                                 )
                                 .permitAll()
                                 .anyExchange()

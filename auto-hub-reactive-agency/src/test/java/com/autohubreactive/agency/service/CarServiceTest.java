@@ -6,6 +6,7 @@ import com.autohubreactive.agency.entity.Employee;
 import com.autohubreactive.agency.entity.RentalOffice;
 import com.autohubreactive.agency.mapper.CarMapper;
 import com.autohubreactive.agency.mapper.CarMapperImpl;
+import com.autohubreactive.agency.producer.CarAvailableProducerService;
 import com.autohubreactive.agency.repository.CarRepository;
 import com.autohubreactive.agency.util.TestData;
 import com.autohubreactive.agency.util.TestUtil;
@@ -79,6 +80,9 @@ class CarServiceTest {
 
     @Mock
     private ReactiveGridFsTemplate reactiveGridFsTemplate;
+
+    @Mock
+    private CarAvailableProducerService carAvailableProducerService;
 
     @Spy
     private CarMapper carMapper = new CarMapperImpl();
@@ -438,6 +442,7 @@ class CarServiceTest {
 
         when(carRepository.findById(any(ObjectId.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+        when(carAvailableProducerService.sendCarAvailable(any(CarResponse.class))).thenReturn(Mono.empty());
 
         carService.updateCarStatus(carStatusUpdate)
                 .as(StepVerifier::create)
@@ -472,6 +477,7 @@ class CarServiceTest {
 
         when(carRepository.findAllById(anyList())).thenReturn(Flux.just(car));
         when(carRepository.saveAll(anyList())).thenReturn(Flux.just(car));
+        when(carAvailableProducerService.sendCarAvailable(any(CarResponse.class))).thenReturn(Mono.empty());
 
         carService.updateCarsStatus(updateCarsRequest)
                 .as(StepVerifier::create)
@@ -509,6 +515,7 @@ class CarServiceTest {
         when(employeeService.findEntityById(anyString())).thenReturn(Mono.just(employee));
         when(carRepository.findCarByIdAndCarStatus(any(ObjectId.class), any(CarStatus.class))).thenReturn(Mono.just(car));
         when(carRepository.save(any(Car.class))).thenReturn(Mono.just(car));
+        when(carAvailableProducerService.sendCarAvailable(any(CarResponse.class))).thenReturn(Mono.empty());
 
         carService.updateCarWhenBookingIsClosed(carUpdateDetails)
                 .as(StepVerifier::create)

@@ -165,7 +165,7 @@ class CarRouterTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    @WithAnonymousUser
     void getAllAvailableCarsTest_success() {
         CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
         List<CarResponse> carResponses = List.of(carResponse);
@@ -186,24 +186,6 @@ class CarRouterTest {
         responseBody.as(StepVerifier::create)
                 .expectNext(carResponse)
                 .verifyComplete();
-    }
-
-    @Test
-    @WithAnonymousUser
-    void getAllAvailableCarsTest_unauthorized() {
-        CarResponse carResponse = TestUtil.getResourceAsJson("/data/CarResponse.json", CarResponse.class);
-        List<CarResponse> carResponses = List.of(carResponse);
-
-        Mono<ServerResponse> serverResponse = ServerResponse.ok().bodyValue(carResponses);
-
-        when(carHandler.getAllAvailableCars(any(ServerRequest.class))).thenReturn(serverResponse);
-
-        webTestClient.get()
-                .uri(PATH + "/availability")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isUnauthorized();
     }
 
     @Test

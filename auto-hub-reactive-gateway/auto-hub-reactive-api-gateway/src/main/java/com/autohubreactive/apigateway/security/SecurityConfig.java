@@ -36,7 +36,7 @@ public class SecurityConfig {
                         request -> request.pathMatchers(
                                         "/actuator/**",
                                         "/agency/definition/**",
-                                        "/agency/cars/availability/location/**",
+                                        "/agency/cars/availability/**",
                                         "/ai/definition/**",
                                         "/bookings/definition/**",
                                         "/customers/definition/**",

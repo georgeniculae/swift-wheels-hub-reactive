@@ -2,6 +2,7 @@ package com.autohubreactive.agency.service;
 
 import com.autohubreactive.agency.entity.Car;
 import com.autohubreactive.agency.entity.CarStatus;
+import com.autohubreactive.agency.producer.CarAvailableProducerService;
 import com.autohubreactive.agency.entity.Employee;
 import com.autohubreactive.agency.entity.RentalOffice;
 import com.autohubreactive.agency.mapper.CarMapper;
@@ -59,6 +60,7 @@ public class CarService {
     private final CarMapper carMapper;
     private final CarRequestValidator carRequestValidator;
     private final ObjectMapper objectMapper;
+    private final CarAvailableProducerService carAvailableProducerService;
 
     public Flux<CarResponse> findAllCars() {
         return carRepository.findAll()
@@ -197,7 +199,13 @@ public class CarService {
                     return carMapper.getUpdatedCarWithStatus(existingCar, carStatus);
                 })
                 .flatMap(carRepository::save)
-                .then()
+                .flatMap(savedCar -> {
+                    if (CarStatus.AVAILABLE.equals(savedCar.carStatus())) {
+                        return carAvailableProducerService.sendCarAvailable(carMapper.mapEntityToDto(savedCar));
+                    }
+
+                    return Mono.empty();
+                })
                 .onErrorResume(e -> {
                     log.error("Error while updating car {} status: {}", carStatusUpdate.carId(), e.getMessage());
 
@@ -210,6 +218,8 @@ public class CarService {
                 .map(existingCar -> getUpdatedCar(updateCarsRequests, existingCar))
                 .collectList()
                 .flatMapMany(carRepository::saveAll)
+                .filter(savedCar -> CarStatus.AVAILABLE.equals(savedCar.carStatus()))
+                .flatMap(savedCar -> carAvailableProducerService.sendCarAvailable(carMapper.mapEntityToDto(savedCar)))
                 .then()
                 .onErrorResume(e -> {
                     log.error("Error while updating cars statuses: {}", e.getMessage());
@@ -230,6 +240,13 @@ public class CarService {
     public Mono<Void> updateCarWhenBookingIsClosed(CarUpdateDetails carUpdateDetails) {
         return updateCarAfterClosingBooking(carUpdateDetails)
                 .flatMap(carRepository::save)
+                .flatMap(savedCar -> {
+                    if (CarStatus.AVAILABLE.equals(savedCar.carStatus())) {
+                        return carAvailableProducerService.sendCarAvailable(carMapper.mapEntityToDto(savedCar));
+                    }
+
+                    return Mono.empty();
+                })
                 .then();
     }
 

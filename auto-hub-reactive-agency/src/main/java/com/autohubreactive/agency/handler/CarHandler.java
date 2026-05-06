@@ -59,7 +59,6 @@ public class CarHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    @PreAuthorize("hasRole('user')")
     public Mono<ServerResponse> getAllAvailableCars(ServerRequest serverRequest) {
         return carService.getAllAvailableCars()
                 .collectList()

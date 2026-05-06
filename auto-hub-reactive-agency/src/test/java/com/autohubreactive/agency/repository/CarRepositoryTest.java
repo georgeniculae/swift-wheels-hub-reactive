@@ -1,17 +1,11 @@
 package com.autohubreactive.agency.repository;
 
 import com.autohubreactive.agency.entity.Car;
+import com.autohubreactive.agency.testconfig.MongoTestcontainers;
 import com.autohubreactive.agency.util.TestUtil;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.mongodb.test.autoconfigure.DataMongoTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.mongodb.MongoDBContainer;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -19,20 +13,10 @@ import java.util.List;
 import static com.mongodb.assertions.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
-@DataMongoTest
-class CarRepositoryTest {
+class CarRepositoryTest extends MongoTestcontainers {
 
     private static final Car CAR_1 = TestUtil.getResourceAsJson("/data/Car1.json", Car.class);
     private static final Car CAR_2 = TestUtil.getResourceAsJson("/data/Car2.json", Car.class);
-
-    @Container
-    @ServiceConnection
-    static MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:latest");
-
-    @Autowired
-    private CarRepository carRepository;
 
     @BeforeEach
     void initCollection() {

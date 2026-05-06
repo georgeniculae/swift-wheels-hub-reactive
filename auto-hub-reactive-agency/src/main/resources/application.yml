@@ -42,6 +42,10 @@ spring:
           destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
           contentType: application/json
           group: ${AGENCY_CONSUMER_GROUP}
+        carAvailableProducer-out-0:
+          binder: kafka
+          destination: ${CAR_AVAILABLE_AI_REACTIVE_TOPIC}
+          contentType: application/json
       kafka:
         binder:
           auto-create-topics: true
