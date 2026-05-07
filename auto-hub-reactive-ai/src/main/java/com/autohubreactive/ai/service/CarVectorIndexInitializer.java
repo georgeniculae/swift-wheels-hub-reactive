@@ -18,10 +18,11 @@ public class CarVectorIndexInitializer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
-        carService.getAllAvailableCars(apiKeyProvider.getApiKey(), apiKeyProvider.getSystemRoles())
+        carVectorStoreService.deleteAllCars()
+                .thenMany(carService.getAllAvailableCars(apiKeyProvider.getApiKey(), apiKeyProvider.getSystemRoles()))
                 .flatMap(carVectorStoreService::addCar)
-                .doOnComplete(() -> log.info("Vector store initialized with all available cars"))
-                .doOnError(e -> log.error("Vector store initialization failed: {}", e.getMessage()))
+                .doOnComplete(() -> log.info("Vector store reinitialized with all available cars"))
+                .doOnError(e -> log.error("Vector store reinitialization failed: {}", e.getMessage()))
                 .subscribe();
     }
 

@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -20,6 +23,22 @@ import java.util.Map;
 public class CarVectorStoreService {
 
     private final VectorStore vectorStore;
+    private final MongoTemplate mongoTemplate;
+
+    @Value("${spring.ai.vectorstore.mongodb.collection-name}")
+    private String collectionName;
+
+    public Mono<Void> deleteAllCars() {
+        return Mono.fromRunnable(() -> mongoTemplate.remove(new Query(), collectionName))
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnSuccess(_ -> log.info("Vector store cleared"))
+                .onErrorMap(e -> {
+                    log.error("Error clearing vector store: {}", e.getMessage());
+
+                    return ExceptionUtil.handleException(e);
+                })
+                .then();
+    }
 
     public Mono<Void> addCar(AvailableCarDetails car) {
         return Mono.fromRunnable(() -> vectorStore.add(List.of(buildDocument(car))))
