@@ -1,5 +1,6 @@
 package com.autohubreactive.emailnotification.service;
 
+import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.dto.emailnotification.EmailResponse;
 import com.autohubreactive.emailnotification.mapper.EmailResponseMapper;
 import com.autohubreactive.emailnotification.util.Constants;
@@ -11,6 +12,7 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Attachments;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.StringWriter;
+import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +39,8 @@ public class EmailService {
     @Value("${sendgrid.mail.name}")
     private String name;
 
-    public Mono<EmailResponse> sendEmail(String toAddressEmail, Object object) {
-        return getMailResponse(createMail(toAddressEmail, object))
+    public Mono<EmailResponse> sendEmail(String toAddressEmail, InvoiceResponse invoiceResponse, byte[] pdfBytes) {
+        return getMailResponse(createMail(toAddressEmail, invoiceResponse, pdfBytes))
                 .map(emailResponseMapper::mapToEmailResponse);
     }
 
@@ -62,21 +65,27 @@ public class EmailService {
         }
     }
 
-    private Mail createMail(String toAddressEmail, Object object) {
+    private Mail createMail(String toAddressEmail, InvoiceResponse invoiceResponse, byte[] pdfBytes) {
         Email from = new Email(mailFrom, name);
         Email to = new Email(toAddressEmail);
-
-        Content content = new Content(Constants.CONTENT_TYPE, getMailBody(object));
+        Content content = new Content(Constants.CONTENT_TYPE, getMailBody(invoiceResponse));
 
         Mail mail = new Mail(from, Constants.SUBJECT, to, content);
         mail.setSubject(Constants.SUBJECT);
+
+        Attachments attachment = new Attachments();
+        attachment.setContent(Base64.getEncoder().encodeToString(pdfBytes));
+        attachment.setType("application/pdf");
+        attachment.setFilename("invoice-" + invoiceResponse.id() + ".pdf");
+        attachment.setDisposition("attachment");
+        mail.addAttachments(attachment);
 
         return mail;
     }
 
     private String getMailBody(Object object) {
         StringWriter stringWriter = new StringWriter();
-        Mustache mustache = mustacheFactory.compile(Constants.MAIL_TEMPLATE_FOLDER + Constants.FILE_NAME + Constants.MUSTACHE_FORMAT);
+        Mustache mustache = mustacheFactory.compile(Constants.MAIL_TEMPLATE_FOLDER + Constants.FILE_NAME + Constants.MUSTACHE_FILE_EXTENSION);
 
         try {
             mustache.execute(stringWriter, object).flush();

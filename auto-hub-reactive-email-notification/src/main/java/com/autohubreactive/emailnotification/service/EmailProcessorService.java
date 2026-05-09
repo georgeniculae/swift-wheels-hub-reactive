@@ -13,9 +13,18 @@ import reactor.core.publisher.Mono;
 public class EmailProcessorService {
 
     private final EmailService emailService;
+    private final PdfService pdfService;
+    private final InvoicePdfStorageService invoicePdfStorageService;
 
     public Mono<EmailResponse> sendEmail(InvoiceResponse invoiceResponse) {
-        return emailService.sendEmail(invoiceResponse.customerEmail(), invoiceResponse)
+        return pdfService.generatePdf(invoiceResponse)
+                .flatMap(pdfBytes -> invoicePdfStorageService.savePdf(invoiceResponse, pdfBytes)
+                        .thenReturn(pdfBytes))
+                .flatMap(pdfBytes -> emailService.sendEmail(
+                        invoiceResponse.customerEmail(),
+                        invoiceResponse,
+                        pdfBytes
+                ))
                 .onErrorResume(e -> {
                     log.error("Exception while sending email: {}", e.getMessage(), e);
 

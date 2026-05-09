@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Invoice</title>
+    <style type="text/css">
+        body { font-family: Arial, sans-serif; font-size: 12px; color: #333; }
+        h1 { text-align: center; font-size: 20px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #4a4a4a; color: #ffffff; padding: 8px; text-align: left; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .total { font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+<h1>Invoice Notice</h1>
+<table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td>Invoice ID</td><td th:text="${invoice.id}">-</td></tr>
+    <tr><td>Customer</td><td th:text="${invoice.customerUsername}">-</td></tr>
+    <tr><td>Booking ID</td><td th:text="${invoice.bookingId}">-</td></tr>
+    <tr><td>Car ID</td><td th:text="${invoice.carId}">-</td></tr>
+    <tr><td>Rental Period</td><td th:text="${invoice.dateFrom} + ' — ' + ${invoice.dateTo}">-</td></tr>
+    <tr><td>Return Date</td><td th:text="${invoice.carReturnDate}">-</td></tr>
+    <tr><td>Rental Price</td><td th:text="${invoice.rentalCarPrice}">-</td></tr>
+    <tr><td>Damage Cost</td><td th:text="${invoice.damageCost}">-</td></tr>
+    <tr><td>Additional Payment</td><td th:text="${invoice.additionalPayment}">-</td></tr>
+    <tr><td>Vehicle Damaged</td><td th:text="${invoice.isVehicleDamaged}">-</td></tr>
+    <tr><td>Comments</td><td th:text="${invoice.comments}">-</td></tr>
+    <tr class="total"><td>TOTAL AMOUNT</td><td th:text="${invoice.totalAmount}">-</td></tr>
+</table>
+</body>
+</html>

@@ -54,6 +54,10 @@ spring:
       include-binding-errors: never
       include-stacktrace: never
       include-exception: false
+  data:
+    mongodb:
+      uri: ${MONGO_DB_URI}
+      database: ${MONGO_DB_DATABASE}
   http:
     codecs:
       max-in-memory-size: 20MB

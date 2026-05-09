@@ -33,3 +33,5 @@ build/
 .vscode/
 /.claude/settings.local.json
 /docs/superpowers/specs/2026-05-07-vector-store-clear-repopulate-design.md
+/docs/superpowers/plans/2026-05-08-invoice-pdf-sendgrid.md
+/docs/superpowers/specs/2026-05-08-invoice-pdf-sendgrid-design.md

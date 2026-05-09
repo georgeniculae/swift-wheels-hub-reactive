@@ -64,7 +64,7 @@ class EmailServiceTest {
         when(mustache.execute(any(StringWriter.class), any(Object.class))).thenReturn(writer);
         when(sendGrid.api(any(Request.class))).thenReturn(response);
 
-        emailService.sendEmail("user@email.com", invoiceResponse)
+        emailService.sendEmail("user@email.com", invoiceResponse, new byte[]{1, 2, 3})
                 .as(StepVerifier::create)
                 .expectNext(emailResponse)
                 .verifyComplete();
@@ -81,7 +81,7 @@ class EmailServiceTest {
         when(mustache.execute(any(StringWriter.class), any(Object.class))).thenReturn(writer);
         when(sendGrid.api(any(Request.class))).thenThrow(new RuntimeException());
 
-        emailService.sendEmail("user@email.com", invoiceResponse)
+        emailService.sendEmail("user@email.com", invoiceResponse, new byte[]{1, 2, 3})
                 .as(StepVerifier::create)
                 .expectError()
                 .verify();
