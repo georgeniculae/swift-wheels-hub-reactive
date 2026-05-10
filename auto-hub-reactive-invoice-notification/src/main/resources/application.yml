@@ -47,8 +47,6 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       enable-auto-commit: false
-  sendgrid:
-    api-key: ${SENDGRID_API_KEY}
   web:
     resources:
       add-mappings: false
@@ -76,6 +74,7 @@ eureka:
 
 sendgrid:
   mail:
+    api-key: ${SENDGRID_API_KEY}
     from: ${SENDGRID_MAIL_FROM}
     name: Auto Hub
 

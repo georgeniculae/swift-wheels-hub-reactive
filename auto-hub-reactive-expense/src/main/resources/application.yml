@@ -88,8 +88,6 @@ spring:
       enable-auto-commit: false
     producer:
       acks: all
-  sendgrid:
-    api-key: ${SENDGRID_API_KEY}
   web:
     resources:
       add-mappings: false
