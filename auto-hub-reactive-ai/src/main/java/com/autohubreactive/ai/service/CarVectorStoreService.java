@@ -53,7 +53,7 @@ public class CarVectorStoreService {
     }
 
     public Mono<Void> deleteCar(String carId) {
-        return Mono.fromRunnable(() -> vectorStore.delete(List.of(carId)))
+        return Mono.fromRunnable(() -> vectorStore.delete(List.of(getCarDocumentId(carId))))
                 .subscribeOn(Schedulers.boundedElastic())
                 .doOnSuccess(_ -> log.info("Car with id {} removed from vector store", carId))
                 .onErrorMap(e -> {
@@ -82,7 +82,7 @@ public class CarVectorStoreService {
 
     private Document buildDocument(AvailableCarDetails car) {
         return Document.builder()
-                .id(car.id())
+                .id(getCarDocumentId(car.id()))
                 .text(buildCarText(car))
                 .metadata(Map.of(
                         "carId", car.id(),
@@ -95,6 +95,10 @@ public class CarVectorStoreService {
                         "carLocation", car.carLocation()
                 ))
                 .build();
+    }
+
+    private String getCarDocumentId(String carId) {
+        return "car-" + carId;
     }
 
     private String buildCarText(AvailableCarDetails car) {
