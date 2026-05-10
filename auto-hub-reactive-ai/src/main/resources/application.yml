@@ -28,7 +28,6 @@ spring:
         initialize-schema: true
         index-name: car-vector-index
         path-name: embedding
-        num-candidates: 200
   cloud:
     loadbalancer:
       enabled: true
