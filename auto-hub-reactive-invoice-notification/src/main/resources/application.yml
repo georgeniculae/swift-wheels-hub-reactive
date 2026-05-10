@@ -5,8 +5,10 @@ spring:
   application:
     name: auto-hub-reactive-invoice-notification
   mongodb:
-    uri: ${MONGO_DB_URI}
-    database: ${MONGO_DB_DATABASE}
+    database: auto_hub_invoice_notification
+    username: ${MONGODB_USERNAME}
+    password: ${MONGODB_PASSWORD}
+    uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubexpense.m0uogrw.mongodb.net/?retryWrites=true&w=majority&appName=AutoHubExpense
   cloud:
     loadbalancer:
       enabled: true
@@ -98,6 +100,8 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+    mongodb:
+      enabled: false
 
 logging:
   level:
