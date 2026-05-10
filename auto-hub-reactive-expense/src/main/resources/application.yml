@@ -167,9 +167,6 @@ cors:
   allowedHeaders: '*'
   codecMaxInMemorySizeInMb: 20
 
-mongo-operations:
-  enabled: true
-
 scheduled:
   fixedDelay: 3000
 

@@ -184,9 +184,6 @@ cors:
   allowedHeaders: '*'
   codecMaxInMemorySizeInMb: 20
 
-mongo-operations:
-  enabled: true
-
 webclient:
   url:
     auto-hub-agency-cars: http://auto-hub-reactive-agency/agency/cars

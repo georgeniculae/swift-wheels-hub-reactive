@@ -155,8 +155,5 @@ cors:
   allowedHeaders: '*'
   codecMaxInMemorySizeInMb: 20
 
-mongo-operations:
-  enabled: true
-
 migration:
   package-scan: com.autohubreactive.agency.migration
