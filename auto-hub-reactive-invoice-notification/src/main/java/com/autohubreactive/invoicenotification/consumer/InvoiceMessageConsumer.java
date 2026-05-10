@@ -25,8 +25,7 @@ public class InvoiceMessageConsumer {
 
     @Bean
     public Function<Flux<Message<InvoiceResponse>>, Mono<Void>> invoiceNotificationConsumer() {
-        return messageFlux -> messageFlux.concatMap(this::processMessage)
-                .then();
+        return messageFlux -> messageFlux.concatMap(this::processMessage).then();
     }
 
     private Mono<EmailResponse> processMessage(Message<InvoiceResponse> message) {
