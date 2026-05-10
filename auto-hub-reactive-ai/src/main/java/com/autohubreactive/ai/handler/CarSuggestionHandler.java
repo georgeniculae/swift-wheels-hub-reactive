@@ -32,6 +32,7 @@ public class CarSuggestionHandler {
     private Mono<TripInfo> getTripInfo(ServerRequest serverRequest) {
         return Mono.just(
                 TripInfo.builder()
+                        .startLocation(ServerRequestUtil.getQueryParam(serverRequest, Constants.START_LOCATION))
                         .destination(ServerRequestUtil.getQueryParam(serverRequest, Constants.DESTINATION))
                         .peopleCount(Integer.parseInt(ServerRequestUtil.getQueryParam(serverRequest, Constants.PEOPLE_COUNT)))
                         .tripKind(ServerRequestUtil.getQueryParam(serverRequest, Constants.TRIP_KIND))
