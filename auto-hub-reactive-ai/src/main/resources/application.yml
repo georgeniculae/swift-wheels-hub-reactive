@@ -18,6 +18,7 @@ spring:
         options:
           model: mistral
           temperature: 0.0F
+          format: json
       embedding:
         options:
           model: nomic-embed-text
