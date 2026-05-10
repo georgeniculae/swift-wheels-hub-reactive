@@ -8,7 +8,7 @@ spring:
     database: auto_hub_invoice_notification
     username: ${MONGODB_USERNAME}
     password: ${MONGODB_PASSWORD}
-    uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubexpense.m0uogrw.mongodb.net/?retryWrites=true&w=majority&appName=AutoHubExpense
+    uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@autohubinvoicenotificat.ciwvits.mongodb.net/?appName=AutoHubInvoiceNotification
   cloud:
     loadbalancer:
       enabled: true
