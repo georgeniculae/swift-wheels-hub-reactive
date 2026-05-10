@@ -30,7 +30,7 @@ spring:
         carUpdateDetailsProducer-out-0:
           destination: ${INVOICE_CAR_UPDATE_DETAILS_REACTIVE_TOPIC}
           contentType: application/json
-        emailNotificationProducer-out-0:
+        invoiceNotificationProducer-out-0:
           destination: ${EMAIL_NOTIFICATION_REACTIVE_TOPIC}
           contentType: application/json
         failedInvoiceDlqProducer-out-0:

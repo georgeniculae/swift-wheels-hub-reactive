@@ -19,10 +19,10 @@ public class InvoiceProducerService {
     private final StreamBridge streamBridge;
     private final RetryHandler retryHandler;
 
-    @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.destination}")
+    @Value("${spring.cloud.stream.bindings.invoiceNotificationProducer-out-0.destination}")
     private String binderName;
 
-    @Value("${spring.cloud.stream.bindings.emailNotificationProducer-out-0.contentType}")
+    @Value("${spring.cloud.stream.bindings.invoiceNotificationProducer-out-0.contentType}")
     private String mimeType;
 
     public Mono<Void> sendInvoice(InvoiceResponse invoiceResponse) {

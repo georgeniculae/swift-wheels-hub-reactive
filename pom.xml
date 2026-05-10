@@ -24,8 +24,8 @@
         <module>auto-hub-reactive-audit</module>
         <module>auto-hub-reactive-booking</module>
         <module>auto-hub-reactive-customer</module>
-        <module>auto-hub-reactive-email-notification</module>
         <module>auto-hub-reactive-expense</module>
+        <module>auto-hub-reactive-invoice-notification</module>
     </modules>
 
     <repositories>
