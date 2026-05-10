@@ -50,8 +50,6 @@ public class EmailService {
     }
 
     private Response sendMail(Mail mail) {
-        sendGrid.setDataResidency(Constants.DATA_RESIDENCY);
-
         Request request = new Request();
 
         try {
