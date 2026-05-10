@@ -3,7 +3,7 @@ package com.autohubreactive.lib.config.mongodb;
 import com.autohubreactive.lib.util.Constants;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.ReactiveHealthIndicator;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Configuration
-@ConditionalOnBean(name = "mongoProperties")
+@ConditionalOnProperty(prefix = "spring.mongodb", name = "database")
 public class ReactiveMongoHealthIndicatorConfig {
 
     @Bean(name = "reactiveMongoHealthIndicator")
