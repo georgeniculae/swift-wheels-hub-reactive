@@ -1,9 +1,10 @@
 package com.autohubreactive.invoicenotification.mapper;
 
 import com.autohubreactive.dto.invoicenotification.EmailResponse;
-import com.sendgrid.Response;
+import com.postmarkapp.postmark.client.data.model.message.MessageResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -13,6 +14,8 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface EmailResponseMapper {
 
-    EmailResponse mapToEmailResponse(Response response);
+    @Mapping(source = "errorCode", target = "statusCode")
+    @Mapping(source = "message", target = "body")
+    EmailResponse mapToEmailResponse(MessageResponse response);
 
 }

@@ -74,10 +74,10 @@ eureka:
   instance:
     prefer-ip-address: true
 
-sendgrid:
+postmark:
   mail:
-    api-key: ${SENDGRID_API_KEY}
-    from: ${SENDGRID_MAIL_FROM}
+    api-key: ${POSTMARK_API_KEY}
+    from: ${POSTMARK_MAIL_FROM}
     name: Auto Hub
 
 management:

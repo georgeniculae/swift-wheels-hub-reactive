@@ -36,8 +36,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sendgrid</groupId>
-            <artifactId>sendgrid-java</artifactId>
+            <groupId>com.postmarkapp</groupId>
+            <artifactId>postmark</artifactId>
+            <version>1.13.0</version>
         </dependency>
 
         <dependency>

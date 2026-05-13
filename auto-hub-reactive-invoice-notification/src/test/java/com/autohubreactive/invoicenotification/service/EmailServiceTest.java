@@ -7,9 +7,9 @@ import com.autohubreactive.invoicenotification.mapper.EmailResponseMapperImpl;
 import com.autohubreactive.invoicenotification.util.TestUtil;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.sendgrid.Request;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
+import com.postmarkapp.postmark.client.ApiClient;
+import com.postmarkapp.postmark.client.data.model.message.Message;
+import com.postmarkapp.postmark.client.data.model.message.MessageResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +18,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.test.StepVerifier;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -34,7 +33,7 @@ class EmailServiceTest {
     private EmailService emailService;
 
     @Mock
-    private SendGrid sendGrid;
+    private ApiClient apiClient;
 
     @Mock
     private MustacheFactory mustacheFactory;
@@ -49,37 +48,37 @@ class EmailServiceTest {
     private EmailResponseMapper emailResponseMapper = new EmailResponseMapperImpl();
 
     @Test
-    void sendEmailTest_success() throws IOException {
+    void sendEmailTest_success() throws Exception {
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        Response response = new Response();
-        response.setStatusCode(200);
-        response.setBody("body");
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setErrorCode(0);
+        messageResponse.setMessage("OK");
 
         EmailResponse emailResponse =
                 TestUtil.getResourceAsJson("/data/EmailResponse.json", EmailResponse.class);
 
         when(mustacheFactory.compile(anyString())).thenReturn(mustache);
         when(mustache.execute(any(StringWriter.class), any(Object.class))).thenReturn(writer);
-        when(sendGrid.api(any(Request.class))).thenReturn(response);
+        when(apiClient.deliverMessage(any(Message.class))).thenReturn(messageResponse);
 
         emailService.sendEmail("user@email.com", invoiceResponse, new byte[]{1, 2, 3})
                 .as(StepVerifier::create)
                 .expectNext(emailResponse)
                 .verifyComplete();
 
-        verify(emailResponseMapper).mapToEmailResponse(any(Response.class));
+        verify(emailResponseMapper).mapToEmailResponse(any(MessageResponse.class));
     }
 
     @Test
-    void sendEmailTest_errorOnSendingRequest() throws IOException {
+    void sendEmailTest_errorOnSendingRequest() throws Exception {
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
         when(mustacheFactory.compile(anyString())).thenReturn(mustache);
         when(mustache.execute(any(StringWriter.class), any(Object.class))).thenReturn(writer);
-        when(sendGrid.api(any(Request.class))).thenThrow(new RuntimeException());
+        when(apiClient.deliverMessage(any(Message.class))).thenThrow(new RuntimeException());
 
         emailService.sendEmail("user@email.com", invoiceResponse, new byte[]{1, 2, 3})
                 .as(StepVerifier::create)

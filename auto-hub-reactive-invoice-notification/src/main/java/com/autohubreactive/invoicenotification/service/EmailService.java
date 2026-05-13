@@ -2,19 +2,13 @@ package com.autohubreactive.invoicenotification.service;
 
 import com.autohubreactive.dto.common.InvoiceResponse;
 import com.autohubreactive.dto.invoicenotification.EmailResponse;
+import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.invoicenotification.mapper.EmailResponseMapper;
 import com.autohubreactive.invoicenotification.util.Constants;
-import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.sendgrid.Method;
-import com.sendgrid.Request;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Attachments;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
+import com.postmarkapp.postmark.client.ApiClient;
+import com.postmarkapp.postmark.client.data.model.message.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -29,56 +23,34 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final SendGrid sendGrid;
+    private final ApiClient apiClient;
     private final MustacheFactory mustacheFactory;
     private final EmailResponseMapper emailResponseMapper;
 
-    @Value("${sendgrid.mail.from}")
+    @Value("${postmark.mail.from}")
     private String mailFrom;
 
-    @Value("${sendgrid.mail.name}")
+    @Value("${postmark.mail.name}")
     private String name;
 
     public Mono<EmailResponse> sendEmail(String toAddressEmail, InvoiceResponse invoiceResponse, byte[] pdfBytes) {
-        return getMailResponse(createMail(toAddressEmail, invoiceResponse, pdfBytes))
+        return Mono.fromCallable(() -> apiClient.deliverMessage(createMessage(toAddressEmail, invoiceResponse, pdfBytes)))
+                .subscribeOn(Schedulers.boundedElastic())
                 .map(emailResponseMapper::mapToEmailResponse);
     }
 
-    private Mono<Response> getMailResponse(Mail mail) {
-        return Mono.fromCallable(() -> sendMail(mail))
-                .subscribeOn(Schedulers.boundedElastic());
-    }
+    private Message createMessage(String toAddressEmail, InvoiceResponse invoiceResponse, byte[] pdfBytes) {
+        Message message = new Message();
+        message.setFrom(name + " <" + mailFrom + ">");
+        message.setTo(toAddressEmail);
+        message.setSubject(Constants.SUBJECT);
+        message.setTextBody(getMailBody(invoiceResponse));
 
-    private Response sendMail(Mail mail) {
-        Request request = new Request();
+        String filename = Constants.INVOICE_FILENAME_PREFIX + invoiceResponse.id() + Constants.PDF_EXTENSION;
+        String encodedContent = Base64.getEncoder().encodeToString(pdfBytes);
+        message.addAttachment(filename, encodedContent, Constants.APPLICATION_PDF_CONTENT_TYPE);
 
-        try {
-            request.setMethod(Method.POST);
-            request.setEndpoint(Constants.ENDPOINT);
-            request.setBody(mail.build());
-
-            return sendGrid.api(request);
-        } catch (Exception e) {
-            throw new AutoHubResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
-
-    private Mail createMail(String toAddressEmail, InvoiceResponse invoiceResponse, byte[] pdfBytes) {
-        Email from = new Email(mailFrom, name);
-        Email to = new Email(toAddressEmail);
-        Content content = new Content(Constants.CONTENT_TYPE, getMailBody(invoiceResponse));
-
-        Mail mail = new Mail(from, Constants.SUBJECT, to, content);
-        mail.setSubject(Constants.SUBJECT);
-
-        Attachments attachment = new Attachments();
-        attachment.setContent(Base64.getEncoder().encodeToString(pdfBytes));
-        attachment.setType("application/pdf");
-        attachment.setFilename("invoice-" + invoiceResponse.id() + ".pdf");
-        attachment.setDisposition("attachment");
-        mail.addAttachments(attachment);
-
-        return mail;
+        return message;
     }
 
     private String getMailBody(Object object) {

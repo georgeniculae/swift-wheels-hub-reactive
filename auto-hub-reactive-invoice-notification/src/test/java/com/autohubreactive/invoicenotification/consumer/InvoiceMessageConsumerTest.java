@@ -5,7 +5,6 @@ import com.autohubreactive.dto.invoicenotification.EmailResponse;
 import com.autohubreactive.invoicenotification.service.EmailProcessorService;
 import com.autohubreactive.invoicenotification.util.TestUtil;
 import com.autohubreactive.lib.retry.RetryHandler;
-import com.sendgrid.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,10 +49,6 @@ class InvoiceMessageConsumerTest {
 
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
-
-        Response response = new Response();
-        response.setStatusCode(200);
-        response.setBody("body");
 
         MessageHeaders messageHeaders = new MessageHeaders(Map.of(KafkaHeaders.ACKNOWLEDGMENT, acknowledgment));
         Message<InvoiceResponse> message = MessageBuilder.createMessage(invoiceResponse, messageHeaders);
