@@ -96,6 +96,9 @@ mail:
   from: ${MAIL_FROM}
   name: Auto Hub
 
+apikey:
+  secret: ${API_KEY_SECRET}
+
 management:
   server:
     port: ${server.port}
