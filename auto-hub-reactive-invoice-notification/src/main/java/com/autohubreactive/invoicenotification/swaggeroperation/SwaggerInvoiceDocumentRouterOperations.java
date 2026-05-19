@@ -4,7 +4,6 @@ import com.autohubreactive.invoicenotification.handler.InvoiceDocumentHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,8 +33,8 @@ import java.lang.annotation.Target;
                                                 responseCode = "200",
                                                 description = "Successful",
                                                 content = @Content(
-                                                        array = @ArraySchema(schema = @Schema(implementation = byte[].class)),
-                                                        mediaType = MediaType.APPLICATION_PDF_VALUE
+                                                        mediaType = MediaType.APPLICATION_PDF_VALUE,
+                                                        schema = @Schema(type = "string", format = "binary")
                                                 )
                                         ),
                                         @ApiResponse(
