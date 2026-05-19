@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: auto-hub-reactive-invoice-notification
+  webflux:
+      base-path: /invoice-notification
   mongodb:
     database: auto_hub_invoice_notification
     username: ${MONGODB_USERNAME}
@@ -81,6 +83,14 @@ eureka:
     proxy-user-name: ${EUREKA_PASSWORD}
   instance:
     prefer-ip-address: true
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /definition/swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /definition/v3/api-docs
 
 mail:
   from: ${MAIL_FROM}
