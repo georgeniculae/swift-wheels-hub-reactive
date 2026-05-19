@@ -1,7 +1,7 @@
 package com.autohubreactive.invoicenotification.router;
 
 import com.autohubreactive.invoicenotification.handler.InvoiceDocumentHandler;
-import com.autohubreactive.invoicenotification.swaggeroperation.SwaggerInvoiceNotificationRouterOperations;
+import com.autohubreactive.invoicenotification.swaggeroperation.SwaggerInvoiceDocumentRouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class InvoiceDocumentRouter {
 
     @Bean
-    @SwaggerInvoiceNotificationRouterOperations
+    @SwaggerInvoiceDocumentRouterOperations
     public RouterFunction<ServerResponse> routeInvoiceDocument(InvoiceDocumentHandler invoiceDocumentHandler) {
         return RouterFunctions.nest(
                 RequestPredicates.path("/invoices").and(RequestPredicates.accept(MediaType.APPLICATION_PDF)),

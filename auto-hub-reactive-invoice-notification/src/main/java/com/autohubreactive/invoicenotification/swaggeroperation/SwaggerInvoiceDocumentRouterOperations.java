@@ -59,5 +59,5 @@ import java.lang.annotation.Target;
                 )
         }
 )
-public @interface SwaggerInvoiceNotificationRouterOperations {
+public @interface SwaggerInvoiceDocumentRouterOperations {
 }
