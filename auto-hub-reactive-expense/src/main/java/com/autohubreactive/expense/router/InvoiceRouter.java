@@ -1,7 +1,7 @@
 package com.autohubreactive.expense.router;
 
 import com.autohubreactive.expense.handler.InvoiceHandler;
-import com.autohubreactive.expense.swaggeroperation.SwaggerRouteInvoiceOperation;
+import com.autohubreactive.expense.swaggeroperation.SwaggerInvoiceRouteOperation;
 import com.autohubreactive.expense.util.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class InvoiceRouter {
 
     @Bean
-    @SwaggerRouteInvoiceOperation
+    @SwaggerInvoiceRouteOperation
     public RouterFunction<ServerResponse> routeInvoice(InvoiceHandler invoiceHandler) {
         return RouterFunctions.nest(RequestPredicates.path(Constants.INVOICES_REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), invoiceHandler::findAllInvoices)

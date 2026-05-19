@@ -1,7 +1,7 @@
 package com.autohubreactive.expense.router;
 
 import com.autohubreactive.expense.handler.RevenueHandler;
-import com.autohubreactive.expense.swaggeroperation.SwaggerRouteRevenueOperation;
+import com.autohubreactive.expense.swaggeroperation.SwaggerRevenueRouteOperation;
 import com.autohubreactive.expense.util.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class RevenueRouter {
 
     @Bean
-    @SwaggerRouteRevenueOperation
+    @SwaggerRevenueRouteOperation
     public RouterFunction<ServerResponse> routeRevenue(RevenueHandler revenueHandler) {
         return RouterFunctions.nest(RequestPredicates.path(Constants.REVENUES_REQUEST_MAPPING).and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 RouterFunctions.route(RequestPredicates.GET(""), revenueHandler::findAllRevenues)

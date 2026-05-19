@@ -117,5 +117,5 @@ import java.math.BigDecimal;
                 )
         }
 )
-public @interface SwaggerRouteRevenueOperation {
+public @interface SwaggerRevenueRouteOperation {
 }

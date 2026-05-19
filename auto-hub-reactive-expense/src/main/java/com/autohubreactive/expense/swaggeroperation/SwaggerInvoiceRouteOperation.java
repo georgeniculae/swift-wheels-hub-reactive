@@ -270,5 +270,5 @@ import java.lang.annotation.Target;
                 )
         }
 )
-public @interface SwaggerRouteInvoiceOperation {
+public @interface SwaggerInvoiceRouteOperation {
 }
