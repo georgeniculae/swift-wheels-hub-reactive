@@ -1,7 +1,6 @@
 package com.autohubreactive.invoicenotification.consumer;
 
 import com.autohubreactive.dto.common.InvoiceResponse;
-import com.autohubreactive.dto.invoicenotification.EmailResponse;
 import com.autohubreactive.invoicenotification.service.EmailProcessorService;
 import com.autohubreactive.invoicenotification.util.TestUtil;
 import com.autohubreactive.lib.retry.RetryHandler;
@@ -44,9 +43,6 @@ class InvoiceMessageConsumerTest {
 
     @Test
     void invoiceNotificationConsumerTest_success_acknowledgementTrue() {
-        EmailResponse emailResponse =
-                TestUtil.getResourceAsJson("/data/EmailResponse.json", EmailResponse.class);
-
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
@@ -54,7 +50,7 @@ class InvoiceMessageConsumerTest {
         Message<InvoiceResponse> message = MessageBuilder.createMessage(invoiceResponse, messageHeaders);
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(message);
 
-        when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
+        when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         invoiceMessageConsumer.invoiceNotificationConsumer().apply(messageFlux)
@@ -64,16 +60,13 @@ class InvoiceMessageConsumerTest {
     }
 
     @Test
-    void invoiceNotificationConsumerTest_acknowledgementTrue_noHeaders() {
+    void invoiceNotificationConsumerTest_noKafkaHeaders() {
         InvoiceResponse invoiceResponse =
                 TestUtil.getResourceAsJson("/data/InvoiceResponse.json", InvoiceResponse.class);
 
-        EmailResponse emailResponse =
-                TestUtil.getResourceAsJson("/data/EmailResponse.json", EmailResponse.class);
-
         Flux<Message<InvoiceResponse>> messageFlux = Flux.just(new GenericMessage<>(invoiceResponse));
 
-        when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.just(emailResponse));
+        when(emailProcessorService.sendEmail(any(InvoiceResponse.class))).thenReturn(Mono.empty());
         when(retryHandler.retry()).thenReturn(RetrySpec.backoff(0, Duration.ofSeconds(0)));
 
         invoiceMessageConsumer.invoiceNotificationConsumer().apply(messageFlux)

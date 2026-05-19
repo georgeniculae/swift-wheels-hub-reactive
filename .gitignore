@@ -38,3 +38,5 @@ build/
 /docs/superpowers/plans/2026-05-09-rename-email-notification-to-invoice-notification.md
 /docs/superpowers/plans/2026-05-13-sendgrid-to-postmark.md
 /docs/superpowers/specs/2026-05-13-sendgrid-to-postmark-design.md
+/docs/superpowers/specs/2026-05-19-mail-client-design.md
+/docs/superpowers/plans/2026-05-19-replace-postmark-with-spring-mail.md

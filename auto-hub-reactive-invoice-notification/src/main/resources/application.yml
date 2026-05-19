@@ -60,6 +60,14 @@ spring:
   http:
     codecs:
       max-in-memory-size: 20MB
+  mail:
+    host: in-v3.mailjet.com
+    port: 587
+    username: ${MAILJET_API_KEY}
+    password: ${MAILJET_SECRET_KEY}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 eureka:
   client:
@@ -74,11 +82,9 @@ eureka:
   instance:
     prefer-ip-address: true
 
-postmark:
-  mail:
-    api-key: ${POSTMARK_API_KEY}
-    from: ${POSTMARK_MAIL_FROM}
-    name: Auto Hub
+mail:
+  from: ${MAIL_FROM}
+  name: Auto Hub
 
 management:
   server:

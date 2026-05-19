@@ -36,9 +36,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.postmarkapp</groupId>
-            <artifactId>postmark</artifactId>
-            <version>1.13.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <dependency>

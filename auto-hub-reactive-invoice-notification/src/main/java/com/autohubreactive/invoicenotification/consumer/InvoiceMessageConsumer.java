@@ -1,7 +1,6 @@
 package com.autohubreactive.invoicenotification.consumer;
 
 import com.autohubreactive.dto.common.InvoiceResponse;
-import com.autohubreactive.dto.invoicenotification.EmailResponse;
 import com.autohubreactive.invoicenotification.service.EmailProcessorService;
 import com.autohubreactive.lib.retry.RetryHandler;
 import com.autohubreactive.lib.util.KafkaUtil;
@@ -28,11 +27,11 @@ public class InvoiceMessageConsumer {
         return messageFlux -> messageFlux.concatMap(this::processMessage).then();
     }
 
-    private Mono<EmailResponse> processMessage(Message<InvoiceResponse> message) {
+    private Mono<Void> processMessage(Message<InvoiceResponse> message) {
         return emailProcessorService.sendEmail(message.getPayload())
                 .retryWhen(retryHandler.retry())
-                .doOnNext(response -> {
-                    log.info("Invoice processed with status: {}{}", response.statusCode(), response.body());
+                .doOnSuccess(_ -> {
+                    log.info("Invoice processed successfully");
                     KafkaUtil.acknowledgeMessage(message.getHeaders());
                 })
                 .onErrorResume(e -> {
