@@ -1,6 +1,7 @@
 package com.autohubreactive.invoicenotification.service;
 
 import com.autohubreactive.dto.common.InvoiceResponse;
+import com.autohubreactive.exception.AutoHubResponseStatusException;
 import com.autohubreactive.invoicenotification.util.TestUtil;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
@@ -79,7 +80,7 @@ class EmailServiceTest {
 
         emailService.sendEmail("user@email.com", invoiceResponse, new byte[]{1, 2, 3})
                 .as(StepVerifier::create)
-                .expectError(MailSendException.class)
+                .expectError(AutoHubResponseStatusException.class)
                 .verify();
     }
 

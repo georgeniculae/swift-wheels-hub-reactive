@@ -43,7 +43,7 @@ public class EmailService {
             helper.setFrom(mailFrom, name);
             helper.setTo(toAddressEmail);
             helper.setSubject(Constants.SUBJECT);
-            helper.setText(getMailBody(invoiceResponse));
+            helper.setText(getMailBody(invoiceResponse), true);
             String filename = Constants.INVOICE_FILENAME_PREFIX + invoiceResponse.id() + Constants.PDF_EXTENSION;
             helper.addAttachment(filename, new ByteArrayResource(pdfBytes), Constants.APPLICATION_PDF_CONTENT_TYPE);
 
